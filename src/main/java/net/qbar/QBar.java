@@ -1,5 +1,6 @@
 package net.qbar;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -10,22 +11,25 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.qbar.common.CommonProxy;
+import net.qbar.common.CustomCreativeTab;
 
 @Mod(modid = QBar.MODID, version = QBar.VERSION, name = QBar.MODNAME)
 public class QBar
 {
-    public static final String MODID   = "qbar";
-    public static final String VERSION = "0.1";
-    public static final String MODNAME = "QBar";
+    public static final String       MODID   = "qbar";
+    public static final String       VERSION = "0.1";
+    public static final String       MODNAME = "QBar";
 
     @SidedProxy(clientSide = "net.qbar.client.ClientProxy", serverSide = "net.qbar.server.ServerProxy")
-    public static CommonProxy  proxy;
+    public static CommonProxy        proxy;
 
     @Instance(QBar.MODID)
-    public static QBar         instance;
+    public static QBar               instance;
+
+    public static final CreativeTabs TAB_ALL = new CustomCreativeTab("taball");
 
     @EventHandler
-    public void init(final FMLPreInitializationEvent event)
+    public void preInit(final FMLPreInitializationEvent event)
     {
         QBar.proxy.preInit(event);
     }
