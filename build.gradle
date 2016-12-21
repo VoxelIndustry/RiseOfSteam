@@ -10,9 +10,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "1.0"
-group= "com.yourname.modid" 
-archivesBaseName = "modid"
+version = "0.0.1"
+group= "net.qbar" 
+archivesBaseName = "qbar"
 
 compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = "1.8"
@@ -27,8 +27,21 @@ minecraft {
     mappings = "snapshot_20161111"
 }
 
-dependencies {
+repositories {
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
 
+    maven { // JEI
+	   name = 'progwml6 maven'
+        url = "http://dvs1.progwml6.com/files/maven"
+	}
+}
+
+dependencies {
+	deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.4-47"
+	deobfCompile "mezz.jei:jei_1.11:4.1.1.207"
 }
 
 processResources
