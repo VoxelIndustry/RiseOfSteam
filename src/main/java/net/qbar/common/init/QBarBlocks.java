@@ -1,6 +1,7 @@
 package net.qbar.common.init;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.block.BlockPunchingMachine;
@@ -14,12 +15,12 @@ public class QBarBlocks
 
     public static final void registerBlocks()
     {
-        QBarBlocks.registerBlock(QBarBlocks.punchingMachine, "BlockPunchingMachine");
+        QBarBlocks.registerBlock(QBarBlocks.punchingMachine, "blockpunchingmachine");
     }
 
     public static final void registerBlock(final Block block, final String name)
     {
-        block.setRegistryName(QBar.MODID, name);
-        GameRegistry.register(block);
+        GameRegistry.register(block.setRegistryName(QBar.MODID, name));
+        GameRegistry.register(new ItemBlock(block), block.getRegistryName());
     }
 }
