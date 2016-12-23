@@ -2,8 +2,10 @@ package net.qbar.common.init;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
@@ -48,6 +50,10 @@ public class QBarFluids
                     return QBarFluids.fluidSteamLocation;
                 }
             });
+
+            ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam));
+            ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
+                    stack -> QBarFluids.fluidSteamLocation);
         }
     }
 }
