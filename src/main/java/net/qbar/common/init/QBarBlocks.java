@@ -41,6 +41,6 @@ public class QBarBlocks
 
     public static final void registerTile(Class c, String name)
 	{
-		GameRegistry.registerTileEntity(TileTank.class, QBar.MODID + ":tank" + name);
+		GameRegistry.registerTileEntity(c, QBar.MODID + ":tank" + name);
 	}
 }
