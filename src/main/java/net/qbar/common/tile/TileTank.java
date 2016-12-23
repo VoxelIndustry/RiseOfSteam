@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.DirectionalTank;
 
 public class TileTank extends QBarTileBase implements ITileInfoProvider
@@ -64,5 +65,10 @@ public class TileTank extends QBarTileBase implements ITileInfoProvider
             lines.add(this.tank.getFluidHandler(EnumFacing.UP).getTankProperties()[0].getContents().amount + " / "
                     + this.tank.getFluidHandler(EnumFacing.UP).getTankProperties()[0].getCapacity() + " mB");
         }
+    }
+
+    public IFluidHandler getTank()
+    {
+        return this.tank.getInternalFluidHandler();
     }
 }
