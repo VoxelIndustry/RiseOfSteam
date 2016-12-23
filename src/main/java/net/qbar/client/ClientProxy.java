@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.items.ItemBase;
+import net.qbar.common.item.ItemBase;
 
 /**
  * @author Ourten 21 déc. 2016

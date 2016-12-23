@@ -1,4 +1,4 @@
-package net.qbar.common.items;
+package net.qbar.common.item;
 
 import net.minecraft.item.Item;
 import net.qbar.QBar;
