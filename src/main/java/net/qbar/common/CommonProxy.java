@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
+import net.qbar.common.init.QBarItems;
 
 /**
  * @author Ourten 21 déc. 2016
@@ -16,6 +17,7 @@ public class CommonProxy
     public void preInit(final FMLPreInitializationEvent e)
     {
         QBarBlocks.registerBlocks();
+		QBarItems.registerItems();
         QBarFluids.registerFluids();
     }
 
