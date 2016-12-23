@@ -1,6 +1,7 @@
 package net.qbar;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -16,6 +17,11 @@ import net.qbar.common.CustomCreativeTab;
 @Mod(modid = QBar.MODID, version = QBar.VERSION, name = QBar.MODNAME)
 public class QBar
 {
+    static
+    {
+        FluidRegistry.enableUniversalBucket();
+    }
+
     public static final String       MODID   = "qbar";
     public static final String       VERSION = "0.1";
     public static final String       MODNAME = "QBar";
