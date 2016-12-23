@@ -32,7 +32,7 @@ public class QBar
     @Instance(QBar.MODID)
     public static QBar               instance;
 
-    public static final CreativeTabs TAB_ALL = new CustomCreativeTab("taball");
+    public static final CreativeTabs TAB_ALL = new CustomCreativeTab("QBar");
 
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event)
