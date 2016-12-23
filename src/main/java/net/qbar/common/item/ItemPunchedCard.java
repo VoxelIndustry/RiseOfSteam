@@ -1,4 +1,4 @@
-package net.qbar.common.items;
+package net.qbar.common.item;
 
 public class ItemPunchedCard extends ItemBase
 {

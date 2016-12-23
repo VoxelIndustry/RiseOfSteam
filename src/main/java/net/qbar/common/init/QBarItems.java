@@ -3,7 +3,6 @@ package net.qbar.common.init;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.common.item.ItemBase;
 import net.qbar.common.item.ItemPunchedCard;
-import net.qbar.common.item.ItemPunchedCardEmpty;
 
 public class QBarItems
 {
@@ -11,7 +10,7 @@ public class QBarItems
 
     public static final void registerItems()
     {
-		QBarItems.registerItem(QBarItems.itemPunchedCard);
+        QBarItems.registerItem(QBarItems.itemPunchedCard);
     }
 
     private static final void registerItem(final ItemBase item)

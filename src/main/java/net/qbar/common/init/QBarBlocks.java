@@ -6,24 +6,36 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.block.BlockBase;
 import net.qbar.common.block.BlockKeypunch;
+import net.qbar.common.block.BlockMachineBase;
+import net.qbar.common.block.BlockTank;
+import net.qbar.common.tile.TileTank;
 
 public class QBarBlocks
 {
-    private static final BlockBase punchingMachine = new BlockKeypunch();
+    private static final BlockBase        punchingMachine = new BlockKeypunch();
+    private static final BlockMachineBase tank            = new BlockTank();
 
     public static final void registerBlocks()
     {
         QBarBlocks.registerBlock(QBarBlocks.punchingMachine);
+        QBarBlocks.registerBlock(QBarBlocks.tank);
+
+        GameRegistry.registerTileEntity(TileTank.class, QBar.MODID + ":tiletank");
     }
 
-    public static final void registerBlock(final Block block, String name)
-	{
+    public static final void registerBlock(final Block block, final String name)
+    {
         GameRegistry.register(block.setRegistryName(QBar.MODID, name));
         GameRegistry.register(new ItemBlock(block), block.getRegistryName());
-	}
+    }
 
     public static final void registerBlock(final BlockBase block)
     {
-    	registerBlock(block, block.name);
+        QBarBlocks.registerBlock(block, block.name);
+    }
+
+    public static final void registerBlock(final BlockMachineBase block)
+    {
+        QBarBlocks.registerBlock(block, block.name);
     }
 }
