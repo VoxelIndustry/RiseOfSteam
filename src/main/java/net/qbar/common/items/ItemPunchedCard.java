@@ -1,12 +1,9 @@
 package net.qbar.common.items;
 
-import net.minecraft.item.Item;
-import net.qbar.QBar;
-
-public class ItemPunchedCard extends Item
+public class ItemPunchedCard extends ItemBase
 {
-	public ItemPunchedCard() {
-		this.setUnlocalizedName("punched_card");
-		this.setCreativeTab(QBar.TAB_ALL);
+	public ItemPunchedCard()
+	{
+		super("punched_card");
 	}
 }
