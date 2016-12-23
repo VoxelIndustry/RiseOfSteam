@@ -12,7 +12,7 @@ import net.qbar.common.tile.TileTank;
 
 public class QBarBlocks
 {
-    private static final BlockBase        punchingMachine = new BlockKeypunch();
+    private static final BlockMachineBase punchingMachine = new BlockKeypunch();
     private static final BlockMachineBase tank            = new BlockTank();
 
     public static final void registerBlocks()
@@ -20,7 +20,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(QBarBlocks.punchingMachine);
         QBarBlocks.registerBlock(QBarBlocks.tank);
 
-        GameRegistry.registerTileEntity(TileTank.class, QBar.MODID + ":tiletank");
+        registerTile(TileTank.class, "tank");
     }
 
     public static final void registerBlock(final Block block, final String name)
@@ -38,4 +38,9 @@ public class QBarBlocks
     {
         QBarBlocks.registerBlock(block, block.name);
     }
+
+    public static final void registerTile(Class c, String name)
+	{
+		GameRegistry.registerTileEntity(TileTank.class, QBar.MODID + ":tank" + name);
+	}
 }
