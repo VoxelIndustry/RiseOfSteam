@@ -35,7 +35,7 @@ public class BlockKeypunch extends BlockMachineBase
 			t.setInventorySlotContents(0, it);
 		else
 		{
-			t.setInventorySlotContents(0, );
+			t.setInventorySlotContents(0, ItemStack.EMPTY);
 			playerIn.inventory.addItemStackToInventory(new ItemStack(QBarItems.itemPunchedCard));
 		}
 	}
