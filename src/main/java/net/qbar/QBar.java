@@ -1,5 +1,7 @@
 package net.qbar;
 
+import java.util.logging.Logger;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -31,6 +33,8 @@ public class QBar
 
     @Instance(QBar.MODID)
     public static QBar               instance;
+
+    public static final Logger       logger  = Logger.getLogger(QBar.MODNAME);
 
     public static final CreativeTabs TAB_ALL = new CustomCreativeTab("QBar");
 
