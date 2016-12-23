@@ -8,6 +8,7 @@ import net.qbar.common.block.BlockBase;
 import net.qbar.common.block.BlockKeypunch;
 import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.block.BlockTank;
+import net.qbar.common.tile.TileKeypunch;
 import net.qbar.common.tile.TileTank;
 
 public class QBarBlocks
@@ -21,6 +22,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(QBarBlocks.tank);
 
         registerTile(TileTank.class, "tank");
+        registerTile(TileKeypunch.class, "keypunch");
     }
 
     public static final void registerBlock(final Block block, final String name)
