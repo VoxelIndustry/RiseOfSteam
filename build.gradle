@@ -24,7 +24,7 @@ minecraft {
     version = "1.11-13.19.1.2195"
     runDir = "run"
 
-    mappings = "snapshot_20161111"
+    mappings = "snapshot_20161205"
 }
 
 repositories {
