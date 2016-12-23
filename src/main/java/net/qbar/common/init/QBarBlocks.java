@@ -7,9 +7,6 @@ import net.qbar.QBar;
 import net.qbar.common.block.BlockBase;
 import net.qbar.common.block.BlockKeypunch;
 
-/**
- * @author Ourten 21 déc. 2016
- */
 public class QBarBlocks
 {
     private static final BlockBase punchingMachine = new BlockKeypunch();

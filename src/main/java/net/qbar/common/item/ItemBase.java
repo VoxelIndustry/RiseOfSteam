@@ -3,9 +3,6 @@ package net.qbar.common.item;
 import net.minecraft.item.Item;
 import net.qbar.QBar;
 
-/**
- * Created by mantal on 23/12/2016.
- */
 public class ItemBase extends Item
 {
 	public String name;

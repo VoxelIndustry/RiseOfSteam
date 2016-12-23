@@ -16,9 +16,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.QBar;
 import net.qbar.common.fluid.BlockQBarFluid;
 
-/**
- * @author Ourten 22 déc. 2016
- */
 public class QBarFluids
 {
     private static Fluid                 fluidSteam;
