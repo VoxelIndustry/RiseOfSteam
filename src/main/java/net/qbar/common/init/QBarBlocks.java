@@ -2,6 +2,7 @@ package net.qbar.common.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.block.BlockBase;
@@ -21,8 +22,8 @@ public class QBarBlocks
         QBarBlocks.registerBlock(QBarBlocks.punchingMachine);
         QBarBlocks.registerBlock(QBarBlocks.tank);
 
-        registerTile(TileTank.class, "tank");
-        registerTile(TileKeypunch.class, "keypunch");
+        QBarBlocks.registerTile(TileTank.class, "tank");
+        QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
     }
 
     public static final void registerBlock(final Block block, final String name)
@@ -41,8 +42,8 @@ public class QBarBlocks
         QBarBlocks.registerBlock(block, block.name);
     }
 
-    public static final void registerTile(Class c, String name)
-	{
-		GameRegistry.registerTileEntity(c, QBar.MODID + ":tank" + name);
-	}
+    public static final void registerTile(final Class<? extends TileEntity> c, final String name)
+    {
+        GameRegistry.registerTileEntity(c, QBar.MODID + ":tank" + name);
+    }
 }
