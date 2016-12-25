@@ -1,5 +1,7 @@
 package net.qbar.common.steam;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 public class SteamStack
 {
     private final int amount;
@@ -57,5 +59,19 @@ public class SteamStack
     public String toString()
     {
         return "SteamStack [amount=" + this.amount + ", pressure=" + this.pressure + "]";
+    }
+
+    public void writeToNBT(final NBTTagCompound nbt)
+    {
+        nbt.setInteger("amount", this.getAmount());
+        nbt.setInteger("pressure", this.getPressure());
+    }
+
+    public static SteamStack readFromNBT(final NBTTagCompound nbt)
+    {
+        SteamStack stack = null;
+        if (nbt.hasKey("amount") && nbt.hasKey("pressure"))
+            stack = new SteamStack(nbt.getInteger("amount"), nbt.getInteger("pressure"));
+        return stack;
     }
 }

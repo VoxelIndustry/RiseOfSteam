@@ -9,11 +9,14 @@ import net.qbar.common.compat.CompatManager;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.steam.CapabilitySteamHandler;
 
 public class CommonProxy
 {
     public void preInit(final FMLPreInitializationEvent e)
     {
+        CapabilitySteamHandler.register();
+
         QBarBlocks.registerBlocks();
         QBarItems.registerItems();
         QBarFluids.registerFluids();
