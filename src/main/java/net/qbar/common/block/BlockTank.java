@@ -33,10 +33,10 @@ public class BlockTank extends BlockMachineBase
             {
                 if (FluidUtils.drainPlayerHand(tank.getTank(), player)
                         || FluidUtils.fillPlayerHand(tank.getTank(), player))
-                    ;
+                    return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

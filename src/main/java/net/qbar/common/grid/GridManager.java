@@ -84,7 +84,8 @@ public class GridManager
             grid.tick();
         }
         final long elapsed = System.currentTimeMillis() - start;
-        System.out.println("Grids ticking took: " + elapsed + " ms. (" + 50.0 / elapsed + "% of tick time)");
+        // System.out.println("Grids ticking took: " + elapsed + " ms. (" + 50.0
+        // / elapsed * 100 + "% of tick time)");
     }
 
     public void connectCable(final ITileCable added)

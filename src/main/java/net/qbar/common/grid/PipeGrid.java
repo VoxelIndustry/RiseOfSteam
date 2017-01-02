@@ -13,7 +13,7 @@ public class PipeGrid extends CableGrid
     private final LimitedTank         tank;
     private int                       transferCapacity;
 
-    private final HashSet<IFluidPipe> inputs;
+    private final HashSet<IFluidPipe> outputs;
 
     public PipeGrid(final int identifier, final int transferCapacity)
     {
@@ -22,7 +22,7 @@ public class PipeGrid extends CableGrid
         this.transferCapacity = transferCapacity;
         this.tank = new LimitedTank("PipeGrid", transferCapacity * 4, transferCapacity);
 
-        this.inputs = new HashSet<>();
+        this.outputs = new HashSet<>();
     }
 
     @Override
@@ -49,10 +49,8 @@ public class PipeGrid extends CableGrid
     @Override
     public void tick()
     {
-        if (!this.getInputs().isEmpty())
-        {
-            this.getInputs().forEach(pipe -> pipe.drainNeighbors());
-        }
+        if (!this.getOutputs().isEmpty())
+            this.getOutputs().forEach(pipe -> pipe.fillNeighbors());
     }
 
     @Override
@@ -107,21 +105,21 @@ public class PipeGrid extends CableGrid
 
     public int getCapacity()
     {
-        return this.getInputs().size() * this.getTransferCapacity();
+        return Math.max(this.getTransferCapacity(), this.getCables().size() * (this.getTransferCapacity() / 4));
     }
 
-    public HashSet<IFluidPipe> getInputs()
+    public HashSet<IFluidPipe> getOutputs()
     {
-        return this.inputs;
+        return this.outputs;
     }
 
-    public void addInput(final IFluidPipe input)
+    public void addOutput(final IFluidPipe output)
     {
-        this.inputs.add(input);
+        this.outputs.add(output);
     }
 
-    public void removeInput(final IFluidPipe input)
+    public void removeOutput(final IFluidPipe output)
     {
-        this.inputs.remove(input);
+        this.outputs.remove(output);
     }
 }
