@@ -9,7 +9,6 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -28,7 +27,9 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     public TileFluidPump(final int transferCapacity)
     {
         this.transferCapacity = transferCapacity;
-        this.tank = new LimitedTank("TileFluidPump", Fluid.BUCKET_VOLUME * 2, transferCapacity);
+        this.tank = new LimitedTank("TileFluidPump", 0, 0);
+        this.tank.setCanDrain(false);
+        this.tank.setCanFill(false);
         this.facing = EnumFacing.UP;
     }
 
