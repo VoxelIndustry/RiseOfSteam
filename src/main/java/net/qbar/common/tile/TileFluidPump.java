@@ -24,6 +24,8 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
 
     private final LimitedTank tank;
 
+    private boolean           firstCall = true;
+
     public TileFluidPump(final int transferCapacity)
     {
         this.transferCapacity = transferCapacity;
@@ -78,6 +80,11 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     {
         if (!this.world.isRemote)
         {
+            if (this.firstCall)
+            {
+                this.scanFluidHandlers();
+                this.firstCall = false;
+            }
             if (this.top != null && this.bottom != null)
                 this.transferFluids();
         }
@@ -86,6 +93,7 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     @Override
     public void addInfo(final List<String> lines)
     {
+        lines.add("Connect: " + (this.top != null ? "top " : "") + (this.bottom != null ? "bottom" : ""));
         lines.add("Transfer Rate: " + this.transferCapacity + " mB / tick");
         lines.add("Orientation: " + this.getFacing());
     }

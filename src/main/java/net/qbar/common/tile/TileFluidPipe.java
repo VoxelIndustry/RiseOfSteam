@@ -10,12 +10,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IFluidPipe;
 import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.PipeGrid;
 
-public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IFluidPipe
+public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IFluidPipe, ILoadable
 {
     private int                                      grid;
     private final EnumMap<EnumFacing, ITileCable>    connections;
@@ -178,5 +179,19 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
                     fluidHandler.fill(this.getGridObject().getTank().drain(simulated, true), true);
             }
         }
+    }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+
+        TickHandler.loadables.add(this);
+    }
+
+    @Override
+    public void load()
+    {
+        GridManager.getInstance().connectCable(this);
     }
 }
