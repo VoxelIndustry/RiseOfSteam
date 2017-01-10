@@ -48,8 +48,12 @@ public class QBarBlocks
 
     public static final void registerBlock(final Block block, final String name)
     {
+        final ItemBlock itemBlock = new ItemBlock(block);
+
         GameRegistry.register(block.setRegistryName(QBar.MODID, name));
-        GameRegistry.register(new ItemBlock(block), block.getRegistryName());
+        GameRegistry.register(itemBlock, block.getRegistryName());
+
+        QBar.proxy.registerItemRenderer(itemBlock, 0, name);
     }
 
     public static final void registerBlock(final BlockBase block)

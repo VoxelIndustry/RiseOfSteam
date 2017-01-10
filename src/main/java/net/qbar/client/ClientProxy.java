@@ -1,15 +1,13 @@
 package net.qbar.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.qbar.QBar;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.item.ItemBase;
 
-/**
- * @author Ourten 21 déc. 2016
- */
 public class ClientProxy extends CommonProxy
 {
     @Override
@@ -17,12 +15,13 @@ public class ClientProxy extends CommonProxy
     {
         super.init(e);
 
-		registerItemRender(QBarItems.itemPunchedCard);
+        this.registerItemRenderer(QBarItems.itemPunchedCard, 0, "punched_card");
     }
 
-    private static void registerItemRender(final ItemBase item)
-	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,
-				new ModelResourceLocation(item.getRegistryName(), "inventory"));
-	}
+    @Override
+    public void registerItemRenderer(final Item item, final int meta, final String id)
+    {
+        ModelLoader.setCustomModelResourceLocation(item, meta,
+                new ModelResourceLocation(QBar.MODID + ":" + id, "inventory"));
+    }
 }
