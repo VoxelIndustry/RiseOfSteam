@@ -10,6 +10,29 @@
         "normal": {
             "model": "cube_all"
         },
+        "facing=down": {
+            "model": "cube_all",
+            "x": 90
+        },
+        "facing=up": {
+            "model": "cube_all",
+            "x": 270
+        },
+        "facing=north": {
+            "model": "cube_all"
+        },
+        "facing=south": {
+            "model": "cube_all",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "cube_all",
+            "y": 270
+        },
+        "facing=east": {
+            "model": "cube_all",
+            "y": 90
+        },
         "inventory": {
             "model": "cube_all"
         }
