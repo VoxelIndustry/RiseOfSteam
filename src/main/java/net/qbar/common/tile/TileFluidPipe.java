@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.event.TickHandler;
+import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IFluidPipe;
 import net.qbar.common.grid.ITileCable;
@@ -33,7 +34,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return true;
+            return this.getGrid() != -1 && this.getGridObject() != null;
         return super.hasCapability(capability, facing);
     }
 
@@ -50,6 +51,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void addInfo(final List<String> lines)
     {
         lines.add("Grid: " + this.grid);
+
         if (this.getGrid() != -1 && this.getGridObject() != null)
         {
             lines.add("Contains: " + (this.getGridObject().getTank().getFluidType() == null ? "none"
@@ -57,6 +59,8 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
             lines.add("Buffer: " + this.getGridObject().getTank().getFluidAmount() + " / "
                     + this.getGridObject().getTank().getCapacity() + " mb");
         }
+        else
+            lines.add("Errored grid!");
         this.connections.forEach((facing, cable) -> lines.add(facing + ": " + (cable != null)));
     }
 
@@ -80,7 +84,11 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
 
     public PipeGrid getGridObject()
     {
-        return (PipeGrid) GridManager.getInstance().getGrid(this.getGrid());
+        final CableGrid grid = GridManager.getInstance().getGrid(this.getGrid());
+
+        if (grid != null && grid instanceof PipeGrid)
+            return (PipeGrid) grid;
+        return null;
     }
 
     @Override
@@ -93,26 +101,12 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void readFromNBT(final NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
-
-        for (final EnumFacing facing : EnumFacing.VALUES)
-        {
-            if (tagCompound.hasKey("connection:" + facing))
-            {
-                if (tagCompound.getBoolean("connection:" + facing))
-                {
-                    final TileEntity tile = this.world.getTileEntity(this.getPos().add(facing.getDirectionVec()));
-                    if (tile instanceof ITileCable)
-                        this.connections.put(facing, (ITileCable) tile);
-                }
-            }
-        }
     }
 
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
-        this.connections.forEach((facing, cable) -> tagCompound.setBoolean("connection:" + facing, cable != null));
         return tagCompound;
     }
 
@@ -185,13 +179,15 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void onLoad()
     {
         super.onLoad();
-
-        TickHandler.loadables.add(this);
+        if (!this.world.isRemote && this.getGrid() == -1)
+            TickHandler.loadables.add(this);
     }
 
     @Override
     public void load()
     {
         GridManager.getInstance().connectCable(this);
+        for (final EnumFacing facing : EnumFacing.VALUES)
+            this.scanFluidHandlers(this.pos.offset(facing));
     }
 }

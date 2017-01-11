@@ -35,10 +35,17 @@ public class PipeGrid extends CableGrid
     @Override
     public boolean removeCable(final ITileCable cable)
     {
-        final boolean rtn = super.removeCable(cable);
+        if (super.removeCable(cable))
+        {
+            this.getTank().setCapacity(this.getCapacity());
 
-        this.getTank().setCapacity(this.getCapacity());
-        return rtn;
+            if (this.getTank().getFluidAmount() > 0)
+            {
+                this.getTank().drainInternal(this.getTank().getFluidAmount() / (this.getCables().size() + 1), true);
+            }
+            return true;
+        }
+        return false;
     }
 
     public int getTransferCapacity()
@@ -54,9 +61,9 @@ public class PipeGrid extends CableGrid
     }
 
     @Override
-    void dirtyPass()
+    CableGrid copy(final int identifier)
     {
-
+        return new PipeGrid(identifier, this.transferCapacity);
     }
 
     @Override
@@ -84,13 +91,16 @@ public class PipeGrid extends CableGrid
     void onMerge(final CableGrid grid)
     {
         this.getTank().setCapacity(this.getCapacity());
-        this.getTank().fill(((PipeGrid) grid).getTank().getFluid(), true);
+        if (((PipeGrid) grid).getTank().getFluid() != null)
+            this.getTank().fillInternal(((PipeGrid) grid).getTank().getFluid(), true);
     }
 
     @Override
     void onSplit(final CableGrid grid)
     {
-        this.getTank().fill(((PipeGrid) grid).getTank().drain(this.getCapacity(), true), true);
+        this.getTank().fillInternal(((PipeGrid) grid).getTank().drainInternal(
+                ((PipeGrid) grid).getTank().getFluidAmount() / grid.getCables().size() * this.getCables().size(),
+                false), true);
     }
 
     public Fluid getFluid()
@@ -105,7 +115,7 @@ public class PipeGrid extends CableGrid
 
     public int getCapacity()
     {
-        return Math.max(this.getTransferCapacity(), this.getCables().size() * (this.getTransferCapacity() / 4));
+        return this.getCables().size() * this.getTransferCapacity();
     }
 
     public HashSet<IFluidPipe> getOutputs()

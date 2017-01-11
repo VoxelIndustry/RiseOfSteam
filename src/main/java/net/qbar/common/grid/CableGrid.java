@@ -9,8 +9,6 @@ public class CableGrid
 {
     private final int                 identifier;
 
-    boolean                           isDirty;
-
     private final HashSet<ITileCable> cables;
 
     public CableGrid(final int identifier)
@@ -25,9 +23,9 @@ public class CableGrid
 
     }
 
-    void dirtyPass()
+    CableGrid copy(final int identifier)
     {
-
+        return new CableGrid(identifier);
     }
 
     void applyData(final CableGrid grid)
@@ -77,7 +75,13 @@ public class CableGrid
 
     public boolean removeCable(final ITileCable cable)
     {
-        return this.cables.remove(cable);
+        if (this.cables.remove(cable))
+        {
+            if (this.cables.isEmpty())
+                GridManager.getInstance().removeGrid(this.identifier);
+            return true;
+        }
+        return false;
     }
 
     public void removeCables(final Collection<ITileCable> cables)
@@ -98,16 +102,6 @@ public class CableGrid
     public HashSet<ITileCable> getCables()
     {
         return this.cables;
-    }
-
-    public void markDirty()
-    {
-        this.isDirty = true;
-    }
-
-    public boolean isDirty()
-    {
-        return this.isDirty;
     }
 
     @Override

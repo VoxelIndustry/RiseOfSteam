@@ -46,6 +46,12 @@ public class GridManager
         return grid;
     }
 
+    public CableGrid addGrid(final CableGrid grid)
+    {
+        this.cableGrids.put(grid.getIdentifier(), grid);
+        return grid;
+    }
+
     public CableGrid removeGrid(final int identifier)
     {
         return this.cableGrids.remove(identifier);
@@ -58,7 +64,9 @@ public class GridManager
 
     public CableGrid getGrid(final int identifier)
     {
-        return this.cableGrids.get(identifier);
+        if (this.cableGrids.containsKey(identifier))
+            return this.cableGrids.get(identifier);
+        return null;
     }
 
     public int getNextID()
@@ -71,21 +79,10 @@ public class GridManager
 
     public void tickGrids()
     {
-        final long start = System.currentTimeMillis();
         final Iterator<CableGrid> cableGrid = this.cableGrids.values().iterator();
 
         while (cableGrid.hasNext())
-        {
-            final CableGrid grid = cableGrid.next();
-
-            if (grid.isDirty())
-            {
-            }
-            grid.tick();
-        }
-        final long elapsed = System.currentTimeMillis() - start;
-        // System.out.println("Grids ticking took: " + elapsed + " ms. (" + 50.0
-        // / elapsed * 100 + "% of tick time)");
+            cableGrid.next().tick();
     }
 
     public void connectCable(final ITileCable added)
@@ -118,19 +115,17 @@ public class GridManager
 
         if (added.getGrid() == -1)
         {
-            added.setGrid(this.addPipeGrid(this.getNextID(), 256).getIdentifier());
+            added.setGrid(this.addPipeGrid(this.getNextID(), 64).getIdentifier());
             this.getGrid(added.getGrid()).addCable(added);
         }
     }
 
     public void disconnectCable(final ITileCable removed)
     {
-
         if (removed.getGrid() != -1)
         {
             if (removed.getConnections().length != 0)
             {
-
                 for (final EnumFacing facing : removed.getConnections())
                     removed.getConnected(facing).disconnect(facing.getOpposite());
 
@@ -138,23 +133,21 @@ public class GridManager
                     this.getGrid(removed.getGrid()).removeCable(removed);
                 else
                 {
-
                     this.getGrid(removed.getGrid()).removeCable(removed);
                     if (!this.getOrphans(this.getGrid(removed.getGrid()), removed).isEmpty())
                     {
                         for (final EnumFacing facing : removed.getConnections())
                             removed.getConnected(facing).setGrid(-1);
-                        this.removeGrid(removed.getGrid());
+                        final CableGrid old = this.removeGrid(removed.getGrid());
                         for (final EnumFacing facing : removed.getConnections())
                         {
                             if (removed.getConnected(facing).getGrid() == -1)
                             {
-
-                                final CableGrid newGrid = this.addGrid(this.getNextID());
-                                newGrid.applyData(this.getGrid(removed.getGrid()));
+                                final CableGrid newGrid = this.addGrid(old.copy(this.getNextID()));
+                                newGrid.applyData(old);
 
                                 this.exploreGrid(newGrid, removed.getConnected(facing));
-                                newGrid.onSplit(this.getGrid(removed.getGrid()));
+                                newGrid.onSplit(old);
                             }
                         }
                     }

@@ -18,16 +18,17 @@ public class LimitedTank extends FluidTank
     }
 
     @Override
-    public int fillInternal(final FluidStack resource, final boolean doFill)
+    public int fill(final FluidStack resource, final boolean doFill)
     {
-        resource.amount = Math.min(resource.amount, this.transferCapacity);
-        return super.fillInternal(resource, doFill);
+        if (resource != null)
+            resource.amount = Math.min(resource.amount, this.transferCapacity);
+        return super.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drainInternal(final int maxDrain, final boolean doDrain)
+    public FluidStack drain(final int maxDrain, final boolean doDrain)
     {
-        return super.drainInternal(Math.min(maxDrain, this.transferCapacity), doDrain);
+        return super.drain(Math.min(maxDrain, this.transferCapacity), doDrain);
     }
 
     public Fluid getFluidType()
