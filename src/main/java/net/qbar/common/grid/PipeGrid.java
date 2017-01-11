@@ -118,6 +118,11 @@ public class PipeGrid extends CableGrid
         return this.getCables().size() * this.getTransferCapacity();
     }
 
+    public boolean isEmpty()
+    {
+        return this.getFluid() == null || this.getTank().getFluidAmount() == 0;
+    }
+
     public HashSet<IFluidPipe> getOutputs()
     {
         return this.outputs;

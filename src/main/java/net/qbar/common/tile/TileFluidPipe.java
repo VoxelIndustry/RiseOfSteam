@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.event.TickHandler;
@@ -22,6 +23,8 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     private int                                      grid;
     private final EnumMap<EnumFacing, ITileCable>    connections;
     private final EnumMap<EnumFacing, IFluidHandler> adjacentFluidHandler;
+
+    private FluidStack                               coldStorage;
 
     public TileFluidPipe()
     {
@@ -94,19 +97,40 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     @Override
     public void setGrid(final int gridIdentifier)
     {
+        final int previous = this.grid;
         this.grid = gridIdentifier;
+
+        if (gridIdentifier == -1)
+            this.coldStorage = null;
+        else if (this.coldStorage != null && previous == -1 && (this.getGridObject().isEmpty()
+                || this.getGridObject().getFluid().equals(this.coldStorage.getFluid())))
+        {
+            this.getGridObject().getTank().fillInternal(this.coldStorage, true);
+            this.coldStorage = null;
+        }
     }
 
     @Override
     public void readFromNBT(final NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
+
+        if (tagCompound.hasKey("coldStorage"))
+            this.coldStorage = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("coldStorage"));
     }
 
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
+
+        this.toColdStorage();
+        if (this.coldStorage != null)
+        {
+            final NBTTagCompound tag = new NBTTagCompound();
+            this.coldStorage.writeToNBT(tag);
+            tagCompound.setTag("coldStorage", tag);
+        }
         return tagCompound;
     }
 
@@ -114,6 +138,26 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void onChunkUnload()
     {
         GridManager.getInstance().disconnectCable(this);
+    }
+
+    @Override
+    public boolean canConnect(final ITileCable to)
+    {
+        if (to instanceof TileFluidPipe)
+        {
+            final PipeGrid grid = ((TileFluidPipe) to).getGridObject();
+            if (grid != null)
+            {
+                if (this.coldStorage != null)
+                {
+                    if (grid.getFluid() == null || grid.getFluid().equals(this.coldStorage.getFluid()))
+                        return true;
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -189,5 +233,14 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         GridManager.getInstance().connectCable(this);
         for (final EnumFacing facing : EnumFacing.VALUES)
             this.scanFluidHandlers(this.pos.offset(facing));
+    }
+
+    public void toColdStorage()
+    {
+        if (this.getGridObject() != null && this.getGridObject().getTank().getFluid() != null)
+        {
+            this.coldStorage = this.getGridObject().getTank().getFluid().copy();
+            this.coldStorage.amount = this.coldStorage.amount / this.getGridObject().getCables().size();
+        }
     }
 }

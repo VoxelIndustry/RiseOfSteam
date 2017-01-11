@@ -91,7 +91,7 @@ public class GridManager
         {
 
             final TileEntity adjacent = added.getWorld().getTileEntity(added.getPos().add(facing.getDirectionVec()));
-            if (adjacent != null && adjacent instanceof ITileCable)
+            if (adjacent != null && adjacent instanceof ITileCable && added.canConnect((ITileCable) adjacent))
             {
                 added.connect(facing, (ITileCable) adjacent);
                 ((ITileCable) adjacent).connect(facing.getOpposite(), added);
@@ -103,7 +103,7 @@ public class GridManager
 
             if (adjacent.getGrid() != -1)
             {
-                if (added.getGrid() == -1)
+                if (added.getGrid() == -1 && added.canConnect(adjacent))
                 {
                     added.setGrid(adjacent.getGrid());
                     this.getGrid(added.getGrid()).addCable(added);
