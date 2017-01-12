@@ -4,8 +4,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class SteamStack
 {
-    private final int amount;
-    private final int pressure;
+    private int amount;
+    private int pressure;
 
     public SteamStack(final int amount, final int pressure)
     {
@@ -23,9 +23,19 @@ public class SteamStack
         return this.amount;
     }
 
+    public void setAmount(final int amount)
+    {
+        this.amount = amount;
+    }
+
     public int getPressure()
     {
         return this.pressure;
+    }
+
+    public void setPressure(final int pressure)
+    {
+        this.pressure = pressure;
     }
 
     @Override

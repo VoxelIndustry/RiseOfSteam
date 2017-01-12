@@ -64,6 +64,11 @@ public class SteamTank implements ISteamTank
         this.steam = stack;
     }
 
+    public void setAmount(final int amount)
+    {
+        this.getSteam().setAmount(amount);
+    }
+
     @Override
     public int getAmount()
     {
@@ -80,6 +85,11 @@ public class SteamTank implements ISteamTank
     public int getPressure()
     {
         return this.getSteam().getPressure();
+    }
+
+    public void setPressure(final int pressure)
+    {
+        this.getSteam().setPressure(pressure);
     }
 
     @Override

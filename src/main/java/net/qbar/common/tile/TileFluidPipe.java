@@ -3,6 +3,8 @@ package net.qbar.common.tile;
 import java.util.EnumMap;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -85,6 +87,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         return this.grid;
     }
 
+    @Nullable
     public PipeGrid getGridObject()
     {
         final CableGrid grid = GridManager.getInstance().getGrid(this.getGrid());
