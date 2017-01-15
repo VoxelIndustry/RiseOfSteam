@@ -5,17 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 public class SteamStack
 {
     private int amount;
-    private int pressure;
-
-    public SteamStack(final int amount, final int pressure)
-    {
-        this.amount = amount;
-        this.pressure = pressure;
-    }
 
     public SteamStack(final int amount)
     {
-        this(amount, SteamUtil.AMBIANT_PRESSURE);
+        this.amount = amount;
     }
 
     public int getAmount()
@@ -28,23 +21,12 @@ public class SteamStack
         this.amount = amount;
     }
 
-    public int getPressure()
-    {
-        return this.pressure;
-    }
-
-    public void setPressure(final int pressure)
-    {
-        this.pressure = pressure;
-    }
-
     @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
         result = prime * result + this.amount;
-        result = prime * result + this.pressure;
         return result;
     }
 
@@ -60,28 +42,25 @@ public class SteamStack
         final SteamStack other = (SteamStack) obj;
         if (this.amount != other.amount)
             return false;
-        if (this.pressure != other.pressure)
-            return false;
         return true;
     }
 
     @Override
     public String toString()
     {
-        return "SteamStack [amount=" + this.amount + ", pressure=" + this.pressure + "]";
+        return "SteamStack [amount=" + this.amount + "]";
     }
 
     public void writeToNBT(final NBTTagCompound nbt)
     {
         nbt.setInteger("amount", this.getAmount());
-        nbt.setInteger("pressure", this.getPressure());
     }
 
     public static SteamStack readFromNBT(final NBTTagCompound nbt)
     {
         SteamStack stack = null;
-        if (nbt.hasKey("amount") && nbt.hasKey("pressure"))
-            stack = new SteamStack(nbt.getInteger("amount"), nbt.getInteger("pressure"));
+        if (nbt.hasKey("amount"))
+            stack = new SteamStack(nbt.getInteger("amount"));
         return stack;
     }
 }

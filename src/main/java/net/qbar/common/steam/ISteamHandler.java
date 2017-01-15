@@ -1,5 +1,7 @@
 package net.qbar.common.steam;
 
+import javax.annotation.Nonnull;
+
 public interface ISteamHandler
 {
     /**
@@ -20,5 +22,5 @@ public interface ISteamHandler
      * @return the SteamStack after a fill from the handler or what it would
      *         have been if simulation was activated.
      */
-    SteamStack fillSteam(SteamStack steam, boolean simulated);
+    int fillSteam(@Nonnull SteamStack steam, boolean simulated);
 }

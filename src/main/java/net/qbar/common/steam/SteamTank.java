@@ -1,5 +1,7 @@
 package net.qbar.common.steam;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SteamTank implements ISteamTank
@@ -7,32 +9,52 @@ public class SteamTank implements ISteamTank
     private SteamStack steam;
 
     private int        capacity;
-    private int        maxPressure;
+    private float      maxPressure;
 
-    public SteamTank(final SteamStack content, final int capacity, final int maxPressure)
+    public SteamTank(final SteamStack content, final int capacity, final float maxPressure)
     {
         this.steam = content;
         this.capacity = capacity;
         this.maxPressure = maxPressure;
     }
 
-    public SteamTank(final int amount, final int pressure, final int capacity, final int maxPressure)
+    public SteamTank(final int amount, final int capacity, final int maxPressure)
     {
-        this(new SteamStack(amount, pressure), capacity, maxPressure);
+        this(new SteamStack(amount), capacity, maxPressure);
     }
 
     @Override
     public SteamStack drainSteam(final int amount, final boolean simulated)
     {
-        // TODO : default implementation
-        return null;
+        int drained = amount;
+
+        drained = Math.min(amount, this.steam.getAmount());
+        if (simulated)
+        {
+            this.steam.setAmount(this.steam.getAmount() - drained);
+        }
+        return new SteamStack(drained);
     }
 
     @Override
-    public SteamStack fillSteam(final SteamStack steam, final boolean simulated)
+    public int fillSteam(@Nonnull final SteamStack steam, final boolean simulated)
     {
-        // TODO : default implementation
-        return null;
+        return this.fillSteam(steam.getAmount(), simulated);
+    }
+
+    public int fillSteam(final int amount, final boolean simulated)
+    {
+        int filled = amount;
+
+        filled = (int) Math.min(filled, this.getCapacity() * this.getMaxPressure() - this.getAmount());
+        if (simulated)
+        {
+            if (this.steam != null)
+                this.steam.setAmount(this.steam.getAmount() + filled);
+            else
+                this.steam = new SteamStack(filled);
+        }
+        return filled;
     }
 
     public void readFromNBT(final NBTTagCompound nbt)
@@ -40,7 +62,7 @@ public class SteamTank implements ISteamTank
         if (!nbt.hasKey("Empty"))
             this.setSteam(SteamStack.readFromNBT(nbt));
         this.capacity = nbt.getInteger("capacity");
-        this.maxPressure = nbt.getInteger("maxPressure");
+        this.maxPressure = nbt.getFloat("maxPressure");
     }
 
     public void writeToNBT(final NBTTagCompound nbt)
@@ -50,7 +72,7 @@ public class SteamTank implements ISteamTank
         else
             nbt.setString("Empty", "");
         nbt.setInteger("capacity", this.capacity);
-        nbt.setInteger("maxPressure", this.maxPressure);
+        nbt.setFloat("maxPressure", this.maxPressure);
     }
 
     @Override
@@ -82,18 +104,13 @@ public class SteamTank implements ISteamTank
     }
 
     @Override
-    public int getPressure()
+    public float getPressure()
     {
-        return this.getSteam().getPressure();
-    }
-
-    public void setPressure(final int pressure)
-    {
-        this.getSteam().setPressure(pressure);
+        return (float) this.getAmount() / this.getCapacity();
     }
 
     @Override
-    public int getMaxPressure()
+    public float getMaxPressure()
     {
         return this.maxPressure;
     }

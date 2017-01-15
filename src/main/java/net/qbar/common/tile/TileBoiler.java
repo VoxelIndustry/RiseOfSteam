@@ -1,5 +1,6 @@
 package net.qbar.common.tile;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +19,15 @@ import net.qbar.common.steam.SteamUtil;
 
 public class TileBoiler extends QBarTileBase implements ITileInfoProvider, ITickable
 {
+    private static NumberFormat pressureFormat;
+
+    static
+    {
+        TileBoiler.pressureFormat = NumberFormat.getInstance();
+        TileBoiler.pressureFormat.setMaximumFractionDigits(2);
+        TileBoiler.pressureFormat.setMinimumFractionDigits(2);
+    }
+
     private final DirectionalTank fluidTank;
     private final SteamTank       steamTank;
 
@@ -27,33 +37,27 @@ public class TileBoiler extends QBarTileBase implements ITileInfoProvider, ITick
                 new FilteredFluidTank(Fluid.BUCKET_VOLUME * 4,
                         stack -> stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER)),
                 new EnumFacing[0], new EnumFacing[] { EnumFacing.SOUTH, EnumFacing.EAST, EnumFacing.WEST });
-        this.steamTank = new SteamTank(0, 0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
+        this.steamTank = new SteamTank(0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
     }
 
     @Override
     public void update()
     {
-        if ((float) this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.9f)
-        {
-            this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
-            this.spawnParticles(EnumParticleTypes.FLAME);
-            this.spawnParticles(EnumParticleTypes.LAVA);
-        }
-        else if ((float) this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.8f)
-        {
-            this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
-            this.spawnParticles(EnumParticleTypes.FLAME);
-        }
-        else if ((float) this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.65f)
-        {
-            this.spawnParticles(EnumParticleTypes.SMOKE_NORMAL);
-        }
-        if (this.steamTank.getPressure() > this.steamTank.getMaxPressure())
-        {
-            this.world.createExplosion(null, this.pos.getX(), this.pos.getY(), this.pos.getZ(), 15, true);
-        }
 
-        this.steamTank.setPressure(Math.max(10000, this.steamTank.getPressure() + 20));
+        if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.8f)
+        {
+            this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
+            this.spawnParticles(EnumParticleTypes.FLAME);
+        }
+        else if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.65f)
+            this.spawnParticles(EnumParticleTypes.SMOKE_NORMAL);
+        if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.9f)
+            this.spawnParticles(EnumParticleTypes.LAVA);
+
+        if (this.steamTank.getPressure() >= this.steamTank.getMaxPressure())
+            this.world.createExplosion(null, this.pos.getX(), this.pos.getY(), this.pos.getZ(), 3, true);
+
+        this.steamTank.fillSteam(10, true);
     }
 
     private void spawnParticles(final EnumParticleTypes particle)
@@ -89,6 +93,7 @@ public class TileBoiler extends QBarTileBase implements ITileInfoProvider, ITick
                         this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2, this.pos.getZ() + 1, 0, 0.1f, 0.01);
                 this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
                         this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2, this.pos.getZ() + 1, 0, 0.1f, 0.01);
+                break;
             case 4:
                 this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
                         this.pos.getY() + 1, this.pos.getZ() + this.world.rand.nextFloat() / 2, 0.01, 0.1f, 0.01);
@@ -155,7 +160,8 @@ public class TileBoiler extends QBarTileBase implements ITileInfoProvider, ITick
                     + this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getCapacity() + " mB");
         }
         lines.add("Steam " + this.steamTank.getAmount() + " / " + this.steamTank.getCapacity());
-        lines.add("Pressure " + this.steamTank.getPressure() + " / " + this.steamTank.getMaxPressure());
+        lines.add("Pressure " + TileBoiler.pressureFormat.format(this.steamTank.getPressure()) + " / "
+                + TileBoiler.pressureFormat.format(this.steamTank.getMaxPressure()));
     }
 
     public DirectionalTank getFluidTank()

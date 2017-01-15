@@ -8,7 +8,7 @@ public interface ISteamTank extends ISteamHandler
 
     int getCapacity();
 
-    int getPressure();
+    float getPressure();
 
-    int getMaxPressure();
+    float getMaxPressure();
 }
