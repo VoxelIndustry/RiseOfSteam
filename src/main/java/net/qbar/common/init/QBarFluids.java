@@ -18,8 +18,8 @@ import net.qbar.common.fluid.BlockQBarFluid;
 
 public class QBarFluids
 {
-    private static Fluid                 fluidSteam;
-    private static BlockQBarFluid        blockFluidSteam;
+    public static Fluid                  fluidSteam;
+    public static BlockQBarFluid         blockFluidSteam;
 
     @SideOnly(Side.CLIENT)
     private static ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluid",

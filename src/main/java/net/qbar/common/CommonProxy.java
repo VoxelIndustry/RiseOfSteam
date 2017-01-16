@@ -7,8 +7,11 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.qbar.QBar;
 import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
+import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
@@ -26,6 +29,8 @@ public class CommonProxy
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         CompatManager.preInit(e);
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(QBar.instance, new GuiHandler());
     }
 
     public void init(final FMLInitializationEvent e)

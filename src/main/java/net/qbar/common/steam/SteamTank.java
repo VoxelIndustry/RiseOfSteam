@@ -3,19 +3,24 @@ package net.qbar.common.steam;
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidStack;
+import net.qbar.common.init.QBarFluids;
 
 public class SteamTank implements ISteamTank
 {
-    private SteamStack steam;
+    private final FluidStack fluidStack;
+    private SteamStack       steam;
 
-    private int        capacity;
-    private float      maxPressure;
+    private int              capacity;
+    private float            maxPressure;
 
     public SteamTank(final SteamStack content, final int capacity, final float maxPressure)
     {
         this.steam = content;
         this.capacity = capacity;
         this.maxPressure = maxPressure;
+
+        this.fluidStack = new FluidStack(QBarFluids.fluidSteam, 0);
     }
 
     public SteamTank(final int amount, final int capacity, final int maxPressure)
@@ -113,5 +118,11 @@ public class SteamTank implements ISteamTank
     public float getMaxPressure()
     {
         return this.maxPressure;
+    }
+
+    public FluidStack toFluidStack()
+    {
+        this.fluidStack.amount = this.getAmount();
+        return this.fluidStack;
     }
 }
