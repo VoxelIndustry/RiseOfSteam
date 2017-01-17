@@ -46,13 +46,12 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
     {
         super("TileBoiler", 1);
 
-        this.fluidTank = new DirectionalTank("TileBoiler",
-                new FilteredFluidTank(Fluid.BUCKET_VOLUME * 4,
-                        stack -> stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER)),
+        this.fluidTank = new DirectionalTank("TileBoiler", new FilteredFluidTank(Fluid.BUCKET_VOLUME * 4,
+                stack -> stack != null && stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER)),
                 new EnumFacing[0], new EnumFacing[] { EnumFacing.SOUTH, EnumFacing.EAST, EnumFacing.WEST });
         this.steamTank = new SteamTank(0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
 
-        this.maxHeat = 600;
+        this.maxHeat = 3000;
     }
 
     @Override
@@ -80,14 +79,28 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         {
             this.currentBurnTime++;
             this.heat++;
-            this.getSteamTank().fillSteam(1, true);
         }
         else
         {
             this.currentBurnTime = 0;
             this.maxBurnTime = 0;
         }
-        // this.steamTank.fillSteam(10, true);
+
+        if (this.heat >= 900)
+        {
+            int toProduce = (int) (1 / Math.E * (this.heat / 100));
+            final FluidStack drained = this.fluidTank.getInternalFluidHandler().drain(toProduce, true);
+            if (drained != null)
+                toProduce = drained.amount;
+            else
+                toProduce = 0;
+            this.steamTank.fillSteam(toProduce, true);
+            if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
+                this.heat--;
+        }
+
+        if (this.world.getTotalWorldTime() % 5 == 0 && this.heat > 0)
+            this.heat--;
     }
 
     private void spawnParticles(final EnumParticleTypes particle)
@@ -257,7 +270,7 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("boiler").player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this).slot(0, 80, 43).syncShortValue(this::getHeat, this::setHeat)
+                .tile(this).slot(0, 80, 43).syncIntegerValue(this::getHeat, this::setHeat)
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime).addInventory().create();
     }

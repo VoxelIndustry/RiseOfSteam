@@ -32,7 +32,7 @@ public class BlockBoiler extends BlockMachineBase
 
         final TileBoiler boiler = (TileBoiler) w.getTileEntity(pos);
 
-        if (boiler != null && !w.isRemote)
+        if (boiler != null)
         {
             if (FluidUtils.drainPlayerHand(boiler.getFluidTank().getInternalFluidHandler(), player)
                     || FluidUtils.fillPlayerHand(boiler.getFluidTank().getInternalFluidHandler(), player))

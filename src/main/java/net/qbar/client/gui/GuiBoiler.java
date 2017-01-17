@@ -52,9 +52,23 @@ public class GuiBoiler extends GuiContainer
 
         if (mouseX > x + 10 && mouseX < x + 22 && mouseY > y + 8 && mouseY < y + 79)
         {
-            GuiUtils.drawHoveringText(Arrays.asList(
-                    TextFormatting.GOLD + "" + this.boiler.getHeat() + " / " + this.boiler.getMaxHeat() + " C°"),
+            GuiUtils.drawHoveringText(
+                    Arrays.asList(TextFormatting.GOLD + "" + this.boiler.getHeat() / 10 + " / "
+                            + this.boiler.getMaxHeat() / 10 + " C°"),
                     mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+        }
+        else if (mouseX > x + 128 && mouseX < x + 146 && mouseY > y + 7 && mouseY < y + 80)
+        {
+            final List<String> lines = new ArrayList<>();
+            if (this.boiler.getFluid() == null || this.boiler.getFluid().amount == 0)
+                lines.add("Empty");
+            else
+            {
+                lines.add(TextFormatting.GOLD + "" + this.boiler.getFluid().amount + " / "
+                        + this.boiler.getFluidTank().getInternalFluidHandler().getTankProperties()[0].getCapacity()
+                        + " mB");
+            }
+            GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
         }
         else if (mouseX > x + 151 && mouseX < x + 169 && mouseY > y + 7 && mouseY < y + 80)
         {
