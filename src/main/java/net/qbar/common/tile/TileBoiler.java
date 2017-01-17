@@ -12,6 +12,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -207,6 +208,11 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         return this.fluidTank;
     }
 
+    public FluidStack getFluid()
+    {
+        return this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getContents();
+    }
+
     public SteamTank getSteamTank()
     {
         return this.steamTank;
@@ -251,6 +257,8 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("boiler").player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this).slot(0, 80, 43).addInventory().create();
+                .tile(this).slot(0, 80, 43).syncShortValue(this::getHeat, this::setHeat)
+                .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
+                .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime).addInventory().create();
     }
 }

@@ -1,6 +1,8 @@
 package net.qbar.client.gui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -41,14 +43,36 @@ public class GuiBoiler extends GuiContainer
         final int heatProgress = this.getHeatScaled(71);
         this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 85 - heatProgress, 12, heatProgress);
 
-        this.drawFluid(this.boiler.getSteamTank().toFluidStack(), x + 153, y + 8, 12, 71,
+        this.drawFluid(this.boiler.getSteamTank().toFluidStack(), x + 151, y + 7, 18, 73,
                 (int) (this.boiler.getSteamTank().getCapacity() * this.boiler.getSteamTank().getMaxPressure()));
+
+        if (this.boiler.getFluid() != null)
+            this.drawFluid(this.boiler.getFluid(), x + 128, y + 7, 18, 73,
+                    this.boiler.getFluidTank().getInternalFluidHandler().getTankProperties()[0].getCapacity());
 
         if (mouseX > x + 10 && mouseX < x + 22 && mouseY > y + 8 && mouseY < y + 79)
         {
             GuiUtils.drawHoveringText(Arrays.asList(
                     TextFormatting.GOLD + "" + this.boiler.getHeat() + " / " + this.boiler.getMaxHeat() + " C°"),
                     mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+        }
+        else if (mouseX > x + 151 && mouseX < x + 169 && mouseY > y + 7 && mouseY < y + 80)
+        {
+            final List<String> lines = new ArrayList<>();
+            if (this.boiler.getSteamTank().toFluidStack().amount == 0)
+                lines.add("Empty");
+            else if (this.boiler.getSteamTank().getAmount() / this.boiler.getSteamTank().getCapacity() < 1)
+                lines.add(TextFormatting.GOLD + "" + this.boiler.getSteamTank().getAmount() + " / "
+                        + this.boiler.getSteamTank().getCapacity());
+            else
+            {
+                lines.add((this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
+                        + "" + this.boiler.getSteamTank().getAmount() + " / "
+                        + this.boiler.getSteamTank().getCapacity());
+                lines.add((this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
+                        + "Overload!");
+            }
+            GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
         }
     }
 
