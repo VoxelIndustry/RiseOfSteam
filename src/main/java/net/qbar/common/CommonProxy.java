@@ -1,5 +1,6 @@
 package net.qbar.common;
 
+import io.github.elytra.concrete.NetworkContext;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,12 +16,16 @@ import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.network.ContainerTankUpdatePacket;
 import net.qbar.common.steam.CapabilitySteamHandler;
 
 public class CommonProxy
 {
     public void preInit(final FMLPreInitializationEvent e)
     {
+        QBar.network = NetworkContext.forChannel("MyMod");
+        QBar.network.register(ContainerTankUpdatePacket.class);
+
         CapabilitySteamHandler.register();
 
         QBarBlocks.registerBlocks();

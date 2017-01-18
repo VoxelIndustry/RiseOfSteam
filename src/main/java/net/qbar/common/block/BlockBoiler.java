@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
@@ -23,6 +24,14 @@ public class BlockBoiler extends BlockMachineBase
     }
 
     @Override
+    public void onBlockDestroyedByExplosion(final World w, final BlockPos pos, final Explosion exp)
+    {
+        super.onBlockDestroyedByExplosion(w, pos, exp);
+
+        w.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 2, true);
+    }
+
+    @Override
     public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
             final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
             final float hitZ)
@@ -31,7 +40,6 @@ public class BlockBoiler extends BlockMachineBase
             return false;
 
         final TileBoiler boiler = (TileBoiler) w.getTileEntity(pos);
-
         if (boiler != null)
         {
             if (FluidUtils.drainPlayerHand(boiler.getFluidTank().getInternalFluidHandler(), player)

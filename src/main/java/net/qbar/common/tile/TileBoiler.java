@@ -57,6 +57,8 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
     @Override
     public void update()
     {
+        if (this.world.isRemote)
+            return;
         if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.8f)
         {
             this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
@@ -226,6 +228,11 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         return this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getContents();
     }
 
+    public void setFluid(final FluidStack fluid)
+    {
+        this.fluidTank.setFluidStack(fluid);
+    }
+
     public SteamTank getSteamTank()
     {
         return this.steamTank;
@@ -266,12 +273,24 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         return this.maxHeat;
     }
 
+    public int getSteamAmount()
+    {
+        return this.getSteamTank().getAmount();
+    }
+
+    public void setSteamAmount(final int amount)
+    {
+        this.getSteamTank().setAmount(amount);
+    }
+
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("boiler").player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this).slot(0, 80, 43).syncIntegerValue(this::getHeat, this::setHeat)
+        return new ContainerBuilder("boiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this).slot(0, 80, 43).syncIntegerValue(this::getHeat, this::setHeat)
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
-                .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime).addInventory().create();
+                .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
+                .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
+                .syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
     }
 }

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,6 +15,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class ContainerTileInventoryBuilder
@@ -88,6 +90,13 @@ public class ContainerTileInventoryBuilder
     public ContainerTileInventoryBuilder syncIntegerValue(final IntSupplier supplier, final IntConsumer setter)
     {
         this.parent.integerValues.add(Pair.of(supplier, setter));
+        return this;
+    }
+
+    public ContainerTileInventoryBuilder syncFluidValue(final Supplier<FluidStack> supplier,
+            final Consumer<FluidStack> setter)
+    {
+        this.parent.fluidValues.add(Pair.of(supplier, setter));
         return this;
     }
 

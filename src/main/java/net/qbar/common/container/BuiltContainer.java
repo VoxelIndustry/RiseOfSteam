@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
@@ -18,26 +19,32 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.qbar.common.network.ContainerTankUpdatePacket;
 
 public class BuiltContainer extends Container
 {
 
-    private final String                                                      name;
+    private final String                                                                           name;
 
-    private final Predicate<EntityPlayer>                                     canInteract;
-    private final List<Range<Integer>>                                        playerSlotRanges;
-    private final List<Range<Integer>>                                        tileSlotRanges;
+    private final EntityPlayer                                                                     player;
 
-    private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>>   shortValues;
-    private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
-    private List<Consumer<InventoryCrafting>>                                 craftEvents;
-    private Integer[]                                                         integerParts;
+    private final Predicate<EntityPlayer>                                                          canInteract;
+    private final List<Range<Integer>>                                                             playerSlotRanges;
+    private final List<Range<Integer>>                                                             tileSlotRanges;
 
-    public BuiltContainer(final String name, final Predicate<EntityPlayer> canInteract,
+    private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>>                        shortValues;
+    private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>>                      integerValues;
+    private final ArrayList<MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack>> fluidValues;
+    private List<Consumer<InventoryCrafting>>                                                      craftEvents;
+    private Integer[]                                                                              integerParts;
+
+    public BuiltContainer(final String name, final EntityPlayer player, final Predicate<EntityPlayer> canInteract,
             final List<Range<Integer>> playerSlotRange, final List<Range<Integer>> tileSlotRange)
     {
+        this.player = player;
         this.name = name;
 
         this.canInteract = canInteract;
@@ -47,11 +54,11 @@ public class BuiltContainer extends Container
 
         this.shortValues = new ArrayList<>();
         this.integerValues = new ArrayList<>();
+        this.fluidValues = new ArrayList<>();
     }
 
     public void addShortSync(final List<Pair<IntSupplier, IntConsumer>> syncables)
     {
-
         for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
             this.shortValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (short) 0));
         this.shortValues.trimToSize();
@@ -59,11 +66,16 @@ public class BuiltContainer extends Container
 
     public void addIntegerSync(final List<Pair<IntSupplier, IntConsumer>> syncables)
     {
-
         for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
             this.integerValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), 0));
         this.integerValues.trimToSize();
         this.integerParts = new Integer[this.integerValues.size()];
+    }
+
+    public void addFluidStackSync(final List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> syncables)
+    {
+        for (final Pair<Supplier<FluidStack>, Consumer<FluidStack>> syncable : syncables)
+            this.fluidValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
     }
 
     public void addCraftEvents(final List<Consumer<InventoryCrafting>> craftEvents)
@@ -125,6 +137,24 @@ public class BuiltContainer extends Container
                     i += 2;
                 }
         }
+        for (final MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack> value : this.fluidValues)
+        {
+            final FluidStack supplied = value.getLeft().get();
+            boolean update = false;
+            if (supplied == null && value.getRight() != null)
+                update = true;
+            else if (value.getRight() == null && supplied != null)
+                update = true;
+            else if (supplied != null && value.getRight() != null
+                    && (!supplied.equals(value.getRight()) || supplied.amount != value.getRight().amount))
+                update = true;
+            if (update)
+            {
+                new ContainerTankUpdatePacket(this.windowId, this.fluidValues.indexOf(value), supplied)
+                        .sendTo(this.player);
+                value.setRight(supplied);
+            }
+        }
     }
 
     @Override
@@ -177,6 +207,12 @@ public class BuiltContainer extends Container
                         (this.integerParts[(id - this.shortValues.size()) / 2] & 0xFFFF) << 16 | value & 0xFFFF);
             }
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateTank(final int property, final FluidStack fluidStack)
+    {
+        this.fluidValues.get(property).getMiddle().accept(fluidStack);
     }
 
     @Override

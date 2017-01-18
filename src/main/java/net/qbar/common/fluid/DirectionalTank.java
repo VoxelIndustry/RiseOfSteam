@@ -93,9 +93,14 @@ public class DirectionalTank
             return null;
     }
 
-    public IFluidHandler getInternalFluidHandler()
+    public FluidTank getInternalFluidHandler()
     {
         return this.internalTank;
+    }
+
+    public void setFluidStack(final FluidStack fluid)
+    {
+        this.internalTank.setFluid(fluid);
     }
 
     private static class InternalRestrictedTank implements IFluidHandler

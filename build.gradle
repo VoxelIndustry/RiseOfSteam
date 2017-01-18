@@ -7,6 +7,11 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
@@ -37,11 +42,37 @@ repositories {
 	   name = 'progwml6 maven'
         url = "http://dvs1.progwml6.com/files/maven"
 	}
+	maven { // Concrete
+		name = 'unascribed'
+        url = 'http://unascribed.com/maven/releases'
+    }
+}
+
+jar {
+    classifier = 'slim'
+}
+
+shadowJar {
+    classifier = ''
+    relocate 'io.github.elytra.concrete', 'me.mymod.repackage.io.github.elytra.concrete'
+    configurations = [project.configurations.shadow]
+}
+
+reobf {
+    shadowJar { mappingType = 'SEARGE' }
+}
+
+tasks.build.dependsOn reobfShadowJar
+
+artifacts {
+    archives shadowJar
 }
 
 dependencies {
 	deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.4-47"
 	deobfCompile "mezz.jei:jei_1.11.2:4.2.2.220"
+	compile 'io.github.elytra:concrete:0.0.6'
+    shadow 'io.github.elytra:concrete:0.0.6'
 }
 
 processResources
