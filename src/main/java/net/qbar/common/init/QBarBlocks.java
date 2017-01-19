@@ -11,12 +11,14 @@ import net.qbar.common.block.BlockFluidPipe;
 import net.qbar.common.block.BlockFluidPump;
 import net.qbar.common.block.BlockKeypunch;
 import net.qbar.common.block.BlockMachineBase;
+import net.qbar.common.block.BlockOffshorePump;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
 import net.qbar.common.tile.TileBoiler;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileFluidPump;
 import net.qbar.common.tile.TileKeypunch;
+import net.qbar.common.tile.TileOffshorePump;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileTank;
 
@@ -28,6 +30,7 @@ public class QBarBlocks
     private static final BlockMachineBase fluidPipe       = new BlockFluidPipe();
     private static final BlockMachineBase steamPipe       = new BlockSteamPipe();
     private static final BlockMachineBase fluidPump       = new BlockFluidPump();
+    private static final BlockMachineBase offshorePump    = new BlockOffshorePump();
 
     public static final void registerBlocks()
     {
@@ -37,6 +40,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(QBarBlocks.fluidPipe);
         QBarBlocks.registerBlock(QBarBlocks.steamPipe);
         QBarBlocks.registerBlock(QBarBlocks.fluidPump);
+        QBarBlocks.registerBlock(QBarBlocks.offshorePump);
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -44,6 +48,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileFluidPipe.class, "fluidpipe");
         QBarBlocks.registerTile(TileSteamPipe.class, "steampipe");
         QBarBlocks.registerTile(TileFluidPump.class, "fluidpump");
+        QBarBlocks.registerTile(TileOffshorePump.class, "offshore_pump");
     }
 
     public static final void registerBlock(final Block block, final String name)
