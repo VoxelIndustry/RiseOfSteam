@@ -54,7 +54,7 @@ public class GuiBoiler extends GuiContainer
         {
             GuiUtils.drawHoveringText(
                     Arrays.asList(TextFormatting.GOLD + "" + this.boiler.getHeat() / 10 + " / "
-                            + this.boiler.getMaxHeat() / 10 + " C°"),
+                            + this.boiler.getMaxHeat() / 10 + " °C"),
                     mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
         }
         else if (mouseX > x + 128 && mouseX < x + 146 && mouseY > y + 7 && mouseY < y + 80)
