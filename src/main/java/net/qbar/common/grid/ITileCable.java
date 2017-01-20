@@ -23,4 +23,6 @@ public interface ITileCable
     void disconnect(EnumFacing facing);
 
     World getWorld();
+
+    CableGrid createGrid(int nextID);
 }

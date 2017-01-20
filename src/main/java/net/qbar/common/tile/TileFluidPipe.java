@@ -3,8 +3,6 @@ package net.qbar.common.tile;
 import java.util.EnumMap;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -14,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IFluidPipe;
 import net.qbar.common.grid.ITileCable;
@@ -28,8 +25,12 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
 
     private FluidStack                               coldStorage;
 
-    public TileFluidPipe()
+    private final int                                transferCapacity;
+
+    public TileFluidPipe(final int transferCapacity)
     {
+        this.transferCapacity = transferCapacity;
+
         this.connections = new EnumMap<>(EnumFacing.class);
         this.adjacentFluidHandler = new EnumMap<>(EnumFacing.class);
         this.grid = -1;
@@ -67,6 +68,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         else
             lines.add("Errored grid!");
         this.connections.forEach((facing, cable) -> lines.add(facing + ": " + (cable != null)));
+        this.adjacentFluidHandler.forEach((facing, handler) -> lines.add(facing + ": " + (handler != null)));
     }
 
     @Override
@@ -85,16 +87,6 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public int getGrid()
     {
         return this.grid;
-    }
-
-    @Nullable
-    public PipeGrid getGridObject()
-    {
-        final CableGrid grid = GridManager.getInstance().getGrid(this.getGrid());
-
-        if (grid != null && grid instanceof PipeGrid)
-            return (PipeGrid) grid;
-        return null;
     }
 
     @Override
@@ -245,5 +237,11 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
             this.coldStorage = this.getGridObject().getTank().getFluid().copy();
             this.coldStorage.amount = this.coldStorage.amount / this.getGridObject().getCables().size();
         }
+    }
+
+    @Override
+    public PipeGrid createGrid(final int id)
+    {
+        return new PipeGrid(id, this.transferCapacity);
     }
 }

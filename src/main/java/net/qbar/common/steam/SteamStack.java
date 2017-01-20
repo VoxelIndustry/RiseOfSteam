@@ -63,4 +63,10 @@ public class SteamStack
             stack = new SteamStack(nbt.getInteger("amount"));
         return stack;
     }
+
+    public SteamStack copy()
+    {
+        final SteamStack copy = new SteamStack(this.amount);
+        return copy;
+    }
 }

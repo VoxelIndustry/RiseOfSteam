@@ -2,7 +2,7 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "all": "qbar:blocks/pipe"
+            "all": "qbar:blocks/fluid_pipe"
         },
         "uvlock": true
     },

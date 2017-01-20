@@ -23,36 +23,44 @@ public class SteamTank implements ISteamTank
         this.fluidStack = new FluidStack(QBarFluids.fluidSteam, 0);
     }
 
-    public SteamTank(final int amount, final int capacity, final int maxPressure)
+    public SteamTank(final int amount, final int capacity, final float maxPressure)
     {
         this(new SteamStack(amount), capacity, maxPressure);
     }
 
     @Override
-    public SteamStack drainSteam(final int amount, final boolean simulated)
+    public SteamStack drainSteam(final int amount, final boolean doDrain)
+    {
+        return this.drainInternal(amount, doDrain);
+    }
+
+    public SteamStack drainInternal(final int amount, final boolean doDrain)
     {
         int drained = amount;
 
         drained = Math.min(amount, this.steam.getAmount());
-        if (simulated)
-        {
+        if (doDrain)
             this.steam.setAmount(this.steam.getAmount() - drained);
-        }
         return new SteamStack(drained);
     }
 
     @Override
-    public int fillSteam(@Nonnull final SteamStack steam, final boolean simulated)
+    public int fillSteam(@Nonnull final SteamStack steam, final boolean doFill)
     {
-        return this.fillSteam(steam.getAmount(), simulated);
+        return this.fillSteam(steam.getAmount(), doFill);
     }
 
-    public int fillSteam(final int amount, final boolean simulated)
+    public int fillSteam(final int amount, final boolean doFill)
+    {
+        return this.fillInternal(amount, doFill);
+    }
+
+    public int fillInternal(final int amount, final boolean doFill)
     {
         int filled = amount;
 
         filled = (int) Math.min(filled, this.getCapacity() * this.getMaxPressure() - this.getAmount());
-        if (simulated)
+        if (doFill)
         {
             if (this.steam != null)
                 this.steam.setAmount(this.steam.getAmount() + filled);
@@ -108,6 +116,11 @@ public class SteamTank implements ISteamTank
         return this.capacity;
     }
 
+    public void setCapacity(final int capacity)
+    {
+        this.capacity = capacity;
+    }
+
     @Override
     public float getPressure()
     {
@@ -124,5 +137,17 @@ public class SteamTank implements ISteamTank
     {
         this.fluidStack.amount = this.getAmount();
         return this.fluidStack;
+    }
+
+    @Override
+    public boolean canFill()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canDrain()
+    {
+        return true;
     }
 }

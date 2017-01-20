@@ -30,14 +30,6 @@ public class GridManager
         this.cableGrids = new HashMap<>();
     }
 
-    public PipeGrid addPipeGrid(final int identifier, final int transferCapacity)
-    {
-        final PipeGrid grid = new PipeGrid(identifier, transferCapacity);
-
-        this.cableGrids.put(identifier, grid);
-        return grid;
-    }
-
     public CableGrid addGrid(final int identifier)
     {
         final CableGrid grid = new CableGrid(identifier);
@@ -115,7 +107,7 @@ public class GridManager
 
         if (added.getGrid() == -1)
         {
-            added.setGrid(this.addPipeGrid(this.getNextID(), 64).getIdentifier());
+            added.setGrid(this.addGrid(added.createGrid(this.getNextID())).getIdentifier());
             this.getGrid(added.getGrid()).addCable(added);
         }
     }

@@ -48,6 +48,6 @@ public class BlockFluidPipe extends BlockMachineBase
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileFluidPipe();
+        return new TileFluidPipe(64);
     }
 }
