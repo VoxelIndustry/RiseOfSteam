@@ -17,7 +17,6 @@ import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.SteamGrid;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
-import net.qbar.common.steam.SteamStack;
 
 public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, ISteamPipe, ILoadable
 {
@@ -25,7 +24,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     private final EnumMap<EnumFacing, ITileCable>    connections;
     private final EnumMap<EnumFacing, ISteamHandler> adjacentSteamHandler;
 
-    private SteamStack                               coldStorage;
+    private int                                      coldStorage;
 
     private final int                                transferCapacity;
 
@@ -62,7 +61,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
         {
-            lines.add("Contains: " + this.getGridObject().getTank().getAmount() + " / "
+            lines.add("Contains: " + this.getGridObject().getTank().getSteam() + " / "
                     + this.getGridObject().getTank().getCapacity());
             lines.add("Pressure : " + this.getGridObject().getTank().getPressure() + " / "
                     + this.getGridObject().getTank().getMaxPressure());
@@ -98,11 +97,11 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         this.grid = gridIdentifier;
 
         if (gridIdentifier == -1)
-            this.coldStorage = null;
-        else if (this.coldStorage != null && previous == -1 && this.getGridObject().isEmpty())
+            this.coldStorage = 0;
+        else if (this.coldStorage != 0 && previous == -1 && this.getGridObject().isEmpty())
         {
-            this.getGridObject().getTank().fillInternal(this.coldStorage.getAmount(), true);
-            this.coldStorage = null;
+            this.getGridObject().getTank().fillInternal(this.coldStorage, true);
+            this.coldStorage = 0;
         }
     }
 
@@ -111,8 +110,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     {
         super.readFromNBT(tagCompound);
 
-        if (tagCompound.hasKey("coldStorage"))
-            this.coldStorage = SteamStack.readFromNBT(tagCompound.getCompoundTag("coldStorage"));
+        this.coldStorage = tagCompound.getInteger("coldStorage");
     }
 
     @Override
@@ -121,12 +119,8 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         super.writeToNBT(tagCompound);
 
         this.toColdStorage();
-        if (this.coldStorage != null)
-        {
-            final NBTTagCompound tag = new NBTTagCompound();
-            this.coldStorage.writeToNBT(tag);
-            tagCompound.setTag("coldStorage", tag);
-        }
+        if (this.coldStorage != 0)
+            tagCompound.setInteger("coldStorage", this.coldStorage);
         return tagCompound;
     }
 
@@ -193,7 +187,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     {
         for (final ISteamHandler steamHandler : this.adjacentSteamHandler.values())
         {
-            if (this.getGridObject().getTank().getAmount() != 0)
+            if (this.getGridObject().getTank().getSteam() != 0)
             {
                 // Supply and pressure repartition code
             }
@@ -218,10 +212,10 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
 
     public void toColdStorage()
     {
-        if (this.getGridObject() != null && this.getGridObject().getTank().getAmount() != 0)
+        if (this.getGridObject() != null && this.getGridObject().getTank().getSteam() != 0)
         {
-            this.coldStorage = this.getGridObject().getTank().getSteam().copy();
-            this.coldStorage.setAmount(this.coldStorage.getAmount() / this.getGridObject().getCables().size());
+            this.coldStorage = this.getGridObject().getTank().getSteam();
+            this.coldStorage /= this.getGridObject().getCables().size();
         }
     }
 

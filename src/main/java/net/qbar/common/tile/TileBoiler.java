@@ -213,7 +213,7 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
                     + this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getCapacity() + " mB");
         }
         lines.add("Heat " + this.heat + " / " + this.maxHeat);
-        lines.add("Steam " + this.steamTank.getAmount() + " / " + this.steamTank.getCapacity());
+        lines.add("Steam " + this.steamTank.getSteam() + " / " + this.steamTank.getCapacity());
         lines.add("Pressure " + TileBoiler.pressureFormat.format(this.steamTank.getPressure()) + " / "
                 + TileBoiler.pressureFormat.format(this.steamTank.getMaxPressure()));
     }
@@ -275,12 +275,12 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
 
     public int getSteamAmount()
     {
-        return this.getSteamTank().getAmount();
+        return this.getSteamTank().getSteam();
     }
 
     public void setSteamAmount(final int amount)
     {
-        this.getSteamTank().setAmount(amount);
+        this.getSteamTank().setSteam(amount);
     }
 
     @Override

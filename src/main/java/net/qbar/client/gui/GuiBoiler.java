@@ -75,13 +75,13 @@ public class GuiBoiler extends GuiContainer
             final List<String> lines = new ArrayList<>();
             if (this.boiler.getSteamTank().toFluidStack().amount == 0)
                 lines.add("Empty");
-            else if (this.boiler.getSteamTank().getAmount() / this.boiler.getSteamTank().getCapacity() < 1)
-                lines.add(TextFormatting.GOLD + "" + this.boiler.getSteamTank().getAmount() + " / "
+            else if (this.boiler.getSteamTank().getSteam() / this.boiler.getSteamTank().getCapacity() < 1)
+                lines.add(TextFormatting.GOLD + "" + this.boiler.getSteamTank().getSteam() + " / "
                         + this.boiler.getSteamTank().getCapacity());
             else
             {
                 lines.add((this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
-                        + "" + this.boiler.getSteamTank().getAmount() + " / "
+                        + "" + this.boiler.getSteamTank().getSteam() + " / "
                         + this.boiler.getSteamTank().getCapacity());
                 lines.add((this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
                         + "Overload!");

@@ -1,7 +1,5 @@
 package net.qbar.common.steam;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.qbar.common.init.QBarFluids;
@@ -9,47 +7,37 @@ import net.qbar.common.init.QBarFluids;
 public class SteamTank implements ISteamTank
 {
     private final FluidStack fluidStack;
-    private SteamStack       steam;
+    private int              steam;
 
     private int              capacity;
     private float            maxPressure;
 
-    public SteamTank(final SteamStack content, final int capacity, final float maxPressure)
+    public SteamTank(final int steamAmount, final int capacity, final float maxPressure)
     {
-        this.steam = content;
+        this.steam = steamAmount;
         this.capacity = capacity;
         this.maxPressure = maxPressure;
 
         this.fluidStack = new FluidStack(QBarFluids.fluidSteam, 0);
     }
 
-    public SteamTank(final int amount, final int capacity, final float maxPressure)
-    {
-        this(new SteamStack(amount), capacity, maxPressure);
-    }
-
     @Override
-    public SteamStack drainSteam(final int amount, final boolean doDrain)
+    public int drainSteam(final int amount, final boolean doDrain)
     {
         return this.drainInternal(amount, doDrain);
     }
 
-    public SteamStack drainInternal(final int amount, final boolean doDrain)
+    public int drainInternal(final int amount, final boolean doDrain)
     {
         int drained = amount;
 
-        drained = Math.min(amount, this.steam.getAmount());
+        drained = Math.min(amount, this.steam);
         if (doDrain)
-            this.steam.setAmount(this.steam.getAmount() - drained);
-        return new SteamStack(drained);
+            this.setSteam(this.steam - drained);
+        return drained;
     }
 
     @Override
-    public int fillSteam(@Nonnull final SteamStack steam, final boolean doFill)
-    {
-        return this.fillSteam(steam.getAmount(), doFill);
-    }
-
     public int fillSteam(final int amount, final boolean doFill)
     {
         return this.fillInternal(amount, doFill);
@@ -59,55 +47,35 @@ public class SteamTank implements ISteamTank
     {
         int filled = amount;
 
-        filled = (int) Math.min(filled, this.getCapacity() * this.getMaxPressure() - this.getAmount());
+        filled = (int) Math.min(filled, this.getCapacity() * this.getMaxPressure() - this.getSteam());
         if (doFill)
-        {
-            if (this.steam != null)
-                this.steam.setAmount(this.steam.getAmount() + filled);
-            else
-                this.steam = new SteamStack(filled);
-        }
+            this.setSteam(this.steam + filled);
         return filled;
     }
 
     public void readFromNBT(final NBTTagCompound nbt)
     {
-        if (!nbt.hasKey("Empty"))
-            this.setSteam(SteamStack.readFromNBT(nbt));
+        this.steam = nbt.getInteger("steam");
         this.capacity = nbt.getInteger("capacity");
         this.maxPressure = nbt.getFloat("maxPressure");
     }
 
     public void writeToNBT(final NBTTagCompound nbt)
     {
-        if (this.getSteam() != null)
-            this.getSteam().writeToNBT(nbt);
-        else
-            nbt.setString("Empty", "");
+        nbt.setInteger("steam", this.steam);
         nbt.setInteger("capacity", this.capacity);
         nbt.setFloat("maxPressure", this.maxPressure);
     }
 
     @Override
-    public SteamStack getSteam()
+    public int getSteam()
     {
         return this.steam;
     }
 
-    public void setSteam(final SteamStack stack)
+    public void setSteam(final int amount)
     {
-        this.steam = stack;
-    }
-
-    public void setAmount(final int amount)
-    {
-        this.getSteam().setAmount(amount);
-    }
-
-    @Override
-    public int getAmount()
-    {
-        return this.getSteam().getAmount();
+        this.steam = amount;
     }
 
     @Override
@@ -124,7 +92,7 @@ public class SteamTank implements ISteamTank
     @Override
     public float getPressure()
     {
-        return (float) this.getAmount() / this.getCapacity();
+        return (float) this.getSteam() / this.getCapacity();
     }
 
     @Override
@@ -135,7 +103,7 @@ public class SteamTank implements ISteamTank
 
     public FluidStack toFluidStack()
     {
-        this.fluidStack.amount = this.getAmount();
+        this.fluidStack.amount = this.getSteam();
         return this.fluidStack;
     }
 

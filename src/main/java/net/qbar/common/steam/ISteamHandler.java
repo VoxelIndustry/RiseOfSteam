@@ -12,7 +12,7 @@ public interface ISteamHandler
      * @return the SteamStack drained from the handler or what would have been
      *         drained if simulation was activated.
      */
-    SteamStack drainSteam(int amount, boolean doDrain);
+    int drainSteam(int amount, boolean doDrain);
 
     /**
      *
@@ -22,7 +22,7 @@ public interface ISteamHandler
      * @return the SteamStack after a fill from the handler or what it would
      *         have been if simulation was activated.
      */
-    int fillSteam(@Nonnull SteamStack steam, boolean doFill);
+    int fillSteam(@Nonnull int steam, boolean doFill);
 
     boolean canFill();
 
@@ -31,4 +31,8 @@ public interface ISteamHandler
     float getPressure();
 
     float getMaxPressure();
+
+    int getSteam();
+
+    int getCapacity();
 }
