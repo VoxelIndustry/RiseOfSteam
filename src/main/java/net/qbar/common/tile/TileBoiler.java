@@ -101,8 +101,13 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
                 this.heat--;
         }
 
-        if (this.world.getTotalWorldTime() % 5 == 0 && this.heat > 0)
-            this.heat--;
+        if (this.world.getTotalWorldTime() % 5 == 0)
+        {
+            if (this.heat > this.getMinimumTemp())
+                this.heat--;
+            else if (this.heat < this.getMinimumTemp())
+                this.heat++;
+        }
     }
 
     private void spawnParticles(final EnumParticleTypes particle)
@@ -148,6 +153,11 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
             default:
                 break;
         }
+    }
+
+    public int getMinimumTemp()
+    {
+        return (int) (this.world.getBiome(this.getPos()).getFloatTemperature(this.pos) * 200);
     }
 
     @Override
