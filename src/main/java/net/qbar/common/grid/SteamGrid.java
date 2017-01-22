@@ -28,7 +28,6 @@ public class SteamGrid extends CableGrid
         this.tank = new SteamTank(0, 0, 1.5f);
     }
 
-    // TODO : Use pressure regulation instead of average pressure !
     @Override
     void tick()
     {
@@ -38,38 +37,32 @@ public class SteamGrid extends CableGrid
                 .flatMap(pipe -> pipe.getConnectedHandlers().stream()).collect(Collectors.toSet());
         handlers.add(this.tank);
 
-        final double average = handlers.stream()
-                .mapToDouble(handler -> handler.getPressure() / handler.getMaxPressure()).average().orElse(0);
+        final double average = handlers.stream().mapToDouble(handler -> handler.getPressure()).average().orElse(0);
 
-        final ISteamHandler[] superiors = handlers.stream()
-                .filter(handler -> handler.getPressure() / handler.getMaxPressure() - average > 0)
+        final ISteamHandler[] above = handlers.stream().filter(handler -> handler.getPressure() - average > 0)
+                .toArray(ISteamHandler[]::new);
+        final ISteamHandler[] below = handlers.stream().filter(handler -> handler.getPressure() - average < 0)
                 .toArray(ISteamHandler[]::new);
 
-        final ISteamHandler[] inferiors = handlers.stream()
-                .filter(handler -> handler.getPressure() / handler.getMaxPressure() - average < 0)
-                .toArray(ISteamHandler[]::new);
-
-        final int drained = Stream.of(superiors).mapToInt(handler ->
+        final int drained = Stream.of(above).mapToInt(handler ->
         {
-            return handler.drainSteam(Math.min(
-                    (int) ((handler.getPressure() / handler.getMaxPressure() - average) * handler.getCapacity()),
-                    this.transferCapacity), false);
+            return handler.drainSteam(
+                    Math.min((int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity),
+                    false);
         }).sum();
         int filled = 0;
 
-        for (final ISteamHandler handler : inferiors)
-        {
-            filled += handler.fillSteam(Math.max(drained / inferiors.length, Math.min(
-                    (int) ((handler.getPressure() / handler.getMaxPressure() - average) * handler.getCapacity()),
-                    this.transferCapacity)), true);
-        }
+        for (final ISteamHandler handler : below)
+            filled += handler.fillSteam(
+                    Math.max(drained / below.length, Math.min(
+                            (int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity)),
+                    true);
 
-        for (final ISteamHandler handler : superiors)
-        {
-            handler.drainSteam(Math.max(filled / superiors.length, Math.min(
-                    (int) ((handler.getPressure() / handler.getMaxPressure() - average) * handler.getCapacity()),
-                    this.transferCapacity)), true);
-        }
+        for (final ISteamHandler handler : above)
+            handler.drainSteam(
+                    Math.max(filled / above.length, Math.min(
+                            (int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity)),
+                    true);
     }
 
     public SteamTank getTank()
