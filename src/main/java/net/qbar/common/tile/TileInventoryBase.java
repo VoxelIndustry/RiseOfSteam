@@ -23,17 +23,19 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
+        super.writeToNBT(tag);
+
         ItemStackHelper.saveAllItems(tag, this.stacks);
 
-        return super.writeToNBT(tag);
+        return tag;
     }
 
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
-        ItemStackHelper.loadAllItems(tag, this.stacks);
-
         super.readFromNBT(tag);
+
+        ItemStackHelper.loadAllItems(tag, this.stacks);
     }
 
     @Override

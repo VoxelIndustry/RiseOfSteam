@@ -57,56 +57,61 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
     @Override
     public void update()
     {
-        if (this.world.isRemote)
-            return;
-        if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.8f)
+        if (this.isClient())
         {
-            this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
-            this.spawnParticles(EnumParticleTypes.FLAME);
+            if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.8f)
+            {
+                this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
+                this.spawnParticles(EnumParticleTypes.FLAME);
+            }
+            else if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.65f)
+                this.spawnParticles(EnumParticleTypes.SMOKE_NORMAL);
+            if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.9f)
+                this.spawnParticles(EnumParticleTypes.LAVA);
         }
-        else if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.65f)
-            this.spawnParticles(EnumParticleTypes.SMOKE_NORMAL);
-        if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.9f)
-            this.spawnParticles(EnumParticleTypes.LAVA);
 
         if (this.steamTank.getPressure() >= this.steamTank.getMaxPressure())
             this.world.createExplosion(null, this.pos.getX(), this.pos.getY(), this.pos.getZ(), 3, true);
 
-        if (this.maxBurnTime == 0 && !this.getStackInSlot(0).isEmpty())
+        if (this.isServer())
         {
-            this.maxBurnTime = TileEntityFurnace.getItemBurnTime(this.getStackInSlot(0)) / 2;
-            this.decrStackSize(0, 1);
-        }
-        if (this.currentBurnTime < this.maxBurnTime)
-        {
-            this.currentBurnTime++;
-            this.heat++;
-        }
-        else
-        {
-            this.currentBurnTime = 0;
-            this.maxBurnTime = 0;
-        }
-
-        if (this.heat >= 900)
-        {
-            int toProduce = (int) (1 / Math.E * (this.heat / 100));
-            final FluidStack drained = this.fluidTank.getInternalFluidHandler().drain(toProduce, true);
-            if (drained != null)
-                toProduce = drained.amount;
-            else
-                toProduce = 0;
-            this.steamTank.fillSteam(toProduce, true);
-            if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
-                this.heat--;
-        }
-
-        if (this.world.getTotalWorldTime() % 5 == 0)
-        {
-            if (this.heat > this.getMinimumTemp())
-                this.heat--;
-            else if (this.heat < this.getMinimumTemp())
+            if (this.maxBurnTime == 0 && !this.getStackInSlot(0).isEmpty())
+            {
+                this.maxBurnTime = TileEntityFurnace.getItemBurnTime(this.getStackInSlot(0)) / 2;
+                this.decrStackSize(0, 1);
+            }
+            if (this.currentBurnTime < this.maxBurnTime)
+            {
+                this.currentBurnTime++;
                 this.heat++;
+            }
+            else
+            {
+                this.currentBurnTime = 0;
+                this.maxBurnTime = 0;
+            }
+
+            if (this.heat >= 900)
+            {
+                int toProduce = (int) (1 / Math.E * (this.heat / 100));
+                final FluidStack drained = this.fluidTank.getInternalFluidHandler().drain(toProduce, true);
+                if (drained != null)
+                    toProduce = drained.amount;
+                else
+                    toProduce = 0;
+                this.steamTank.fillSteam(toProduce, true);
+                if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
+                    this.heat--;
+            }
+
+            if (this.world.getTotalWorldTime() % 5 == 0)
+            {
+                if (this.heat > this.getMinimumTemp())
+                    this.heat--;
+                else if (this.heat < this.getMinimumTemp())
+                    this.heat++;
+            }
+            this.sync();
         }
     }
 
@@ -163,7 +168,9 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
-        this.fluidTank.writeToNBT(tag);
+        super.writeToNBT(tag);
+
+        tag.setTag("fluidTank", this.fluidTank.writeToNBT(new NBTTagCompound()));
 
         final NBTTagCompound subTag = new NBTTagCompound();
         this.steamTank.writeToNBT(subTag);
@@ -173,21 +180,25 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         tag.setInteger("currentBurnTime", this.currentBurnTime);
         tag.setInteger("maxBurnTime", this.maxBurnTime);
 
-        return super.writeToNBT(tag);
+        return tag;
     }
 
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
-        this.fluidTank.readFromNBT(tag);
+        super.readFromNBT(tag);
 
         if (tag.hasKey("steamTank"))
+        {
             this.steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
+        }
+
+        if (tag.hasKey("fluidTank"))
+            this.fluidTank.readFromNBT(tag);
 
         this.heat = tag.getInteger("heat");
         this.currentBurnTime = tag.getInteger("currentBurnTime");
         this.maxBurnTime = tag.getInteger("maxBurnTime");
-        super.readFromNBT(tag);
     }
 
     @Override

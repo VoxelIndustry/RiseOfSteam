@@ -37,6 +37,11 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         this.grid = -1;
     }
 
+    public TileSteamPipe()
+    {
+        this(0);
+    }
+
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {

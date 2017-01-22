@@ -21,6 +21,11 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
         this.transferCapacity = transferCapacity;
     }
 
+    public TileOffshorePump()
+    {
+        this(0);
+    }
+
     @Override
     public void update()
     {
