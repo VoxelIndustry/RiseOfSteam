@@ -78,7 +78,8 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
             if (this.maxBurnTime == 0 && !this.getStackInSlot(0).isEmpty())
             {
                 this.maxBurnTime = TileEntityFurnace.getItemBurnTime(this.getStackInSlot(0)) / 2;
-                this.decrStackSize(0, 1);
+                if (this.maxBurnTime != 0)
+                    this.decrStackSize(0, 1);
             }
             if (this.currentBurnTime < this.maxBurnTime)
             {
