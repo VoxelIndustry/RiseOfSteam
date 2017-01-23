@@ -188,18 +188,6 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     }
 
     @Override
-    public void supplyNeighbors()
-    {
-        for (final ISteamHandler steamHandler : this.adjacentSteamHandler.values())
-        {
-            if (this.getGridObject().getTank().getSteam() != 0)
-            {
-                // Supply and pressure repartition code
-            }
-        }
-    }
-
-    @Override
     public void onLoad()
     {
         super.onLoad();

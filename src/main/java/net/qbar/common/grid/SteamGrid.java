@@ -38,9 +38,7 @@ public class SteamGrid extends CableGrid
     void applyData(final CableGrid grid)
     {
         if (grid instanceof SteamGrid)
-        {
             this.transferCapacity = ((SteamGrid) grid).getTransferCapacity();
-        }
     }
 
     @Override
@@ -152,6 +150,7 @@ public class SteamGrid extends CableGrid
     {
         if (super.removeCable(cable))
         {
+            this.removeConnectedPipe((ISteamPipe) cable);
             this.getTank().setCapacity(this.getCapacity());
             return true;
         }

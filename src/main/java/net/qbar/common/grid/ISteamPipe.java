@@ -8,8 +8,6 @@ import net.qbar.common.steam.ISteamHandler;
 
 public interface ISteamPipe extends ITileCable
 {
-    void supplyNeighbors();
-
     @Nullable
     public default SteamGrid getGridObject()
     {
