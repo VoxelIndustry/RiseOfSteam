@@ -26,7 +26,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
 
     private int                                      coldStorage;
 
-    private final int                                transferCapacity;
+    private int                                      transferCapacity;
 
     public TileSteamPipe(final int transferCapacity)
     {
@@ -103,7 +103,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
 
         if (gridIdentifier == -1)
             this.coldStorage = 0;
-        else if (this.coldStorage != 0 && previous == -1 && this.getGridObject().isEmpty())
+        else if (this.coldStorage != 0 && previous == -1)
         {
             this.getGridObject().getTank().fillInternal(this.coldStorage, true);
             this.coldStorage = 0;
@@ -115,6 +115,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     {
         super.readFromNBT(tagCompound);
 
+        this.transferCapacity = tagCompound.getInteger("transferCapacity");
         this.coldStorage = tagCompound.getInteger("coldStorage");
     }
 
@@ -123,6 +124,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     {
         super.writeToNBT(tagCompound);
 
+        tagCompound.setInteger("transferCapacity", this.transferCapacity);
         this.toColdStorage();
         if (this.coldStorage != 0)
             tagCompound.setInteger("coldStorage", this.coldStorage);

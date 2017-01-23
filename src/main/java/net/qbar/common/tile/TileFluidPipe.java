@@ -25,7 +25,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
 
     private FluidStack                               coldStorage;
 
-    private final int                                transferCapacity;
+    private int                                      transferCapacity;
 
     public TileFluidPipe(final int transferCapacity)
     {
@@ -115,6 +115,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     {
         super.readFromNBT(tagCompound);
 
+        this.transferCapacity = tagCompound.getInteger("transferCapacity");
         if (tagCompound.hasKey("coldStorage"))
             this.coldStorage = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("coldStorage"));
     }
@@ -124,6 +125,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     {
         super.writeToNBT(tagCompound);
 
+        tagCompound.setInteger("transferCapacity", this.transferCapacity);
         this.toColdStorage();
         if (this.coldStorage != null)
         {

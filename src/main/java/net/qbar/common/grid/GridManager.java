@@ -107,8 +107,10 @@ public class GridManager
 
         if (added.getGrid() == -1)
         {
-            added.setGrid(this.addGrid(added.createGrid(this.getNextID())).getIdentifier());
-            this.getGrid(added.getGrid()).addCable(added);
+
+            final CableGrid newGrid = this.addGrid(added.createGrid(this.getNextID()));
+            newGrid.addCable(added);
+            added.setGrid(newGrid.getIdentifier());
         }
     }
 

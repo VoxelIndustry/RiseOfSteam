@@ -40,9 +40,7 @@ public class PipeGrid extends CableGrid
             this.getTank().setCapacity(this.getCapacity());
 
             if (this.getTank().getFluidAmount() > 0)
-            {
                 this.getTank().drainInternal(this.getTank().getFluidAmount() / (this.getCables().size() + 1), true);
-            }
             return true;
         }
         return false;

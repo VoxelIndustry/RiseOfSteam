@@ -25,7 +25,7 @@ public class SteamGrid extends CableGrid
 
         this.connectedPipes = new ArrayList<>();
 
-        this.tank = new SteamTank(0, 0, 1.5f);
+        this.tank = new SteamTank(0, this.transferCapacity * 4, 1.5f);
     }
 
     @Override
@@ -152,6 +152,9 @@ public class SteamGrid extends CableGrid
         {
             this.removeConnectedPipe((ISteamPipe) cable);
             this.getTank().setCapacity(this.getCapacity());
+
+            if (this.getTank().getSteam() > 0)
+                this.getTank().drainInternal(this.getTank().getSteam() / (this.getCables().size() + 1), true);
             return true;
         }
         return false;
