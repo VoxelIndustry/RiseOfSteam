@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.block.BlockBase;
+import net.qbar.common.block.BlockBelt;
 import net.qbar.common.block.BlockBoiler;
 import net.qbar.common.block.BlockFluidPipe;
 import net.qbar.common.block.BlockFluidPump;
@@ -14,6 +15,7 @@ import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.block.BlockOffshorePump;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
+import net.qbar.common.tile.TileBelt;
 import net.qbar.common.tile.TileBoiler;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileFluidPump;
@@ -32,6 +34,8 @@ public class QBarBlocks
     private static final BlockMachineBase fluidPump       = new BlockFluidPump();
     private static final BlockMachineBase offshorePump    = new BlockOffshorePump();
 
+    private static final BlockMachineBase belt            = new BlockBelt();
+
     public static final void registerBlocks()
     {
         QBarBlocks.registerBlock(QBarBlocks.punchingMachine);
@@ -41,6 +45,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(QBarBlocks.steamPipe);
         QBarBlocks.registerBlock(QBarBlocks.fluidPump);
         QBarBlocks.registerBlock(QBarBlocks.offshorePump);
+        QBarBlocks.registerBlock(QBarBlocks.belt);
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -49,6 +54,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileSteamPipe.class, "steampipe");
         QBarBlocks.registerTile(TileFluidPump.class, "fluidpump");
         QBarBlocks.registerTile(TileOffshorePump.class, "offshore_pump");
+        QBarBlocks.registerTile(TileBelt.class, "belt");
     }
 
     public static final void registerBlock(final Block block, final String name)
