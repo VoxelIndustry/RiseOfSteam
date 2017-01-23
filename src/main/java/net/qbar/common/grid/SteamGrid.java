@@ -29,6 +29,46 @@ public class SteamGrid extends CableGrid
     }
 
     @Override
+    CableGrid copy(final int identifier)
+    {
+        return new SteamGrid(identifier, this.transferCapacity);
+    }
+
+    @Override
+    void applyData(final CableGrid grid)
+    {
+        if (grid instanceof SteamGrid)
+        {
+            this.transferCapacity = ((SteamGrid) grid).getTransferCapacity();
+        }
+    }
+
+    @Override
+    boolean canMerge(final CableGrid grid)
+    {
+        if (grid instanceof SteamGrid && ((SteamGrid) grid).getTransferCapacity() == this.transferCapacity)
+            return super.canMerge(grid);
+        return false;
+    }
+
+    @Override
+    void onMerge(final CableGrid grid)
+    {
+        this.getTank().setCapacity(this.getCapacity());
+        if (((SteamGrid) grid).getTank().getSteam() != 0)
+            this.getTank().fillInternal(((SteamGrid) grid).getTank().getSteam(), true);
+    }
+
+    @Override
+    void onSplit(final CableGrid grid)
+    {
+        this.getTank()
+                .fillInternal(((SteamGrid) grid).getTank().drainInternal(
+                        ((SteamGrid) grid).getTank().getSteam() / grid.getCables().size() * this.getCables().size(),
+                        false), true);
+    }
+
+    @Override
     void tick()
     {
         super.tick();
