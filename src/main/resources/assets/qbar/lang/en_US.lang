@@ -1,0 +1,20 @@
+#Misc
+itemGroup.QBar=QBar
+
+#Machines
+tile.keypunch.name=KeyPunch
+tile.tank.name=Fluid Tank
+tile.boiler.name=Solid Boiler
+tile.fluidpipe.name=Fluid Pipe
+tile.steampipe.name=Steam Pipe
+tile.fluidpump.name=Fluid Pump
+tile.offshore_pump.name=Offshore Pump
+
+tile.belt.name=Belt
+
+#Items
+item.punched_card.name=Punched Card
+
+#Fluids
+fluid.steam=Steam
+tile.blockfluidsteam.name=Steam Source
