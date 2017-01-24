@@ -16,7 +16,7 @@ import net.qbar.common.fluid.LimitedTank;
 
 public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoProvider
 {
-    private final int         transferCapacity;
+    private int               transferCapacity;
     private IFluidHandler     top;
     private IFluidHandler     bottom;
 
@@ -60,6 +60,7 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     {
         this.tank.writeToNBT(tag);
         tag.setInteger("facing", this.facing.ordinal());
+        tag.setInteger("transferCapacity", this.transferCapacity);
 
         return super.writeToNBT(tag);
     }
@@ -69,6 +70,7 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     {
         this.tank.readFromNBT(tag);
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
+        this.transferCapacity = tag.getInteger("transferCapacity");
 
         super.readFromNBT(tag);
     }

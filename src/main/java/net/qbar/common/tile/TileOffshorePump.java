@@ -1,6 +1,9 @@
 package net.qbar.common.tile;
 
+import java.util.List;
+
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -10,9 +13,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileOffshorePump extends QBarTileBase implements ITickable
+public class TileOffshorePump extends QBarTileBase implements ITickable, ITileInfoProvider
 {
-    private final int     transferCapacity;
+    private int           transferCapacity;
     private IFluidHandler top;
     private boolean       water = false;
 
@@ -54,5 +57,28 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
             this.top = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
         else if (this.top != null)
             this.top = null;
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
+    {
+        tag.setInteger("transferCapacity", this.transferCapacity);
+
+        return super.writeToNBT(tag);
+    }
+
+    @Override
+    public void readFromNBT(final NBTTagCompound tag)
+    {
+        this.transferCapacity = tag.getInteger("transferCapacity");
+
+        super.readFromNBT(tag);
+    }
+
+    @Override
+    public void addInfo(final List<String> lines)
+    {
+        lines.add("Water : " + this.water);
+        lines.add("Top : " + (this.top != null));
     }
 }
