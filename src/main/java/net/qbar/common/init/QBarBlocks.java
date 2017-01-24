@@ -28,28 +28,28 @@ import net.qbar.common.tile.TileTank;
 
 public class QBarBlocks
 {
-    private static final BlockMachineBase punchingMachine = new BlockKeypunch();
-    private static final BlockMachineBase tank            = new BlockTank();
-    private static final BlockMachineBase boiler          = new BlockBoiler();
-    private static final BlockMachineBase fluidPipe       = new BlockFluidPipe();
-    private static final BlockMachineBase steamPipe       = new BlockSteamPipe();
-    private static final BlockMachineBase fluidPump       = new BlockFluidPump();
-    private static final BlockMachineBase offshorePump    = new BlockOffshorePump();
-    private static final BlockMachineBase assembler       = new BlockAssembler();
+    private static final BlockMachineBase PUNCHING_MACHINE = new BlockKeypunch();
+    private static final BlockMachineBase FLUID_TANK            = new BlockTank();
+    private static final BlockMachineBase SOLID_BOILER          = new BlockBoiler();
+    private static final BlockMachineBase FLUID_PIPE       = new BlockFluidPipe();
+    private static final BlockMachineBase STEAM_PIPE       = new BlockSteamPipe();
+    private static final BlockMachineBase FLUID_PUMP       = new BlockFluidPump();
+    private static final BlockMachineBase OFFSHORE_PUMP    = new BlockOffshorePump();
+    private static final BlockMachineBase ASSEMBLER       = new BlockAssembler();
 
-    private static final BlockMachineBase belt            = new BlockBelt();
+    private static final BlockMachineBase BELT            = new BlockBelt();
 
     public static final void registerBlocks()
     {
-        QBarBlocks.registerBlock(QBarBlocks.punchingMachine);
-        QBarBlocks.registerBlock(QBarBlocks.tank);
-        QBarBlocks.registerBlock(QBarBlocks.boiler);
-        QBarBlocks.registerBlock(QBarBlocks.fluidPipe);
-        QBarBlocks.registerBlock(QBarBlocks.steamPipe);
-        QBarBlocks.registerBlock(QBarBlocks.fluidPump);
-        QBarBlocks.registerBlock(QBarBlocks.offshorePump);
-        QBarBlocks.registerBlock(QBarBlocks.assembler);
-        QBarBlocks.registerBlock(QBarBlocks.belt);
+        QBarBlocks.registerBlock(QBarBlocks.PUNCHING_MACHINE);
+        QBarBlocks.registerBlock(QBarBlocks.FLUID_TANK);
+        QBarBlocks.registerBlock(QBarBlocks.SOLID_BOILER);
+        QBarBlocks.registerBlock(QBarBlocks.FLUID_PIPE);
+        QBarBlocks.registerBlock(QBarBlocks.STEAM_PIPE);
+        QBarBlocks.registerBlock(QBarBlocks.FLUID_PUMP);
+        QBarBlocks.registerBlock(QBarBlocks.OFFSHORE_PUMP);
+        QBarBlocks.registerBlock(QBarBlocks.ASSEMBLER);
+        QBarBlocks.registerBlock(QBarBlocks.BELT);
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");

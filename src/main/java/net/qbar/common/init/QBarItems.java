@@ -6,11 +6,11 @@ import net.qbar.common.item.ItemPunchedCard;
 
 public class QBarItems
 {
-    public static final ItemBase itemPunchedCard = new ItemPunchedCard();
+    public static final ItemBase PUNCHED_CARD = new ItemPunchedCard();
 
     public static final void registerItems()
     {
-        QBarItems.registerItem(QBarItems.itemPunchedCard);
+        QBarItems.registerItem(QBarItems.PUNCHED_CARD);
     }
 
     private static final void registerItem(final ItemBase item)

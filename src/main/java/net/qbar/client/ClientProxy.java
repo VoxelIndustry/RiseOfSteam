@@ -15,7 +15,7 @@ public class ClientProxy extends CommonProxy
     {
         super.init(e);
 
-        this.registerItemRenderer(QBarItems.itemPunchedCard, 0, "punched_card");
+        this.registerItemRenderer(QBarItems.PUNCHED_CARD, 0, "punched_card");
     }
 
     @Override
