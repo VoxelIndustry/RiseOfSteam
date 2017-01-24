@@ -17,6 +17,7 @@ import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.SteamGrid;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
+import net.qbar.common.steam.SteamUtil;
 
 public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, ISteamPipe, ILoadable
 {
@@ -68,8 +69,8 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         {
             lines.add("Contains: " + this.getGridObject().getTank().getSteam() + " / "
                     + this.getGridObject().getTank().getCapacity());
-            lines.add("Pressure : " + this.getGridObject().getTank().getPressure() + " / "
-                    + this.getGridObject().getTank().getMaxPressure());
+            lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure())
+                    + " / " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getMaxPressure()));
         }
         else
             lines.add("Errored grid!");

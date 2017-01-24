@@ -1,6 +1,5 @@
 package net.qbar.common.tile;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,15 +23,6 @@ import net.qbar.common.steam.SteamUtil;
 
 public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, ITickable, IContainerProvider
 {
-    private static NumberFormat pressureFormat;
-
-    static
-    {
-        TileBoiler.pressureFormat = NumberFormat.getInstance();
-        TileBoiler.pressureFormat.setMaximumFractionDigits(2);
-        TileBoiler.pressureFormat.setMinimumFractionDigits(2);
-    }
-
     private final DirectionalTank fluidTank;
     private final SteamTank       steamTank;
 
@@ -236,8 +226,8 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         }
         lines.add("Heat " + this.heat + " / " + this.maxHeat);
         lines.add("Steam " + this.steamTank.getSteam() + " / " + this.steamTank.getCapacity());
-        lines.add("Pressure " + TileBoiler.pressureFormat.format(this.steamTank.getPressure()) + " / "
-                + TileBoiler.pressureFormat.format(this.steamTank.getMaxPressure()));
+        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.steamTank.getPressure()) + " / "
+                + SteamUtil.pressureFormat.format(this.steamTank.getMaxPressure()));
     }
 
     public DirectionalTank getFluidTank()
