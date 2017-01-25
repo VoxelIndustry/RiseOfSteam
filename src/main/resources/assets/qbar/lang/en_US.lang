@@ -9,6 +9,7 @@ tile.fluidpipe.name=Fluid Pipe
 tile.steampipe.name=Steam Pipe
 tile.fluidpump.name=Fluid Pump
 tile.offshore_pump.name=Offshore Pump
+tile.assembler.name=Assembler
 
 tile.belt.name=Belt
 
