@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,26 +30,13 @@ public class GuiBoiler extends GuiContainer
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY)
+    public void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY)
     {
-        this.mc.renderEngine.bindTexture(GuiBoiler.BACKGROUND);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
+        GlStateManager.translate(-this.guiLeft, -this.guiTop, 0.0F);
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-
-        final int burnProgress = this.getBurnLeftScaled(13);
-        this.drawTexturedModalRect(x + 81, y + 38 - burnProgress, 176, 12 - burnProgress, 14, burnProgress + 1);
-
-        final int heatProgress = this.getHeatScaled(71);
-        this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 85 - heatProgress, 12, heatProgress);
-
-        this.drawFluid(this.boiler.getSteamTank().toFluidStack(), x + 151, y + 7, 18, 73,
-                (int) (this.boiler.getSteamTank().getCapacity() * this.boiler.getSteamTank().getMaxPressure()));
-
-        if (this.boiler.getFluid() != null)
-            this.drawFluid(this.boiler.getFluid(), x + 128, y + 7, 18, 73,
-                    this.boiler.getFluidTank().getInternalFluidHandler().getTankProperties()[0].getCapacity());
 
         if (mouseX > x + 10 && mouseX < x + 22 && mouseY > y + 8 && mouseY < y + 79)
         {
@@ -88,6 +76,31 @@ public class GuiBoiler extends GuiContainer
             }
             GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
         }
+        GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY)
+    {
+        this.mc.renderEngine.bindTexture(GuiBoiler.BACKGROUND);
+
+        final int x = (this.width - this.xSize) / 2;
+        final int y = (this.height - this.ySize) / 2;
+        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+
+        final int burnProgress = this.getBurnLeftScaled(13);
+        this.drawTexturedModalRect(x + 81, y + 38 - burnProgress, 176, 12 - burnProgress, 14, burnProgress + 1);
+
+        final int heatProgress = this.getHeatScaled(71);
+        this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 85 - heatProgress, 12, heatProgress);
+
+        this.drawFluid(this.boiler.getSteamTank().toFluidStack(), x + 151, y + 7, 18, 73,
+                (int) (this.boiler.getSteamTank().getCapacity() * this.boiler.getSteamTank().getMaxPressure()));
+
+        if (this.boiler.getFluid() != null)
+            this.drawFluid(this.boiler.getFluid(), x + 128, y + 7, 18, 73,
+                    this.boiler.getFluidTank().getInternalFluidHandler().getTankProperties()[0].getCapacity());
+
     }
 
     private void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
