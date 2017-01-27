@@ -1,6 +1,7 @@
 package net.qbar.common.grid;
 
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -81,6 +82,7 @@ public class PipeGrid extends CableGrid
     void onMerge(final CableGrid grid)
     {
         this.getTank().setCapacity(this.getCapacity());
+        this.getOutputs().addAll(((PipeGrid) grid).getOutputs());
         if (((PipeGrid) grid).getTank().getFluid() != null)
             this.getTank().fillInternal(((PipeGrid) grid).getTank().getFluid(), true);
     }
@@ -88,6 +90,8 @@ public class PipeGrid extends CableGrid
     @Override
     void onSplit(final CableGrid grid)
     {
+        this.getOutputs().addAll(
+                ((PipeGrid) grid).getOutputs().stream().filter(this.getCables()::contains).collect(Collectors.toSet()));
         this.getTank().fillInternal(((PipeGrid) grid).getTank().drainInternal(
                 ((PipeGrid) grid).getTank().getFluidAmount() / grid.getCables().size() * this.getCables().size(),
                 false), true);

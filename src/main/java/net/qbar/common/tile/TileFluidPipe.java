@@ -19,13 +19,13 @@ import net.qbar.common.grid.PipeGrid;
 
 public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IFluidPipe, ILoadable
 {
-    private int                                      grid;
-    private final EnumMap<EnumFacing, ITileCable>    connections;
-    private final EnumMap<EnumFacing, IFluidHandler> adjacentFluidHandler;
+    private int                                             grid;
+    private final EnumMap<EnumFacing, ITileCable<PipeGrid>> connections;
+    private final EnumMap<EnumFacing, IFluidHandler>        adjacentFluidHandler;
 
-    private FluidStack                               coldStorage;
+    private FluidStack                                      coldStorage;
 
-    private int                                      transferCapacity;
+    private int                                             transferCapacity;
 
     public TileFluidPipe(final int transferCapacity)
     {
@@ -83,7 +83,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     }
 
     @Override
-    public ITileCable getConnected(final EnumFacing facing)
+    public ITileCable<PipeGrid> getConnected(final EnumFacing facing)
     {
         return this.connections.get(facing);
     }
@@ -143,7 +143,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     }
 
     @Override
-    public boolean canConnect(final ITileCable to)
+    public boolean canConnect(final ITileCable<?> to)
     {
         if (to instanceof TileFluidPipe)
         {

@@ -31,7 +31,7 @@ public class BlockBelt extends BlockMachineBase
     @Override
     public void onEntityWalk(final World w, final BlockPos pos, final Entity e)
     {
-        final double speed = 0.1;
+        final double speed = ((TileBelt) w.getTileEntity(pos)).getBeltSpeed();
         final EnumFacing facing = (EnumFacing) w.getBlockState(pos).getProperties().get(BlockBelt.FACING);
 
         if (facing.getAxis().equals(Axis.X))
@@ -131,6 +131,6 @@ public class BlockBelt extends BlockMachineBase
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileBelt();
+        return new TileBelt(.01f);
     }
 }

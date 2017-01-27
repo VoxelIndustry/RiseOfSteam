@@ -1,7 +1,6 @@
 package net.qbar.common.grid;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,17 +12,17 @@ import net.qbar.common.steam.SteamTank;
 
 public class SteamGrid extends CableGrid
 {
-    private int                    transferCapacity;
-    private final SteamTank        tank;
+    private int                   transferCapacity;
+    private final SteamTank       tank;
 
-    private final List<ISteamPipe> connectedPipes;
+    private final Set<ISteamPipe> connectedPipes;
 
     public SteamGrid(final int identifier, final int transferCapacity)
     {
         super(identifier);
         this.transferCapacity = transferCapacity;
 
-        this.connectedPipes = new ArrayList<>();
+        this.connectedPipes = new HashSet<>();
 
         this.tank = new SteamTank(0, this.transferCapacity * 4, 1.5f);
     }
@@ -45,6 +44,7 @@ public class SteamGrid extends CableGrid
     @Override
     void onMerge(final CableGrid grid)
     {
+        this.getConnectedPipes().addAll(((SteamGrid) grid).getConnectedPipes());
         this.getTank().setCapacity(this.getCapacity());
         if (((SteamGrid) grid).getTank().getSteam() != 0)
             this.getTank().fillInternal(((SteamGrid) grid).getTank().getSteam(), true);
@@ -53,6 +53,8 @@ public class SteamGrid extends CableGrid
     @Override
     void onSplit(final CableGrid grid)
     {
+        this.getConnectedPipes().addAll(((SteamGrid) grid).getConnectedPipes().stream()
+                .filter(this.getCables()::contains).collect(Collectors.toSet()));
         this.getTank()
                 .fillInternal(((SteamGrid) grid).getTank().drainInternal(
                         ((SteamGrid) grid).getTank().getSteam() / grid.getCables().size() * this.getCables().size(),
@@ -151,5 +153,10 @@ public class SteamGrid extends CableGrid
             return true;
         }
         return false;
+    }
+
+    public Set<ISteamPipe> getConnectedPipes()
+    {
+        return this.connectedPipes;
     }
 }

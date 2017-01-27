@@ -10,7 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.ISteamPipe;
 import net.qbar.common.grid.ITileCable;
@@ -21,13 +20,13 @@ import net.qbar.common.steam.SteamUtil;
 
 public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, ISteamPipe, ILoadable
 {
-    private int                                      grid;
-    private final EnumMap<EnumFacing, ITileCable>    connections;
-    private final EnumMap<EnumFacing, ISteamHandler> adjacentSteamHandler;
+    private int                                              grid;
+    private final EnumMap<EnumFacing, ITileCable<SteamGrid>> connections;
+    private final EnumMap<EnumFacing, ISteamHandler>         adjacentSteamHandler;
 
-    private int                                      coldStorage;
+    private int                                              coldStorage;
 
-    private int                                      transferCapacity;
+    private int                                              transferCapacity;
 
     public TileSteamPipe(final int transferCapacity)
     {
@@ -85,7 +84,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     }
 
     @Override
-    public ITileCable getConnected(final EnumFacing facing)
+    public ITileCable<SteamGrid> getConnected(final EnumFacing facing)
     {
         return this.connections.get(facing);
     }
@@ -139,7 +138,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     }
 
     @Override
-    public boolean canConnect(final ITileCable to)
+    public boolean canConnect(final ITileCable<?> to)
     {
         if (to instanceof TileSteamPipe)
             return true;
@@ -147,7 +146,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     }
 
     @Override
-    public void connect(final EnumFacing facing, final ITileCable to)
+    public void connect(final EnumFacing facing, final ITileCable<SteamGrid> to)
     {
         this.connections.put(facing, to);
     }
@@ -222,7 +221,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     }
 
     @Override
-    public CableGrid createGrid(final int id)
+    public SteamGrid createGrid(final int id)
     {
         return new SteamGrid(id, this.transferCapacity);
     }
