@@ -6,4 +6,10 @@ public class BeltGrid extends CableGrid
     {
         super(identifier);
     }
+
+    @Override
+    CableGrid copy(final int identifier)
+    {
+        return new BeltGrid(identifier);
+    }
 }

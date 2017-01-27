@@ -11,7 +11,7 @@ public class PipeGrid extends CableGrid
 {
 
     private final LimitedTank         tank;
-    private int                       transferCapacity;
+    private final int                 transferCapacity;
 
     private final HashSet<IFluidPipe> outputs;
 
@@ -63,15 +63,6 @@ public class PipeGrid extends CableGrid
     CableGrid copy(final int identifier)
     {
         return new PipeGrid(identifier, this.transferCapacity);
-    }
-
-    @Override
-    void applyData(final CableGrid grid)
-    {
-        if (grid instanceof PipeGrid)
-        {
-            this.transferCapacity = ((PipeGrid) grid).getTransferCapacity();
-        }
     }
 
     @Override

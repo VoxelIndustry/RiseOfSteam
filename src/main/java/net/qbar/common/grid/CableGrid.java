@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import javax.annotation.Nonnull;
 
-public class CableGrid
+public abstract class CableGrid
 {
     private final int                 identifier;
 
@@ -23,15 +23,7 @@ public class CableGrid
 
     }
 
-    CableGrid copy(final int identifier)
-    {
-        return new CableGrid(identifier);
-    }
-
-    void applyData(final CableGrid grid)
-    {
-
-    }
+    abstract CableGrid copy(final int identifier);
 
     boolean canMerge(final CableGrid grid)
     {

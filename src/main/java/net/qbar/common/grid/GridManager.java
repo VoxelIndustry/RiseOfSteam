@@ -30,14 +30,6 @@ public class GridManager
         this.cableGrids = new HashMap<>();
     }
 
-    public CableGrid addGrid(final int identifier)
-    {
-        final CableGrid grid = new CableGrid(identifier);
-
-        this.cableGrids.put(identifier, grid);
-        return grid;
-    }
-
     public CableGrid addGrid(final CableGrid grid)
     {
         this.cableGrids.put(grid.getIdentifier(), grid);
@@ -138,7 +130,6 @@ public class GridManager
                             if (removed.getConnected(facing).getGrid() == -1)
                             {
                                 final CableGrid newGrid = this.addGrid(old.copy(this.getNextID()));
-                                newGrid.applyData(old);
 
                                 this.exploreGrid(newGrid, removed.getConnected(facing));
                                 newGrid.onSplit(old);

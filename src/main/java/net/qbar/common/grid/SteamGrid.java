@@ -35,13 +35,6 @@ public class SteamGrid extends CableGrid
     }
 
     @Override
-    void applyData(final CableGrid grid)
-    {
-        if (grid instanceof SteamGrid)
-            this.transferCapacity = ((SteamGrid) grid).getTransferCapacity();
-    }
-
-    @Override
     boolean canMerge(final CableGrid grid)
     {
         if (grid instanceof SteamGrid && ((SteamGrid) grid).getTransferCapacity() == this.transferCapacity)
