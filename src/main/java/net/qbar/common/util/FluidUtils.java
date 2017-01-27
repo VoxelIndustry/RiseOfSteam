@@ -29,8 +29,8 @@ public class FluidUtils
             if (simulated > 0)
             {
                 fluidHandler.fill(inputFluidHandler.drain(simulated, true), true);
-                if (inputFluidHandler.getTankProperties()[0].getContents() == null
-                        || inputFluidHandler.getTankProperties()[0].getContents().amount == 0)
+                if ((inputFluidHandler.getTankProperties()[0].getContents() == null
+                        || inputFluidHandler.getTankProperties()[0].getContents().amount == 0) && !player.isCreative())
                 {
                     output = inputFluidHandler.getContainer();
                     if (input.getCount() == 1)
@@ -66,10 +66,16 @@ public class FluidUtils
 
                 output = inputFluidHandler.getContainer();
                 if (input.getCount() == 1)
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, output);
+                {
+                    if (!player.isCreative())
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, output);
+                    else
+                        player.inventory.addItemStackToInventory(output);
+                }
                 else
                 {
-                    player.inventory.decrStackSize(player.inventory.currentItem, 1);
+                    if (!player.isCreative())
+                        player.inventory.decrStackSize(player.inventory.currentItem, 1);
                     if (!player.inventory.addItemStackToInventory(output))
                         player.entityDropItem(output, 0);
                 }
