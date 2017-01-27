@@ -25,16 +25,13 @@ public class BlockTank extends BlockMachineBase
     {
         if (player.isSneaking())
             return false;
-        if (!w.isRemote)
-        {
-            final TileTank tank = (TileTank) w.getTileEntity(pos);
 
-            if (tank != null)
-            {
-                if (FluidUtils.drainPlayerHand(tank.getTank(), player)
-                        || FluidUtils.fillPlayerHand(tank.getTank(), player))
-                    return true;
-            }
+        final TileTank tank = (TileTank) w.getTileEntity(pos);
+
+        if (tank != null)
+        {
+            if (FluidUtils.drainPlayerHand(tank.getTank(), player) || FluidUtils.fillPlayerHand(tank.getTank(), player))
+                return true;
         }
         return false;
     }
