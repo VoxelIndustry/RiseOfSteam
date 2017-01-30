@@ -29,15 +29,15 @@ import net.qbar.common.tile.TileTank;
 public class QBarBlocks
 {
     private static final BlockMachineBase PUNCHING_MACHINE = new BlockKeypunch();
-    private static final BlockMachineBase FLUID_TANK            = new BlockTank();
-    private static final BlockMachineBase SOLID_BOILER          = new BlockBoiler();
+    private static final BlockMachineBase FLUID_TANK       = new BlockTank();
+    private static final BlockMachineBase SOLID_BOILER     = new BlockBoiler();
     private static final BlockMachineBase FLUID_PIPE       = new BlockFluidPipe();
     private static final BlockMachineBase STEAM_PIPE       = new BlockSteamPipe();
     private static final BlockMachineBase FLUID_PUMP       = new BlockFluidPump();
     private static final BlockMachineBase OFFSHORE_PUMP    = new BlockOffshorePump();
-    private static final BlockMachineBase ASSEMBLER       = new BlockAssembler();
+    private static final BlockMachineBase ASSEMBLER        = new BlockAssembler();
 
-    private static final BlockMachineBase BELT            = new BlockBelt();
+    public static final BlockMachineBase  BELT             = new BlockBelt();
 
     public static final void registerBlocks()
     {
