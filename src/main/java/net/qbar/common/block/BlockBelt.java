@@ -17,6 +17,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.TileBelt;
 
 public class BlockBelt extends BlockMachineBase
@@ -27,6 +28,14 @@ public class BlockBelt extends BlockMachineBase
     {
         super("belt", Material.IRON);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EnumFacing.NORTH));
+    }
+
+    @Override
+    public void breakBlock(final World w, final BlockPos pos, final IBlockState state)
+    {
+        GridManager.getInstance().disconnectCable((TileBelt) w.getTileEntity(pos));
+
+        super.breakBlock(w, pos, state);
     }
 
     @Override

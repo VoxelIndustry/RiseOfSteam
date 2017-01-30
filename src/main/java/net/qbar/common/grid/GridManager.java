@@ -32,7 +32,8 @@ public class GridManager
 
     public CableGrid addGrid(final CableGrid grid)
     {
-        this.cableGrids.put(grid.getIdentifier(), grid);
+        if (!this.cableGrids.containsKey(grid.getIdentifier()))
+            this.cableGrids.put(grid.getIdentifier(), grid);
         return grid;
     }
 

@@ -10,11 +10,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
+import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.ITileCable;
 import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamUtil;
 
-public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>, ITileInfoProvider, ISidedInventory
+public class TileBelt extends TileInventoryBase
+        implements ITileCable<BeltGrid>, ITileInfoProvider, ISidedInventory, ILoadable
 {
     private int   gridID;
     private float beltSpeed;
@@ -24,6 +28,8 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
         super("InventoryBelt", 4);
 
         this.beltSpeed = beltSpeed;
+
+        this.gridID = -1;
     }
 
     public TileBelt()
@@ -59,7 +65,6 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
     {
         super.writeToNBT(tag);
 
-        tag.setInteger("gridID", this.gridID);
         tag.setFloat("beltSpeed", this.beltSpeed);
         return tag;
     }
@@ -69,7 +74,6 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
     {
         super.readFromNBT(tag);
 
-        this.gridID = tag.getInteger("gridID");
         this.beltSpeed = tag.getFloat("beltSpeed");
     }
 
@@ -77,6 +81,16 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
     public void addInfo(final List<String> lines)
     {
         lines.add("Grid: " + this.getGrid());
+
+        if (this.getGrid() != -1 && this.getGridObject() != null)
+        {
+            lines.add("Contains: " + this.getGridObject().getTank().getSteam() + " / "
+                    + this.getGridObject().getTank().getCapacity());
+            lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure())
+                    + " / " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getMaxPressure()));
+        }
+        else
+            lines.add("Errored grid!");
 
         lines.add("Slot 1: " + this.getStackInSlot(0));
         lines.add("Slot 2: " + this.getStackInSlot(1));
@@ -87,7 +101,7 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
     @Override
     public EnumFacing[] getConnections()
     {
-        return null;
+        return new EnumFacing[0];
     }
 
     @Override
@@ -106,6 +120,12 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
     public void setGrid(final int gridIdentifier)
     {
         this.gridID = gridIdentifier;
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        GridManager.getInstance().disconnectCable(this);
     }
 
     @Override
@@ -145,6 +165,20 @@ public class TileBelt extends TileInventoryBase implements ITileCable<BeltGrid>,
     public BeltGrid createGrid(final int nextID)
     {
         return new BeltGrid(nextID, this.beltSpeed);
+    }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        if (!this.world.isRemote && this.getGrid() == -1)
+            TickHandler.loadables.add(this);
+    }
+
+    @Override
+    public void load()
+    {
+        GridManager.getInstance().connectCable(this);
     }
 
     public float getBeltSpeed()
