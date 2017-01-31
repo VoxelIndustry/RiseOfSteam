@@ -81,6 +81,7 @@ public class RenderBelt extends FastTESR<TileBelt>
         }
         GlStateManager.translate(1 - belt.getItemPositions()[1].y + 1 / 16.0, 1.438,
                 belt.getItemPositions()[1].x + 7 / 64.0);
+
         this.handleRenderItem(belt.getItems()[1]);
 
         GlStateManager.translate(

@@ -67,8 +67,8 @@ public class BlockFluidPump extends BlockMachineBase
         world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockFluidPump.FACING, facing));
         if (!world.isRemote)
         {
-            ((TileFluidPump) world.getTileEntity(pos)).scanFluidHandlers();
             ((TileFluidPump) world.getTileEntity(pos)).setFacing(facing);
+            ((TileFluidPump) world.getTileEntity(pos)).scanFluidHandlers();
         }
         return true;
     }
@@ -95,8 +95,8 @@ public class BlockFluidPump extends BlockMachineBase
                 state.withProperty(BlockFluidPump.FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer)), 2);
         if (!w.isRemote)
         {
-            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandlers();
             ((TileFluidPump) w.getTileEntity(pos)).setFacing(state.getValue(BlockFluidPump.FACING));
+            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandlers();
         }
     }
 

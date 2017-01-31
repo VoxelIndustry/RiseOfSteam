@@ -1,5 +1,6 @@
 package net.qbar.common.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -28,6 +29,14 @@ public class BlockBelt extends BlockMachineBase
     {
         super("belt", Material.IRON);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EnumFacing.NORTH));
+    }
+
+    @Override
+    public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
+            final BlockPos posNeighbor)
+    {
+        if (!w.isRemote)
+            ((TileBelt) w.getTileEntity(pos)).scanInput();
     }
 
     @Override
@@ -116,9 +125,7 @@ public class BlockBelt extends BlockMachineBase
         EnumFacing enumfacing = EnumFacing.getFront(meta);
 
         if (enumfacing.getAxis() == EnumFacing.Axis.Y)
-        {
             enumfacing = EnumFacing.NORTH;
-        }
 
         return this.getDefaultState().withProperty(BlockBelt.FACING, enumfacing);
     }
@@ -154,7 +161,10 @@ public class BlockBelt extends BlockMachineBase
             return false;
         world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.FACING, facing));
         if (!world.isRemote)
+        {
             ((TileBelt) world.getTileEntity(pos)).setFacing(facing);
+            ((TileBelt) world.getTileEntity(pos)).scanInput();
+        }
         return true;
     }
 
