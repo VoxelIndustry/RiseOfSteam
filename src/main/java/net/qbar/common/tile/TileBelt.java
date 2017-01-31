@@ -1,5 +1,6 @@
 package net.qbar.common.tile;
 
+import java.util.EnumMap;
 import java.util.List;
 
 import net.minecraft.inventory.ISidedInventory;
@@ -20,20 +21,22 @@ import net.qbar.common.steam.SteamUtil;
 
 public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvider, ISidedInventory, ILoadable
 {
-    private int        gridID;
-    private float      beltSpeed;
+    private int                                             gridID;
+    private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connections;
+    private float                                           beltSpeed;
 
-    private EnumFacing facing;
+    private EnumFacing                                      facing;
 
-    private IBeltInput input;
+    private IBeltInput                                      input;
 
     public TileBelt(final float beltSpeed)
     {
-        super("InventoryBelt", 4);
+        super("InventoryBelt", 3);
 
         this.beltSpeed = beltSpeed;
 
         this.gridID = -1;
+        this.connections = new EnumMap<>(EnumFacing.class);
         this.facing = EnumFacing.UP;
 
         this.input = null;
@@ -112,13 +115,13 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
     @Override
     public EnumFacing[] getConnections()
     {
-        return new EnumFacing[0];
+        return this.connections.keySet().toArray(new EnumFacing[0]);
     }
 
     @Override
     public ITileCable<BeltGrid> getConnected(final EnumFacing facing)
     {
-        return null;
+        return this.connections.get(facing);
     }
 
     @Override
@@ -150,29 +153,25 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
             final BeltGrid grid = ((TileBelt) to).getGridObject();
             if (grid != null)
             {
-                // if (this.coldStorage != null)
-                // {
-                // if (grid.getFluid() == null ||
-                // grid.getFluid().equals(this.coldStorage.getFluid()))
-                // return true;
-                // return false;
-                // }
+                final IBelt adjacentBelt = (IBelt) to;
+                if (adjacentBelt.getFacing() != this.getFacing().getOpposite())
+                    return true;
             }
-            return true;
+            return false;
         }
         return false;
     }
 
     @Override
-    public void connect(final EnumFacing facing, final ITileCable<BeltGrid> to)
+    public void connect(final EnumFacing facing, final ITileCable to)
     {
-
+        this.connections.put(facing, to);
     }
 
     @Override
     public void disconnect(final EnumFacing facing)
     {
-
+        this.connections.remove(facing);
     }
 
     @Override
