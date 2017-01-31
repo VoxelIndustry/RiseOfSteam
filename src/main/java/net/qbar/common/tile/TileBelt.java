@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.common.block.BlockBelt;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
 import net.qbar.common.grid.GridManager;
@@ -216,5 +217,10 @@ public class TileBelt extends TileInventoryBase
     public Vec2f[] getItemPositions()
     {
         return new Vec2f[] { new Vec2f(11f / 32f, 7 / 16f), new Vec2f(11f / 32f, 0 / 16f) };
+    }
+
+    public EnumFacing getFacing()
+    {
+        return (EnumFacing) this.world.getBlockState(this.getPos()).getProperties().get(BlockBelt.FACING);
     }
 }
