@@ -101,10 +101,13 @@ public class BlockBelt extends BlockMachineBase
     }
 
     @Override
-    public void onBlockPlacedBy(final World worldIn, final BlockPos pos, final IBlockState state,
+    public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
             final EntityLivingBase placer, final ItemStack stack)
     {
-        worldIn.setBlockState(pos, state.withProperty(BlockBelt.FACING, placer.getHorizontalFacing().getOpposite()), 2);
+        w.setBlockState(pos, state.withProperty(BlockBelt.FACING, placer.getHorizontalFacing().getOpposite()), 2);
+
+        if (!w.isRemote)
+            ((TileBelt) w.getTileEntity(pos)).setFacing(state.getValue(BlockBelt.FACING));
     }
 
     @Override
@@ -142,6 +145,17 @@ public class BlockBelt extends BlockMachineBase
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, new IProperty[] { BlockBelt.FACING });
+    }
+
+    @Override
+    public boolean rotateBlock(final World world, final BlockPos pos, final EnumFacing facing)
+    {
+        if (facing == null || !EnumFacing.Plane.HORIZONTAL.apply(facing))
+            return false;
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.FACING, facing));
+        if (!world.isRemote)
+            ((TileBelt) world.getTileEntity(pos)).setFacing(facing);
+        return true;
     }
 
     @Override

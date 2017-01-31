@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.common.capabilities.Capability;
-import net.qbar.common.block.BlockBelt;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
 import net.qbar.common.grid.GridManager;
@@ -21,8 +20,10 @@ import net.qbar.common.steam.SteamUtil;
 public class TileBelt extends TileInventoryBase
         implements ITileCable<BeltGrid>, ITileInfoProvider, ISidedInventory, ILoadable
 {
-    private int   gridID;
-    private float beltSpeed;
+    private int        gridID;
+    private float      beltSpeed;
+
+    private EnumFacing facing;
 
     public TileBelt(final float beltSpeed)
     {
@@ -31,6 +32,7 @@ public class TileBelt extends TileInventoryBase
         this.beltSpeed = beltSpeed;
 
         this.gridID = -1;
+        this.facing = EnumFacing.UP;
     }
 
     public TileBelt()
@@ -66,6 +68,7 @@ public class TileBelt extends TileInventoryBase
     {
         super.writeToNBT(tag);
 
+        tag.setInteger("facing", this.facing.ordinal());
         tag.setFloat("beltSpeed", this.beltSpeed);
         return tag;
     }
@@ -75,12 +78,14 @@ public class TileBelt extends TileInventoryBase
     {
         super.readFromNBT(tag);
 
+        this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.beltSpeed = tag.getFloat("beltSpeed");
     }
 
     @Override
     public void addInfo(final List<String> lines)
     {
+        lines.add("Orientation: " + this.getFacing());
         lines.add("Grid: " + this.getGrid());
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
@@ -221,6 +226,11 @@ public class TileBelt extends TileInventoryBase
 
     public EnumFacing getFacing()
     {
-        return (EnumFacing) this.world.getBlockState(this.getPos()).getProperties().get(BlockBelt.FACING);
+        return this.facing;
+    }
+
+    public void setFacing(final EnumFacing facing)
+    {
+        this.facing = facing;
     }
 }

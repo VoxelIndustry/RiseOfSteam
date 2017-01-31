@@ -1,16 +1,20 @@
 package net.qbar.common.init;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.qbar.QBar;
 import net.qbar.common.item.ItemBase;
 import net.qbar.common.item.ItemPunchedCard;
 
+@ObjectHolder(QBar.MODID)
 public class QBarItems
 {
-    public static final ItemBase PUNCHED_CARD = new ItemPunchedCard();
+    @ObjectHolder("punched_card")
+    public static final ItemBase PUNCHED_CARD = null;
 
     public static final void registerItems()
     {
-        QBarItems.registerItem(QBarItems.PUNCHED_CARD);
+        QBarItems.registerItem(new ItemPunchedCard());
     }
 
     private static final void registerItem(final ItemBase item)

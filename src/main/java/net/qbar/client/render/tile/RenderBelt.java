@@ -59,22 +59,25 @@ public class RenderBelt extends FastTESR<TileBelt>
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        switch (belt.getFacing())
+        if (belt.getFacing() != null)
         {
-            case NORTH:
-                GlStateManager.rotate(90, 0, 1, 0);
-                GlStateManager.translate(-1, 0, 0);
-                break;
-            case SOUTH:
-                GlStateManager.rotate(-90, 0, 1, 0);
-                GlStateManager.translate(0, 0, -1);
-                break;
-            case WEST:
-                GlStateManager.rotate(180, 0, 1, 0);
-                GlStateManager.translate(-1, 0, -1);
-                break;
-            default:
-                break;
+            switch (belt.getFacing())
+            {
+                case NORTH:
+                    GlStateManager.rotate(90, 0, 1, 0);
+                    GlStateManager.translate(-1, 0, 0);
+                    break;
+                case SOUTH:
+                    GlStateManager.rotate(-90, 0, 1, 0);
+                    GlStateManager.translate(0, 0, -1);
+                    break;
+                case WEST:
+                    GlStateManager.rotate(180, 0, 1, 0);
+                    GlStateManager.translate(-1, 0, -1);
+                    break;
+                default:
+                    break;
+            }
         }
         GlStateManager.translate(1 - belt.getItemPositions()[1].y + 1 / 16.0, 1.438,
                 belt.getItemPositions()[1].x + 7 / 64.0);

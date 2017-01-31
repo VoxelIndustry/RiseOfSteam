@@ -1,6 +1,5 @@
 package net.qbar.common.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -11,29 +10,29 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.qbar.common.tile.TileFluidPump;
+import net.qbar.common.tile.TileExtractor;
 
-public class BlockFluidPump extends BlockMachineBase
+public class BlockExtractor extends BlockMachineBase
 {
     public static PropertyDirection FACING = PropertyDirection.create("facing", facing -> true);
 
-    public BlockFluidPump()
+    public BlockExtractor()
     {
-        super("fluidpump", Material.IRON);
+        super("itemextractor", Material.IRON);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockFluidPump.FACING, EnumFacing.UP));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP));
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, BlockFluidPump.FACING);
+        return new BlockStateContainer(this, BlockExtractor.FACING);
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        final int facingInt = state.getValue(BlockFluidPump.FACING).ordinal();
+        final int facingInt = state.getValue(BlockExtractor.FACING).ordinal();
         return facingInt;
     }
 
@@ -44,19 +43,19 @@ public class BlockFluidPump extends BlockMachineBase
         if (facingInt > 4)
             facingInt = facingInt - 4;
         final EnumFacing facing = EnumFacing.VALUES[facingInt];
-        return this.getDefaultState().withProperty(BlockFluidPump.FACING, facing);
+        return this.getDefaultState().withProperty(BlockExtractor.FACING, facing);
     }
 
     public EnumFacing getFacing(final IBlockState state)
     {
-        return state.getValue(BlockFluidPump.FACING);
+        return state.getValue(BlockExtractor.FACING);
     }
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
             final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
-        return this.getStateFromMeta(meta).withProperty(BlockFluidPump.FACING, facing);
+        return this.getStateFromMeta(meta).withProperty(BlockExtractor.FACING, facing);
     }
 
     @Override
@@ -64,25 +63,10 @@ public class BlockFluidPump extends BlockMachineBase
     {
         if (facing == null)
             return false;
-        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockFluidPump.FACING, facing));
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockExtractor.FACING, facing));
         if (!world.isRemote)
-        {
-            ((TileFluidPump) world.getTileEntity(pos)).scanFluidHandlers();
-            ((TileFluidPump) world.getTileEntity(pos)).setFacing(facing);
-        }
+            ((TileExtractor) world.getTileEntity(pos)).setFacing(facing);
         return true;
-    }
-
-    @Override
-    public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
-            final BlockPos posNeighbor)
-    {
-        if (!w.isRemote)
-        {
-            final BlockPos substract = posNeighbor.subtract(pos);
-            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandler(posNeighbor,
-                    EnumFacing.getFacingFromVector(substract.getX(), substract.getY(), substract.getZ()));
-        }
     }
 
     @Override
@@ -92,17 +76,14 @@ public class BlockFluidPump extends BlockMachineBase
         super.onBlockPlacedBy(w, pos, state, placer, stack);
 
         w.setBlockState(pos,
-                state.withProperty(BlockFluidPump.FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer)), 2);
+                state.withProperty(BlockExtractor.FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer)), 2);
         if (!w.isRemote)
-        {
-            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandlers();
-            ((TileFluidPump) w.getTileEntity(pos)).setFacing(state.getValue(BlockFluidPump.FACING));
-        }
+            ((TileExtractor) w.getTileEntity(pos)).setFacing(state.getValue(BlockExtractor.FACING));
     }
 
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileFluidPump(64);
+        return new TileExtractor();
     }
 }
