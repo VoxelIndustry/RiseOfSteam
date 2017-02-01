@@ -35,7 +35,7 @@ public class BlockBelt extends BlockMachineBase
     public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
             final BlockPos posNeighbor)
     {
-        if (!w.isRemote)
+        if (!w.isRemote && posNeighbor.equals(pos.offset(EnumFacing.UP)))
             ((TileBelt) w.getTileEntity(pos)).scanInput();
     }
 

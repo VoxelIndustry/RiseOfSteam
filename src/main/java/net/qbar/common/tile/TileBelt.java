@@ -104,12 +104,11 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
         }
         else
             lines.add("Errored grid!");
-        lines.add("Connected: " + (this.input == null));
+        lines.add("Connected: " + (this.input != null));
 
         lines.add("Slot 1: " + this.getStackInSlot(0));
         lines.add("Slot 2: " + this.getStackInSlot(1));
         lines.add("Slot 3: " + this.getStackInSlot(2));
-        lines.add("Slot 4: " + this.getStackInSlot(3));
     }
 
     @Override
@@ -276,7 +275,7 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
 
     public void scanInput()
     {
-        final BlockPos search = this.getPos().offset(this.getFacing().getOpposite());
+        final BlockPos search = this.getPos().offset(EnumFacing.UP);
         if (this.input == null)
         {
             if (this.world.getTileEntity(search) != null && this.world.getTileEntity(search) instanceof IBeltInput
