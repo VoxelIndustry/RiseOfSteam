@@ -19,7 +19,9 @@ public class QBarItems
 
     private static final void registerItem(final ItemBase item)
     {
-        item.setRegistryName(item.name);
+        item.setRegistryName(QBar.MODID, item.name);
         GameRegistry.register(item);
+
+        QBar.proxy.registerItemRenderer(item, 0, item.name);
     }
 }

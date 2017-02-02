@@ -11,7 +11,6 @@ import net.qbar.QBar;
 import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.init.QBarBlocks;
-import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileBelt;
 
 public class ClientProxy extends CommonProxy
@@ -22,16 +21,15 @@ public class ClientProxy extends CommonProxy
         OBJLoader.INSTANCE.addDomain(QBar.MODID);
 
         super.preInit(e);
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(QBarBlocks.FLUID_TANK), 0,
+                new ModelResourceLocation(QBar.MODID + ":fluidtank", "inventory"));
     }
 
     @Override
     public void init(final FMLInitializationEvent e)
     {
         super.init(e);
-
-        this.registerItemRenderer(QBarItems.PUNCHED_CARD, 0, "punched_card");
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(QBarBlocks.FLUID_TANK), 0,
-                new ModelResourceLocation(QBar.MODID + ":fluidtank", "inventory"));
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileBelt.class, new RenderBelt());
     }
