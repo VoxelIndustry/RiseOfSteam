@@ -1,6 +1,8 @@
 package net.qbar.common.block;
 
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -13,9 +15,29 @@ import net.qbar.common.util.FluidUtils;
 
 public class BlockTank extends BlockMachineBase
 {
+    public static final PropertyDirection FACING = BlockHorizontal.FACING;
+
     public BlockTank()
     {
-        super("tank", Material.IRON);
+        super("fluidtank", Material.IRON);
+    }
+
+    @Override
+    public boolean isOpaqueCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean causesSuffocation(final IBlockState state)
+    {
+        return false;
     }
 
     @Override
