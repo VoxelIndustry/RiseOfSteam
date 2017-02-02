@@ -191,6 +191,7 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
     public void load()
     {
         GridManager.getInstance().connectCable(this);
+        this.scanInput();
     }
 
     public float getBeltSpeed()
