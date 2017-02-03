@@ -1,5 +1,7 @@
 package net.qbar.common.block;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -31,25 +33,29 @@ public class BlockTank extends BlockMultiblockBase
                 .withProperty(BlockTank.FACING, EnumFacing.NORTH));
     }
 
-    @Override
-    public int getMetaFromState(final IBlockState state)
+    @Nullable
+    public static EnumFacing getFacing(final int meta)
     {
-        final int gag = state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG).booleanValue() ? 1 : 0;
-        final int facing = state.getValue(BlockTank.FACING).ordinal();
-        return (gag + 1) * facing;
+        final int i = meta & 7;
+        return i > 5 ? null : EnumFacing.getFront(i);
     }
 
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        EnumFacing facing = EnumFacing.getFront(meta / 2);
+        return this.getDefaultState().withProperty(BlockTank.FACING, BlockTank.getFacing(meta))
+                .withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, Boolean.valueOf((meta & 8) > 0));
+    }
 
-        if (facing.getAxis() == EnumFacing.Axis.Y)
-            facing = EnumFacing.NORTH;
+    @Override
+    public int getMetaFromState(final IBlockState state)
+    {
+        int i = 0;
+        i = i | state.getValue(BlockTank.FACING).getIndex();
 
-        final boolean isGag = meta % 2 == 0;
-        return this.getDefaultState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, isGag)
-                .withProperty(BlockTank.FACING, facing);
+        if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG).booleanValue())
+            i |= 8;
+        return i;
     }
 
     @Override
@@ -95,12 +101,6 @@ public class BlockTank extends BlockMultiblockBase
 
     @Override
     public boolean isFullCube(final IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean causesSuffocation(final IBlockState state)
     {
         return false;
     }
