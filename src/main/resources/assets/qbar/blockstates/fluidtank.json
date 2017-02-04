@@ -26,7 +26,12 @@
             "true": {}, "false": {}
         },
         "inventory": {
-            "transform": "forge:default-block"
+        	"model": "qbar:fluidtank.obj",
+			"transform": {
+				"scale": 0.23,
+				"rotation": [{"x": 20}, {"y": -45}],
+				"translation": [0, -0.3, 0]
+			}
         }
     }
 }

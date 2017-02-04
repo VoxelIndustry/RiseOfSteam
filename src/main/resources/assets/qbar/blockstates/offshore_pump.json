@@ -4,7 +4,8 @@
         "textures": {
         },
         "model": "qbar:offshore_pump.obj",
-        "custom": { "flip-v": true }
+        "custom": { "flip-v": true },
+        "transform": "forge:default-block"
     },
     "variants": {
         "normal": {
@@ -23,7 +24,12 @@
             }
         },
         "inventory": {
-            "transform": "forge:default-block"
+        	"model": "qbar:offshore_pump.obj",
+			"transform": {
+				"scale": 0.85,
+				"rotation": [{"x": 20}, {"y": -45}],
+				"translation": [0, -0.025, 0]
+			}
         }
     }
 }
