@@ -3,29 +3,36 @@ package net.qbar.common.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.qbar.common.IWrenchable;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.TileBelt;
 
-public class BlockBelt extends BlockMachineBase
+public class BlockBelt extends BlockMachineBase implements IWrenchable
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
+    public static final PropertyBool      SLOP   = PropertyBool.create("slop");
 
     public BlockBelt()
     {
         super("belt", Material.IRON);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EnumFacing.NORTH));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EnumFacing.NORTH)
+                .withProperty(BlockBelt.SLOP, false));
     }
 
     @Override
@@ -107,18 +114,22 @@ public class BlockBelt extends BlockMachineBase
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
+        EnumFacing enumfacing = EnumFacing.getFront(meta >> 1);
+        boolean slop = (meta & 1) == 1;
 
         if (enumfacing.getAxis() == EnumFacing.Axis.Y)
             enumfacing = EnumFacing.NORTH;
 
-        return this.getDefaultState().withProperty(BlockBelt.FACING, enumfacing);
+        return this.getDefaultState().withProperty(BlockBelt.FACING, enumfacing).withProperty(BlockBelt.SLOP, slop);
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return state.getValue(BlockBelt.FACING).getIndex();
+        int meta = state.getValue(BlockBelt.FACING).getIndex();
+        meta <<= 1;
+        meta += state.getValue(BlockBelt.SLOP) ? 1 : 0;
+        return meta;
     }
 
     @Override
@@ -136,7 +147,22 @@ public class BlockBelt extends BlockMachineBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, BlockBelt.FACING);
+        return new BlockStateContainer(this, BlockBelt.FACING, BlockBelt.SLOP);
+    }
+
+    public boolean getSlopState(final IBlockState state)
+    {
+        return state.getValue(BlockBelt.SLOP).booleanValue();
+    }
+
+    public EnumFacing getFacing(final IBlockState state)
+    {
+        return state.getValue(BlockBelt.FACING);
+    }
+
+    public void setSlopState(final World world, final BlockPos pos, final boolean value)
+    {
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.SLOP, value));
     }
 
     @Override
@@ -157,5 +183,18 @@ public class BlockBelt extends BlockMachineBase
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
         return new TileBelt(.05f);
+    }
+
+    @Override
+    public boolean onWrench(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing)
+    {
+        IBlockState state = world.getBlockState(pos);
+        if (player.isSneaking())
+        {
+            this.setSlopState(world, pos, !this.getSlopState(state));
+        }
+        else
+            this.rotateBlock(world, pos, getFacing(state).rotateAround(Axis.Y));
+        return true;
     }
 }
