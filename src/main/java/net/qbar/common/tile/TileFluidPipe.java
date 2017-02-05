@@ -2,6 +2,9 @@ package net.qbar.common.tile;
 
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map.Entry;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -11,6 +14,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IFluidPipe;
@@ -118,6 +122,18 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         this.transferCapacity = tagCompound.getInteger("transferCapacity");
         if (tagCompound.hasKey("coldStorage"))
             this.coldStorage = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("coldStorage"));
+
+        this.connections.clear();
+        for (final EnumFacing facing : EnumFacing.VALUES)
+        {
+            if (tagCompound.hasKey("connected" + facing.ordinal()))
+            {
+                final Optional<ITileCable<PipeGrid>> connect = this.getWorldAdjacent(facing);
+
+                if (connect.isPresent())
+                    this.connect(facing, connect.get());
+            }
+        }
     }
 
     @Override
@@ -133,7 +149,18 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
             this.coldStorage.writeToNBT(tag);
             tagCompound.setTag("coldStorage", tag);
         }
+
+        for (final Entry<EnumFacing, ITileCable<PipeGrid>> entry : this.connections.entrySet())
+            tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
         return tagCompound;
+    }
+
+    public Optional<ITileCable<PipeGrid>> getWorldAdjacent(final EnumFacing facing)
+    {
+        final BlockPos search = this.pos.offset(facing);
+        if (this.world.getTileEntity(search) != null && this.world.getTileEntity(search) instanceof ITileCable)
+            return Optional.of((ITileCable<PipeGrid>) this.world.getTileEntity(search));
+        return Optional.absent();
     }
 
     @Override
@@ -166,12 +193,14 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void connect(final EnumFacing facing, final ITileCable to)
     {
         this.connections.put(facing, to);
+        this.updateState();
     }
 
     @Override
     public void disconnect(final EnumFacing facing)
     {
         this.connections.remove(facing);
+        this.updateState();
     }
 
     public void scanFluidHandlers(final BlockPos posNeighbor)
@@ -225,8 +254,9 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void onLoad()
     {
         super.onLoad();
-        if (!this.world.isRemote && this.getGrid() == -1)
+        if (this.isServer() && this.getGrid() == -1)
             TickHandler.loadables.add(this);
+        this.updateState();
     }
 
     @Override
@@ -250,5 +280,92 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public PipeGrid createGrid(final int id)
     {
         return new PipeGrid(id, this.transferCapacity);
+    }
+
+    ////////////
+    // RENDER //
+    ////////////
+
+    public final VisibilityModelState state = new VisibilityModelState();
+
+    private void updateState()
+    {
+        if (this.isServer())
+        {
+            this.sync();
+            return;
+        }
+        this.state.hidden.clear();
+
+        if (this.connections.isEmpty())
+        {
+            this.state.hidden.add("armx1");
+            this.state.hidden.add("armx2");
+            this.state.hidden.add("army1");
+            this.state.hidden.add("army2");
+            this.state.hidden.add("armz1");
+            this.state.hidden.add("armz2");
+            this.state.hidden.add("straightx");
+            this.state.hidden.add("straighty");
+            this.state.hidden.add("straightz");
+        }
+        else if (this.isStraight())
+        {
+            this.state.hidden.add("center");
+            this.state.hidden.add("armx1");
+            this.state.hidden.add("armx2");
+
+            this.state.hidden.add("army1");
+            this.state.hidden.add("army2");
+
+            this.state.hidden.add("armz1");
+            this.state.hidden.add("armz2");
+
+            if (this.connections.containsKey(EnumFacing.WEST))
+            {
+                this.state.hidden.add("straighty");
+                this.state.hidden.add("straightz");
+            }
+            else if (this.connections.containsKey(EnumFacing.NORTH))
+            {
+                this.state.hidden.add("straighty");
+                this.state.hidden.add("straightx");
+            }
+            else if (this.connections.containsKey(EnumFacing.UP))
+            {
+                this.state.hidden.add("straightx");
+                this.state.hidden.add("straightz");
+            }
+        }
+        else
+        {
+            this.state.hidden.add("straightx");
+            this.state.hidden.add("straighty");
+            this.state.hidden.add("straightz");
+
+            if (!this.connections.containsKey(EnumFacing.UP))
+                this.state.hidden.add("army1");
+            if (!this.connections.containsKey(EnumFacing.DOWN))
+                this.state.hidden.add("army2");
+            if (!this.connections.containsKey(EnumFacing.NORTH))
+                this.state.hidden.add("armz1");
+            if (!this.connections.containsKey(EnumFacing.SOUTH))
+                this.state.hidden.add("armz2");
+            if (!this.connections.containsKey(EnumFacing.EAST))
+                this.state.hidden.add("armx1");
+            if (!this.connections.containsKey(EnumFacing.WEST))
+                this.state.hidden.add("armx2");
+        }
+
+        this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+
+    private boolean isStraight()
+    {
+        if (this.connections.size() == 2)
+            return this.connections.containsKey(EnumFacing.NORTH) && this.connections.containsKey(EnumFacing.SOUTH)
+                    || this.connections.containsKey(EnumFacing.WEST) && this.connections.containsKey(EnumFacing.EAST)
+                    || this.connections.containsKey(EnumFacing.UP) && this.connections.containsKey(EnumFacing.DOWN);
+        return false;
     }
 }

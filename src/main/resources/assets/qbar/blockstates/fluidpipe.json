@@ -2,16 +2,16 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "all": "qbar:blocks/fluid_pipe"
         },
-        "uvlock": true
+        "transform": "forge:default-block",
+        "custom": { "flip-v": true }
     },
     "variants": {
         "normal": {
-            "model": "cube_all"
+			"model": "qbar:fluidpipe.obj"
         },
         "inventory": {
-            "model": "cube_all"
+			"model": "qbar:fluidpipe.obj"
         }
     }
 }
