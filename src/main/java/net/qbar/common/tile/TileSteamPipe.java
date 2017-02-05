@@ -378,7 +378,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
 
     private boolean isStraight()
     {
-        if (this.connections.size() == 2)
+        if (this.connections.size() + this.adjacentSteamHandler.size() == 2)
             return this.isConnected(EnumFacing.NORTH) && this.isConnected(EnumFacing.SOUTH)
                     || this.isConnected(EnumFacing.WEST) && this.isConnected(EnumFacing.EAST)
                     || this.isConnected(EnumFacing.UP) && this.isConnected(EnumFacing.DOWN);

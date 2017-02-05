@@ -400,7 +400,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
 
     private boolean isStraight()
     {
-        if (this.connections.size() == 2)
+        if (this.connections.size() + this.adjacentFluidHandler.size() == 2)
             return this.isConnected(EnumFacing.NORTH) && this.isConnected(EnumFacing.SOUTH)
                     || this.isConnected(EnumFacing.WEST) && this.isConnected(EnumFacing.EAST)
                     || this.isConnected(EnumFacing.UP) && this.isConnected(EnumFacing.DOWN);

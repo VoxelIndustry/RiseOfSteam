@@ -145,4 +145,13 @@ public class TileOffshorePump extends QBarTileBase implements ITickable, ITileIn
     {
         this.facing = facing;
     }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+
+        if (this.isClient())
+            this.forceSync();
+    }
 }
