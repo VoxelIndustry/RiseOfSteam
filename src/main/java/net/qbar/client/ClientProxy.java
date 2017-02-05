@@ -22,8 +22,8 @@ public class ClientProxy extends CommonProxy
 
         super.preInit(e);
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(QBarBlocks.FLUID_TANK), 0,
-                new ModelResourceLocation(QBar.MODID + ":fluidtank", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(QBarBlocks.STEAM_PIPE), 1,
+                new ModelResourceLocation(QBar.MODID + ":steampipe", "inventoryvalve"));
     }
 
     @Override

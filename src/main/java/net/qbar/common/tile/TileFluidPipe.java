@@ -158,7 +158,8 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public Optional<ITileCable<PipeGrid>> getWorldAdjacent(final EnumFacing facing)
     {
         final BlockPos search = this.pos.offset(facing);
-        if (this.world.getTileEntity(search) != null && this.world.getTileEntity(search) instanceof ITileCable)
+        if (this.world != null && this.world.getTileEntity(search) != null
+                && this.world.getTileEntity(search) instanceof ITileCable)
             return Optional.of((ITileCable<PipeGrid>) this.world.getTileEntity(search));
         return Optional.absent();
     }
