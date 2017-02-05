@@ -17,6 +17,7 @@ import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.ContainerTankUpdatePacket;
+import net.qbar.common.network.TileSyncRequestPacket;
 import net.qbar.common.steam.CapabilitySteamHandler;
 
 public class CommonProxy
@@ -25,6 +26,7 @@ public class CommonProxy
     {
         QBar.network = NetworkContext.forChannel("MyMod");
         QBar.network.register(ContainerTankUpdatePacket.class);
+        QBar.network.register(TileSyncRequestPacket.class);
 
         CapabilitySteamHandler.register();
 

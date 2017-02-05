@@ -8,6 +8,14 @@ import net.qbar.common.tile.QBarTileBase;
 
 public class NetworkHandler
 {
+    public static void askTile(final QBarTileBase tile)
+    {
+        if (tile.isClient())
+        {
+
+        }
+    }
+
     public static void sendTileToRange(final QBarTileBase tile)
     {
         if (tile.isServer())

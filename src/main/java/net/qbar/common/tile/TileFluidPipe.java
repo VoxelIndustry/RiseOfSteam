@@ -76,8 +76,9 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         }
         else
             lines.add("Errored grid!");
-        this.connections.forEach((facing, cable) -> lines.add(facing + ": " + (cable != null)));
-        this.adjacentFluidHandler.forEach((facing, handler) -> lines.add(facing + ": " + (handler != null)));
+        this.connections.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
+        this.adjacentFluidHandler
+                .forEach((facing, handler) -> lines.add("FluidHandler " + facing + ": " + (handler != null)));
     }
 
     @Override
@@ -124,6 +125,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
             this.coldStorage = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("coldStorage"));
 
         this.connections.clear();
+        this.adjacentFluidHandler.clear();
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
             if (tagCompound.hasKey("connected" + facing.ordinal()))
@@ -132,6 +134,13 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
 
                 if (connect.isPresent())
                     this.connect(facing, connect.get());
+            }
+            if (tagCompound.hasKey("connectedfluid" + facing.ordinal()))
+            {
+                final Optional<IFluidHandler> connect = this.getWorldAdjacentFluidHandler(facing);
+
+                if (connect.isPresent())
+                    this.connectFluidHandler(facing, connect.get());
             }
         }
     }
@@ -152,6 +161,8 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
 
         for (final Entry<EnumFacing, ITileCable<PipeGrid>> entry : this.connections.entrySet())
             tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
+        for (final Entry<EnumFacing, IFluidHandler> entry : this.adjacentFluidHandler.entrySet())
+            tagCompound.setBoolean("connectedfluid" + entry.getKey().ordinal(), true);
         return tagCompound;
     }
 
@@ -161,6 +172,16 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         if (this.world != null && this.world.getTileEntity(search) != null
                 && this.world.getTileEntity(search) instanceof ITileCable)
             return Optional.of((ITileCable<PipeGrid>) this.world.getTileEntity(search));
+        return Optional.absent();
+    }
+
+    public Optional<IFluidHandler> getWorldAdjacentFluidHandler(final EnumFacing facing)
+    {
+        final BlockPos search = this.pos.offset(facing);
+        if (this.world != null && this.world.getTileEntity(search) != null && this.world.getTileEntity(search)
+                .hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
+            return Optional.of(this.world.getTileEntity(search)
+                    .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()));
         return Optional.absent();
     }
 
@@ -191,7 +212,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     }
 
     @Override
-    public void connect(final EnumFacing facing, final ITileCable to)
+    public void connect(final EnumFacing facing, final ITileCable<PipeGrid> to)
     {
         this.connections.put(facing, to);
         this.updateState();
@@ -201,6 +222,18 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     public void disconnect(final EnumFacing facing)
     {
         this.connections.remove(facing);
+        this.updateState();
+    }
+
+    public void connectFluidHandler(final EnumFacing facing, final IFluidHandler to)
+    {
+        this.adjacentFluidHandler.put(facing, to);
+        this.updateState();
+    }
+
+    public void disconnectFluidHandler(final EnumFacing facing)
+    {
+        this.adjacentFluidHandler.remove(facing);
         this.updateState();
     }
 
@@ -216,7 +249,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         {
             if (tile == null || !tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
             {
-                this.adjacentFluidHandler.remove(facing.getOpposite());
+                this.disconnectFluidHandler(facing.getOpposite());
                 if (this.adjacentFluidHandler.isEmpty())
                     this.getGridObject().removeOutput(this);
             }
@@ -228,7 +261,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
                 if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)
                         && !(tile instanceof TileFluidPipe))
                 {
-                    this.adjacentFluidHandler.put(facing.getOpposite(),
+                    this.connectFluidHandler(facing.getOpposite(),
                             tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing));
                     this.getGridObject().addOutput(this);
                 }
@@ -257,7 +290,8 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         super.onLoad();
         if (this.isServer() && this.getGrid() == -1)
             TickHandler.loadables.add(this);
-        this.updateState();
+        else if (this.isClient())
+            this.forceSync();
     }
 
     @Override
@@ -298,7 +332,7 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         }
         this.state.hidden.clear();
 
-        if (this.connections.isEmpty())
+        if (this.connections.isEmpty() && this.adjacentFluidHandler.isEmpty())
         {
             this.state.hidden.add("armx1");
             this.state.hidden.add("armx2");
@@ -322,17 +356,17 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
             this.state.hidden.add("armz1");
             this.state.hidden.add("armz2");
 
-            if (this.connections.containsKey(EnumFacing.WEST))
+            if (this.isConnected(EnumFacing.WEST))
             {
                 this.state.hidden.add("straighty");
                 this.state.hidden.add("straightz");
             }
-            else if (this.connections.containsKey(EnumFacing.NORTH))
+            else if (this.isConnected(EnumFacing.NORTH))
             {
                 this.state.hidden.add("straighty");
                 this.state.hidden.add("straightx");
             }
-            else if (this.connections.containsKey(EnumFacing.UP))
+            else if (this.isConnected(EnumFacing.UP))
             {
                 this.state.hidden.add("straightx");
                 this.state.hidden.add("straightz");
@@ -344,17 +378,17 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
             this.state.hidden.add("straighty");
             this.state.hidden.add("straightz");
 
-            if (!this.connections.containsKey(EnumFacing.UP))
+            if (!this.isConnected(EnumFacing.UP))
                 this.state.hidden.add("army1");
-            if (!this.connections.containsKey(EnumFacing.DOWN))
+            if (!this.isConnected(EnumFacing.DOWN))
                 this.state.hidden.add("army2");
-            if (!this.connections.containsKey(EnumFacing.NORTH))
+            if (!this.isConnected(EnumFacing.NORTH))
                 this.state.hidden.add("armz1");
-            if (!this.connections.containsKey(EnumFacing.SOUTH))
+            if (!this.isConnected(EnumFacing.SOUTH))
                 this.state.hidden.add("armz2");
-            if (!this.connections.containsKey(EnumFacing.EAST))
+            if (!this.isConnected(EnumFacing.EAST))
                 this.state.hidden.add("armx1");
-            if (!this.connections.containsKey(EnumFacing.WEST))
+            if (!this.isConnected(EnumFacing.WEST))
                 this.state.hidden.add("armx2");
         }
 
@@ -364,9 +398,14 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
     private boolean isStraight()
     {
         if (this.connections.size() == 2)
-            return this.connections.containsKey(EnumFacing.NORTH) && this.connections.containsKey(EnumFacing.SOUTH)
-                    || this.connections.containsKey(EnumFacing.WEST) && this.connections.containsKey(EnumFacing.EAST)
-                    || this.connections.containsKey(EnumFacing.UP) && this.connections.containsKey(EnumFacing.DOWN);
+            return this.isConnected(EnumFacing.NORTH) && this.isConnected(EnumFacing.SOUTH)
+                    || this.isConnected(EnumFacing.WEST) && this.isConnected(EnumFacing.EAST)
+                    || this.isConnected(EnumFacing.UP) && this.isConnected(EnumFacing.DOWN);
         return false;
+    }
+
+    private boolean isConnected(final EnumFacing facing)
+    {
+        return this.connections.containsKey(facing) || this.adjacentFluidHandler.containsKey(facing);
     }
 }

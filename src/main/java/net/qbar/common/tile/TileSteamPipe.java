@@ -132,6 +132,13 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
                 if (connect.isPresent())
                     this.connect(facing, connect.get());
             }
+            if (tagCompound.hasKey("connectedsteam" + facing.ordinal()))
+            {
+                final Optional<ISteamHandler> connect = this.getWorldAdjacentSteamHandler(facing);
+
+                if (connect.isPresent())
+                    this.connectSteamHandler(facing, connect.get());
+            }
         }
     }
 
@@ -146,6 +153,8 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
             tagCompound.setInteger("coldStorage", this.coldStorage);
         for (final Entry<EnumFacing, ITileCable<SteamGrid>> entry : this.connections.entrySet())
             tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
+        for (final Entry<EnumFacing, ISteamHandler> entry : this.adjacentSteamHandler.entrySet())
+            tagCompound.setBoolean("connectedsteam" + entry.getKey().ordinal(), true);
         return tagCompound;
     }
 
@@ -155,6 +164,16 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         if (this.world != null && this.world.getTileEntity(search) != null
                 && this.world.getTileEntity(search) instanceof ITileCable)
             return Optional.of((ITileCable<SteamGrid>) this.world.getTileEntity(search));
+        return Optional.absent();
+    }
+
+    public Optional<ISteamHandler> getWorldAdjacentSteamHandler(final EnumFacing facing)
+    {
+        final BlockPos search = this.pos.offset(facing);
+        if (this.world != null && this.world.getTileEntity(search) != null && this.world.getTileEntity(search)
+                .hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing.getOpposite()))
+            return Optional.of(this.world.getTileEntity(search)
+                    .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing.getOpposite()));
         return Optional.absent();
     }
 
@@ -186,6 +205,18 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         this.updateState();
     }
 
+    public void connectSteamHandler(final EnumFacing facing, final ISteamHandler to)
+    {
+        this.adjacentSteamHandler.put(facing, to);
+        this.updateState();
+    }
+
+    public void disconnectSteamHandler(final EnumFacing facing)
+    {
+        this.adjacentSteamHandler.remove(facing);
+        this.updateState();
+    }
+
     public void scanSteamHandlers(final BlockPos posNeighbor)
     {
         final TileEntity tile = this.world.getTileEntity(posNeighbor);
@@ -198,7 +229,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         {
             if (tile == null || !tile.hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing))
             {
-                this.adjacentSteamHandler.remove(facing.getOpposite());
+                this.disconnectSteamHandler(facing.getOpposite());
                 if (this.adjacentSteamHandler.isEmpty())
                     this.getGridObject().removeConnectedPipe(this);
             }
@@ -210,7 +241,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
                 if (tile.hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing)
                         && !(tile instanceof TileSteamPipe))
                 {
-                    this.adjacentSteamHandler.put(facing.getOpposite(),
+                    this.connectSteamHandler(facing.getOpposite(),
                             tile.getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing));
                     this.getGridObject().addConnectedPipe(this);
                 }
@@ -224,7 +255,8 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         super.onLoad();
         if (!this.world.isRemote && this.getGrid() == -1)
             TickHandler.loadables.add(this);
-        this.updateState();
+        else if (this.isClient())
+            this.forceSync();
     }
 
     @Override
@@ -278,7 +310,7 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         this.state.hidden.add("valvez1");
         this.state.hidden.add("valvez2");
 
-        if (this.connections.isEmpty())
+        if (this.connections.isEmpty() && this.adjacentSteamHandler.isEmpty())
         {
             this.state.hidden.add("armx1");
             this.state.hidden.add("armx2");
@@ -302,17 +334,17 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
             this.state.hidden.add("armz1");
             this.state.hidden.add("armz2");
 
-            if (this.connections.containsKey(EnumFacing.WEST))
+            if (this.isConnected(EnumFacing.WEST))
             {
                 this.state.hidden.add("straighty");
                 this.state.hidden.add("straightz");
             }
-            else if (this.connections.containsKey(EnumFacing.NORTH))
+            else if (this.isConnected(EnumFacing.NORTH))
             {
                 this.state.hidden.add("straighty");
                 this.state.hidden.add("straightx");
             }
-            else if (this.connections.containsKey(EnumFacing.UP))
+            else if (this.isConnected(EnumFacing.UP))
             {
                 this.state.hidden.add("straightx");
                 this.state.hidden.add("straightz");
@@ -324,17 +356,17 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
             this.state.hidden.add("straighty");
             this.state.hidden.add("straightz");
 
-            if (!this.connections.containsKey(EnumFacing.UP))
+            if (!this.isConnected(EnumFacing.UP))
                 this.state.hidden.add("army1");
-            if (!this.connections.containsKey(EnumFacing.DOWN))
+            if (!this.isConnected(EnumFacing.DOWN))
                 this.state.hidden.add("army2");
-            if (!this.connections.containsKey(EnumFacing.NORTH))
+            if (!this.isConnected(EnumFacing.NORTH))
                 this.state.hidden.add("armz1");
-            if (!this.connections.containsKey(EnumFacing.SOUTH))
+            if (!this.isConnected(EnumFacing.SOUTH))
                 this.state.hidden.add("armz2");
-            if (!this.connections.containsKey(EnumFacing.EAST))
+            if (!this.isConnected(EnumFacing.EAST))
                 this.state.hidden.add("armx1");
-            if (!this.connections.containsKey(EnumFacing.WEST))
+            if (!this.isConnected(EnumFacing.WEST))
                 this.state.hidden.add("armx2");
         }
 
@@ -344,9 +376,14 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
     private boolean isStraight()
     {
         if (this.connections.size() == 2)
-            return this.connections.containsKey(EnumFacing.NORTH) && this.connections.containsKey(EnumFacing.SOUTH)
-                    || this.connections.containsKey(EnumFacing.WEST) && this.connections.containsKey(EnumFacing.EAST)
-                    || this.connections.containsKey(EnumFacing.UP) && this.connections.containsKey(EnumFacing.DOWN);
+            return this.isConnected(EnumFacing.NORTH) && this.isConnected(EnumFacing.SOUTH)
+                    || this.isConnected(EnumFacing.WEST) && this.isConnected(EnumFacing.EAST)
+                    || this.isConnected(EnumFacing.UP) && this.isConnected(EnumFacing.DOWN);
         return false;
+    }
+
+    private boolean isConnected(final EnumFacing facing)
+    {
+        return this.connections.containsKey(facing) || this.adjacentSteamHandler.containsKey(facing);
     }
 }
