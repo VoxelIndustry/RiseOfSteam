@@ -291,7 +291,10 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         if (this.isServer() && this.getGrid() == -1)
             TickHandler.loadables.add(this);
         else if (this.isClient())
+        {
             this.forceSync();
+            this.updateState();
+        }
     }
 
     @Override

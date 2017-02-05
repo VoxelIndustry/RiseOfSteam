@@ -58,7 +58,6 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
-        this.tank.writeToNBT(tag);
         tag.setInteger("facing", this.facing.ordinal());
         tag.setInteger("transferCapacity", this.transferCapacity);
 
@@ -68,7 +67,6 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
-        this.tank.readFromNBT(tag);
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.transferCapacity = tag.getInteger("transferCapacity");
 

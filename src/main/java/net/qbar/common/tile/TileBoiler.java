@@ -180,9 +180,7 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
         super.readFromNBT(tag);
 
         if (tag.hasKey("steamTank"))
-        {
             this.steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
-        }
 
         if (tag.hasKey("fluidTank"))
             this.fluidTank.readFromNBT(tag);

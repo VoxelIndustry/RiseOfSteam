@@ -256,7 +256,10 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         if (!this.world.isRemote && this.getGrid() == -1)
             TickHandler.loadables.add(this);
         else if (this.isClient())
+        {
             this.forceSync();
+            this.updateState();
+        }
     }
 
     @Override
