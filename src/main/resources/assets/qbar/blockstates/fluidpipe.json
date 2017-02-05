@@ -11,7 +11,7 @@
 			"model": "qbar:fluidpipe.obj"
         },
         "inventory": {
-			"model": "qbar:fluidpipe.obj"
+			"model": "qbar:fluidpipe_inventory.obj"
         }
     }
 }
