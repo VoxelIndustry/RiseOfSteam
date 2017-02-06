@@ -5,8 +5,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -77,8 +75,9 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         }
         else
             lines.add("Errored grid!");
-        this.connections.forEach((facing, cable) -> lines.add(facing + ": " + (cable != null)));
-        this.adjacentSteamHandler.forEach((facing, handler) -> lines.add(facing + ": " + (handler != null)));
+        this.connections.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
+        this.adjacentSteamHandler
+                .forEach((facing, handler) -> lines.add("SteamHandler " + facing + ": " + (handler != null)));
     }
 
     @Override
@@ -126,19 +125,9 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
             if (tagCompound.hasKey("connected" + facing.ordinal()))
-            {
-                final Optional<ITileCable<SteamGrid>> connect = this.getWorldAdjacent(facing);
-
-                if (connect.isPresent())
-                    this.connect(facing, connect.get());
-            }
+                this.connect(facing, null);
             if (tagCompound.hasKey("connectedsteam" + facing.ordinal()))
-            {
-                final Optional<ISteamHandler> connect = this.getWorldAdjacentSteamHandler(facing);
-
-                if (connect.isPresent())
-                    this.connectSteamHandler(facing, connect.get());
-            }
+                this.connectSteamHandler(facing, null);
         }
     }
 
@@ -156,25 +145,6 @@ public class TileSteamPipe extends QBarTileBase implements ITileInfoProvider, IS
         for (final Entry<EnumFacing, ISteamHandler> entry : this.adjacentSteamHandler.entrySet())
             tagCompound.setBoolean("connectedsteam" + entry.getKey().ordinal(), true);
         return tagCompound;
-    }
-
-    public Optional<ITileCable<SteamGrid>> getWorldAdjacent(final EnumFacing facing)
-    {
-        final BlockPos search = this.pos.offset(facing);
-        if (this.world != null && this.world.getTileEntity(search) != null
-                && this.world.getTileEntity(search) instanceof ITileCable)
-            return Optional.of((ITileCable<SteamGrid>) this.world.getTileEntity(search));
-        return Optional.absent();
-    }
-
-    public Optional<ISteamHandler> getWorldAdjacentSteamHandler(final EnumFacing facing)
-    {
-        final BlockPos search = this.pos.offset(facing);
-        if (this.world != null && this.world.getTileEntity(search) != null && this.world.getTileEntity(search)
-                .hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing.getOpposite()))
-            return Optional.of(this.world.getTileEntity(search)
-                    .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, facing.getOpposite()));
-        return Optional.absent();
     }
 
     @Override

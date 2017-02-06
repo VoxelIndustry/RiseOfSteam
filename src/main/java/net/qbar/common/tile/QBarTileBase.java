@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.qbar.common.network.NetworkHandler;
 import net.qbar.common.network.TileSyncRequestPacket;
 
@@ -36,11 +37,17 @@ public class QBarTileBase extends TileEntity
 
     public boolean isServer()
     {
-        return !this.world.isRemote;
+        if (this.world != null)
+            return !this.world.isRemote;
+        else
+            return FMLCommonHandler.instance().getEffectiveSide().isServer();
     }
 
     public boolean isClient()
     {
-        return this.world.isRemote;
+        if (this.world != null)
+            return this.world.isRemote;
+        else
+            return FMLCommonHandler.instance().getEffectiveSide().isClient();
     }
 }

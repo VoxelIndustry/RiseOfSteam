@@ -4,8 +4,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -129,19 +127,9 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
             if (tagCompound.hasKey("connected" + facing.ordinal()))
-            {
-                final Optional<ITileCable<PipeGrid>> connect = this.getWorldAdjacent(facing);
-
-                if (connect.isPresent())
-                    this.connect(facing, connect.get());
-            }
+                this.connect(facing, null);
             if (tagCompound.hasKey("connectedfluid" + facing.ordinal()))
-            {
-                final Optional<IFluidHandler> connect = this.getWorldAdjacentFluidHandler(facing);
-
-                if (connect.isPresent())
-                    this.connectFluidHandler(facing, connect.get());
-            }
+                this.connectFluidHandler(facing, null);
         }
     }
 
@@ -164,25 +152,6 @@ public class TileFluidPipe extends QBarTileBase implements ITileInfoProvider, IF
         for (final Entry<EnumFacing, IFluidHandler> entry : this.adjacentFluidHandler.entrySet())
             tagCompound.setBoolean("connectedfluid" + entry.getKey().ordinal(), true);
         return tagCompound;
-    }
-
-    public Optional<ITileCable<PipeGrid>> getWorldAdjacent(final EnumFacing facing)
-    {
-        final BlockPos search = this.pos.offset(facing);
-        if (this.world != null && this.world.getTileEntity(search) != null
-                && this.world.getTileEntity(search) instanceof ITileCable)
-            return Optional.of((ITileCable<PipeGrid>) this.world.getTileEntity(search));
-        return Optional.absent();
-    }
-
-    public Optional<IFluidHandler> getWorldAdjacentFluidHandler(final EnumFacing facing)
-    {
-        final BlockPos search = this.pos.offset(facing);
-        if (this.world != null && this.world.getTileEntity(search) != null && this.world.getTileEntity(search)
-                .hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
-            return Optional.of(this.world.getTileEntity(search)
-                    .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()));
-        return Optional.absent();
     }
 
     @Override
