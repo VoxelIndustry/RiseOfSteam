@@ -185,6 +185,8 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
         super.onLoad();
         if (!this.world.isRemote && this.getGrid() == -1)
             TickHandler.loadables.add(this);
+        if (this.isClient())
+            this.forceSync();
     }
 
     @Override

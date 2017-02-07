@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,8 +26,20 @@ public class BlockBelt extends BlockOrientableMachine
     public BlockBelt()
     {
         super("belt", Material.IRON);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EnumFacing.NORTH)
-                .withProperty(BlockBelt.SLOP, false));
+        this.setDefaultState(this.blockState.getBaseState()
+                .withProperty(BlockOrientableMachine.FACING, EnumFacing.NORTH).withProperty(BlockBelt.SLOP, false));
+    }
+
+    @Override
+    public void onEntityWalk(final World w, final BlockPos pos, final Entity e)
+    {
+        final double speed = ((TileBelt) w.getTileEntity(pos)).getBeltSpeed();
+        final EnumFacing facing = (EnumFacing) w.getBlockState(pos).getProperties().get(BlockOrientableMachine.FACING);
+
+        if (facing.getAxis().equals(Axis.X))
+            e.motionX += facing.equals(EnumFacing.EAST) ? speed : -speed;
+        else
+            e.motionZ += facing.equals(EnumFacing.SOUTH) ? speed : -speed;
     }
 
     @Override
@@ -65,7 +78,7 @@ public class BlockBelt extends BlockOrientableMachine
             final IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
             final IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
             final IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
-            EnumFacing enumfacing = state.getValue(BlockBelt.FACING);
+            EnumFacing enumfacing = state.getValue(BlockOrientableMachine.FACING);
 
             if (enumfacing == EnumFacing.NORTH && iblockstate.isFullBlock() && !iblockstate1.isFullBlock())
             {
@@ -84,7 +97,7 @@ public class BlockBelt extends BlockOrientableMachine
                 enumfacing = EnumFacing.WEST;
             }
 
-            worldIn.setBlockState(pos, state.withProperty(BlockBelt.FACING, enumfacing), 2);
+            worldIn.setBlockState(pos, state.withProperty(BlockOrientableMachine.FACING, enumfacing), 2);
         }
     }
 
@@ -100,10 +113,11 @@ public class BlockBelt extends BlockOrientableMachine
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        EnumFacing enumfacing = super.getFacing(meta);
-        boolean slop = ((meta >> BlockOrientableMachine.NEEDED_BIT) & 1) == 1;
+        final EnumFacing enumfacing = super.getFacing(meta);
+        final boolean slop = (meta >> BlockOrientableMachine.NEEDED_BIT & 1) == 1;
 
-        return this.getDefaultState().withProperty(BlockBelt.FACING, enumfacing).withProperty(BlockBelt.SLOP, slop);
+        return this.getDefaultState().withProperty(BlockOrientableMachine.FACING, enumfacing)
+                .withProperty(BlockBelt.SLOP, slop);
     }
 
     @Override
@@ -118,7 +132,7 @@ public class BlockBelt extends BlockOrientableMachine
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, BlockBelt.FACING, BlockBelt.SLOP);
+        return new BlockStateContainer(this, BlockOrientableMachine.FACING, BlockBelt.SLOP);
     }
 
     public boolean getSlopState(final IBlockState state)
@@ -150,15 +164,15 @@ public class BlockBelt extends BlockOrientableMachine
     }
 
     @Override
-    public boolean onWrench(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing,
-            IBlockState state)
+    public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
+            final EnumFacing facing, final IBlockState state)
     {
         if (player.isSneaking())
         {
             this.setSlopState(world, pos, !this.getSlopState(state));
         }
         else
-            this.rotateBlock(world, pos, getFacing(state).rotateAround(Axis.Y));
+            this.rotateBlock(world, pos, this.getFacing(state).rotateAround(Axis.Y));
         return true;
     }
 }
