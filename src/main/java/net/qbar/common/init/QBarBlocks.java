@@ -18,6 +18,7 @@ import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.block.BlockOffshorePump;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
+import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileAssembler;
 import net.qbar.common.tile.TileBelt;
 import net.qbar.common.tile.TileBoiler;
@@ -78,6 +79,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileAssembler.class, "assembler");
         QBarBlocks.registerTile(TileBelt.class, "belt");
         QBarBlocks.registerTile(TileExtractor.class, "itemextractor");
+        QBarBlocks.registerTile(TileMultiblockGag.class, "multiblockgag");
     }
 
     public static final void registerBlock(final Block block, final String name)

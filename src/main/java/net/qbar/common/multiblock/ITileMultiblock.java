@@ -11,4 +11,6 @@ public interface ITileMultiblock
     void breakCore();
 
     BlockPos getCorePos();
+
+    ITileMultiblockCore getCore();
 }

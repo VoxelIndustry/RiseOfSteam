@@ -39,15 +39,13 @@ public class QBarTileBase extends TileEntity
     {
         if (this.world != null)
             return !this.world.isRemote;
-        else
-            return FMLCommonHandler.instance().getEffectiveSide().isServer();
+        return FMLCommonHandler.instance().getEffectiveSide().isServer();
     }
 
     public boolean isClient()
     {
         if (this.world != null)
             return this.world.isRemote;
-        else
-            return FMLCommonHandler.instance().getEffectiveSide().isClient();
+        return FMLCommonHandler.instance().getEffectiveSide().isClient();
     }
 }

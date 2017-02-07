@@ -4,15 +4,19 @@ import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.DirectionalTank;
+import net.qbar.common.multiblock.ITileMultiblockCore;
 
-public class TileTank extends QBarTileBase implements ITileInfoProvider
+public class TileTank extends QBarTileBase implements ITileInfoProvider, ITileMultiblockCore
 {
+    private BlockPos              inputPos;
+
     private final DirectionalTank tank;
 
     public TileTank()
@@ -40,18 +44,14 @@ public class TileTank extends QBarTileBase implements ITileInfoProvider
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return this.tank.canInteract(facing);
-        return super.hasCapability(capability, facing);
+        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return (T) this.tank.getFluidHandler(facing);
-        return super.getCapability(capability, facing);
+        return this.getCapability(capability, BlockPos.ORIGIN, facing);
     }
 
     @Override
@@ -70,5 +70,64 @@ public class TileTank extends QBarTileBase implements ITileInfoProvider
     public IFluidHandler getTank()
     {
         return this.tank.getInternalFluidHandler();
+    }
+
+    @Override
+    public boolean isCore()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isCorePresent()
+    {
+        return true;
+    }
+
+    @Override
+    public void breakCore()
+    {
+        this.world.destroyBlock(this.getPos(), true);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public ITileMultiblockCore getCore()
+    {
+        return this;
+    }
+
+    @Override
+    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
+    {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+                && (from.equals(BlockPos.ORIGIN) || from.equals(this.getInputPos())) && facing.getAxis().isHorizontal())
+            return true;
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
+    {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+                && (from.equals(BlockPos.ORIGIN) || from.equals(this.getInputPos())) && facing.getAxis().isHorizontal())
+        {
+            if (from.equals(BlockPos.ORIGIN))
+                return (T) this.tank.getOutputHandler();
+            return (T) this.tank.getInputHandler();
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    private BlockPos getInputPos()
+    {
+        if (this.inputPos == null)
+            this.inputPos = new BlockPos(0, 3, 0);
+        return this.inputPos;
     }
 }

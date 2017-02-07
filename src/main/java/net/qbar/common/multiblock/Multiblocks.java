@@ -6,6 +6,6 @@ public class Multiblocks
 
     static
     {
-        FLUID_TANK = new MultiblockDescriptorBase("FLUID_TANK", 1, 3, 1, 0, 0, 0);
+        FLUID_TANK = new MultiblockDescriptorBase("FLUID_TANK", 1, 4, 1, 0, 0, 0);
     }
 }

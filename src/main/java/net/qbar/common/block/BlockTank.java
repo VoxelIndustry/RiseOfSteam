@@ -126,14 +126,14 @@ public class BlockTank extends BlockMultiblockBase implements IWrenchable
     }
 
     @Override
-    public TileEntity createNewTileEntity(final World worldIn, final int meta)
+    public TileEntity getTile(final World w, final IBlockState state)
     {
         return new TileTank();
     }
 
     @Override
-    public boolean onWrench(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing,
-            IBlockState state)
+    public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
+            final EnumFacing facing, final IBlockState state)
     {
         this.rotateBlock(world, pos, state.getValue(BlockTank.FACING).rotateAround(Axis.Y));
         return true;

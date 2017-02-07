@@ -103,6 +103,16 @@ public class DirectionalTank
         this.internalTank.setFluid(fluid);
     }
 
+    public IFluidHandler getInputHandler()
+    {
+        return this.inputOnly;
+    }
+
+    public IFluidHandler getOutputHandler()
+    {
+        return this.outputOnly;
+    }
+
     private static class InternalRestrictedTank implements IFluidHandler
     {
         private final FluidTank internalTank;

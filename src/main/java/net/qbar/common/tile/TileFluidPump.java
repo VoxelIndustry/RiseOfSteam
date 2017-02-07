@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -41,7 +40,8 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (facing.getAxis() == Axis.Y && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        if (this.facing.equals(facing) || this.facing.getOpposite().equals(facing)
+                && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return true;
         return super.hasCapability(capability, facing);
     }
@@ -50,7 +50,8 @@ public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoP
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (facing.getAxis() == Axis.Y && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        if (this.facing.equals(facing) || this.facing.getOpposite().equals(facing)
+                && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return (T) this.tank;
         return super.getCapability(capability, facing);
     }
