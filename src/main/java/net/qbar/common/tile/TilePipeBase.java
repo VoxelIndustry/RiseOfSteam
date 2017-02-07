@@ -50,7 +50,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
         {
-            addSpecificInfo(lines);
+            this.addSpecificInfo(lines);
         }
         else
             lines.add("Errored grid!");
@@ -144,6 +144,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
         this.transferCapacity = tagCompound.getInteger("transferCapacity");
 
         this.connections.clear();
+        this.adjacentHandler.clear();
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
             if (tagCompound.hasKey("connected" + facing.ordinal()))
