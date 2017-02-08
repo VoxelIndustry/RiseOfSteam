@@ -32,7 +32,8 @@ public class QBarTileBase extends TileEntity
 
     protected void sync()
     {
-        NetworkHandler.sendTileToRange(this);
+        if (this.world != null)
+            NetworkHandler.sendTileToRange(this);
     }
 
     public boolean isServer()

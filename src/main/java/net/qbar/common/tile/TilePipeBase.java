@@ -143,6 +143,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
 
         this.transferCapacity = tagCompound.getInteger("transferCapacity");
 
+        final int previousConnections = this.connections.size();
+        final int previousHandlers = this.adjacentHandler.size();
         this.connections.clear();
         this.adjacentHandler.clear();
         for (final EnumFacing facing : EnumFacing.VALUES)
@@ -151,6 +153,12 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
                 this.connect(facing, null);
             if (tagCompound.hasKey("connectedHandler" + facing.ordinal()))
                 this.connectHandler(facing, null);
+        }
+        if (this.isClient())
+        {
+            if (this.connections.size() == 0 && previousConnections != 0
+                    || this.adjacentHandler.size() == 0 && previousHandlers != 0)
+                this.updateState();
         }
     }
 
