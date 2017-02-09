@@ -48,6 +48,13 @@ public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, 
     }
 
     @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
+    }
+
+    @Override
     public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing)
     {
         if (this.isCorePresent())

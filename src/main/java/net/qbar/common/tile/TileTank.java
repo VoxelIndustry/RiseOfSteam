@@ -2,6 +2,7 @@ package net.qbar.common.tile;
 
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -12,6 +13,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.util.FluidUtils;
 
 public class TileTank extends QBarTileBase implements ITileInfoProvider, ITileMultiblockCore
 {
@@ -129,5 +131,17 @@ public class TileTank extends QBarTileBase implements ITileInfoProvider, ITileMu
         if (this.inputPos == null)
             this.inputPos = new BlockPos(0, 3, 0);
         return this.inputPos;
+    }
+
+    @Override
+    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+
+        if (FluidUtils.drainPlayerHand(this.getTank(), player) || FluidUtils.fillPlayerHand(this.getTank(), player))
+            return true;
+        return false;
     }
 }

@@ -6,9 +6,12 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -130,6 +133,23 @@ public abstract class BlockMultiblockBase extends BlockMachineBase
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
         if (tile != null && !tile.isCore() && !tile.isCorePresent())
             w.getTileEntity(pos).getWorld().destroyBlock(pos, false);
+    }
+
+    @Override
+    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
+            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
+
+        if (tile != null)
+        {
+            if (tile.isCore())
+                return ((ITileMultiblockCore) tile).onRightClick(player, facing, hitX, hitY, hitZ);
+            else if (tile.isCorePresent())
+                return tile.getCore().onRightClick(player, facing, hitX, hitY, hitZ);
+        }
+        return false;
     }
 
     @Override

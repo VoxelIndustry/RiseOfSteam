@@ -21,7 +21,6 @@ import net.qbar.common.IWrenchable;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.TileTank;
-import net.qbar.common.util.FluidUtils;
 
 public class BlockTank extends BlockMultiblockBase implements IWrenchable
 {
@@ -104,24 +103,6 @@ public class BlockTank extends BlockMultiblockBase implements IWrenchable
     @Override
     public boolean isFullCube(final IBlockState state)
     {
-        return false;
-    }
-
-    @Override
-    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-            final float hitZ)
-    {
-        if (player.isSneaking())
-            return false;
-
-        final TileTank tank = (TileTank) w.getTileEntity(pos);
-
-        if (tank != null)
-        {
-            if (FluidUtils.drainPlayerHand(tank.getTank(), player) || FluidUtils.fillPlayerHand(tank.getTank(), player))
-                return true;
-        }
         return false;
     }
 
