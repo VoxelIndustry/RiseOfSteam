@@ -15,7 +15,7 @@ public class BlockOffshorePump extends BlockOrientableMachine
 
     public BlockOffshorePump()
     {
-        super("offshore_pump", Material.IRON);
+        super("offshore_pump", Material.IRON, true, false);
     }
 
     @Override

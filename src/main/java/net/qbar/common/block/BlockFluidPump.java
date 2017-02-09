@@ -2,8 +2,6 @@ package net.qbar.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -13,58 +11,42 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.tile.TileFluidPump;
 
-public class BlockFluidPump extends BlockMachineBase
+public class BlockFluidPump extends BlockOrientableMachine
 {
-    public static PropertyDirection FACING = PropertyDirection.create("facing");
-
     public BlockFluidPump()
     {
-        super("fluidpump", Material.IRON);
-
-        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockFluidPump.FACING, EnumFacing.UP));
+        super("fluidpump", Material.IRON, true, true);
     }
 
     @Override
-    protected BlockStateContainer createBlockState()
+    public boolean isOpaqueCube(final IBlockState state)
     {
-        return new BlockStateContainer(this, BlockFluidPump.FACING);
+        return false;
     }
 
     @Override
-    public int getMetaFromState(final IBlockState state)
+    public boolean isFullCube(final IBlockState state)
     {
-        final int facingInt = state.getValue(BlockFluidPump.FACING).ordinal();
-        return facingInt;
+        return false;
     }
 
     @Override
-    public IBlockState getStateFromMeta(final int meta)
+    public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
+            final EntityLivingBase placer, final ItemStack stack)
     {
-        int facingInt = meta;
-        if (facingInt > 5)
-            facingInt = facingInt - 5;
-        final EnumFacing facing = EnumFacing.VALUES[facingInt];
-        return this.getDefaultState().withProperty(BlockFluidPump.FACING, facing);
-    }
-
-    public EnumFacing getFacing(final IBlockState state)
-    {
-        return state.getValue(BlockFluidPump.FACING);
-    }
-
-    @Override
-    public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
-    {
-        return this.getStateFromMeta(meta).withProperty(BlockFluidPump.FACING, facing);
+        super.onBlockPlacedBy(w, pos, state, placer, stack);
+        if (!w.isRemote)
+        {
+            ((TileFluidPump) w.getTileEntity(pos)).setFacing(this.getFacing(state));
+            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandlers();
+        }
     }
 
     @Override
     public boolean rotateBlock(final World world, final BlockPos pos, final EnumFacing facing)
     {
-        if (facing == null)
-            return false;
-        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockFluidPump.FACING, facing));
+        super.rotateBlock(world, pos, facing);
+
         if (!world.isRemote)
         {
             ((TileFluidPump) world.getTileEntity(pos)).setFacing(facing);
@@ -82,21 +64,6 @@ public class BlockFluidPump extends BlockMachineBase
             final BlockPos substract = posNeighbor.subtract(pos);
             ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandler(posNeighbor,
                     EnumFacing.getFacingFromVector(substract.getX(), substract.getY(), substract.getZ()));
-        }
-    }
-
-    @Override
-    public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
-    {
-        super.onBlockPlacedBy(w, pos, state, placer, stack);
-
-        w.setBlockState(pos,
-                state.withProperty(BlockFluidPump.FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer)), 2);
-        if (!w.isRemote)
-        {
-            ((TileFluidPump) w.getTileEntity(pos)).setFacing(state.getValue(BlockFluidPump.FACING));
-            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandlers();
         }
     }
 

@@ -25,7 +25,7 @@ public class BlockBelt extends BlockOrientableMachine
 
     public BlockBelt()
     {
-        super("belt", Material.IRON);
+        super("belt", Material.IRON, true, false);
         this.setDefaultState(this.blockState.getBaseState()
                 .withProperty(BlockOrientableMachine.FACING, EnumFacing.NORTH).withProperty(BlockBelt.SLOP, false));
     }

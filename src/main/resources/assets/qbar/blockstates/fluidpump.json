@@ -2,38 +2,44 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "all": "qbar:blocks/pump"
-        }
+        },
+        "model": "qbar:fluidpump.obj",
+        "custom": { "flip-v": true },
+        "transform": "forge:default-block"
     },
     "variants": {
         "normal": {
-            "model": "cube_all"
+            "transform": "forge:default-block"
         },
-        "facing=down": {
-            "model": "cube_all",
-            "x": 90
-        },
-        "facing=up": {
-            "model": "cube_all",
-            "x": 270
-        },
-        "facing=north": {
-            "model": "cube_all"
-        },
-        "facing=south": {
-            "model": "cube_all",
-            "y": 180
-        },
-        "facing=west": {
-            "model": "cube_all",
-            "y": 270
-        },
-        "facing=east": {
-            "model": "cube_all",
-            "y": 90
+        "facing": {
+            "north": {
+                "y": 90
+            },
+            "south": {
+                "y": 270
+            },
+            "east": {
+                "y": 180
+            },
+            "west": {},
+            "up": {
+                "transform": {
+                    "rotation": [{"z": -90}]
+                }
+            },
+            "down": {
+                "transform": {
+                    "rotation": [{"z": 90}]
+                }
+            }
         },
         "inventory": {
-            "model": "cube_all"
+            "model": "qbar:fluidpump.obj",
+            "transform": {
+                "scale": 0.85,
+                "rotation": [{"x": 20}, {"y": -45}],
+                "translation": [0, -0.025, 0]
+            }
         }
     }
 }
