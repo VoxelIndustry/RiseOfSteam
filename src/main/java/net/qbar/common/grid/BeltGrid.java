@@ -1,10 +1,14 @@
 package net.qbar.common.grid;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.lwjgl.util.vector.Vector2f;
+
+import net.minecraft.item.ItemStack;
 import net.qbar.common.steam.SteamTank;
 
 public class BeltGrid extends CableGrid
@@ -30,7 +34,42 @@ public class BeltGrid extends CableGrid
     {
         super.tick();
 
-        this.inputs.forEach(input -> input.extractItems());
+        for (final ITileCable<BeltGrid> cable : this.getCables())
+        {
+            final IBelt belt = (IBelt) cable;
+
+            boolean hasChanged = false;
+
+            if (!belt.getItems().isEmpty())
+            {
+                final Iterator<ItemBelt> iterator = belt.getItems().iterator();
+
+                while (iterator.hasNext())
+                {
+                    final ItemBelt item = iterator.next();
+                    if (item.getPos().getY() < 1)
+                    {
+                        item.getPos().setY(item.getPos().getY() + this.beltSpeed / 10);
+                        hasChanged = true;
+                    }
+                    else
+                    {
+                        if (belt.getConnected(belt.getFacing()) != null)
+                        {
+                            final IBelt forward = (IBelt) belt.getConnected(belt.getFacing());
+
+                            forward.getItems().add(item);
+                            item.getPos().setY(0);
+                            forward.itemUpdate();
+                            iterator.remove();
+                            hasChanged = true;
+                        }
+                    }
+                }
+            }
+            if (hasChanged)
+                belt.itemUpdate();
+        }
     }
 
     @Override
@@ -78,5 +117,28 @@ public class BeltGrid extends CableGrid
     public void removeInput(final IBelt input)
     {
         this.inputs.remove(input);
+    }
+
+    public boolean insert(final IBelt belt, final ItemStack stack, final boolean doInsert)
+    {
+        if (this.inputs.contains(belt) && !belt.isSlope())
+        {
+            final boolean enoughSpace = true;
+            for (final ItemBelt item : belt.getItems())
+            {
+                // TODO : check collisions
+            }
+            if (belt.getItems().size() < 2 && doInsert)
+            {
+                belt.getItems().add(new ItemBelt(stack, new Vector2f(11f / 32f, 0)));
+                belt.itemUpdate();
+            }
+        }
+        return true;
+    }
+
+    public ItemStack extract(final ItemStack stack, final boolean doExtract)
+    {
+        return stack;
     }
 }

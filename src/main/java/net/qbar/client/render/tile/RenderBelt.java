@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.animation.FastTESR;
+import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.TileBelt;
 
 public class RenderBelt extends FastTESR<TileBelt>
@@ -79,15 +80,21 @@ public class RenderBelt extends FastTESR<TileBelt>
                     break;
             }
         }
-        GlStateManager.translate(1 - belt.getItemPositions()[1].y + 1 / 16.0, 1.438,
-                belt.getItemPositions()[1].x + 7 / 64.0);
 
-        this.handleRenderItem(belt.getItems()[1]);
+        GlStateManager.translate(0, 1.438, 0);
 
-        GlStateManager.translate(
-                -(1 - belt.getItemPositions()[1].y + 1 / 16.0) + (1 - belt.getItemPositions()[0].y + 1 / 16.0), 0,
-                -(belt.getItemPositions()[1].x + 7 / 64.0) + (belt.getItemPositions()[0].x + 7 / 64.0));
-        this.handleRenderItem(belt.getItems()[0]);
+        // System.out.println("t" + belt.getItems());
+        ItemBelt previous = null;
+        for (final ItemBelt item : belt.getItems())
+        {
+            if (previous == null)
+                GlStateManager.translate(1 + item.getPos().y - 9 / 16.0, 0, item.getPos().x + 7 / 64.0);
+            else
+                GlStateManager.translate(-(1 + previous.getPos().y - 9 / 16.0) + (1 + item.getPos().y - 9 / 16.0), 0,
+                        -(previous.getPos().x + 7 / 64.0) + (item.getPos().x + 7 / 64.0));
+            this.handleRenderItem(item.getStack());
+            previous = item;
+        }
 
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
@@ -110,10 +117,10 @@ public class RenderBelt extends FastTESR<TileBelt>
         else
         {
 
-            GlStateManager.scale(0.48F, 0.5F, 0.48F);
+            GlStateManager.scale(0.46F, 0.5F, 0.46F);
             GlStateManager.rotate(90, 1, 0, 0);
             GlStateManager.rotate(90, 0, 0, 1);
-            GlStateManager.translate(-.15, 0, .33);
+            GlStateManager.translate(0, 0.025, .33);
         }
 
         RenderHelper.enableStandardItemLighting();

@@ -1,5 +1,8 @@
 package net.qbar.common.grid;
 
+import java.util.Collection;
+
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
@@ -9,7 +12,16 @@ public interface IBelt extends ITileCable<BeltGrid>
 
     EnumFacing getFacing();
 
-    void extractItems();
-
     void connectInput(BlockPos pos);
+
+    boolean insert(ItemStack stack, boolean doInsert);
+
+    ItemStack extract(ItemStack stack, boolean doExtract);
+
+    Collection<ItemBelt> getItems();
+
+    /**
+     * For internal use only! Used to sync belt contents upon grid modification.
+     */
+    void itemUpdate();
 }

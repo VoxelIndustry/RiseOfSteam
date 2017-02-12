@@ -1,14 +1,15 @@
 package net.qbar.common.tile;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import net.minecraft.inventory.ISidedInventory;
+import org.lwjgl.util.vector.Vector2f;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
@@ -16,10 +17,11 @@ import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.grid.ITileCable;
+import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamUtil;
 
-public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvider, ISidedInventory, ILoadable
+public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, ILoadable
 {
     private int                                             gridID;
     private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connections;
@@ -29,10 +31,10 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
 
     private IBeltInput                                      input;
 
+    private final List<ItemBelt>                            items;
+
     public TileBelt(final float beltSpeed)
     {
-        super("InventoryBelt", 3);
-
         this.beltSpeed = beltSpeed;
 
         this.gridID = -1;
@@ -40,6 +42,8 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
         this.facing = EnumFacing.UP;
 
         this.input = null;
+
+        this.items = new ArrayList<>(3);
     }
 
     public TileBelt()
@@ -77,6 +81,19 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
 
         tag.setInteger("facing", this.facing.ordinal());
         tag.setFloat("beltSpeed", this.beltSpeed);
+
+        for (final ItemBelt belt : this.items)
+        {
+            final NBTTagCompound subTag = new NBTTagCompound();
+
+            subTag.setFloat("posX", belt.getPos().x);
+            subTag.setFloat("posY", belt.getPos().y);
+
+            belt.getStack().writeToNBT(subTag);
+
+            tag.setTag("item" + this.items.indexOf(belt), subTag);
+        }
+        tag.setInteger("itemCount", this.items.size());
         return tag;
     }
 
@@ -87,6 +104,14 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
 
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.beltSpeed = tag.getFloat("beltSpeed");
+
+        this.items.clear();
+        for (int i = 0; i < tag.getInteger("itemCount"); i++)
+        {
+            final NBTTagCompound subTag = tag.getCompoundTag("item" + i);
+            this.items.add(new ItemBelt(new ItemStack(subTag),
+                    new Vector2f(subTag.getFloat("posX"), subTag.getFloat("posY"))));
+        }
     }
 
     @Override
@@ -106,9 +131,8 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
             lines.add("Errored grid!");
         lines.add("Connected: " + (this.input != null));
 
-        lines.add("Slot 1: " + this.getStackInSlot(0));
-        lines.add("Slot 2: " + this.getStackInSlot(1));
-        lines.add("Slot 3: " + this.getStackInSlot(2));
+        for (final ItemBelt item : this.items)
+            lines.add("Slot " + this.items.indexOf(item) + ": " + item.getStack() + " | " + item.getPos());
     }
 
     @Override
@@ -202,35 +226,9 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
     }
 
     @Override
-    public int[] getSlotsForFace(final EnumFacing side)
+    public List<ItemBelt> getItems()
     {
-        if (side.equals(EnumFacing.UP))
-            return new int[] { 0, 1, 2, 3 };
-        return new int[0];
-    }
-
-    @Override
-    public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
-    {
-        if (direction.equals(EnumFacing.UP))
-            return true;
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(final int index, final ItemStack stack, final EnumFacing direction)
-    {
-        return false;
-    }
-
-    public ItemStack[] getItems()
-    {
-        return new ItemStack[] { this.getStackInSlot(0), this.getStackInSlot(1) };
-    }
-
-    public Vec2f[] getItemPositions()
-    {
-        return new Vec2f[] { new Vec2f(11f / 32f, 7 / 16f), new Vec2f(11f / 32f, 0 / 16f) };
+        return this.items;
     }
 
     @Override
@@ -248,23 +246,6 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
     public boolean isSlope()
     {
         return false;
-    }
-
-    @Override
-    public void extractItems()
-    {
-        for (final ItemStack stack : this.input.inputItems())
-        {
-            int i;
-            for (i = 0; i < 2; i++)
-            {
-                if (this.getStackInSlot(i).isEmpty())
-                {
-                    this.setInventorySlotContents(i, stack.copy());
-                    this.sync();
-                }
-            }
-        }
     }
 
     @Override
@@ -300,5 +281,27 @@ public class TileBelt extends TileInventoryBase implements IBelt, ITileInfoProvi
                     this.getGridObject().removeInput(this);
             }
         }
+    }
+
+    @Override
+    public boolean insert(final ItemStack stack, final boolean doInsert)
+    {
+        if (this.getGridObject() != null)
+            return this.getGridObject().insert(this, stack, doInsert);
+        return false;
+    }
+
+    @Override
+    public ItemStack extract(final ItemStack stack, final boolean doExtract)
+    {
+        if (this.getGridObject() != null)
+            return this.getGridObject().extract(stack, doExtract);
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void itemUpdate()
+    {
+        this.sync();
     }
 }

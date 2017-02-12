@@ -6,14 +6,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;
 
-public class TileExtractor extends TileInventoryBase implements ITileInfoProvider, IContainerProvider, IBeltInput
+public class TileExtractor extends TileInventoryBase
+        implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable
 {
     private EnumFacing facing;
 
@@ -25,10 +30,65 @@ public class TileExtractor extends TileInventoryBase implements ITileInfoProvide
     }
 
     @Override
+    public void update()
+    {
+        if (this.hasItemHandler() && this.hasBelt())
+        {
+            final IItemHandler itemHandler = this.getItemHandler();
+
+            final int slots = itemHandler.getSlots();
+            int currentSlot;
+            ItemStack simulated = ItemStack.EMPTY;
+            for (currentSlot = 0; currentSlot < slots; currentSlot++)
+            {
+                simulated = itemHandler.extractItem(currentSlot, 1, true);
+                if (!simulated.isEmpty())
+                    break;
+            }
+            if (!simulated.isEmpty() && this.canInsert(simulated))
+                this.insert(itemHandler.extractItem(currentSlot, 1, false));
+        }
+    }
+
+    private void insert(final ItemStack stack)
+    {
+        ((IBelt) this.world.getTileEntity(this.getPos().down())).insert(stack, true);
+    }
+
+    private boolean canInsert(final ItemStack stack)
+    {
+        final IBelt belt = (IBelt) this.world.getTileEntity(this.getPos().down());
+
+        return belt.insert(stack, false);
+    }
+
+    private boolean hasBelt()
+    {
+        final TileEntity tile = this.world.getTileEntity(this.getPos().down());
+
+        return tile != null && tile instanceof IBelt;
+    }
+
+    private IItemHandler getItemHandler()
+    {
+        return this.world.getTileEntity(this.getPos().offset(this.getFacing().getOpposite()))
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getFacing());
+    }
+
+    private boolean hasItemHandler()
+    {
+        final TileEntity tile = this.world.getTileEntity(this.getPos().offset(this.getFacing().getOpposite()));
+
+        return tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getFacing());
+    }
+
+    @Override
     public void addInfo(final List<String> lines)
     {
         lines.add("Orientation: " + this.getFacing());
         lines.add("Filter: ");
+        lines.add("Inventory: " + this.hasItemHandler());
+        lines.add("Belt: " + this.hasBelt());
     }
 
     @Override
