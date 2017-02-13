@@ -51,6 +51,12 @@ public class BeltGrid extends CableGrid
                     {
                         if (!this.checkCollision(belt, item, this.beltSpeed / 10))
                         {
+                            if (item.getPos().getX() > 11 / 32F)
+                                item.getPos().setX(item.getPos().getX()
+                                        - Math.min(item.getPos().getX() - 11 / 32F, this.beltSpeed / 10));
+                            else if (item.getPos().getX() < 11 / 32F)
+                                item.getPos().setX(item.getPos().getX()
+                                        + Math.min(11 / 32F - item.getPos().getX(), this.beltSpeed / 10));
                             item.getPos().setY(item.getPos().getY() + this.beltSpeed / 10);
                             hasChanged = true;
                         }
@@ -61,11 +67,26 @@ public class BeltGrid extends CableGrid
                         {
                             final IBelt forward = (IBelt) belt.getConnected(belt.getFacing());
 
-                            forward.getItems().add(item);
-                            item.getPos().setY(0);
-                            forward.itemUpdate();
-                            iterator.remove();
-                            hasChanged = true;
+                            if (belt.getFacing().getOpposite() != forward.getFacing())
+                            {
+                                forward.getItems().add(item);
+
+                                if (belt.getFacing() == forward.getFacing())
+                                    item.getPos().setY(0);
+                                else if (belt.getFacing().rotateY() == forward.getFacing())
+                                {
+                                    item.getPos().setX(10 / 16F);
+                                    item.getPos().setY(11 / 32F);
+                                }
+                                else
+                                {
+                                    item.getPos().setX(0);
+                                    item.getPos().setY(11 / 32F);
+                                }
+                                forward.itemUpdate();
+                                iterator.remove();
+                                hasChanged = true;
+                            }
                         }
                         else
                         {
