@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.steam.SteamTank;
 
@@ -61,6 +62,13 @@ public class BeltGrid extends CableGrid
                             forward.getItems().add(item);
                             item.getPos().setY(0);
                             forward.itemUpdate();
+                            iterator.remove();
+                            hasChanged = true;
+                        }
+                        else
+                        {
+                            InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(), belt.getPos().getY(),
+                                    belt.getPos().getZ(), item.getStack());
                             iterator.remove();
                             hasChanged = true;
                         }
