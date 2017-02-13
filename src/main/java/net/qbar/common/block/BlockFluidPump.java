@@ -15,10 +15,11 @@ import net.qbar.common.tile.TileFluidPump;
 
 public class BlockFluidPump extends BlockOrientableMachine
 {
-    protected static final AxisAlignedBB AABB_EAST  = new AxisAlignedBB(0.00D, 0.31D, 0.00D, 1.00D, 0.80D, 0.85D);
-    protected static final AxisAlignedBB AABB_NOTH  = new AxisAlignedBB(0.00D, 0.31D, 0.00D, 0.85D, 0.80D, 1.00D);
-    protected static final AxisAlignedBB AABB_WEST  = new AxisAlignedBB(0.00D, 0.31D, 0.15D, 1.00D, 0.80D, 1.00D);
-    protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.15D, 0.31D, 0.00D, 1.00D, 0.80D, 1.00D);
+    protected static final AxisAlignedBB AABB_EAST     = new AxisAlignedBB(0.00D, 0.30D, 0.00D, 1.00D, 0.80D, 0.85D);
+    protected static final AxisAlignedBB AABB_NOTH     = new AxisAlignedBB(0.00D, 0.30D, 0.00D, 0.85D, 0.80D, 1.00D);
+    protected static final AxisAlignedBB AABB_WEST     = new AxisAlignedBB(0.00D, 0.30D, 0.15D, 1.00D, 0.80D, 1.00D);
+    protected static final AxisAlignedBB AABB_SOUTH    = new AxisAlignedBB(0.15D, 0.30D, 0.00D, 1.00D, 0.80D, 1.00D);
+    protected static final AxisAlignedBB AABB_VERTICAL = new AxisAlignedBB(0.30D, 0.00D, 0.15D, 0.80D, 1.00D, 1.00D);
 
     public BlockFluidPump()
     {
@@ -93,6 +94,9 @@ public class BlockFluidPump extends BlockOrientableMachine
                 return AABB_NOTH;
             case SOUTH:
                 return AABB_SOUTH;
+            case UP:
+            case DOWN:
+                return AABB_VERTICAL;
             default:
                 return FULL_BLOCK_AABB;
         }
