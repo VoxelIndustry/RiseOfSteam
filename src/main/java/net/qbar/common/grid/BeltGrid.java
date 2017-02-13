@@ -131,12 +131,18 @@ public class BeltGrid extends CableGrid
     {
         if (this.inputs.contains(belt) && !belt.isSlope())
         {
-            final boolean enoughSpace = true;
+            boolean enoughSpace = true;
             for (final ItemBelt item : belt.getItems())
             {
-                // TODO : check collisions
+                if (item.getPos().y < 13 / 32F)
+                {
+                    enoughSpace = false;
+                    break;
+                }
             }
-            if (belt.getItems().size() < 2 && doInsert)
+            if (!enoughSpace)
+                return false;
+            if (doInsert)
             {
                 belt.getItems().add(new ItemBelt(stack, new Vector2f(11f / 32f, 0)));
                 belt.itemUpdate();
