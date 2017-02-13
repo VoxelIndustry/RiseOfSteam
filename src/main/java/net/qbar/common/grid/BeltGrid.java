@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 
 import org.lwjgl.util.vector.Vector2f;
 
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.steam.SteamTank;
 
@@ -50,8 +49,11 @@ public class BeltGrid extends CableGrid
                     final ItemBelt item = iterator.next();
                     if (item.getPos().getY() < 1)
                     {
-                        item.getPos().setY(item.getPos().getY() + this.beltSpeed / 10);
-                        hasChanged = true;
+                        if (!this.checkCollision(belt, item, this.beltSpeed / 10))
+                        {
+                            item.getPos().setY(item.getPos().getY() + this.beltSpeed / 10);
+                            hasChanged = true;
+                        }
                     }
                     else
                     {
@@ -67,10 +69,11 @@ public class BeltGrid extends CableGrid
                         }
                         else
                         {
-                            InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(), belt.getPos().getY(),
-                                    belt.getPos().getZ(), item.getStack());
-                            iterator.remove();
-                            hasChanged = true;
+                            // InventoryHelper.spawnItemStack(belt.getWorld(),
+                            // belt.getPos().getX(), belt.getPos().getY(),
+                            // belt.getPos().getZ(), item.getStack());
+                            // iterator.remove();
+                            // hasChanged = true;
                         }
                     }
                 }
@@ -154,5 +157,39 @@ public class BeltGrid extends CableGrid
     public ItemStack extract(final ItemStack stack, final boolean doExtract)
     {
         return stack;
+    }
+
+    private boolean checkCollision(final IBelt belt, final ItemBelt item, final float add)
+    {
+        if (!belt.getItems().isEmpty())
+        {
+            for (final ItemBelt collidable : belt.getItems())
+            {
+                if (collidable != item)
+                {
+                    if (collidable.getPos().getY() < item.getPos().getY() + add + 6 / 16F
+                            && collidable.getPos().getY() > item.getPos().getY() + add)
+                        return true;
+                }
+            }
+        }
+        if (item.getPos().getY() + add > 10 / 16F)
+        {
+            if (belt.getConnected(belt.getFacing()) != null)
+            {
+                final IBelt forward = (IBelt) belt.getConnected(belt.getFacing());
+
+                if (!forward.getItems().isEmpty())
+                {
+                    for (final ItemBelt collidable : forward.getItems())
+                    {
+                        if (collidable.getPos().getY() < item.getPos().getY() + add - 10 / 16F
+                                && collidable.getPos().getY() > item.getPos().getY() + add - 16 / 16F)
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
