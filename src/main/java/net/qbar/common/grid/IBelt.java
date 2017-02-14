@@ -16,8 +16,6 @@ public interface IBelt extends ITileCable<BeltGrid>
 
     boolean insert(ItemStack stack, boolean doInsert);
 
-    ItemStack extract(ItemStack stack, boolean doExtract);
-
     Collection<ItemBelt> getItems();
 
     /**

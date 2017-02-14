@@ -16,6 +16,7 @@ import net.qbar.common.block.BlockFluidPump;
 import net.qbar.common.block.BlockKeypunch;
 import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.block.BlockOffshorePump;
+import net.qbar.common.block.BlockSplitter;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
 import net.qbar.common.multiblock.TileMultiblockGag;
@@ -27,6 +28,7 @@ import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileFluidPump;
 import net.qbar.common.tile.TileKeypunch;
 import net.qbar.common.tile.TileOffshorePump;
+import net.qbar.common.tile.TileSplitter;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileTank;
 
@@ -54,6 +56,8 @@ public class QBarBlocks
     public static final BlockMachineBase BELT             = null;
     @ObjectHolder("itemextractor")
     public static final BlockMachineBase ITEM_EXTRACTOR   = null;
+    @ObjectHolder("itemsplitter")
+    public static final BlockMachineBase ITEM_SPLITTER    = null;
 
     public static final void registerBlocks()
     {
@@ -68,6 +72,7 @@ public class QBarBlocks
 
         QBarBlocks.registerBlock(new BlockBelt());
         QBarBlocks.registerBlock(new BlockExtractor());
+        QBarBlocks.registerBlock(new BlockSplitter());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -79,6 +84,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileAssembler.class, "assembler");
         QBarBlocks.registerTile(TileBelt.class, "belt");
         QBarBlocks.registerTile(TileExtractor.class, "itemextractor");
+        QBarBlocks.registerTile(TileSplitter.class, "itemsplitter");
         QBarBlocks.registerTile(TileMultiblockGag.class, "multiblockgag");
     }
 

@@ -265,11 +265,6 @@ public class BeltGrid extends CableGrid
         return true;
     }
 
-    public ItemStack extract(final ItemStack stack, final boolean doExtract)
-    {
-        return stack;
-    }
-
     private boolean checkCollision(final IBelt belt, final ItemBelt item, final float add)
     {
         if (!belt.getItems().isEmpty())

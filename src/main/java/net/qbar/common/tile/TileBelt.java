@@ -294,14 +294,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     }
 
     @Override
-    public ItemStack extract(final ItemStack stack, final boolean doExtract)
-    {
-        if (this.getGridObject() != null)
-            return this.getGridObject().extract(stack, doExtract);
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public void itemUpdate()
     {
         this.sync();
