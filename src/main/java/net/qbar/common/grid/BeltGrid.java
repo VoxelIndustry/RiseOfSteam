@@ -8,8 +8,13 @@ import javax.annotation.Nonnull;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.qbar.common.steam.SteamTank;
 
 public class BeltGrid extends CableGrid
@@ -21,6 +26,8 @@ public class BeltGrid extends CableGrid
     private final float      beltSpeed;
 
     private final float      BELT_MIDDLE = 10 / 32F;
+
+    private int              movedCount  = 0;
 
     public BeltGrid(final int identifier, final float beltSpeed)
     {
@@ -36,8 +43,6 @@ public class BeltGrid extends CableGrid
     public void tick()
     {
         super.tick();
-
-        int movedCount = 0;
 
         for (final ITileCable<BeltGrid> cable : this.getCables())
         {
@@ -103,10 +108,60 @@ public class BeltGrid extends CableGrid
                         }
                         else
                         {
-                            InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(), belt.getPos().getY(),
-                                    belt.getPos().getZ(), item.getStack());
-                            iterator.remove();
-                            hasChanged = true;
+                            final BlockPos forward = belt.getPos().offset(belt.getFacing());
+                            final BlockPos upward = forward.up();
+                            if (belt.getWorld().getBlockState(upward).getMaterial() == Material.AIR)
+                            {
+                                final TileEntity tile = belt.getWorld().getTileEntity(forward);
+
+                                if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                        belt.getFacing().getOpposite()))
+                                {
+                                    if (ItemHandlerHelper
+                                            .insertItem(
+                                                    tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                            belt.getFacing().getOpposite()),
+                                                    item.getStack(), true)
+                                            .isEmpty())
+                                    {
+                                        ItemHandlerHelper.insertItem(
+                                                tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                        belt.getFacing().getOpposite()),
+                                                item.getStack(), false);
+                                    }
+                                    else
+                                        InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
+                                                belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
+                                }
+                                else
+                                    InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
+                                            belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
+                                iterator.remove();
+                                hasChanged = true;
+                            }
+                            else
+                            {
+                                final TileEntity tile = belt.getWorld().getTileEntity(upward);
+
+                                if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                        belt.getFacing().getOpposite()))
+                                {
+                                    if (ItemHandlerHelper
+                                            .insertItem(
+                                                    tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                            belt.getFacing().getOpposite()),
+                                                    item.getStack(), true)
+                                            .isEmpty())
+                                    {
+                                        ItemHandlerHelper.insertItem(
+                                                tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                        belt.getFacing().getOpposite()),
+                                                item.getStack(), false);
+                                        iterator.remove();
+                                        hasChanged = true;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -116,13 +171,13 @@ public class BeltGrid extends CableGrid
                 if (!belt.hasChanged())
                 {
                     belt.setChanged(true);
-                    if (movedCount == 4)
+                    if (this.movedCount == 4)
                     {
                         this.getTank().drainSteam(1, true);
-                        movedCount = 0;
+                        this.movedCount = 0;
                     }
                     else
-                        movedCount++;
+                        this.movedCount++;
                 }
             }
         }
