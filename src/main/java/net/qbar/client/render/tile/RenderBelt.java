@@ -83,7 +83,6 @@ public class RenderBelt extends FastTESR<TileBelt>
 
         GlStateManager.translate(0, 1.438, 0);
 
-        // System.out.println("t" + belt.getItems());
         ItemBelt previous = null;
         for (final ItemBelt item : belt.getItems())
         {

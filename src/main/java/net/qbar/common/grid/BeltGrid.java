@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.steam.SteamTank;
 
@@ -18,6 +19,8 @@ public class BeltGrid extends CableGrid
     private final Set<IBelt> inputs;
 
     private final float      beltSpeed;
+
+    private final float      BELT_MIDDLE = 10 / 32F;
 
     public BeltGrid(final int identifier, final float beltSpeed)
     {
@@ -47,16 +50,24 @@ public class BeltGrid extends CableGrid
                 while (iterator.hasNext())
                 {
                     final ItemBelt item = iterator.next();
+
+                    if (item.getPos().getX() > this.BELT_MIDDLE)
+                    {
+                        item.getPos().setX(item.getPos().getX()
+                                - Math.min(item.getPos().getX() - this.BELT_MIDDLE, this.beltSpeed / 10));
+                        hasChanged = true;
+                    }
+                    else if (item.getPos().getX() < this.BELT_MIDDLE)
+                    {
+                        item.getPos().setX(item.getPos().getX()
+                                + Math.min(this.BELT_MIDDLE - item.getPos().getX(), this.beltSpeed / 10));
+                        hasChanged = true;
+                    }
+
                     if (item.getPos().getY() < 1)
                     {
                         if (!this.checkCollision(belt, item, this.beltSpeed / 10))
                         {
-                            if (item.getPos().getX() > 11 / 32F)
-                                item.getPos().setX(item.getPos().getX()
-                                        - Math.min(item.getPos().getX() - 11 / 32F, this.beltSpeed / 10));
-                            else if (item.getPos().getX() < 11 / 32F)
-                                item.getPos().setX(item.getPos().getX()
-                                        + Math.min(11 / 32F - item.getPos().getX(), this.beltSpeed / 10));
                             item.getPos().setY(item.getPos().getY() + this.beltSpeed / 10);
                             hasChanged = true;
                         }
@@ -76,12 +87,12 @@ public class BeltGrid extends CableGrid
                                 else if (belt.getFacing().rotateY() == forward.getFacing())
                                 {
                                     item.getPos().setX(10 / 16F);
-                                    item.getPos().setY(11 / 32F);
+                                    item.getPos().setY(this.BELT_MIDDLE);
                                 }
                                 else
                                 {
                                     item.getPos().setX(0);
-                                    item.getPos().setY(11 / 32F);
+                                    item.getPos().setY(this.BELT_MIDDLE);
                                 }
                                 forward.itemUpdate();
                                 iterator.remove();
@@ -90,11 +101,10 @@ public class BeltGrid extends CableGrid
                         }
                         else
                         {
-                            // InventoryHelper.spawnItemStack(belt.getWorld(),
-                            // belt.getPos().getX(), belt.getPos().getY(),
-                            // belt.getPos().getZ(), item.getStack());
-                            // iterator.remove();
-                            // hasChanged = true;
+                            InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(), belt.getPos().getY(),
+                                    belt.getPos().getZ(), item.getStack());
+                            iterator.remove();
+                            hasChanged = true;
                         }
                     }
                 }
@@ -168,7 +178,7 @@ public class BeltGrid extends CableGrid
                 return false;
             if (doInsert)
             {
-                belt.getItems().add(new ItemBelt(stack, new Vector2f(11f / 32f, 0)));
+                belt.getItems().add(new ItemBelt(stack, new Vector2f(this.BELT_MIDDLE, 0)));
                 belt.itemUpdate();
             }
         }
@@ -200,13 +210,23 @@ public class BeltGrid extends CableGrid
             {
                 final IBelt forward = (IBelt) belt.getConnected(belt.getFacing());
 
+                if (forward.getFacing() == belt.getFacing().getOpposite())
+                    return true;
                 if (!forward.getItems().isEmpty())
                 {
                     for (final ItemBelt collidable : forward.getItems())
                     {
-                        if (collidable.getPos().getY() < item.getPos().getY() + add - 10 / 16F
-                                && collidable.getPos().getY() > item.getPos().getY() + add - 16 / 16F)
-                            return true;
+                        if (belt.getFacing() == forward.getFacing())
+                        {
+                            if (collidable.getPos().getY() < item.getPos().getY() + add - 10 / 16F
+                                    && collidable.getPos().getY() > item.getPos().getY() + add - 16 / 16F)
+                                return true;
+                        }
+                        else if (item.getPos().getY() + add > 14 / 16F)
+                        {
+                            if (collidable.getPos().getY() < 10 / 16F && collidable.getPos().getY() > 0F)
+                                return true;
+                        }
                     }
                 }
             }
