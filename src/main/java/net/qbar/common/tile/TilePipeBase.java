@@ -145,17 +145,19 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
 
         final int previousConnections = this.connections.size();
         final int previousHandlers = this.adjacentHandler.size();
-        this.connections.clear();
-        this.adjacentHandler.clear();
-        for (final EnumFacing facing : EnumFacing.VALUES)
-        {
-            if (tagCompound.hasKey("connected" + facing.ordinal()))
-                this.connect(facing, null);
-            if (tagCompound.hasKey("connectedHandler" + facing.ordinal()))
-                this.connectHandler(facing, null);
-        }
+
         if (this.isClient())
         {
+            this.connections.clear();
+            this.adjacentHandler.clear();
+            for (final EnumFacing facing : EnumFacing.VALUES)
+            {
+                if (tagCompound.hasKey("connected" + facing.ordinal()))
+                    this.connect(facing, null);
+                if (tagCompound.hasKey("connectedHandler" + facing.ordinal()))
+                    this.connectHandler(facing, null);
+            }
+
             if (this.connections.size() == 0 && previousConnections != 0
                     || this.adjacentHandler.size() == 0 && previousHandlers != 0)
                 this.updateState();
