@@ -37,13 +37,15 @@ public class BeltGrid extends CableGrid
     {
         super.tick();
 
+        int movedCount = 0;
+
         for (final ITileCable<BeltGrid> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
             boolean hasChanged = false;
 
-            if (!belt.getItems().isEmpty())
+            if (this.getTank().getSteam() > 0 && !belt.getItems().isEmpty())
             {
                 final Iterator<ItemBelt> iterator = belt.getItems().iterator();
 
@@ -54,21 +56,21 @@ public class BeltGrid extends CableGrid
                     if (item.getPos().getX() > this.BELT_MIDDLE)
                     {
                         item.getPos().setX(item.getPos().getX()
-                                - Math.min(item.getPos().getX() - this.BELT_MIDDLE, this.beltSpeed / 10));
+                                - Math.min(item.getPos().getX() - this.BELT_MIDDLE, this.beltSpeed / 3));
                         hasChanged = true;
                     }
                     else if (item.getPos().getX() < this.BELT_MIDDLE)
                     {
                         item.getPos().setX(item.getPos().getX()
-                                + Math.min(this.BELT_MIDDLE - item.getPos().getX(), this.beltSpeed / 10));
+                                + Math.min(this.BELT_MIDDLE - item.getPos().getX(), this.beltSpeed / 3));
                         hasChanged = true;
                     }
 
                     if (item.getPos().getY() < 1)
                     {
-                        if (!this.checkCollision(belt, item, this.beltSpeed / 10))
+                        if (!this.checkCollision(belt, item, this.beltSpeed / 3))
                         {
-                            item.getPos().setY(item.getPos().getY() + this.beltSpeed / 10);
+                            item.getPos().setY(item.getPos().getY() + this.beltSpeed / 3);
                             hasChanged = true;
                         }
                     }
@@ -94,7 +96,7 @@ public class BeltGrid extends CableGrid
                                     item.getPos().setX(0);
                                     item.getPos().setY(this.BELT_MIDDLE);
                                 }
-                                forward.itemUpdate();
+                                forward.setChanged(true);
                                 iterator.remove();
                                 hasChanged = true;
                             }
@@ -110,7 +112,30 @@ public class BeltGrid extends CableGrid
                 }
             }
             if (hasChanged)
+            {
+                if (!belt.hasChanged())
+                {
+                    belt.setChanged(true);
+                    if (movedCount == 4)
+                    {
+                        this.getTank().drainSteam(1, true);
+                        movedCount = 0;
+                    }
+                    else
+                        movedCount++;
+                }
+            }
+        }
+
+        for (final ITileCable<BeltGrid> cable : this.getCables())
+        {
+            final IBelt belt = (IBelt) cable;
+
+            if (belt.hasChanged())
+            {
                 belt.itemUpdate();
+                belt.setChanged(false);
+            }
         }
     }
 

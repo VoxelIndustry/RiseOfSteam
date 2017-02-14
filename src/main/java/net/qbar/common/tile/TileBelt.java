@@ -33,6 +33,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
     private final List<ItemBelt>                            items;
 
+    private boolean                                         hasChanged = false;
+
     public TileBelt(final float beltSpeed)
     {
         this.beltSpeed = beltSpeed;
@@ -132,7 +134,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         lines.add("Connected: " + (this.input != null));
 
         for (final ItemBelt item : this.items)
-            lines.add("Slot " + this.items.indexOf(item) + ": " + item.getStack() + " | " + item.getPos());
+            lines.add("Slot " + this.items.indexOf(item) + ": " + item.getStack());
     }
 
     @Override
@@ -303,5 +305,17 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     public void itemUpdate()
     {
         this.sync();
+    }
+
+    @Override
+    public boolean hasChanged()
+    {
+        return this.hasChanged;
+    }
+
+    @Override
+    public void setChanged(final boolean change)
+    {
+        this.hasChanged = change;
     }
 }

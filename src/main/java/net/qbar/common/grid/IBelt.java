@@ -24,4 +24,8 @@ public interface IBelt extends ITileCable<BeltGrid>
      * For internal use only! Used to sync belt contents upon grid modification.
      */
     void itemUpdate();
+
+    boolean hasChanged();
+
+    void setChanged(boolean change);
 }
