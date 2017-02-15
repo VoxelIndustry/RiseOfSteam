@@ -2,6 +2,7 @@ package net.qbar.common.tile;
 
 import java.util.List;
 
+import mezz.jei.ItemFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.qbar.common.block.BlockExtractor;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
@@ -20,13 +22,24 @@ import net.qbar.common.init.QBarItems;
 public class TileExtractor extends TileInventoryBase
         implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable
 {
-    private EnumFacing facing;
+    private EnumFacing    facing;
 
-    public TileExtractor()
+    private final boolean hasFilter;
+
+    private ItemFilter    filter;
+
+    public TileExtractor(final boolean hasFilter)
     {
         super("itemextractor", 1);
 
         this.facing = EnumFacing.UP;
+
+        this.hasFilter = hasFilter;
+    }
+
+    public TileExtractor()
+    {
+        this(false);
     }
 
     @Override
@@ -86,7 +99,9 @@ public class TileExtractor extends TileInventoryBase
     public void addInfo(final List<String> lines)
     {
         lines.add("Orientation: " + this.getFacing());
-        lines.add("Filter: ");
+
+        if (this.world.getBlockState(this.getPos()).getValue(BlockExtractor.FILTER))
+            lines.add("Filter: ");
         lines.add("Inventory: " + this.hasItemHandler());
         lines.add("Belt: " + this.hasBelt());
     }

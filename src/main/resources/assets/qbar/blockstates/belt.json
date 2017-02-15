@@ -5,38 +5,27 @@
             "top": "qbar:blocks/belt_top",
             "side": "qbar:blocks/belt",
             "front": "qbar:blocks/belt"
-        }
+        },
+        "model": "orientable"
     },
     "variants": {
-        "facing=north,slop=false": {
-            "model": "orientable"
+        "facing": {
+            "north": {},
+            "south": {
+                "y": 180
+            },
+            "east": {
+                "y": 90
+            },
+            "west": {
+                "y": 270
+            },
+            "up": {},
+            "down": {}
         },
-        "facing=south,slop=false": {
-            "model": "orientable",
-            "y": 180
-        },
-        "facing=west,slop=false": {
-            "model": "orientable",
-            "y": 270
-        },
-        "facing=east,slop=false": {
-            "model": "orientable",
-            "y": 90
-        },
-        "facing=north,slop=true": {
-            "model": "orientable"
-        },
-        "facing=south,slop=true": {
-            "model": "orientable",
-            "y": 180
-        },
-        "facing=west,slop=true": {
-            "model": "orientable",
-            "y": 270
-        },
-        "facing=east,slop=true": {
-            "model": "orientable",
-            "y": 90
+        "slop": {
+            "true": {},
+            "false": {}
         },
         "inventory": {
             "model": "orientable"

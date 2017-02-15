@@ -1,5 +1,7 @@
 package net.qbar.common.init;
 
+import java.util.function.Function;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -19,6 +21,7 @@ import net.qbar.common.block.BlockOffshorePump;
 import net.qbar.common.block.BlockSplitter;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
+import net.qbar.common.block.item.ItemBlockExtractor;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileAssembler;
 import net.qbar.common.tile.TileBelt;
@@ -69,9 +72,8 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockFluidPump());
         QBarBlocks.registerBlock(new BlockOffshorePump());
         QBarBlocks.registerBlock(new BlockAssembler());
-
         QBarBlocks.registerBlock(new BlockBelt());
-        QBarBlocks.registerBlock(new BlockExtractor());
+        QBarBlocks.registerBlock(new BlockExtractor(), ItemBlockExtractor::new);
         QBarBlocks.registerBlock(new BlockSplitter());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
@@ -90,12 +92,17 @@ public class QBarBlocks
 
     public static final void registerBlock(final Block block, final String name)
     {
-        final ItemBlock itemBlock = new ItemBlock(block);
+        QBarBlocks.registerBlock(block, ItemBlock::new, name);
+    }
 
+    public static final void registerBlock(final Block block, final Function<Block, ItemBlock> supplier,
+            final String name)
+    {
+        final ItemBlock supplied = supplier.apply(block);
         GameRegistry.register(block.setRegistryName(QBar.MODID, name));
-        GameRegistry.register(itemBlock, block.getRegistryName());
+        GameRegistry.register(supplied, block.getRegistryName());
 
-        QBar.proxy.registerItemRenderer(itemBlock, 0, name);
+        QBar.proxy.registerItemRenderer(supplied, 0, name);
     }
 
     public static final void registerBlock(final BlockBase block)
@@ -106,6 +113,11 @@ public class QBarBlocks
     public static final void registerBlock(final BlockMachineBase block)
     {
         QBarBlocks.registerBlock(block, block.name);
+    }
+
+    public static final void registerBlock(final BlockMachineBase block, final Function<Block, ItemBlock> supplier)
+    {
+        QBarBlocks.registerBlock(block, supplier, block.name);
     }
 
     public static final void registerTile(final Class<? extends TileEntity> c, final String name)

@@ -1,14 +1,20 @@
 package net.qbar.common.block;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -18,6 +24,7 @@ import net.qbar.common.tile.TileExtractor;
 
 public class BlockExtractor extends BlockMachineBase
 {
+    public static PropertyBool           FILTER           = PropertyBool.create("filter");
     public static PropertyDirection      FACING           = PropertyDirection.create("facing", facing -> true);
 
     protected static final AxisAlignedBB AABB_BOTTOM_HALF = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
@@ -30,8 +37,15 @@ public class BlockExtractor extends BlockMachineBase
     public BlockExtractor()
     {
         super("itemextractor", Material.IRON);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP)
+                .withProperty(BlockExtractor.FILTER, false));
+    }
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP));
+    @Override
+    public void getSubBlocks(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> stacks)
+    {
+        stacks.add(new ItemStack(item, 1, 0));
+        stacks.add(new ItemStack(item, 1, 1));
     }
 
     @Override
@@ -75,24 +89,38 @@ public class BlockExtractor extends BlockMachineBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, BlockExtractor.FACING);
+        return new BlockStateContainer(this, BlockExtractor.FACING, BlockExtractor.FILTER);
+    }
+
+    @Override
+    public int damageDropped(final IBlockState state)
+    {
+        return state.getValue(BlockExtractor.FILTER) ? 1 : 0;
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        final int facingInt = state.getValue(BlockExtractor.FACING).ordinal();
-        return facingInt;
+        int i = 0;
+        i = i | state.getValue(BlockExtractor.FACING).getIndex();
+
+        if (state.getValue(BlockExtractor.FILTER).booleanValue())
+            i |= 8;
+        return i;
     }
 
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        int facingInt = meta;
-        if (facingInt > 4)
-            facingInt = facingInt - 4;
-        final EnumFacing facing = EnumFacing.VALUES[facingInt];
-        return this.getDefaultState().withProperty(BlockExtractor.FACING, facing);
+        return this.getDefaultState().withProperty(BlockExtractor.FACING, BlockExtractor.getFacing(meta))
+                .withProperty(BlockExtractor.FILTER, Boolean.valueOf((meta & 8) > 0));
+    }
+
+    @Nullable
+    public static EnumFacing getFacing(final int meta)
+    {
+        final int i = meta & 7;
+        return i > 5 ? null : EnumFacing.getFront(i);
     }
 
     public EnumFacing getFacing(final IBlockState state)
@@ -104,7 +132,8 @@ public class BlockExtractor extends BlockMachineBase
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
             final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
-        return this.getStateFromMeta(meta).withProperty(BlockExtractor.FACING, facing);
+        return this.getStateFromMeta(meta).withProperty(BlockExtractor.FACING, facing)
+                .withProperty(BlockExtractor.FILTER, meta == 1);
     }
 
     @Override
@@ -143,6 +172,6 @@ public class BlockExtractor extends BlockMachineBase
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileExtractor();
+        return new TileExtractor(this.getStateFromMeta(meta).getValue(BlockExtractor.FILTER));
     }
 }

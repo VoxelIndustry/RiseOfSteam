@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.qbar.QBar;
 import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.common.CommonProxy;
-import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.tile.TileBelt;
 
 public class ClientProxy extends CommonProxy
@@ -22,8 +21,10 @@ public class ClientProxy extends CommonProxy
 
         super.preInit(e);
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(QBarBlocks.STEAM_PIPE), 1,
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:steampipe"), 1,
                 new ModelResourceLocation(QBar.MODID + ":steampipe", "inventoryvalve"));
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
+                new ModelResourceLocation(QBar.MODID + ":itemextractor", "facing=up,filter=true"));
     }
 
     @Override
