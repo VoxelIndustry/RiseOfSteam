@@ -2,7 +2,7 @@ package net.qbar.common.gui;
 
 public enum EGui
 {
-    BOILER(true);
+    BOILER(true), EXTRACTOR(true);
 
     private final boolean containerBuilder;
 

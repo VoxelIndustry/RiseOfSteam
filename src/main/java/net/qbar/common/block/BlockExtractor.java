@@ -10,16 +10,20 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.qbar.QBar;
 import net.qbar.common.grid.IBelt;
+import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.TileExtractor;
 
 public class BlockExtractor extends BlockMachineBase
@@ -39,6 +43,23 @@ public class BlockExtractor extends BlockMachineBase
         super("itemextractor", Material.IRON);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP)
                 .withProperty(BlockExtractor.FILTER, false));
+    }
+
+    @Override
+    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
+            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+        final TileExtractor extractor = (TileExtractor) w.getTileEntity(pos);
+        if (extractor != null && extractor.hasFilter())
+        {
+            player.openGui(QBar.instance, EGui.EXTRACTOR.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+            return true;
+        }
+
+        return false;
     }
 
     @Override

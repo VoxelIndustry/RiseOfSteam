@@ -6,8 +6,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.GuiBoiler;
+import net.qbar.client.gui.GuiExtractor;
 import net.qbar.common.tile.IContainerProvider;
 import net.qbar.common.tile.TileBoiler;
+import net.qbar.common.tile.TileExtractor;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -31,8 +33,18 @@ public class GuiHandler implements IGuiHandler
             final int y, final int z)
     {
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-        if (EGui.values()[ID].equals(EGui.BOILER))
-            return new GuiBoiler(player, (TileBoiler) tile);
+
+        final EGui gui = EGui.values()[ID];
+        switch (gui)
+        {
+            case BOILER:
+                return new GuiBoiler(player, (TileBoiler) tile);
+            case EXTRACTOR:
+                return new GuiExtractor(player, (TileExtractor) tile);
+            default:
+                break;
+        }
+
         return null;
     }
 

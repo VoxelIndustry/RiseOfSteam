@@ -22,11 +22,11 @@ import net.qbar.common.init.QBarItems;
 public class TileExtractor extends TileInventoryBase
         implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable
 {
-    private EnumFacing    facing;
+    private EnumFacing facing;
 
-    private final boolean hasFilter;
+    private boolean    hasFilter;
 
-    private ItemFilter    filter;
+    private ItemFilter filter;
 
     public TileExtractor(final boolean hasFilter)
     {
@@ -58,9 +58,20 @@ public class TileExtractor extends TileInventoryBase
                 if (!simulated.isEmpty())
                     break;
             }
-            if (!simulated.isEmpty() && this.canInsert(simulated))
+            if (!simulated.isEmpty() && this.canInsert(simulated) && this.useSteam(1, false))
+            {
                 this.insert(itemHandler.extractItem(currentSlot, 1, false));
+                this.useSteam(1, true);
+            }
         }
+    }
+
+    private boolean useSteam(final int amount, final boolean use)
+    {
+        if (((IBelt) this.world.getTileEntity(this.getPos().down())).getGridObject() != null)
+            return ((IBelt) this.world.getTileEntity(this.getPos().down())).getGridObject().getTank().drainSteam(amount,
+                    use) == amount;
+        return false;
     }
 
     private void insert(final ItemStack stack)
@@ -110,6 +121,7 @@ public class TileExtractor extends TileInventoryBase
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
         tag.setInteger("facing", this.facing.ordinal());
+        tag.setBoolean("filtered", this.hasFilter);
 
         return super.writeToNBT(tag);
     }
@@ -118,6 +130,7 @@ public class TileExtractor extends TileInventoryBase
     public void readFromNBT(final NBTTagCompound tag)
     {
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
+        this.hasFilter = tag.getBoolean("filtered");
 
         super.readFromNBT(tag);
     }
@@ -125,9 +138,9 @@ public class TileExtractor extends TileInventoryBase
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("itemextractor", player).player(player.inventory).hotbar().inventory()
+        return new ContainerBuilder("itemextractor", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this)
-                .filterSlot(0, 80, 43, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(0, 80, 63, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
                 .addInventory().create();
     }
 
@@ -151,5 +164,32 @@ public class TileExtractor extends TileInventoryBase
     public boolean canInput(final IBelt into)
     {
         return into.getFacing() == this.getFacing();
+    }
+
+    @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
+    }
+
+    public boolean hasFilter()
+    {
+        return this.hasFilter;
+    }
+
+    public void setHasFilter(final boolean hasFilter)
+    {
+        this.hasFilter = hasFilter;
+    }
+
+    public ItemFilter getFilter()
+    {
+        return this.filter;
+    }
+
+    public void setFilter(final ItemFilter filter)
+    {
+        this.filter = filter;
     }
 }
