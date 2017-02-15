@@ -21,7 +21,7 @@ import net.qbar.common.block.BlockOffshorePump;
 import net.qbar.common.block.BlockSplitter;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
-import net.qbar.common.block.item.ItemBlockExtractor;
+import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileAssembler;
 import net.qbar.common.tile.TileBelt;
@@ -67,13 +67,13 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockKeypunch());
         QBarBlocks.registerBlock(new BlockTank());
         QBarBlocks.registerBlock(new BlockBoiler());
-        QBarBlocks.registerBlock(new BlockFluidPipe());
-        QBarBlocks.registerBlock(new BlockSteamPipe());
+        QBarBlocks.registerBlock(new BlockFluidPipe(), block -> new ItemBlockMetadata(block, "", "valve"));
+        QBarBlocks.registerBlock(new BlockSteamPipe(), block -> new ItemBlockMetadata(block, "", "valve"));
         QBarBlocks.registerBlock(new BlockFluidPump());
         QBarBlocks.registerBlock(new BlockOffshorePump());
         QBarBlocks.registerBlock(new BlockAssembler());
         QBarBlocks.registerBlock(new BlockBelt());
-        QBarBlocks.registerBlock(new BlockExtractor(), ItemBlockExtractor::new);
+        QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "", "filter"));
         QBarBlocks.registerBlock(new BlockSplitter());
 
         QBarBlocks.registerTile(TileTank.class, "tank");

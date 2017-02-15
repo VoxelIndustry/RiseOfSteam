@@ -4,12 +4,16 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockExtractor extends ItemBlock
+public class ItemBlockMetadata extends ItemBlock
 {
-    public ItemBlockExtractor(final Block block)
+    private final String[] variants;
+
+    public ItemBlockMetadata(final Block block, final String... variants)
     {
         super(block);
         this.setHasSubtypes(true);
+
+        this.variants = variants;
     }
 
     @Override
@@ -21,8 +25,8 @@ public class ItemBlockExtractor extends ItemBlock
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        if (stack.getMetadata() == 1)
-            return this.getUnlocalizedName() + "filtered";
+        if (stack.getMetadata() < this.variants.length)
+            return this.getUnlocalizedName() + this.variants[stack.getMetadata()];
         return this.getUnlocalizedName();
     }
 }

@@ -5,6 +5,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -17,10 +21,16 @@ import net.qbar.common.tile.TilePipeBase;
 
 public abstract class BlockPipeBase extends BlockMachineBase
 {
-
-    public BlockPipeBase(String name)
+    public BlockPipeBase(final String name)
     {
         super(name, Material.IRON);
+    }
+
+    @Override
+    public void getSubBlocks(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> stacks)
+    {
+        stacks.add(new ItemStack(item, 1, 0));
+        stacks.add(new ItemStack(item, 1, 1));
     }
 
     @Override

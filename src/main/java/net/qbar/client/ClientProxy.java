@@ -21,6 +21,8 @@ public class ClientProxy extends CommonProxy
 
         super.preInit(e);
 
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
+                new ModelResourceLocation(QBar.MODID + ":fluidpipe", "inventoryvalve"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:steampipe"), 1,
                 new ModelResourceLocation(QBar.MODID + ":steampipe", "inventoryvalve"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
