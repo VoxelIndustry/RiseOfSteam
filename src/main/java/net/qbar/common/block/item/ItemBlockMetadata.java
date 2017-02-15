@@ -25,8 +25,8 @@ public class ItemBlockMetadata extends ItemBlock
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        if (stack.getMetadata() < this.variants.length)
-            return this.getUnlocalizedName() + this.variants[stack.getMetadata()];
+        if (stack.getMetadata() != 0 && stack.getMetadata() <= this.variants.length)
+            return this.getUnlocalizedName() + "." + this.variants[stack.getMetadata() - 1];
         return this.getUnlocalizedName();
     }
 }

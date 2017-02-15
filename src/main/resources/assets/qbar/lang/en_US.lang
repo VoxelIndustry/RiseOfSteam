@@ -3,15 +3,21 @@ itemGroup.QBar=QBar
 
 #Machines
 tile.keypunch.name=KeyPunch
-tile.tank.name=Fluid Tank
+tile.fluidtank.name=Fluid Tank
 tile.boiler.name=Solid Boiler
 tile.fluidpipe.name=Fluid Pipe
+tile.fluidpipe.valve.name=Fluid Pipe Valve
 tile.steampipe.name=Steam Pipe
+tile.steampipe.valve.name=Steam Pipe Valve
 tile.fluidpump.name=Fluid Pump
 tile.offshore_pump.name=Offshore Pump
 tile.assembler.name=Assembler
 
 tile.belt.name=Belt
+tile.itemextractor.name=Item Extractor
+tile.itemextractor.filter.name=Filtered Item Extractor
+tile.itemsplitter.name=Item Splitter
+tile.itemsplitter.filter.name=Filtered Item Splitter
 
 #Items
 item.punched_card.name=Punched Card

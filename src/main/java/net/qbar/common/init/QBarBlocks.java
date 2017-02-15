@@ -67,13 +67,13 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockKeypunch());
         QBarBlocks.registerBlock(new BlockTank());
         QBarBlocks.registerBlock(new BlockBoiler());
-        QBarBlocks.registerBlock(new BlockFluidPipe(), block -> new ItemBlockMetadata(block, "", "valve"));
-        QBarBlocks.registerBlock(new BlockSteamPipe(), block -> new ItemBlockMetadata(block, "", "valve"));
+        QBarBlocks.registerBlock(new BlockFluidPipe(), block -> new ItemBlockMetadata(block, "valve"));
+        QBarBlocks.registerBlock(new BlockSteamPipe(), block -> new ItemBlockMetadata(block, "valve"));
         QBarBlocks.registerBlock(new BlockFluidPump());
         QBarBlocks.registerBlock(new BlockOffshorePump());
         QBarBlocks.registerBlock(new BlockAssembler());
         QBarBlocks.registerBlock(new BlockBelt());
-        QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "", "filter"));
+        QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         QBarBlocks.registerBlock(new BlockSplitter());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
