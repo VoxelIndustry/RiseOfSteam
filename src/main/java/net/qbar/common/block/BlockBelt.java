@@ -2,6 +2,7 @@ package net.qbar.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -15,7 +16,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.Properties;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.TileBelt;
 
@@ -28,6 +34,24 @@ public class BlockBelt extends BlockOrientableMachine
         super("belt", Material.IRON, true, false);
         this.setDefaultState(this.blockState.getBaseState()
                 .withProperty(BlockOrientableMachine.FACING, EnumFacing.NORTH).withProperty(BlockBelt.SLOP, false));
+    }
+
+    @Override
+    public boolean isOpaqueCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean causesSuffocation(final IBlockState state)
+    {
+        return false;
     }
 
     @Override
@@ -47,7 +71,10 @@ public class BlockBelt extends BlockOrientableMachine
             final BlockPos posNeighbor)
     {
         if (!w.isRemote && posNeighbor.equals(pos.offset(EnumFacing.UP)))
+        {
             ((TileBelt) w.getTileEntity(pos)).scanInput();
+            ((TileBelt) w.getTileEntity(pos)).scanSteam();
+        }
     }
 
     @Override
@@ -130,9 +157,21 @@ public class BlockBelt extends BlockOrientableMachine
     }
 
     @Override
+    public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos)
+    {
+        if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileBelt)
+        {
+            final TileBelt tile = (TileBelt) world.getTileEntity(pos);
+            return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, tile.state);
+        }
+        return state;
+    }
+
+    @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, BlockOrientableMachine.FACING, BlockBelt.SLOP);
+        return new ExtendedBlockState(this, new IProperty[] { BlockOrientableMachine.FACING, BlockBelt.SLOP },
+                new IUnlistedProperty[] { Properties.AnimationProperty });
     }
 
     public boolean getSlopState(final IBlockState state)
@@ -168,9 +207,7 @@ public class BlockBelt extends BlockOrientableMachine
             final EnumFacing facing, final IBlockState state)
     {
         if (player.isSneaking())
-        {
             this.setSlopState(world, pos, !this.getSlopState(state));
-        }
         else
             this.rotateBlock(world, pos, this.getFacing(state).rotateAround(Axis.Y));
         return true;

@@ -16,7 +16,6 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
-import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.TilePipeBase;
 
 public abstract class BlockPipeBase extends BlockMachineBase
@@ -79,9 +78,8 @@ public abstract class BlockPipeBase extends BlockMachineBase
     @Override
     public void breakBlock(final World w, final BlockPos pos, final IBlockState state)
     {
-        GridManager.getInstance().disconnectCable((TilePipeBase<?, ?>) w.getTileEntity(pos));
+        ((TilePipeBase<?, ?>) w.getTileEntity(pos)).disconnectItself();
 
         super.breakBlock(w, pos, state);
     }
-
 }

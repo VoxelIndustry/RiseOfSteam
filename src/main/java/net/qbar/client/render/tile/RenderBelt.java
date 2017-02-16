@@ -44,7 +44,8 @@ public class RenderBelt extends FastTESR<TileBelt>
 
         final IBakedModel model = RenderBelt.blockRenderer.getBlockModelShapes().getModelForState(state);
 
-        RenderBelt.blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, renderer, false);
+        RenderBelt.blockRenderer.getBlockModelRenderer().renderModel(world, model,
+                state.getBlock().getExtendedState(state, world, pos), pos, renderer, false);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);

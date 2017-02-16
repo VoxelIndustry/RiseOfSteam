@@ -13,7 +13,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 public class VisibilityModelState implements IModelState
 {
-    public final List<String>                  hidden = new ArrayList<String>();
+    public final List<String>                  hidden = new ArrayList<>();
     private final Optional<TRSRTransformation> value  = Optional.of(TRSRTransformation.identity());
 
     @Override

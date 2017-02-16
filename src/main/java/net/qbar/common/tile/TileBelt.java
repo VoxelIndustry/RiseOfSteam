@@ -2,7 +2,9 @@ package net.qbar.common.tile;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.lwjgl.util.vector.Vector2f;
 
@@ -11,17 +13,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
+import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 
-public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, ILoadable
+public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, ILoadable, IConnectionAware
 {
     private int                                             gridID;
     private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connections;
@@ -35,12 +40,15 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
     private boolean                                         hasChanged = false;
 
+    private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
+
     public TileBelt(final float beltSpeed)
     {
         this.beltSpeed = beltSpeed;
 
         this.gridID = -1;
         this.connections = new EnumMap<>(EnumFacing.class);
+        this.steamConnections = new EnumMap<>(EnumFacing.class);
         this.facing = EnumFacing.UP;
 
         this.input = null;
@@ -96,6 +104,9 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
             tag.setTag("item" + this.items.indexOf(belt), subTag);
         }
         tag.setInteger("itemCount", this.items.size());
+
+        for (final Entry<EnumFacing, ISteamHandler> entry : this.steamConnections.entrySet())
+            tag.setBoolean("connectedSteam" + entry.getKey().ordinal(), true);
         return tag;
     }
 
@@ -113,6 +124,19 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
             final NBTTagCompound subTag = tag.getCompoundTag("item" + i);
             this.items.add(new ItemBelt(new ItemStack(subTag),
                     new Vector2f(subTag.getFloat("posX"), subTag.getFloat("posY"))));
+        }
+        if (this.isClient())
+        {
+            final int previousSteamHandlers = this.steamConnections.size();
+            this.steamConnections.clear();
+            for (final EnumFacing facing : EnumFacing.VALUES)
+            {
+                if (tag.hasKey("connectedSteam" + facing.ordinal()))
+                    this.connectSteam(facing, null);
+            }
+
+            if (this.steamConnections.size() == 0 && previousSteamHandlers != 0)
+                this.updateState();
         }
     }
 
@@ -162,6 +186,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
         if (this.getGridObject() != null && this.input != null)
             this.getGridObject().addInput(this);
+        if (this.getGridObject() != null)
+            this.world.notifyNeighborsOfStateChange(this.getPos(), this.getBlockType(), true);
     }
 
     @Override
@@ -212,7 +238,10 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         if (!this.world.isRemote && this.getGrid() == -1)
             TickHandler.loadables.add(this);
         if (this.isClient())
+        {
             this.forceSync();
+            this.updateState();
+        }
     }
 
     @Override
@@ -309,5 +338,75 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     public void setChanged(final boolean change)
     {
         this.hasChanged = change;
+    }
+
+    ////////////
+    // RENDER //
+    ////////////
+
+    public final VisibilityModelState state = new VisibilityModelState();
+
+    private void updateState()
+    {
+        if (this.isServer())
+        {
+            this.sync();
+            return;
+        }
+        this.state.hidden.clear();
+
+        if (this.getFacing().getAxis().isVertical())
+        {
+            this.state.hidden.add("east");
+            this.state.hidden.add("west");
+        }
+        else
+        {
+            if (!this.isSteamConnected(this.getFacing().rotateY()))
+                this.state.hidden.add("east");
+            if (!this.isSteamConnected(this.getFacing().rotateY().getOpposite()))
+                this.state.hidden.add("west");
+        }
+
+        this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+
+    public boolean isSteamConnected(final EnumFacing facing)
+    {
+        return this.steamConnections.containsKey(facing);
+    }
+
+    public void connectSteam(final EnumFacing facing, final ISteamHandler handler)
+    {
+        this.steamConnections.put(facing, handler);
+        this.updateState();
+    }
+
+    public void disconnectSteam(final EnumFacing facing)
+    {
+        this.steamConnections.remove(facing);
+        this.updateState();
+    }
+
+    @Override
+    public void connectTrigger(final EnumFacing facing)
+    {
+        this.connectSteam(facing, null);
+    }
+
+    @Override
+    public void disconnectTrigger(final EnumFacing facing)
+    {
+        this.disconnectSteam(facing);
+    }
+
+    public void scanSteam()
+    {
+        final Iterator<Entry<EnumFacing, ISteamHandler>> iterator = this.steamConnections.entrySet().iterator();
+
+        while (iterator.hasNext())
+        {
+
+        }
     }
 }

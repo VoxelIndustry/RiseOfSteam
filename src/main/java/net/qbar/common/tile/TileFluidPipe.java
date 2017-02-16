@@ -39,7 +39,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public void addSpecificInfo(List<String> lines)
+    public void addSpecificInfo(final List<String> lines)
     {
         lines.add("Contains: " + (this.getGridObject().getTank().getFluidType() == null ? "none"
                 : this.getGridObject().getTank().getFluidType().getName()));
@@ -120,7 +120,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
         {
             if (tile == null || !tile.hasCapability(this.capability, facing))
             {
-                this.disconnectHandler(facing.getOpposite());
+                this.disconnectHandler(facing.getOpposite(), tile);
                 if (this.adjacentHandler.isEmpty())
                     this.getGridObject().removeOutput(this);
             }
@@ -131,7 +131,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
             {
                 if (tile.hasCapability(this.capability, facing) && !(tile instanceof TileFluidPipe))
                 {
-                    this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing));
+                    this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
                     this.getGridObject().addOutput(this);
                 }
             }

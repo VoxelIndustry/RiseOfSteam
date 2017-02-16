@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,6 +14,7 @@ import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
 
 public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
@@ -49,9 +51,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
         lines.add("Grid: " + this.grid);
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
-        {
             this.addSpecificInfo(lines);
-        }
         else
             lines.add("Errored grid!");
         this.connections.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
@@ -97,22 +97,40 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
         this.updateState();
     }
 
-    public void connectHandler(final EnumFacing facing, final H to)
+    public void connectHandler(final EnumFacing facing, final H to, final TileEntity tile)
     {
         this.adjacentHandler.put(facing, to);
         this.updateState();
+
+        if (tile != null && tile instanceof IConnectionAware)
+            ((IConnectionAware) tile).connectTrigger(facing.getOpposite());
     }
 
-    public void disconnectHandler(final EnumFacing facing)
+    public void disconnectHandler(final EnumFacing facing, final TileEntity tile)
     {
         this.adjacentHandler.remove(facing);
         this.updateState();
+
+        if (tile != null && tile instanceof IConnectionAware)
+            ((IConnectionAware) tile).disconnectTrigger(facing.getOpposite());
+    }
+
+    public void disconnectItself()
+    {
+        GridManager.getInstance().disconnectCable(this);
+
+        this.adjacentHandler.keySet().forEach(facing ->
+        {
+            final TileEntity handler = this.getWorld().getTileEntity(this.getPos().offset(facing));
+            if (handler != null && handler instanceof IConnectionAware)
+                ((IConnectionAware) handler).disconnectTrigger(facing.getOpposite());
+        });
     }
 
     @Override
     public void onChunkUnload()
     {
-        GridManager.getInstance().disconnectCable(this);
+        this.disconnectItself();
     }
 
     @Override
@@ -155,7 +173,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
                 if (tagCompound.hasKey("connected" + facing.ordinal()))
                     this.connect(facing, null);
                 if (tagCompound.hasKey("connectedHandler" + facing.ordinal()))
-                    this.connectHandler(facing, null);
+                    this.connectHandler(facing, null, null);
             }
 
             if (this.connections.size() == 0 && previousConnections != 0
