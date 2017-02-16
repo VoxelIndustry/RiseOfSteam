@@ -115,7 +115,8 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
                 if (tile.hasCapability(this.capability, facing) && !(tile instanceof TileSteamPipe))
                 {
                     this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
-                    this.getGridObject().addConnectedPipe(this);
+                    if (this.getGridObject() != null)
+                        this.getGridObject().addConnectedPipe(this);
                 }
             }
         }
