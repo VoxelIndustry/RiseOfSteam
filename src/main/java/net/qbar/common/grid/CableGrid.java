@@ -7,9 +7,9 @@ import javax.annotation.Nonnull;
 
 public abstract class CableGrid
 {
-    private final int                 identifier;
+    private final int                    identifier;
 
-    private final HashSet<ITileCable> cables;
+    private final HashSet<ITileCable<?>> cables;
 
     public CableGrid(final int identifier)
     {
@@ -55,17 +55,17 @@ public abstract class CableGrid
 
     }
 
-    public void addCable(@Nonnull final ITileCable cable)
+    public void addCable(@Nonnull final ITileCable<?> cable)
     {
         this.cables.add(cable);
     }
 
-    public void addCables(final Collection<ITileCable> cables)
+    public void addCables(final Collection<ITileCable<?>> cables)
     {
         cables.forEach(this::addCable);
     }
 
-    public boolean removeCable(final ITileCable cable)
+    public boolean removeCable(final ITileCable<?> cable)
     {
         if (this.cables.remove(cable))
         {
@@ -76,12 +76,12 @@ public abstract class CableGrid
         return false;
     }
 
-    public void removeCables(final Collection<ITileCable> cables)
+    public void removeCables(final Collection<ITileCable<?>> cables)
     {
         cables.forEach(this::removeCable);
     }
 
-    public boolean hasCable(final ITileCable cable)
+    public boolean hasCable(final ITileCable<?> cable)
     {
         return this.cables.contains(cable);
     }
@@ -91,7 +91,7 @@ public abstract class CableGrid
         return this.identifier;
     }
 
-    public HashSet<ITileCable> getCables()
+    public HashSet<ITileCable<?>> getCables()
     {
         return this.cables;
     }

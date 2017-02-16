@@ -155,7 +155,9 @@ public class GridManager
 
     <T extends CableGrid> List<ITileCable<T>> getOrphans(final CableGrid grid, final ITileCable<T> cable)
     {
-        final List<ITileCable<T>> toScan = new ArrayList<>(grid.getCables());
+        final List<ITileCable<T>> toScan = new ArrayList<>();
+        // Only here to calm down javac
+        grid.getCables().forEach(cable2 -> toScan.add((ITileCable<T>) cable2));
 
         final List<ITileCable<T>> openset = new ArrayList<>();
         final List<ITileCable<T>> frontier = new ArrayList<>();

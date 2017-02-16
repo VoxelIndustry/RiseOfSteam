@@ -44,7 +44,7 @@ public class BeltGrid extends CableGrid
     {
         super.tick();
 
-        for (final ITileCable<BeltGrid> cable : this.getCables())
+        for (final ITileCable<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
@@ -182,7 +182,7 @@ public class BeltGrid extends CableGrid
             }
         }
 
-        for (final ITileCable<BeltGrid> cable : this.getCables())
+        for (final ITileCable<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
