@@ -2,7 +2,6 @@ package net.qbar.common.tile;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -107,6 +106,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
         for (final Entry<EnumFacing, ISteamHandler> entry : this.steamConnections.entrySet())
             tag.setBoolean("connectedSteam" + entry.getKey().ordinal(), true);
+        for (final Entry<EnumFacing, ITileCable<BeltGrid>> entry : this.connections.entrySet())
+            tag.setBoolean("connected" + entry.getKey().ordinal(), true);
         return tag;
     }
 
@@ -128,14 +129,19 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         if (this.isClient())
         {
             final int previousSteamHandlers = this.steamConnections.size();
+            final int previousConnections = this.connections.size();
             this.steamConnections.clear();
+            this.connections.clear();
             for (final EnumFacing facing : EnumFacing.VALUES)
             {
                 if (tag.hasKey("connectedSteam" + facing.ordinal()))
                     this.connectSteam(facing, null);
+                if (tag.hasKey("connected" + facing.ordinal()))
+                    this.connect(facing, null);
             }
 
-            if (this.steamConnections.size() == 0 && previousSteamHandlers != 0)
+            if (this.steamConnections.size() == 0 && previousSteamHandlers != 0
+                    || this.connections.size() == 0 && previousConnections != 0)
                 this.updateState();
         }
     }
@@ -214,15 +220,17 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     }
 
     @Override
-    public void connect(final EnumFacing facing, final ITileCable to)
+    public void connect(final EnumFacing facing, final ITileCable<BeltGrid> to)
     {
         this.connections.put(facing, to);
+        this.updateState();
     }
 
     @Override
     public void disconnect(final EnumFacing facing)
     {
         this.connections.remove(facing);
+        this.updateState();
     }
 
     @Override
@@ -362,18 +370,18 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         }
         else
         {
-            if (!this.isSteamConnected(this.getFacing().rotateY()))
+            if (!this.isConnected(this.getFacing().rotateY()))
                 this.state.hidden.add("east");
-            if (!this.isSteamConnected(this.getFacing().rotateY().getOpposite()))
+            if (!this.isConnected(this.getFacing().rotateY().getOpposite()))
                 this.state.hidden.add("west");
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
     }
 
-    public boolean isSteamConnected(final EnumFacing facing)
+    public boolean isConnected(final EnumFacing facing)
     {
-        return this.steamConnections.containsKey(facing);
+        return this.connections.containsKey(facing) || this.steamConnections.containsKey(facing);
     }
 
     public void connectSteam(final EnumFacing facing, final ISteamHandler handler)
@@ -398,15 +406,5 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     public void disconnectTrigger(final EnumFacing facing)
     {
         this.disconnectSteam(facing);
-    }
-
-    public void scanSteam()
-    {
-        final Iterator<Entry<EnumFacing, ISteamHandler>> iterator = this.steamConnections.entrySet().iterator();
-
-        while (iterator.hasNext())
-        {
-
-        }
     }
 }

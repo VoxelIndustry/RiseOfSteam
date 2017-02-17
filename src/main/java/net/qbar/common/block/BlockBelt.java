@@ -71,10 +71,7 @@ public class BlockBelt extends BlockOrientableMachine
             final BlockPos posNeighbor)
     {
         if (!w.isRemote && posNeighbor.equals(pos.offset(EnumFacing.UP)))
-        {
             ((TileBelt) w.getTileEntity(pos)).scanInput();
-            ((TileBelt) w.getTileEntity(pos)).scanSteam();
-        }
     }
 
     @Override
