@@ -1,9 +1,11 @@
 package net.qbar.common.network;
 
-import net.minecraft.entity.player.EntityPlayer;
+import com.google.common.base.Predicates;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import net.qbar.common.tile.QBarTileBase;
 
 public class NetworkHandler
@@ -25,12 +27,16 @@ public class NetworkHandler
             if (packet == null)
                 return;
 
-            for (final EntityPlayer player : tile.getWorld().playerEntities)
+            final Chunk chunk = tile.getWorld().getChunkFromBlockCoords(tile.getPos());
+            if (((WorldServer) tile.getWorld()).getPlayerChunkMap().contains(chunk.xPosition, chunk.zPosition))
             {
-                if (player.getDistanceSq(tile.getPos()) < 64 * 64
-                        && ((WorldServer) tile.getWorld()).getPlayerChunkMap().isPlayerWatchingChunk(
-                                (EntityPlayerMP) player, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4))
-                    ((EntityPlayerMP) player).connection.sendPacket(packet);
+                for (final EntityPlayerMP player : tile.getWorld().getPlayers(EntityPlayerMP.class,
+                        Predicates.alwaysTrue()))
+                {
+                    if (((WorldServer) tile.getWorld()).getPlayerChunkMap().isPlayerWatchingChunk(player,
+                            chunk.xPosition, chunk.zPosition))
+                        player.connection.sendPacket(packet);
+                }
             }
         }
     }
