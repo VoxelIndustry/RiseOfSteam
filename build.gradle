@@ -46,6 +46,14 @@ repositories {
 		name = 'unascribed'
         url = 'http://unascribed.com/maven/releases'
     }
+    maven { // TeaBeans
+    	name = 'ourten'
+    	url = 'http://maven.ferenyr.info/artifactory/ourten'
+    }
+    maven { // BrokkGUI
+    	name = 'yggard'
+    	url = 'http://maven.ferenyr.info/artifactory/yggard'
+	}
 }
 
 jar {
@@ -71,6 +79,7 @@ artifacts {
 dependencies {
 	deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.4-47"
 	deobfCompile "mezz.jei:jei_1.11.2:4.2.2.220"
+	deobfCompile 'org.yggard:brokkgui-binding-mc1.11.2:0.1.0'
 	compile 'io.github.elytra:concrete:0.0.6'
     shadow 'io.github.elytra:concrete:0.0.6'
 }

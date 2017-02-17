@@ -1,5 +1,7 @@
 package net.qbar.common.gui;
 
+import org.yggard.brokkgui.wrapper.BrokkGuiManager;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -7,9 +9,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.GuiBoiler;
 import net.qbar.client.gui.GuiExtractor;
+import net.qbar.client.gui.GuiKeypunch;
 import net.qbar.common.tile.IContainerProvider;
 import net.qbar.common.tile.TileBoiler;
 import net.qbar.common.tile.TileExtractor;
+import net.qbar.common.tile.TileKeypunch;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -41,6 +45,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiBoiler(player, (TileBoiler) tile);
             case EXTRACTOR:
                 return new GuiExtractor(player, (TileExtractor) tile);
+            case KEYPUNCH:
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiKeypunch(player, (TileKeypunch) tile));
             default:
                 break;
         }

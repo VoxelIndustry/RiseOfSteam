@@ -1,13 +1,15 @@
 package net.qbar.common.block;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.qbar.common.init.QBarItems;
+import net.qbar.QBar;
+import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.TileKeypunch;
 
 public class BlockKeypunch extends BlockMachineBase
@@ -17,26 +19,21 @@ public class BlockKeypunch extends BlockMachineBase
         super("keypunch", Material.IRON);
     }
 
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
-	{
-		return new TileKeypunch();
-	}
+    @Override
+    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
+            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
 
-	@Override
-	public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn)
-	{
-		super.onBlockClicked(worldIn, pos, playerIn);
-		TileKeypunch t = (TileKeypunch) worldIn.getTileEntity(pos);
+        player.openGui(QBar.instance, EGui.KEYPUNCH.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+        return true;
+    }
 
-		ItemStack it = playerIn.getHeldItem(playerIn.getActiveHand() == null ? EnumHand.MAIN_HAND : playerIn.getActiveHand());
-
-		if (it != ItemStack.EMPTY)
-			t.setInventorySlotContents(0, it);
-		else
-		{
-			t.setInventorySlotContents(0, ItemStack.EMPTY);
-			playerIn.inventory.addItemStackToInventory(new ItemStack(QBarItems.PUNCHED_CARD));
-		}
-	}
+    @Override
+    public TileEntity createNewTileEntity(final World worldIn, final int meta)
+    {
+        return new TileKeypunch();
+    }
 }
