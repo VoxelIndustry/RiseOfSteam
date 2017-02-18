@@ -25,9 +25,11 @@ public class BeltGrid extends CableGrid
 
     private final float      beltSpeed;
 
-    private final float      BELT_MIDDLE = 10 / 32F;
+    private final float      BELT_MIDDLE      = 10 / 32F;
 
-    private int              movedCount  = 0;
+    private int              movedCount       = 0;
+
+    private boolean          lastWorkingState = false;
 
     public BeltGrid(final int identifier, final float beltSpeed)
     {
@@ -44,154 +46,164 @@ public class BeltGrid extends CableGrid
     {
         super.tick();
 
+        final boolean currentWorkingState = this.getTank().getSteam() > 0;
+
         for (final ITileCable<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
             boolean hasChanged = false;
 
-            if (this.getTank().getSteam() > 0 && !belt.getItems().isEmpty())
+            if (this.getTank().getSteam() > 0)
             {
-                final Iterator<ItemBelt> iterator = belt.getItems().iterator();
-
-                while (iterator.hasNext())
+                if (!belt.isWorking())
+                    belt.setWorking(true);
+                if (!belt.getItems().isEmpty())
                 {
-                    final ItemBelt item = iterator.next();
+                    final Iterator<ItemBelt> iterator = belt.getItems().iterator();
 
-                    if (item.getPos().getX() > this.BELT_MIDDLE)
+                    while (iterator.hasNext())
                     {
-                        item.getPos().setX(item.getPos().getX()
-                                - Math.min(item.getPos().getX() - this.BELT_MIDDLE, this.beltSpeed / 3));
-                        hasChanged = true;
-                    }
-                    else if (item.getPos().getX() < this.BELT_MIDDLE)
-                    {
-                        item.getPos().setX(item.getPos().getX()
-                                + Math.min(this.BELT_MIDDLE - item.getPos().getX(), this.beltSpeed / 3));
-                        hasChanged = true;
-                    }
+                        final ItemBelt item = iterator.next();
 
-                    if (item.getPos().getY() < 1)
-                    {
-                        if (!this.checkCollision(belt, item, this.beltSpeed / 3))
+                        if (item.getPos().getX() > this.BELT_MIDDLE)
                         {
-                            item.getPos().setY(item.getPos().getY() + this.beltSpeed / 3);
+                            item.getPos().setX(item.getPos().getX()
+                                    - Math.min(item.getPos().getX() - this.BELT_MIDDLE, this.beltSpeed / 3));
                             hasChanged = true;
                         }
-                    }
-                    else
-                    {
-                        if (belt.getConnected(belt.getFacing()) != null)
+                        else if (item.getPos().getX() < this.BELT_MIDDLE)
                         {
-                            final IBelt forward = (IBelt) belt.getConnected(belt.getFacing());
+                            item.getPos().setX(item.getPos().getX()
+                                    + Math.min(this.BELT_MIDDLE - item.getPos().getX(), this.beltSpeed / 3));
+                            hasChanged = true;
+                        }
 
-                            if (belt.getFacing().getOpposite() != forward.getFacing())
+                        if (item.getPos().getY() < 1)
+                        {
+                            if (!this.checkCollision(belt, item, this.beltSpeed / 3))
                             {
-                                forward.getItems().add(item);
-
-                                if (belt.getFacing() == forward.getFacing())
-                                    item.getPos().setY(0);
-                                else if (belt.getFacing().rotateY() == forward.getFacing())
-                                {
-                                    item.getPos().setX(10 / 16F);
-                                    item.getPos().setY(this.BELT_MIDDLE);
-                                }
-                                else
-                                {
-                                    item.getPos().setX(0);
-                                    item.getPos().setY(this.BELT_MIDDLE);
-                                }
-                                forward.setChanged(true);
-                                iterator.remove();
+                                item.getPos().setY(item.getPos().getY() + this.beltSpeed / 3);
                                 hasChanged = true;
                             }
                         }
                         else
                         {
-                            final BlockPos forward = belt.getPos().offset(belt.getFacing());
-                            final BlockPos upward = forward.up();
-                            if (belt.getWorld().getBlockState(upward).getMaterial() == Material.AIR)
+                            if (belt.getConnected(belt.getFacing()) != null)
                             {
-                                final TileEntity tile = belt.getWorld().getTileEntity(forward);
+                                final IBelt forward = (IBelt) belt.getConnected(belt.getFacing());
 
-                                if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                        belt.getFacing().getOpposite()))
+                                if (belt.getFacing().getOpposite() != forward.getFacing())
                                 {
-                                    if (ItemHandlerHelper
-                                            .insertItem(
+                                    forward.getItems().add(item);
+
+                                    if (belt.getFacing() == forward.getFacing())
+                                        item.getPos().setY(0);
+                                    else if (belt.getFacing().rotateY() == forward.getFacing())
+                                    {
+                                        item.getPos().setX(10 / 16F);
+                                        item.getPos().setY(this.BELT_MIDDLE);
+                                    }
+                                    else
+                                    {
+                                        item.getPos().setX(0);
+                                        item.getPos().setY(this.BELT_MIDDLE);
+                                    }
+                                    forward.setChanged(true);
+                                    iterator.remove();
+                                    hasChanged = true;
+                                }
+                            }
+                            else
+                            {
+                                final BlockPos forward = belt.getPos().offset(belt.getFacing());
+                                final BlockPos upward = forward.up();
+                                if (belt.getWorld().getBlockState(upward).getMaterial() == Material.AIR)
+                                {
+                                    final TileEntity tile = belt.getWorld().getTileEntity(forward);
+
+                                    if (tile != null
+                                            && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                    belt.getFacing().getOpposite()))
+                                    {
+                                        if (ItemHandlerHelper
+                                                .insertItem(tile.getCapability(
+                                                        CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                        belt.getFacing().getOpposite()), item.getStack(), true)
+                                                .isEmpty())
+                                        {
+                                            ItemHandlerHelper.insertItem(
                                                     tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
                                                             belt.getFacing().getOpposite()),
-                                                    item.getStack(), true)
-                                            .isEmpty())
-                                    {
-                                        ItemHandlerHelper.insertItem(
-                                                tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                                        belt.getFacing().getOpposite()),
-                                                item.getStack(), false);
+                                                    item.getStack(), false);
+                                        }
+                                        else
+                                            InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
+                                                    belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
                                     }
                                     else
                                         InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
                                                 belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
+                                    iterator.remove();
+                                    hasChanged = true;
                                 }
                                 else
-                                    InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
-                                            belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
-                                iterator.remove();
-                                hasChanged = true;
-                            }
-                            else
-                            {
-                                final TileEntity tile = belt.getWorld().getTileEntity(upward);
-
-                                if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                        belt.getFacing().getOpposite()))
                                 {
-                                    if (ItemHandlerHelper
-                                            .insertItem(
+                                    final TileEntity tile = belt.getWorld().getTileEntity(upward);
+
+                                    if (tile != null
+                                            && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                    belt.getFacing().getOpposite()))
+                                    {
+                                        if (ItemHandlerHelper
+                                                .insertItem(tile.getCapability(
+                                                        CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                        belt.getFacing().getOpposite()), item.getStack(), true)
+                                                .isEmpty())
+                                        {
+                                            ItemHandlerHelper.insertItem(
                                                     tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
                                                             belt.getFacing().getOpposite()),
-                                                    item.getStack(), true)
-                                            .isEmpty())
-                                    {
-                                        ItemHandlerHelper.insertItem(
-                                                tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                                        belt.getFacing().getOpposite()),
-                                                item.getStack(), false);
-                                        iterator.remove();
-                                        hasChanged = true;
+                                                    item.getStack(), false);
+                                            iterator.remove();
+                                            hasChanged = true;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if (hasChanged)
-            {
-                if (!belt.hasChanged())
+                if (hasChanged)
                 {
-                    belt.setChanged(true);
-                    if (this.movedCount == 4)
+                    if (!belt.hasChanged())
                     {
-                        this.getTank().drainSteam(1, true);
-                        this.movedCount = 0;
+                        belt.setChanged(true);
+                        if (this.movedCount == 4)
+                        {
+                            this.getTank().drainSteam(1, true);
+                            this.movedCount = 0;
+                        }
+                        else
+                            this.movedCount++;
                     }
-                    else
-                        this.movedCount++;
                 }
             }
+            else if (belt.isWorking())
+                belt.setWorking(false);
         }
 
         for (final ITileCable<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
-            if (belt.hasChanged())
+            if (belt.hasChanged() || this.lastWorkingState != currentWorkingState)
             {
                 belt.itemUpdate();
                 belt.setChanged(false);
             }
         }
+        this.lastWorkingState = currentWorkingState;
     }
 
     @Override

@@ -38,6 +38,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     private final List<ItemBelt>                            items;
 
     private boolean                                         hasChanged = false;
+    private boolean                                         isWorking  = false;
 
     private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
 
@@ -103,6 +104,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
             tag.setTag("item" + this.items.indexOf(belt), subTag);
         }
         tag.setInteger("itemCount", this.items.size());
+        tag.setBoolean("isWorking", this.isWorking);
 
         for (final Entry<EnumFacing, ISteamHandler> entry : this.steamConnections.entrySet())
             tag.setBoolean("connectedSteam" + entry.getKey().ordinal(), true);
@@ -126,6 +128,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
             this.items.add(new ItemBelt(new ItemStack(subTag),
                     new Vector2f(subTag.getFloat("posX"), subTag.getFloat("posY"))));
         }
+        this.isWorking = tag.getBoolean("isWorking");
         if (this.isClient())
         {
             final int previousSteamHandlers = this.steamConnections.size();
@@ -348,6 +351,16 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         this.hasChanged = change;
     }
 
+    public boolean isWorking()
+    {
+        return this.isWorking;
+    }
+
+    public void setWorking(final boolean working)
+    {
+        this.isWorking = working;
+    }
+
     ////////////
     // RENDER //
     ////////////
@@ -362,6 +375,11 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
             return;
         }
         this.state.hidden.clear();
+
+        if (this.isWorking())
+            this.state.hidden.add("static");
+        else
+            this.state.hidden.add("animated");
 
         if (this.getFacing().getAxis().isVertical())
         {

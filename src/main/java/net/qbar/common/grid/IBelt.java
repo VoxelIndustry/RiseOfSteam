@@ -26,4 +26,8 @@ public interface IBelt extends ITileCable<BeltGrid>
     boolean hasChanged();
 
     void setChanged(boolean change);
+
+    boolean isWorking();
+
+    void setWorking(boolean working);
 }

@@ -279,7 +279,6 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
             if (!this.isConnected(EnumFacing.WEST))
                 this.state.hidden.add("armx2");
         }
-
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
     }
 

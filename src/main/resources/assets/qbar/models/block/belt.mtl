@@ -1,2 +1,5 @@
 newmtl None
 map_Kd qbar:blocks/belt
+
+newmtl Top
+map_Kd qbar:blocks/belt_top
