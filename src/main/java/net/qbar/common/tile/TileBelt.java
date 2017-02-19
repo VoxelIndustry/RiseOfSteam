@@ -113,6 +113,9 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         return tag;
     }
 
+    private final EnumMap<EnumFacing, ITileCable<BeltGrid>> tmpConnections      = new EnumMap<>(EnumFacing.class);
+    private final EnumMap<EnumFacing, ISteamHandler>        tmpSteamConnections = new EnumMap<>(EnumFacing.class);
+
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
@@ -128,23 +131,34 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
             this.items.add(new ItemBelt(new ItemStack(subTag),
                     new Vector2f(subTag.getFloat("posX"), subTag.getFloat("posY"))));
         }
+
+        boolean needStateUpdate = false;
+        if (this.isWorking != tag.getBoolean("isWorking"))
+            needStateUpdate = true;
         this.isWorking = tag.getBoolean("isWorking");
+
         if (this.isClient())
         {
-            final int previousSteamHandlers = this.steamConnections.size();
-            final int previousConnections = this.connections.size();
-            this.steamConnections.clear();
+            this.tmpConnections.clear();
+            this.tmpConnections.putAll(this.connections);
             this.connections.clear();
+
+            this.tmpSteamConnections.clear();
+            this.tmpSteamConnections.putAll(this.steamConnections);
+            this.steamConnections.clear();
+
             for (final EnumFacing facing : EnumFacing.VALUES)
             {
                 if (tag.hasKey("connectedSteam" + facing.ordinal()))
-                    this.connectSteam(facing, null);
+                    this.steamConnections.put(facing, null);
                 if (tag.hasKey("connected" + facing.ordinal()))
-                    this.connect(facing, null);
+                    this.connections.put(facing, null);
             }
+            if (!this.tmpConnections.equals(this.connections)
+                    || !this.tmpSteamConnections.equals(this.steamConnections))
+                needStateUpdate = true;
 
-            if (this.steamConnections.size() == 0 && previousSteamHandlers != 0
-                    || this.connections.size() == 0 && previousConnections != 0)
+            if (needStateUpdate)
                 this.updateState();
         }
     }
@@ -351,11 +365,13 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         this.hasChanged = change;
     }
 
+    @Override
     public boolean isWorking()
     {
         return this.isWorking;
     }
 
+    @Override
     public void setWorking(final boolean working)
     {
         this.isWorking = working;
