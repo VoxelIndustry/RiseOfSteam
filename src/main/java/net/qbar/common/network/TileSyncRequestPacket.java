@@ -5,6 +5,7 @@ import io.github.elytra.concrete.NetworkContext;
 import io.github.elytra.concrete.annotation.field.MarshalledAs;
 import io.github.elytra.concrete.annotation.type.ReceivedOn;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.qbar.QBar;
@@ -44,6 +45,7 @@ public class TileSyncRequestPacket extends Message
         if (sender.getEntityWorld().provider.getDimension() == this.dimensionId
                 && sender.getEntityWorld().getTileEntity(pos) != null
                 && sender.getEntityWorld().getTileEntity(pos) instanceof QBarTileBase)
-            NetworkHandler.sendTileToRange((QBarTileBase) sender.getEntityWorld().getTileEntity(pos));
+            NetworkHandler.sendTileToPlayer((QBarTileBase) sender.getEntityWorld().getTileEntity(pos),
+                    (EntityPlayerMP) sender);
     }
 }

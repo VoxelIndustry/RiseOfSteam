@@ -10,11 +10,15 @@ import net.qbar.common.tile.QBarTileBase;
 
 public class NetworkHandler
 {
-    public static void askTile(final QBarTileBase tile)
+    public static void sendTileToPlayer(final QBarTileBase tile, final EntityPlayerMP player)
     {
-        if (tile.isClient())
+        if (tile.isServer())
         {
+            final SPacketUpdateTileEntity packet = tile.getUpdatePacket();
 
+            if (packet == null)
+                return;
+            player.connection.sendPacket(packet);
         }
     }
 
