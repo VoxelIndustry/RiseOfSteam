@@ -85,11 +85,15 @@ public class BuiltContainer extends Container
 
     public void addCraftEvent(final Consumer<InventoryCrafting> craftEvent)
     {
+        if (this.craftEvents == null)
+            this.craftEvents = new ArrayList<>();
         this.craftEvents.add(craftEvent);
     }
 
     public void removeCraftEvent(final Consumer<InventoryCrafting> craftEvent)
     {
+        if (this.craftEvents == null)
+            this.craftEvents = new ArrayList<>();
         this.craftEvents.remove(craftEvent);
     }
 
