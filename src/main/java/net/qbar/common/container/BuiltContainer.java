@@ -83,6 +83,16 @@ public class BuiltContainer extends Container
         this.craftEvents = craftEvents;
     }
 
+    public void addCraftEvent(final Consumer<InventoryCrafting> craftEvent)
+    {
+        this.craftEvents.add(craftEvent);
+    }
+
+    public void removeCraftEvent(final Consumer<InventoryCrafting> craftEvent)
+    {
+        this.craftEvents.remove(craftEvent);
+    }
+
     public void addSlot(final Slot slot)
     {
         this.addSlotToContainer(slot);
