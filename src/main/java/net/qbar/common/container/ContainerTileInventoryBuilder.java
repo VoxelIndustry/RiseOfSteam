@@ -11,12 +11,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.qbar.common.container.slot.FilteredSlot;
+import net.qbar.common.container.slot.ListenerSlot;
+import net.qbar.common.container.slot.SlotFuel;
+import net.qbar.common.container.slot.SlotOutput;
 
 public class ContainerTileInventoryBuilder
 {
@@ -34,7 +36,7 @@ public class ContainerTileInventoryBuilder
 
     public ContainerTileInventoryBuilder slot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new Slot(this.tile, index, x, y));
+        this.parent.slots.add(new ListenerSlot(this.tile, index, x, y));
         return this;
     }
 
@@ -61,7 +63,7 @@ public class ContainerTileInventoryBuilder
 
     public ContainerTileInventoryBuilder fuelSlot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new SlotFurnaceFuel(this.tile, index, x, y));
+        this.parent.slots.add(new SlotFuel(this.tile, index, x, y));
         return this;
     }
 
@@ -109,6 +111,7 @@ public class ContainerTileInventoryBuilder
     public ContainerBuilder addInventory()
     {
         this.parent.tileInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
+        this.parent.inventories.add(this.tile);
         return this.parent;
     }
 }

@@ -4,7 +4,8 @@ import org.apache.commons.lang3.Range;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.Slot;
+import net.qbar.common.container.slot.FilteredSlot;
+import net.qbar.common.container.slot.ListenerSlot;
 
 public final class ContainerPlayerInventoryBuilder
 {
@@ -26,7 +27,7 @@ public final class ContainerPlayerInventoryBuilder
         final int startIndex = this.parent.slots.size();
         for (int i = 0; i < 3; ++i)
             for (int j = 0; j < 9; ++j)
-                this.parent.slots.add(new Slot(this.player, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
+                this.parent.slots.add(new ListenerSlot(this.player, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
         this.main = Range.between(startIndex, this.parent.slots.size() - 1);
         return this;
     }
@@ -35,7 +36,7 @@ public final class ContainerPlayerInventoryBuilder
     {
         final int startIndex = this.parent.slots.size();
         for (int i = 0; i < 9; ++i)
-            this.parent.slots.add(new Slot(this.player, i, xStart + i * 18, yStart));
+            this.parent.slots.add(new ListenerSlot(this.player, i, xStart + i * 18, yStart));
         this.hotbar = Range.between(startIndex, this.parent.slots.size() - 1);
         return this;
     }

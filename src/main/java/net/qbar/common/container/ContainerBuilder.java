@@ -15,8 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
+import net.qbar.common.container.slot.ListenerSlot;
 
 public class ContainerBuilder
 {
@@ -26,7 +26,7 @@ public class ContainerBuilder
     private final EntityPlayer                             player;
     private Predicate<EntityPlayer>                        canInteract = player -> true;
 
-    final List<Slot>                                       slots;
+    final List<ListenerSlot>                               slots;
     final List<Range<Integer>>                             playerInventoryRanges, tileInventoryRanges;
 
     final List<Pair<IntSupplier, IntConsumer>>             shortValues;
@@ -34,6 +34,8 @@ public class ContainerBuilder
     List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> fluidValues;
 
     final List<Consumer<InventoryCrafting>>                craftEvents;
+
+    List<IInventory>                                       inventories;
 
     public ContainerBuilder(final String name, final EntityPlayer player)
     {
@@ -51,6 +53,8 @@ public class ContainerBuilder
         this.fluidValues = new ArrayList<>();
 
         this.craftEvents = new ArrayList<>();
+
+        this.inventories = new ArrayList<>();
     }
 
     public ContainerBuilder interact(final Predicate<EntityPlayer> canInteract)
@@ -81,7 +85,7 @@ public class ContainerBuilder
 
     public BuiltContainer create()
     {
-        final BuiltContainer built = new BuiltContainer(this.name, this.player, this.canInteract,
+        final BuiltContainer built = new BuiltContainer(this.name, this.player, this.inventories, this.canInteract,
                 this.playerInventoryRanges, this.tileInventoryRanges);
         if (!this.shortValues.isEmpty())
             built.addShortSync(this.shortValues);

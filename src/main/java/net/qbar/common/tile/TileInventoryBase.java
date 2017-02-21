@@ -105,13 +105,11 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     @Override
     public void openInventory(final EntityPlayer player)
     {
-
     }
 
     @Override
     public void closeInventory(final EntityPlayer player)
     {
-
     }
 
     @Override

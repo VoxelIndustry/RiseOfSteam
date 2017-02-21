@@ -41,8 +41,11 @@ public class BuiltContainer extends Container
     private List<Consumer<InventoryCrafting>>                                                      craftEvents;
     private Integer[]                                                                              integerParts;
 
-    public BuiltContainer(final String name, final EntityPlayer player, final Predicate<EntityPlayer> canInteract,
-            final List<Range<Integer>> playerSlotRange, final List<Range<Integer>> tileSlotRange)
+    private final List<IInventory>                                                                 inventories;
+
+    public BuiltContainer(final String name, final EntityPlayer player, final List<IInventory> inventories,
+            final Predicate<EntityPlayer> canInteract, final List<Range<Integer>> playerSlotRange,
+            final List<Range<Integer>> tileSlotRange)
     {
         this.player = player;
         this.name = name;
@@ -55,6 +58,10 @@ public class BuiltContainer extends Container
         this.shortValues = new ArrayList<>();
         this.integerValues = new ArrayList<>();
         this.fluidValues = new ArrayList<>();
+
+        this.inventories = inventories;
+
+        this.inventories.forEach(inventory -> inventory.openInventory(player));
     }
 
     public void addShortSync(final List<Pair<IntSupplier, IntConsumer>> syncables)
@@ -346,5 +353,12 @@ public class BuiltContainer extends Container
     public String getName()
     {
         return this.name;
+    }
+
+    @Override
+    public void onContainerClosed(final EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        this.inventories.forEach(inventory -> inventory.closeInventory(player));
     }
 }

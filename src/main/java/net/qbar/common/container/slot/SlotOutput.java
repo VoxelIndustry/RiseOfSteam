@@ -1,10 +1,9 @@
-package net.qbar.common.container;
+package net.qbar.common.container.slot;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotOutput extends Slot
+public class SlotOutput extends ListenerSlot
 {
     public SlotOutput(final IInventory inventoryIn, final int index, final int xPosition, final int yPosition)
     {
