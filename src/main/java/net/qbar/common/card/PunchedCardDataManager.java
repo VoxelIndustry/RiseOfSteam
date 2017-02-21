@@ -9,12 +9,20 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class PunchedCardDataManager
 {
-    private static PunchedCardDataManager instance;
+    private static volatile PunchedCardDataManager instance;
 
     public static PunchedCardDataManager getInstance()
     {
         if (instance == null)
-            instance = new PunchedCardDataManager();
+        {
+            synchronized (PunchedCardDataManager.class)
+            {
+                if (instance == null)
+                {
+                    instance = new PunchedCardDataManager();
+                }
+            }
+        }
         return instance;
     }
 
