@@ -45,6 +45,11 @@ public class PunchedCardData
         this.data.addInformation(stack, player, tooltip, advanced);
     }
 
+    public boolean isValid(NBTTagCompound tag)
+    {
+        return this.data.isValid(tag);
+    }
+
     public short getId()
     {
         return this.id;
