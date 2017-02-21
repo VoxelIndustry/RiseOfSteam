@@ -25,13 +25,14 @@ public class PunchedCardDataManager
         datas = Maps.newHashMap();
     }
 
-    public void registerDataType(int id, IPunchedCard data)
+    public PunchedCardData registerDataType(int id, IPunchedCard data)
     {
         if (this.datas.containsKey(id))
             throw new IllegalArgumentException("id already used");
         PunchedCardData card = new PunchedCardData(id, data);
 
         this.datas.put(card.getId(), card);
+        return card;
     }
 
     public PunchedCardData getCardData(ItemStack card)

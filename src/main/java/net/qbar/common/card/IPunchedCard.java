@@ -14,5 +14,5 @@ public interface IPunchedCard
 
     void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced);
 
-    boolean isValid();
+    boolean isValid(NBTTagCompound tag);
 }

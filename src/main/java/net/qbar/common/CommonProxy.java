@@ -1,6 +1,5 @@
 package net.qbar.common;
 
-import io.github.elytra.concrete.NetworkContext;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -14,11 +13,14 @@ import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.init.QBarCardType;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.ContainerTankUpdatePacket;
 import net.qbar.common.network.TileSyncRequestPacket;
 import net.qbar.common.steam.CapabilitySteamHandler;
+
+import io.github.elytra.concrete.NetworkContext;
 
 public class CommonProxy
 {
@@ -33,6 +35,7 @@ public class CommonProxy
         QBarBlocks.registerBlocks();
         QBarItems.registerItems();
         QBarFluids.registerFluids();
+        QBarCardType.registerCardTypes();
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         CompatManager.preInit(e);
