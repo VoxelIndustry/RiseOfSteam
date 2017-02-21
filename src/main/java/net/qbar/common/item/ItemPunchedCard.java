@@ -19,11 +19,16 @@ public class ItemPunchedCard extends ItemBase
     {
         try
         {
-            PunchedCardData card = PunchedCardDataManager.getInstance().getCardData(stack);
-            if (card.isValid(stack.getTagCompound()))
-                card.addInformation(stack, player, tooltip, advanced);
+            if (stack.hasTagCompound())
+            {
+                PunchedCardData card = PunchedCardDataManager.getInstance().getCardData(stack);
+                if (card.isValid(stack.getTagCompound()))
+                    card.addInformation(stack, player, tooltip, advanced);
+                else
+                    tooltip.add("Card Invalid");
+            }
             else
-                tooltip.add("Card Invalid");
+                tooltip.add("Card Empty");
         } catch (Exception e)
         {
             tooltip.add("Card Invalid");
