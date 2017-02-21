@@ -2,30 +2,28 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "all": "qbar:blocks/item_splitter"
         },
-        "model": "cube_all"
+        "transform": "forge:default-block",
+        "custom": { "flip-v": true },
+        "model": "qbar:item_splitter.obj"
     },
     "variants": {
-        "normal": {
-            "model": "cube_all"
-        },
         "facing": {
             "north": {
-                "y": 180
-            },
-            "south": {},
-            "east": {
                 "y": 270
             },
-            "west": {
+            "south": {
                 "y": 90
+            },
+            "east": {},
+            "west": {
+                "y": 180
             },
             "up": {},
             "down": {}
         },
         "inventory": {
-            "model": "cube_all"
+            "model": "qbar:item_splitter.obj"
         }
     }
 }
