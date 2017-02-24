@@ -2,6 +2,7 @@ package net.qbar.common.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -35,6 +36,7 @@ public class BuiltContainer extends Container
     private final List<Range<Integer>>                                                             playerSlotRanges;
     private final List<Range<Integer>>                                                             tileSlotRanges;
 
+    private final ArrayList<MutableTriple<BooleanSupplier, Consumer<Boolean>, Boolean>>            boolValues;
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>>                        shortValues;
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>>                      integerValues;
     private final ArrayList<MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack>> fluidValues;
@@ -55,6 +57,7 @@ public class BuiltContainer extends Container
         this.playerSlotRanges = playerSlotRange;
         this.tileSlotRanges = tileSlotRange;
 
+        this.boolValues = new ArrayList<>();
         this.shortValues = new ArrayList<>();
         this.integerValues = new ArrayList<>();
         this.fluidValues = new ArrayList<>();
@@ -62,6 +65,13 @@ public class BuiltContainer extends Container
         this.inventories = inventories;
 
         this.inventories.forEach(inventory -> inventory.openInventory(player));
+    }
+
+    public void addBoolSync(final List<Pair<BooleanSupplier, Consumer<Boolean>>> syncables)
+    {
+        for (final Pair<BooleanSupplier, Consumer<Boolean>> syncable : syncables)
+            this.boolValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), false));
+        this.boolValues.trimToSize();
     }
 
     public void addShortSync(final List<Pair<IntSupplier, IntConsumer>> syncables)
@@ -129,7 +139,6 @@ public class BuiltContainer extends Container
 
         for (final IContainerListener listener : this.listeners)
         {
-
             int i = 0;
             if (!this.shortValues.isEmpty())
                 for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues)
@@ -137,7 +146,6 @@ public class BuiltContainer extends Container
                     final short supplied = (short) value.getLeft().getAsInt();
                     if (supplied != value.getRight())
                     {
-
                         listener.sendProgressBarUpdate(this, i, supplied);
                         value.setRight(supplied);
                     }
@@ -150,12 +158,21 @@ public class BuiltContainer extends Container
                     final int supplied = value.getLeft().getAsInt();
                     if (supplied != value.getRight())
                     {
-
                         listener.sendProgressBarUpdate(this, i, supplied >> 16);
                         listener.sendProgressBarUpdate(this, i + 1, (short) (supplied & 0xFFFF));
                         value.setRight(supplied);
                     }
                     i += 2;
+                }
+            if (!this.boolValues.isEmpty())
+                for (final MutableTriple<BooleanSupplier, Consumer<Boolean>, Boolean> value : this.boolValues)
+                {
+                    final boolean supplied = value.getLeft().getAsBoolean();
+                    if (supplied != value.getRight())
+                    {
+                        listener.sendProgressBarUpdate(this, i, supplied ? 1 : 0);
+                        value.setRight(supplied);
+                    }
                 }
         }
         for (final MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack> value : this.fluidValues)
@@ -205,13 +222,21 @@ public class BuiltContainer extends Container
                 i += 2;
             }
 
+        if (!this.boolValues.isEmpty())
+            for (final MutableTriple<BooleanSupplier, Consumer<Boolean>, Boolean> value : this.boolValues)
+            {
+                final boolean supplied = value.getLeft().getAsBoolean();
+
+                listener.sendProgressBarUpdate(this, i, supplied ? 1 : 0);
+                value.setRight(supplied);
+                i++;
+            }
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void updateProgressBar(final int id, final int value)
     {
-
         if (id < this.shortValues.size())
         {
             this.shortValues.get(id).getMiddle().accept((short) value);
@@ -219,14 +244,17 @@ public class BuiltContainer extends Container
         }
         else if (id - this.shortValues.size() < this.integerValues.size() * 2)
         {
-
             if ((id - this.shortValues.size()) % 2 == 0)
                 this.integerParts[(id - this.shortValues.size()) / 2] = value;
             else
-            {
                 this.integerValues.get((id - this.shortValues.size()) / 2).getMiddle().accept(
                         (this.integerParts[(id - this.shortValues.size()) / 2] & 0xFFFF) << 16 | value & 0xFFFF);
-            }
+        }
+        else if (id - this.shortValues.size() + this.integerValues.size() * 2 < this.boolValues.size())
+        {
+            this.boolValues.get(id - this.shortValues.size() + this.integerValues.size() * 2).getMiddle()
+                    .accept(value == 1);
+            this.boolValues.get(id - this.shortValues.size() + this.integerValues.size() * 2).setRight(value == 1);
         }
     }
 
@@ -246,7 +274,6 @@ public class BuiltContainer extends Container
 
         if (slot != null && slot.getHasStack())
         {
-
             final ItemStack stackInSlot = slot.getStack();
             originalStack = stackInSlot.copy();
 
@@ -255,7 +282,6 @@ public class BuiltContainer extends Container
             for (final Range<Integer> range : this.playerSlotRanges)
                 if (range.contains(index))
                 {
-
                     if (this.shiftToTile(stackInSlot))
                         shifted = true;
                     break;

@@ -10,30 +10,30 @@ import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
-import fr.ourten.teabeans.value.BaseProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
+import net.qbar.common.network.KeypunchPacket;
 import net.qbar.common.tile.TileKeypunch;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int            xSize      = 176, ySize = 166;
+    private static final int      xSize      = 176, ySize = 166;
 
-    private static final Texture        BACKGROUND = new Texture(QBar.MODID + ":textures/gui/keypunch.png", 0, 0,
+    private static final Texture  BACKGROUND = new Texture(QBar.MODID + ":textures/gui/keypunch.png", 0, 0,
             GuiKeypunch.xSize / 256.0f, GuiKeypunch.ySize / 256.0f);
-    private static final Texture        SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
+    private static final Texture  SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
 
-    private final TileKeypunch          keypunch;
+    private final TileKeypunch    keypunch;
 
-    private final GuiRelativePane       header, body;
+    private final GuiRelativePane header, body;
 
-    private final GuiButton             assemble;
+    private final GuiButton       assemble;
 
-    private final BaseProperty<Boolean> isCraftTab;
+    final GuiRelativePane         filterPane, craftPane;
 
     public GuiKeypunch(final EntityPlayer player, final TileKeypunch keypunch)
     {
@@ -59,64 +59,33 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.body.setBackground(new Background(GuiKeypunch.BACKGROUND));
         mainPanel.addChild(this.body, 0.5f, 0.55f);
 
-        final GuiRelativePane craftPane = new GuiRelativePane();
-        craftPane.setWidthRatio(1);
-        craftPane.setHeightRatio(0.36f);
-
-        for (int i = 0; i < 9; i++)
-        {
-            final ItemStackView view = new ItemStackView(new ItemStack(Items.APPLE));
-            view.setWidth(18);
-            view.setHeight(18);
-            ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
-            craftPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
-        }
-
-        final ItemStackView resultView = new ItemStackView(new ItemStack(Items.CARROT));
-        resultView.setWidth(18);
-        resultView.setHeight(18);
-        ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
-        craftPane.addChild(resultView, 0.195f + 0.104f * 4, 0.2f + 0.3f);
-
-        final GuiRelativePane filterPane = new GuiRelativePane();
-
-        filterPane.setWidthRatio(1);
-        filterPane.setHeightRatio(0.36f);
-
-        for (int i = 0; i < 9; i++)
-        {
-            final ItemStackView view = new ItemStackView(new ItemStack(Items.POISONOUS_POTATO));
-            view.setWidth(18);
-            view.setHeight(18);
-            ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
-            filterPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
-        }
+        this.craftPane = new GuiRelativePane();
+        this.filterPane = new GuiRelativePane();
+        this.initPanels(player);
 
         final GuiButton craftTab = new GuiButton("CRAFT");
         final GuiButton filterTab = new GuiButton("FILTER");
 
-        this.isCraftTab = new BaseProperty<>(true, "isCraftTab");
-        this.isCraftTab.addListener((obs) ->
+        this.keypunch.getCraftTabProperty().addListener((obs) ->
         {
-            craftTab.setDisabled(this.isCraftTab.getValue());
-            filterTab.setDisabled(!this.isCraftTab.getValue());
+            craftTab.setDisabled(this.keypunch.getCraftTabProperty().getValue());
+            filterTab.setDisabled(!this.keypunch.getCraftTabProperty().getValue());
 
-            if (this.isCraftTab.getValue())
+            if (this.keypunch.getCraftTabProperty().getValue())
             {
-                if (!this.body.hasChild(craftPane))
-                    this.body.addChild(craftPane, 0.5f, 0.18f);
-                if (this.body.hasChild(filterPane))
-                    this.body.removeChild(filterPane);
+                if (!this.body.hasChild(this.craftPane))
+                    this.body.addChild(this.craftPane, 0.5f, 0.18f);
+                if (this.body.hasChild(this.filterPane))
+                    this.body.removeChild(this.filterPane);
             }
             else
             {
-                if (!this.body.hasChild(filterPane))
-                    this.body.addChild(filterPane, 0.5f, 0.18f);
-                if (this.body.hasChild(craftPane))
-                    this.body.removeChild(craftPane);
+                if (!this.body.hasChild(this.filterPane))
+                    this.body.addChild(this.filterPane, 0.5f, 0.18f);
+                if (this.body.hasChild(this.craftPane))
+                    this.body.removeChild(this.craftPane);
             }
         });
-        this.isCraftTab.setValue(true);
 
         ((GuiButtonSkin) craftTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E")));
         ((GuiButtonSkin) craftTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD")));
@@ -124,14 +93,22 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
         craftTab.setWidthRatio(0.5f);
         craftTab.setHeightRatio(1);
-        craftTab.setOnActionEvent(e -> this.isCraftTab.setValue(true));
+        craftTab.setOnActionEvent(e ->
+        {
+            this.keypunch.getCraftTabProperty().setValue(true);
+            new KeypunchPacket(keypunch, 0).sendToServer();
+        });
 
         ((GuiButtonSkin) filterTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E")));
         ((GuiButtonSkin) filterTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD")));
         ((GuiButtonSkin) filterTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
         filterTab.setWidthRatio(0.5f);
         filterTab.setHeightRatio(1);
-        filterTab.setOnActionEvent(e -> this.isCraftTab.setValue(false));
+        filterTab.setOnActionEvent(e ->
+        {
+            this.keypunch.getCraftTabProperty().setValue(false);
+            new KeypunchPacket(keypunch, 1).sendToServer();
+        });
 
         this.header.addChild(craftTab, 0.25f, 0.5f);
         this.header.addChild(filterTab, 0.75f, 0.5f);
@@ -163,5 +140,51 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
     public void render(final int mouseX, final int mouseY, final float partialTicks)
     {
         super.render(mouseX, mouseY, partialTicks);
+
+        // System.out.println(this.keypunch.getCraftTabProperty().getValue());
+    }
+
+    public void initPanels(final EntityPlayer player)
+    {
+        this.craftPane.setWidthRatio(1);
+        this.craftPane.setHeightRatio(0.36f);
+
+        for (int i = 0; i < 9; i++)
+        {
+            final ItemStackView view = new ItemStackView(new ItemStack(Items.APPLE));
+            view.setWidth(18);
+            view.setHeight(18);
+            ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+            this.craftPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
+        }
+
+        final ItemStackView resultView = new ItemStackView(new ItemStack(Items.CARROT));
+        resultView.setWidth(18);
+        resultView.setHeight(18);
+        ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+        this.craftPane.addChild(resultView, 0.195f + 0.104f * 4, 0.2f + 0.3f);
+
+        this.filterPane.setWidthRatio(1);
+        this.filterPane.setHeightRatio(0.36f);
+
+        for (int i = 0; i < 9; i++)
+        {
+            final int index = i;
+            final ItemStackView view = new ItemStackView(new ItemStack(Items.POISONOUS_POTATO));
+            view.setWidth(18);
+            view.setHeight(18);
+            ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+            view.setOnClickEvent(click ->
+            {
+                if (click.getKey() == 1)
+                    this.keypunch.getFilterStacks().set(index, ItemStack.EMPTY);
+                else
+                {
+                    if (!player.inventory.getItemStack().isEmpty())
+                        this.keypunch.getFilterStacks().set(index, player.inventory.getItemStack());
+                }
+            });
+            this.filterPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
+        }
     }
 }

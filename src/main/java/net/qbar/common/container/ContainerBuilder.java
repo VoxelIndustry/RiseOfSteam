@@ -2,6 +2,7 @@ package net.qbar.common.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -29,6 +30,7 @@ public class ContainerBuilder
     final List<ListenerSlot>                               slots;
     final List<Range<Integer>>                             playerInventoryRanges, tileInventoryRanges;
 
+    List<Pair<BooleanSupplier, Consumer<Boolean>>>         boolValues;
     final List<Pair<IntSupplier, IntConsumer>>             shortValues;
     final List<Pair<IntSupplier, IntConsumer>>             integerValues;
     List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> fluidValues;
@@ -48,6 +50,7 @@ public class ContainerBuilder
         this.playerInventoryRanges = new ArrayList<>();
         this.tileInventoryRanges = new ArrayList<>();
 
+        this.boolValues = new ArrayList<>();
         this.shortValues = new ArrayList<>();
         this.integerValues = new ArrayList<>();
         this.fluidValues = new ArrayList<>();
@@ -87,6 +90,8 @@ public class ContainerBuilder
     {
         final BuiltContainer built = new BuiltContainer(this.name, this.player, this.inventories, this.canInteract,
                 this.playerInventoryRanges, this.tileInventoryRanges);
+        if (!this.boolValues.isEmpty())
+            built.addBoolSync(this.boolValues);
         if (!this.shortValues.isEmpty())
             built.addShortSync(this.shortValues);
         if (!this.integerValues.isEmpty())

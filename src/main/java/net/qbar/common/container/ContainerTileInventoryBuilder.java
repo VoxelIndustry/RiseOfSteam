@@ -1,5 +1,6 @@
 package net.qbar.common.container;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -99,6 +100,13 @@ public class ContainerTileInventoryBuilder
             final Consumer<FluidStack> setter)
     {
         this.parent.fluidValues.add(Pair.of(supplier, setter));
+        return this;
+    }
+
+    public ContainerTileInventoryBuilder syncBooleanValue(final BooleanSupplier supplier,
+            final Consumer<Boolean> setter)
+    {
+        this.parent.boolValues.add(Pair.of(supplier, setter));
         return this;
     }
 
