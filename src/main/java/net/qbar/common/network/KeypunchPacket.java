@@ -85,6 +85,11 @@ public class KeypunchPacket extends Message
             switch (this.type)
             {
                 case ITEMSTACK:
+                    if (tile.getCraftTabProperty().getValue())
+                        tile.getCraftStacks().set(this.slot, this.stack);
+                    else
+                        tile.getFilterStacks().set(this.slot, this.stack);
+                    tile.markDirty();
                     break;
                 case LOAD:
                     break;

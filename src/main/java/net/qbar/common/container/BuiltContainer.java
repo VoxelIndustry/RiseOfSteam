@@ -2,16 +2,10 @@ package net.qbar.common.container;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.lang3.tuple.MutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -20,30 +14,25 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.common.network.ContainerTankUpdatePacket;
+import net.minecraft.nbt.NBTTagCompound;
+import net.qbar.common.container.sync.SyncableProperty;
+import net.qbar.common.network.ContainerUpdatePacket;
 
 public class BuiltContainer extends Container
 {
 
-    private final String                                                                           name;
+    private final String                      name;
 
-    private final EntityPlayer                                                                     player;
+    private final EntityPlayer                player;
 
-    private final Predicate<EntityPlayer>                                                          canInteract;
-    private final List<Range<Integer>>                                                             playerSlotRanges;
-    private final List<Range<Integer>>                                                             tileSlotRanges;
+    private final Predicate<EntityPlayer>     canInteract;
+    private final List<Range<Integer>>        playerSlotRanges;
+    private final List<Range<Integer>>        tileSlotRanges;
 
-    private final ArrayList<MutableTriple<BooleanSupplier, Consumer<Boolean>, Boolean>>            boolValues;
-    private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>>                        shortValues;
-    private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>>                      integerValues;
-    private final ArrayList<MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack>> fluidValues;
-    private List<Consumer<InventoryCrafting>>                                                      craftEvents;
-    private Integer[]                                                                              integerParts;
+    private List<SyncableProperty<?>>         syncablesValues;
+    private List<Consumer<InventoryCrafting>> craftEvents;
 
-    private final List<IInventory>                                                                 inventories;
+    private final List<IInventory>            inventories;
 
     public BuiltContainer(final String name, final EntityPlayer player, final List<IInventory> inventories,
             final Predicate<EntityPlayer> canInteract, final List<Range<Integer>> playerSlotRange,
@@ -57,42 +46,19 @@ public class BuiltContainer extends Container
         this.playerSlotRanges = playerSlotRange;
         this.tileSlotRanges = tileSlotRange;
 
-        this.boolValues = new ArrayList<>();
-        this.shortValues = new ArrayList<>();
-        this.integerValues = new ArrayList<>();
-        this.fluidValues = new ArrayList<>();
-
         this.inventories = inventories;
 
         this.inventories.forEach(inventory -> inventory.openInventory(player));
     }
 
-    public void addBoolSync(final List<Pair<BooleanSupplier, Consumer<Boolean>>> syncables)
+    public void setSyncables(final List<SyncableProperty<?>> properties)
     {
-        for (final Pair<BooleanSupplier, Consumer<Boolean>> syncable : syncables)
-            this.boolValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), false));
-        this.boolValues.trimToSize();
+        this.syncablesValues = properties;
     }
 
-    public void addShortSync(final List<Pair<IntSupplier, IntConsumer>> syncables)
+    public void addSyncable(final SyncableProperty<?> property)
     {
-        for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
-            this.shortValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (short) 0));
-        this.shortValues.trimToSize();
-    }
-
-    public void addIntegerSync(final List<Pair<IntSupplier, IntConsumer>> syncables)
-    {
-        for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
-            this.integerValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), 0));
-        this.integerValues.trimToSize();
-        this.integerParts = new Integer[this.integerValues.size()];
-    }
-
-    public void addFluidStackSync(final List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> syncables)
-    {
-        for (final Pair<Supplier<FluidStack>, Consumer<FluidStack>> syncable : syncables)
-            this.fluidValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
+        this.syncablesValues.add(property);
     }
 
     public void addCraftEvents(final List<Consumer<InventoryCrafting>> craftEvents)
@@ -137,60 +103,16 @@ public class BuiltContainer extends Container
     {
         super.detectAndSendChanges();
 
-        for (final IContainerListener listener : this.listeners)
+        if (!this.syncablesValues.isEmpty())
         {
-            int i = 0;
-            if (!this.shortValues.isEmpty())
-                for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues)
-                {
-                    final short supplied = (short) value.getLeft().getAsInt();
-                    if (supplied != value.getRight())
-                    {
-                        listener.sendProgressBarUpdate(this, i, supplied);
-                        value.setRight(supplied);
-                    }
-                    i++;
-                }
-
-            if (!this.integerValues.isEmpty())
-                for (final MutableTriple<IntSupplier, IntConsumer, Integer> value : this.integerValues)
-                {
-                    final int supplied = value.getLeft().getAsInt();
-                    if (supplied != value.getRight())
-                    {
-                        listener.sendProgressBarUpdate(this, i, supplied >> 16);
-                        listener.sendProgressBarUpdate(this, i + 1, (short) (supplied & 0xFFFF));
-                        value.setRight(supplied);
-                    }
-                    i += 2;
-                }
-            if (!this.boolValues.isEmpty())
-                for (final MutableTriple<BooleanSupplier, Consumer<Boolean>, Boolean> value : this.boolValues)
-                {
-                    final boolean supplied = value.getLeft().getAsBoolean();
-                    if (supplied != value.getRight())
-                    {
-                        listener.sendProgressBarUpdate(this, i, supplied ? 1 : 0);
-                        value.setRight(supplied);
-                    }
-                }
-        }
-        for (final MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack> value : this.fluidValues)
-        {
-            final FluidStack supplied = value.getLeft().get();
-            boolean update = false;
-            if (supplied == null && value.getRight() != null)
-                update = true;
-            else if (value.getRight() == null && supplied != null)
-                update = true;
-            else if (supplied != null && value.getRight() != null
-                    && (!supplied.equals(value.getRight()) || supplied.amount != value.getRight().amount))
-                update = true;
-            if (update)
+            for (final SyncableProperty<?> syncable : this.syncablesValues)
             {
-                new ContainerTankUpdatePacket(this.windowId, this.fluidValues.indexOf(value), supplied)
-                        .sendTo(this.player);
-                value.setRight(supplied);
+                if (syncable.needRefresh())
+                {
+                    syncable.updateInternal();
+                    new ContainerUpdatePacket(this.windowId, this.syncablesValues.indexOf(syncable),
+                            syncable.toNBT(new NBTTagCompound())).sendTo(this.player);
+                }
             }
         }
     }
@@ -200,74 +122,30 @@ public class BuiltContainer extends Container
     {
         super.addListener(listener);
 
-        int i = 0;
-        if (!this.shortValues.isEmpty())
-            for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues)
-            {
-                final short supplied = (short) value.getLeft().getAsInt();
-
-                listener.sendProgressBarUpdate(this, i, supplied);
-                value.setRight(supplied);
-                i++;
-            }
-
-        if (!this.integerValues.isEmpty())
-            for (final MutableTriple<IntSupplier, IntConsumer, Integer> value : this.integerValues)
-            {
-                final int supplied = value.getLeft().getAsInt();
-
-                listener.sendProgressBarUpdate(this, i, supplied >> 16);
-                listener.sendProgressBarUpdate(this, i + 1, (short) (supplied & 0xFFFF));
-                value.setRight(supplied);
-                i += 2;
-            }
-
-        if (!this.boolValues.isEmpty())
-            for (final MutableTriple<BooleanSupplier, Consumer<Boolean>, Boolean> value : this.boolValues)
-            {
-                final boolean supplied = value.getLeft().getAsBoolean();
-
-                listener.sendProgressBarUpdate(this, i, supplied ? 1 : 0);
-                value.setRight(supplied);
-                i++;
-            }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void updateProgressBar(final int id, final int value)
-    {
-        if (id < this.shortValues.size())
+        if (!this.syncablesValues.isEmpty())
         {
-            this.shortValues.get(id).getMiddle().accept((short) value);
-            this.shortValues.get(id).setRight((short) value);
-        }
-        else if (id - this.shortValues.size() < this.integerValues.size() * 2)
-        {
-            if ((id - this.shortValues.size()) % 2 == 0)
-                this.integerParts[(id - this.shortValues.size()) / 2] = value;
-            else
-                this.integerValues.get((id - this.shortValues.size()) / 2).getMiddle().accept(
-                        (this.integerParts[(id - this.shortValues.size()) / 2] & 0xFFFF) << 16 | value & 0xFFFF);
-        }
-        else if (id - this.shortValues.size() + this.integerValues.size() * 2 < this.boolValues.size())
-        {
-            this.boolValues.get(id - this.shortValues.size() + this.integerValues.size() * 2).getMiddle()
-                    .accept(value == 1);
-            this.boolValues.get(id - this.shortValues.size() + this.integerValues.size() * 2).setRight(value == 1);
+            for (final SyncableProperty<?> syncable : this.syncablesValues)
+            {
+                if (syncable.needRefresh())
+                {
+                    syncable.updateInternal();
+                    new ContainerUpdatePacket(this.windowId, this.syncablesValues.indexOf(syncable),
+                            syncable.toNBT(new NBTTagCompound())).sendTo(this.player);
+                }
+            }
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public void updateTank(final int property, final FluidStack fluidStack)
+    public void updateProperty(final int id, final NBTTagCompound property)
     {
-        this.fluidValues.get(property).getMiddle().accept(fluidStack);
+        final SyncableProperty<?> syncable = this.syncablesValues.get(id);
+        syncable.fromNBT(property);
+        syncable.update();
     }
 
     @Override
     public ItemStack transferStackInSlot(final EntityPlayer player, final int index)
     {
-
         ItemStack originalStack = ItemStack.EMPTY;
 
         final Slot slot = this.inventorySlots.get(index);

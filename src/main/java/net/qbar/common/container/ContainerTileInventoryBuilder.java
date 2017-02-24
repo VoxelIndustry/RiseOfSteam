@@ -1,14 +1,10 @@
 package net.qbar.common.container;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -20,6 +16,7 @@ import net.qbar.common.container.slot.FilteredSlot;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.container.slot.SlotFuel;
 import net.qbar.common.container.slot.SlotOutput;
+import net.qbar.common.container.sync.DefaultSyncables;
 
 public class ContainerTileInventoryBuilder
 {
@@ -68,45 +65,37 @@ public class ContainerTileInventoryBuilder
         return this;
     }
 
-    /**
-     *
-     * @param supplier
-     *            The supplier must supply a variable holding inside a Short, it
-     *            will be truncated by force.
-     * @param setter
-     *            The setter to call when the variable has been updated.
-     */
-    public ContainerTileInventoryBuilder syncShortValue(final IntSupplier supplier, final IntConsumer setter)
+    public ContainerTileInventoryBuilder syncBooleanValue(final Supplier<Boolean> supplier,
+            final Consumer<Boolean> setter)
     {
-        this.parent.shortValues.add(Pair.of(supplier, setter));
+        this.parent.syncables.add(new DefaultSyncables.SyncableBoolean(supplier, setter));
         return this;
     }
 
-    /**
-     *
-     * @param supplier
-     *            The supplier it can supply a variable holding in an Integer it
-     *            will be split inside multiples shorts.
-     * @param setter
-     *            The setter to call when the variable has been updated.
-     */
-    public ContainerTileInventoryBuilder syncIntegerValue(final IntSupplier supplier, final IntConsumer setter)
+    public ContainerTileInventoryBuilder syncIntegerValue(final Supplier<Integer> supplier,
+            final Consumer<Integer> setter)
     {
-        this.parent.integerValues.add(Pair.of(supplier, setter));
+        this.parent.syncables.add(new DefaultSyncables.SyncableInteger(supplier, setter));
+        return this;
+    }
+
+    public ContainerTileInventoryBuilder syncStringValue(final Supplier<String> supplier, final Consumer<String> setter)
+    {
+        this.parent.syncables.add(new DefaultSyncables.SyncableString(supplier, setter));
         return this;
     }
 
     public ContainerTileInventoryBuilder syncFluidValue(final Supplier<FluidStack> supplier,
             final Consumer<FluidStack> setter)
     {
-        this.parent.fluidValues.add(Pair.of(supplier, setter));
+        this.parent.syncables.add(new DefaultSyncables.SyncableFluid(supplier, setter));
         return this;
     }
 
-    public ContainerTileInventoryBuilder syncBooleanValue(final BooleanSupplier supplier,
-            final Consumer<Boolean> setter)
+    public ContainerTileInventoryBuilder syncItemValue(final Supplier<ItemStack> supplier,
+            final Consumer<ItemStack> setter)
     {
-        this.parent.boolValues.add(Pair.of(supplier, setter));
+        this.parent.syncables.add(new DefaultSyncables.SyncableItem(supplier, setter));
         return this;
     }
 

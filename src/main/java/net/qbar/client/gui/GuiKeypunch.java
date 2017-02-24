@@ -151,7 +151,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
         for (int i = 0; i < 9; i++)
         {
-            final ItemStackView view = new ItemStackView(new ItemStack(Items.APPLE));
+            final int index = i;
+            final ItemStackView view = new ItemStackView(this.keypunch.getCraftStacks().get(index));
             view.setWidth(18);
             view.setHeight(18);
             ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
@@ -167,21 +168,37 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.filterPane.setWidthRatio(1);
         this.filterPane.setHeightRatio(0.36f);
 
+        this.refreshFilterSlots(player);
+
+        this.keypunch.getFilterStacks().addListener(obs -> this.refreshFilterSlots(player));
+    }
+
+    private void refreshFilterSlots(final EntityPlayer player)
+    {
+        this.filterPane.clearChilds();
         for (int i = 0; i < 9; i++)
         {
             final int index = i;
-            final ItemStackView view = new ItemStackView(new ItemStack(Items.POISONOUS_POTATO));
+            final ItemStackView view = new ItemStackView(this.keypunch.getFilterStacks().get(index));
             view.setWidth(18);
             view.setHeight(18);
             ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
             view.setOnClickEvent(click ->
             {
                 if (click.getKey() == 1)
+                {
                     this.keypunch.getFilterStacks().set(index, ItemStack.EMPTY);
+                    new KeypunchPacket(this.keypunch, index, ItemStack.EMPTY).sendToServer();
+                }
                 else
                 {
                     if (!player.inventory.getItemStack().isEmpty())
-                        this.keypunch.getFilterStacks().set(index, player.inventory.getItemStack());
+                    {
+                        final ItemStack copy = player.inventory.getItemStack().copy();
+                        copy.setCount(1);
+                        this.keypunch.getFilterStacks().set(index, copy);
+                        new KeypunchPacket(this.keypunch, index, copy).sendToServer();
+                    }
                 }
             });
             this.filterPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
