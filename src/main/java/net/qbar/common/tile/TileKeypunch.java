@@ -77,8 +77,26 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
                 .addInventory().tile(this)
                 .filterSlot(0, 26, 70, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
                 .outputSlot(1, 134, 70)
-                .syncBooleanValue(this.isCraftTabProperty::getValue, this.isCraftTabProperty::setValue).addInventory()
-                .create();
+                .syncBooleanValue(this.isCraftTabProperty::getValue, this.isCraftTabProperty::setValue)
+                .syncItemValue(() -> this.getCraftStacks().get(0), stack -> this.getCraftStacks().set(0, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(1), stack -> this.getCraftStacks().set(1, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(2), stack -> this.getCraftStacks().set(2, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(3), stack -> this.getCraftStacks().set(3, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(4), stack -> this.getCraftStacks().set(4, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(5), stack -> this.getCraftStacks().set(5, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(6), stack -> this.getCraftStacks().set(6, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(7), stack -> this.getCraftStacks().set(7, stack))
+                .syncItemValue(() -> this.getCraftStacks().get(8), stack -> this.getCraftStacks().set(8, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(0), stack -> this.getFilterStacks().set(0, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(1), stack -> this.getFilterStacks().set(1, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(2), stack -> this.getFilterStacks().set(2, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(3), stack -> this.getFilterStacks().set(3, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(4), stack -> this.getFilterStacks().set(4, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(5), stack -> this.getFilterStacks().set(5, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(6), stack -> this.getFilterStacks().set(6, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(7), stack -> this.getFilterStacks().set(7, stack))
+                .syncItemValue(() -> this.getFilterStacks().get(8), stack -> this.getFilterStacks().set(8, stack))
+                .addInventory().create();
     }
 
     @Override

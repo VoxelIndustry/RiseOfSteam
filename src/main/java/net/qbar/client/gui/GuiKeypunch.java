@@ -11,8 +11,9 @@ import org.yggard.brokkgui.wrapper.container.ItemStackView;
 import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
@@ -136,19 +137,24 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         });
     }
 
-    @Override
-    public void render(final int mouseX, final int mouseY, final float partialTicks)
-    {
-        super.render(mouseX, mouseY, partialTicks);
-
-        // System.out.println(this.keypunch.getCraftTabProperty().getValue());
-    }
-
     public void initPanels(final EntityPlayer player)
     {
         this.craftPane.setWidthRatio(1);
         this.craftPane.setHeightRatio(0.36f);
 
+        this.filterPane.setWidthRatio(1);
+        this.filterPane.setHeightRatio(0.36f);
+
+        this.refreshCraftSlots(player);
+        this.refreshFilterSlots(player);
+
+        this.keypunch.getCraftStacks().addListener(obs -> this.refreshCraftSlots(player));
+        this.keypunch.getFilterStacks().addListener(obs -> this.refreshFilterSlots(player));
+    }
+
+    private void refreshCraftSlots(final EntityPlayer player)
+    {
+        this.craftPane.clearChilds();
         for (int i = 0; i < 9; i++)
         {
             final int index = i;
@@ -156,21 +162,36 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             view.setWidth(18);
             view.setHeight(18);
             ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+            view.setOnClickEvent(click ->
+            {
+                if (click.getKey() == 1)
+                {
+                    this.keypunch.getCraftStacks().set(index, ItemStack.EMPTY);
+                    new KeypunchPacket(this.keypunch, index, ItemStack.EMPTY).sendToServer();
+                }
+                else
+                {
+                    if (!player.inventory.getItemStack().isEmpty())
+                    {
+                        final ItemStack copy = player.inventory.getItemStack().copy();
+                        copy.setCount(1);
+                        this.keypunch.getCraftStacks().set(index, copy);
+                        new KeypunchPacket(this.keypunch, index, copy).sendToServer();
+                    }
+                }
+            });
             this.craftPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
         }
 
-        final ItemStackView resultView = new ItemStackView(new ItemStack(Items.CARROT));
-        resultView.setWidth(18);
-        resultView.setHeight(18);
+        final InventoryCrafting fakeInv = new InventoryCrafting(this.getContainer(), 3, 3);
+        for (int i = 0; i < 9; i++)
+            fakeInv.setInventorySlotContents(i, this.keypunch.getCraftStacks().get(i));
+        final ItemStackView resultView = new ItemStackView(
+                CraftingManager.getInstance().findMatchingRecipe(fakeInv, this.keypunch.getWorld()));
+        resultView.setWidth(22);
+        resultView.setHeight(22);
         ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
         this.craftPane.addChild(resultView, 0.195f + 0.104f * 4, 0.2f + 0.3f);
-
-        this.filterPane.setWidthRatio(1);
-        this.filterPane.setHeightRatio(0.36f);
-
-        this.refreshFilterSlots(player);
-
-        this.keypunch.getFilterStacks().addListener(obs -> this.refreshFilterSlots(player));
     }
 
     private void refreshFilterSlots(final EntityPlayer player)

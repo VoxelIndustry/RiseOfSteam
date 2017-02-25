@@ -94,7 +94,7 @@ public class BuiltContainer extends Container
     @Override
     public final void onCraftMatrixChanged(final IInventory inv)
     {
-        if (!this.craftEvents.isEmpty())
+        if (this.craftEvents != null && !this.craftEvents.isEmpty())
             this.craftEvents.forEach(consumer -> consumer.accept((InventoryCrafting) inv));
     }
 
