@@ -61,6 +61,8 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
             this.getGridObject().getTank().fillInternal(this.coldStorage, true);
             this.coldStorage = null;
         }
+        if (this.getGridObject() != null && !this.adjacentHandler.isEmpty())
+            this.getGridObject().addOutput(this);
     }
 
     @Override
@@ -123,6 +125,12 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
                 this.disconnectHandler(facing.getOpposite(), tile);
                 if (this.adjacentHandler.isEmpty())
                     this.getGridObject().removeOutput(this);
+            }
+            else if (tile != null && tile.hasCapability(this.capability, facing) && !tile
+                    .getCapability(this.capability, facing).equals(this.adjacentHandler.get(facing.getOpposite())))
+            {
+                this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
+                this.getGridObject().addOutput(this);
             }
         }
         else

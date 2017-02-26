@@ -60,6 +60,9 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
             this.getGridObject().getTank().fillInternal(this.coldStorage, true);
             this.coldStorage = 0;
         }
+
+        if (this.getGridObject() != null && !this.adjacentHandler.isEmpty())
+            this.getGridObject().addConnectedPipe(this);
     }
 
     @Override
@@ -106,6 +109,13 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
                 this.disconnectHandler(facing.getOpposite(), tile);
                 if (this.adjacentHandler.isEmpty())
                     this.getGridObject().removeConnectedPipe(this);
+            }
+            else if (tile != null && tile.hasCapability(this.capability, facing) && !tile
+                    .getCapability(this.capability, facing).equals(this.adjacentHandler.get(facing.getOpposite())))
+            {
+                this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
+                if (this.getGridObject() != null)
+                    this.getGridObject().addConnectedPipe(this);
             }
         }
         else
