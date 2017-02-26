@@ -60,7 +60,7 @@ public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, 
                 this.spawnParticles(EnumParticleTypes.LAVA);
         }
 
-        if (this.steamTank.getPressure() >= this.steamTank.getMaxPressure())
+        if (this.steamTank.getPressure() >= this.steamTank.getMaxPressure() && this.isServer())
             this.world.createExplosion(null, this.pos.getX(), this.pos.getY(), this.pos.getZ(), 3, true);
 
         if (this.isServer())
