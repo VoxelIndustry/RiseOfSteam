@@ -3,6 +3,7 @@ package net.qbar.common.grid;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -39,6 +40,48 @@ public class BeltGrid extends CableGrid
         this.tank = new SteamTank(0, 32 * 4, 1.5f);
 
         this.inputs = new HashSet<>();
+    }
+
+    @Override
+    CableGrid copy(final int identifier)
+    {
+        return new BeltGrid(identifier, this.beltSpeed);
+    }
+
+    @Override
+    boolean canMerge(final CableGrid grid)
+    {
+        if (grid instanceof BeltGrid && ((BeltGrid) grid).getBeltSpeed() == this.beltSpeed)
+            return super.canMerge(grid);
+        return false;
+    }
+
+    @Override
+    void onMerge(final CableGrid grid)
+    {
+        this.inputs.addAll(((BeltGrid) grid).getInputs());
+        this.getTank().setCapacity(this.getSteamCapacity());
+        if (((BeltGrid) grid).getTank().getSteam() != 0)
+            this.getTank().fillInternal(((BeltGrid) grid).getTank().getSteam(), true);
+        if (this.lastWorkingState != ((BeltGrid) grid).getLastWorkingState())
+        {
+            ((BeltGrid) grid).getCables().forEach(cable ->
+            {
+                ((IBelt) cable).setWorking(this.lastWorkingState);
+                ((IBelt) cable).itemUpdate();
+            });
+        }
+    }
+
+    @Override
+    void onSplit(final CableGrid grid)
+    {
+        this.getInputs().addAll(
+                ((BeltGrid) grid).getInputs().stream().filter(this.getCables()::contains).collect(Collectors.toSet()));
+        this.getTank()
+                .fillInternal(((BeltGrid) grid).getTank().drainInternal(
+                        ((BeltGrid) grid).getTank().getSteam() / grid.getCables().size() * this.getCables().size(),
+                        false), true);
     }
 
     @Override
@@ -206,12 +249,6 @@ public class BeltGrid extends CableGrid
         this.lastWorkingState = currentWorkingState;
     }
 
-    @Override
-    CableGrid copy(final int identifier)
-    {
-        return new BeltGrid(identifier, this.beltSpeed);
-    }
-
     public SteamTank getTank()
     {
         return this.tank;
@@ -227,6 +264,9 @@ public class BeltGrid extends CableGrid
     {
         super.addCable(cable);
         this.getTank().setCapacity(this.getSteamCapacity());
+
+        ((IBelt) cable).setWorking(this.lastWorkingState);
+        ((IBelt) cable).itemUpdate();
     }
 
     @Override
@@ -319,5 +359,20 @@ public class BeltGrid extends CableGrid
             }
         }
         return false;
+    }
+
+    public float getBeltSpeed()
+    {
+        return this.beltSpeed;
+    }
+
+    public Set<IBelt> getInputs()
+    {
+        return this.inputs;
+    }
+
+    public boolean getLastWorkingState()
+    {
+        return this.lastWorkingState;
     }
 }
