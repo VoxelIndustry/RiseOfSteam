@@ -88,10 +88,9 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             }
         });
 
-        ((GuiButtonSkin) craftTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E")));
-        ((GuiButtonSkin) craftTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD")));
-        ((GuiButtonSkin) craftTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
-
+        ((GuiButtonSkin) craftTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
+        ((GuiButtonSkin) craftTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD", 0.5f)));
+        ((GuiButtonSkin) craftTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E")));
         craftTab.setWidthRatio(0.5f);
         craftTab.setHeightRatio(1);
         craftTab.setOnActionEvent(e ->
@@ -100,9 +99,9 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             new KeypunchPacket(keypunch, 0).sendToServer();
         });
 
-        ((GuiButtonSkin) filterTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E")));
-        ((GuiButtonSkin) filterTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD")));
-        ((GuiButtonSkin) filterTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
+        ((GuiButtonSkin) filterTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
+        ((GuiButtonSkin) filterTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD", 0.5f)));
+        ((GuiButtonSkin) filterTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E")));
         filterTab.setWidthRatio(0.5f);
         filterTab.setHeightRatio(1);
         filterTab.setOnActionEvent(e ->
