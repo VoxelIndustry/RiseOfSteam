@@ -5,17 +5,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
-public class SlotFuel extends ListenerSlot
+public class SlotFuel extends FilteredSlot
 {
     public SlotFuel(final IInventory inventory, final int index, final int x, final int y)
     {
         super(inventory, index, x, y);
-    }
-
-    @Override
-    public boolean isItemValid(final ItemStack stack)
-    {
-        return TileEntityFurnace.isItemFuel(stack) || SlotFuel.isBucket(stack);
+        this.setFilter(stack -> TileEntityFurnace.isItemFuel(stack) || SlotFuel.isBucket(stack));
     }
 
     @Override

@@ -14,7 +14,6 @@ import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
-import net.qbar.common.init.QBarCardType;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.ContainerUpdatePacket;
@@ -26,7 +25,7 @@ public class CommonProxy
 {
     public void preInit(final FMLPreInitializationEvent e)
     {
-        QBar.network = NetworkContext.forChannel("MyMod");
+        QBar.network = NetworkContext.forChannel(QBar.MODID);
         QBar.network.register(ContainerUpdatePacket.class);
         QBar.network.register(TileSyncRequestPacket.class);
         QBar.network.register(KeypunchPacket.class);
@@ -36,7 +35,6 @@ public class CommonProxy
         QBarBlocks.registerBlocks();
         QBarItems.registerItems();
         QBarFluids.registerFluids();
-        QBarCardType.registerCardTypes();
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         CompatManager.preInit(e);

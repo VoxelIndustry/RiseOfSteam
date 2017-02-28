@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.steam.CapabilitySteamHandler;

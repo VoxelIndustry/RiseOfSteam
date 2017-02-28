@@ -1,10 +1,5 @@
 package net.qbar.common.card;
 
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class PunchedCardDataManager
@@ -13,45 +8,54 @@ public class PunchedCardDataManager
 
     public static PunchedCardDataManager getInstance()
     {
-        if (instance == null)
+        if (PunchedCardDataManager.instance == null)
         {
             synchronized (PunchedCardDataManager.class)
             {
-                if (instance == null)
-                {
-                    instance = new PunchedCardDataManager();
-                }
+                if (PunchedCardDataManager.instance == null)
+                    PunchedCardDataManager.instance = new PunchedCardDataManager();
             }
         }
-        return instance;
+        return PunchedCardDataManager.instance;
     }
-
-    private Map<Short, PunchedCardData> datas;
 
     private PunchedCardDataManager()
     {
-        datas = Maps.newHashMap();
     }
 
-    public PunchedCardData registerDataType(int id, IPunchedCard data)
+    public IPunchedCard readFromNBT(final NBTTagCompound tag)
     {
-        if (this.datas.containsKey(id))
-            throw new IllegalArgumentException("id already used");
-        PunchedCardData card = new PunchedCardData(id, data);
-
-        this.datas.put(card.getId(), card);
-        return card;
+        final IPunchedCard data = ECardType.values()[tag.getInteger("cardTypeID")].data;
+        return data.readFromNBT(tag);
     }
 
-    public PunchedCardData getCardData(ItemStack card)
+    public void writeToNBT(final NBTTagCompound tag, final IPunchedCard data)
     {
-        NBTTagCompound tag = card.getTagCompound();
-        if (!tag.hasKey("PunchedCardDataId"))
-            throw new IllegalArgumentException("Invalid ItemStack");
-        short id = tag.getShort("PunchedCardDataId");
-        if (!this.datas.containsKey(id))
-            throw new IllegalArgumentException("No data found");
+        tag.setInteger("cardTypeID", data.getID());
+        data.writeToNBT(tag);
+    }
 
-        return this.datas.get(id);
+    public static enum ECardType
+    {
+        CRAFT(0, new CraftCard(0)), FILTER(1, new FilterCard(1));
+
+        private int          ID;
+        private IPunchedCard data;
+
+        private ECardType(final int id, final IPunchedCard data)
+        {
+            this.ID = id;
+            this.data = data;
+        }
+
+        public int getID()
+        {
+            return this.ID;
+        }
+
+        public IPunchedCard getData()
+        {
+            return this.data;
+        }
     }
 }

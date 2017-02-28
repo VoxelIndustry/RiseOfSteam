@@ -23,12 +23,6 @@ public class FilteredSlot extends ListenerSlot
     @Override
     public boolean isItemValid(final ItemStack stack)
     {
-        try
-        {
-            return this.filter.test(stack);
-        } catch (final NullPointerException e)
-        {
-            return true;
-        }
+        return this.filter.test(stack);
     }
 }

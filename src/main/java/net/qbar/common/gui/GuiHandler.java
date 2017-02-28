@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.GuiBoiler;
 import net.qbar.client.gui.GuiExtractor;
 import net.qbar.client.gui.GuiKeypunch;
-import net.qbar.common.tile.IContainerProvider;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.tile.TileBoiler;
 import net.qbar.common.tile.TileExtractor;
 import net.qbar.common.tile.TileKeypunch;

@@ -8,11 +8,13 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface IPunchedCard
 {
-    void readFromNBT(NBTTagCompound tag);
+    IPunchedCard readFromNBT(NBTTagCompound tag);
 
     void writeToNBT(NBTTagCompound tag);
 
     void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced);
 
     boolean isValid(NBTTagCompound tag);
+
+    int getID();
 }

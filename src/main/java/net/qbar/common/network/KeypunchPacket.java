@@ -6,9 +6,14 @@ import io.github.elytra.concrete.annotation.field.MarshalledAs;
 import io.github.elytra.concrete.annotation.type.ReceivedOn;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.qbar.QBar;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileKeypunch;
 
 @ReceivedOn(Side.SERVER)
@@ -94,6 +99,22 @@ public class KeypunchPacket extends Message
                 case LOAD:
                     break;
                 case PRINT:
+                    if (tile.getCraftTabProperty().getValue())
+                    {
+
+                    }
+                    else
+                    {
+                        final ItemStack punched = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
+                        punched.setTagCompound(new NBTTagCompound());
+                        final FilterCard card = new FilterCard(ECardType.FILTER.getID());
+                        for (int i = 0; i < tile.getFilterStacks().size(); i++)
+                            card.stacks[i] = tile.getFilterStacks().get(i);
+                        PunchedCardDataManager.getInstance().writeToNBT(punched.getTagCompound(), card);
+                        tile.decrStackSize(0, 1);
+                        tile.setInventorySlotContents(1, punched);
+                        tile.markDirty();
+                    }
                     break;
                 case TAB:
                     tile.getCraftTabProperty().setValue(this.currentTab == 0);

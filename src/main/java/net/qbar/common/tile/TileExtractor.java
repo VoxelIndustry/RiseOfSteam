@@ -15,6 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.qbar.common.block.BlockExtractor;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;

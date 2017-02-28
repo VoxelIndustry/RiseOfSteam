@@ -116,24 +116,15 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.assemble = new GuiButton("PRINT");
         this.assemble.setWidth(56);
         this.assemble.setHeight(16);
+        this.assemble.setOnActionEvent(
+                e -> new KeypunchPacket(keypunch, !this.assemble.getText().equals("PRINT")).sendToServer());
 
         ((GuiButtonSkin) this.assemble.getSkin()).setBackground(new Background(Color.fromHex("#03A9F4")));
         ((GuiButtonSkin) this.assemble.getSkin()).setHoveredBackground(new Background(Color.fromHex("#4FC3F7")));
 
-        ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(stack ->
-        {
-            if (!stack.isEmpty())
-            {
-                if (!this.body.hasChild(this.assemble))
-                    this.body.addChild(this.assemble, 0.5f, 0.415f);
-                if (stack.getTagCompound() == null && !this.assemble.getText().equals("PRINT"))
-                    this.assemble.setText("PRINT");
-                else if (stack.getTagCompound() != null && !this.assemble.getText().equals("LOAD"))
-                    this.assemble.setText("LOAD");
-            }
-            else if (stack.isEmpty() && this.body.hasChild(this.assemble))
-                this.body.removeChild(this.assemble);
-        });
+        ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshMessage);
+        this.keypunch.getCanPrintProperty()
+                .addListener(obs -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
     }
 
     public void initPanels(final EntityPlayer player)
@@ -223,5 +214,29 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             });
             this.filterPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
         }
+    }
+
+    private void refreshMessage(final ItemStack stack)
+    {
+        if (!stack.isEmpty())
+        {
+            if (!this.body.hasChild(this.assemble))
+                this.body.addChild(this.assemble, 0.5f, 0.415f);
+            if (stack.getTagCompound() == null)
+            {
+                if (this.keypunch.getCanPrintProperty().getValue())
+                {
+                    this.assemble.setText("PRINT");
+                    if (!this.body.hasChild(this.assemble))
+                        this.body.addChild(this.assemble, 0.5f, 0.415f);
+                }
+                else
+                    this.body.removeChild(this.assemble);
+            }
+            else if (stack.getTagCompound() != null)
+                this.assemble.setText("LOAD");
+        }
+        else if (stack.isEmpty() && this.body.hasChild(this.assemble))
+            this.body.removeChild(this.assemble);
     }
 }

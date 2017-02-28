@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.qbar.common.card.PunchedCardData;
+import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
 
 public class ItemPunchedCard extends ItemBase
@@ -12,26 +12,22 @@ public class ItemPunchedCard extends ItemBase
     public ItemPunchedCard()
     {
         super("punched_card");
+        this.setHasSubtypes(true);
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List<String> tooltip,
+            final boolean advanced)
     {
-        try
+        if (stack.hasTagCompound())
         {
-            if (stack.hasTagCompound())
-            {
-                PunchedCardData card = PunchedCardDataManager.getInstance().getCardData(stack);
-                if (card.isValid(stack.getTagCompound()))
-                    card.addInformation(stack, player, tooltip, advanced);
-                else
-                    tooltip.add("Card Invalid");
-            }
+            final IPunchedCard card = PunchedCardDataManager.getInstance().readFromNBT(stack.getTagCompound());
+            if (card.isValid(stack.getTagCompound()))
+                card.addInformation(stack, player, tooltip, advanced);
             else
-                tooltip.add("Card Empty");
-        } catch (Exception e)
-        {
-            tooltip.add("Card Invalid");
+                tooltip.add("Card Invalid");
         }
+        else
+            tooltip.add("Card Empty");
     }
 }

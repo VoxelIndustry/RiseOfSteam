@@ -1,7 +1,6 @@
-package net.qbar.common.tile;
+package net.qbar.common.container;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.qbar.common.container.BuiltContainer;
 
 public interface IContainerProvider
 {
