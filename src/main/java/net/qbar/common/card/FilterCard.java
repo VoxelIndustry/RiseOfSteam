@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.util.ItemUtils;
 
 public class FilterCard implements IPunchedCard
 {
@@ -45,10 +46,10 @@ public class FilterCard implements IPunchedCard
             final boolean advanced)
     {
         tooltip.add("Filter: ");
-        for (final ItemStack stack2 : this.stacks)
+        for (final ItemStack element : this.stacks)
         {
-            if (!stack2.isEmpty())
-                tooltip.add(stack2.toString());
+            if (!element.isEmpty())
+                tooltip.add(ItemUtils.getPrettyStackName(element));
         }
     }
 

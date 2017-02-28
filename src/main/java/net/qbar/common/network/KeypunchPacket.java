@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.qbar.QBar;
+import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
@@ -101,7 +102,19 @@ public class KeypunchPacket extends Message
                 case PRINT:
                     if (tile.getCraftTabProperty().getValue())
                     {
-
+                        if (tile.getCanPrintProperty().getValue())
+                        {
+                            final ItemStack punched = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
+                            punched.setTagCompound(new NBTTagCompound());
+                            final CraftCard card = new CraftCard(ECardType.CRAFT.getID());
+                            for (int i = 0; i < tile.getCraftStacks().size(); i++)
+                                card.recipe[i] = tile.getCraftStacks().get(i);
+                            card.result = tile.getRecipeResult();
+                            PunchedCardDataManager.getInstance().writeToNBT(punched.getTagCompound(), card);
+                            tile.decrStackSize(0, 1);
+                            tile.setInventorySlotContents(1, punched);
+                            tile.markDirty();
+                        }
                     }
                     else
                     {

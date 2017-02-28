@@ -24,4 +24,9 @@ public class ItemUtils
     {
         return damage == -1 || damage == OreDictionary.WILDCARD_VALUE;
     }
+
+    public static String getPrettyStackName(final ItemStack stack)
+    {
+        return stack.getCount() + " " + stack.getDisplayName();
+    }
 }

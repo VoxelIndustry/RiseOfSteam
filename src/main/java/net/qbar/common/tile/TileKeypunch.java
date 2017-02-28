@@ -41,12 +41,7 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
         this.isCraftTabProperty.addListener(obs ->
         {
             if (this.isCraftTabProperty.getValue())
-            {
-                for (int i = 0; i < 9; i++)
-                    this.fakeInv.setInventorySlotContents(i, this.getCraftStacks().get(i));
-                this.canPrintProperty.setValue(
-                        !CraftingManager.getInstance().findMatchingRecipe(this.fakeInv, this.getWorld()).isEmpty());
-            }
+                this.canPrintProperty.setValue(!this.getRecipeResult().isEmpty());
             else
                 this.canPrintProperty.setValue(true);
         });
@@ -54,12 +49,7 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
         this.craftStacks.addListener(obs ->
         {
             if (this.isCraftTabProperty.getValue())
-            {
-                for (int i = 0; i < 9; i++)
-                    this.fakeInv.setInventorySlotContents(i, this.getCraftStacks().get(i));
-                this.canPrintProperty.setValue(
-                        !CraftingManager.getInstance().findMatchingRecipe(this.fakeInv, this.getWorld()).isEmpty());
-            }
+                this.canPrintProperty.setValue(!this.getRecipeResult().isEmpty());
         });
     }
 
@@ -169,5 +159,12 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
     public BaseListProperty<ItemStack> getFilterStacks()
     {
         return this.filterStacks;
+    }
+
+    public ItemStack getRecipeResult()
+    {
+        for (int i = 0; i < 9; i++)
+            this.fakeInv.setInventorySlotContents(i, this.getCraftStacks().get(i));
+        return CraftingManager.getInstance().findMatchingRecipe(this.fakeInv, this.getWorld());
     }
 }

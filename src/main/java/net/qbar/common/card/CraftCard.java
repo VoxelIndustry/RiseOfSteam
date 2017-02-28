@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.util.ItemUtils;
 
 public class CraftCard implements IPunchedCard
 {
@@ -51,13 +52,14 @@ public class CraftCard implements IPunchedCard
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List<String> tooltip,
             final boolean advanced)
     {
-        tooltip.add("recipe: ");
+        tooltip.add("Recipe: ");
         for (final ItemStack element : this.recipe)
         {
-            if (element != ItemStack.EMPTY)
-                tooltip.add(element.toString());
+            if (!element.isEmpty())
+                tooltip.add(ItemUtils.getPrettyStackName(element));
         }
-        tooltip.add("result: " + this.result);
+        tooltip.add("");
+        tooltip.add(" -> " + ItemUtils.getPrettyStackName(this.result));
 
     }
 
