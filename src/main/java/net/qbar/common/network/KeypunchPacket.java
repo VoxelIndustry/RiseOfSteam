@@ -98,6 +98,31 @@ public class KeypunchPacket extends Message
                     tile.markDirty();
                     break;
                 case LOAD:
+                    if (tile.getCraftTabProperty().getValue())
+                    {
+                        if (tile.getStackInSlot(0).hasTagCompound() && tile.getStackInSlot(0).getTagCompound()
+                                .getInteger("cardTypeID") == ECardType.CRAFT.getID())
+                        {
+                            final CraftCard card = (CraftCard) PunchedCardDataManager.getInstance()
+                                    .readFromNBT(tile.getStackInSlot(0).getTagCompound());
+                            for (int i = 0; i < card.recipe.length; i++)
+                                tile.getCraftStacks().set(i, card.recipe[i]);
+                            tile.markDirty();
+
+                        }
+                    }
+                    else
+                    {
+                        if (tile.getStackInSlot(0).hasTagCompound() && tile.getStackInSlot(0).getTagCompound()
+                                .getInteger("cardTypeID") == ECardType.FILTER.getID())
+                        {
+                            final FilterCard card = (FilterCard) PunchedCardDataManager.getInstance()
+                                    .readFromNBT(tile.getStackInSlot(0).getTagCompound());
+                            for (int i = 0; i < card.stacks.length; i++)
+                                tile.getFilterStacks().set(i, card.stacks[i]);
+                            tile.markDirty();
+                        }
+                    }
                     break;
                 case PRINT:
                     if (tile.getCraftTabProperty().getValue())

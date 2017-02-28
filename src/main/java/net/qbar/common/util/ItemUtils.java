@@ -29,4 +29,13 @@ public class ItemUtils
     {
         return stack.getCount() + " " + stack.getDisplayName();
     }
+
+    public static boolean canMergeStacks(final ItemStack stack1, final ItemStack stack2)
+    {
+        if (stack1.isEmpty() || stack2.isEmpty())
+            return true;
+        return stack2.getItem() == stack1.getItem()
+                && (!stack1.getHasSubtypes() || stack1.getMetadata() == stack2.getMetadata())
+                && ItemStack.areItemStackTagsEqual(stack1, stack2);
+    }
 }

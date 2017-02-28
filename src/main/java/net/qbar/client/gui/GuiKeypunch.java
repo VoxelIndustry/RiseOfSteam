@@ -14,11 +14,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.QBar;
+import net.qbar.common.card.CraftCard;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.KeypunchPacket;
 import net.qbar.common.tile.TileKeypunch;
+import net.qbar.common.util.ItemUtils;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
@@ -121,10 +128,16 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
         ((GuiButtonSkin) this.assemble.getSkin()).setBackground(new Background(Color.fromHex("#03A9F4")));
         ((GuiButtonSkin) this.assemble.getSkin()).setHoveredBackground(new Background(Color.fromHex("#4FC3F7")));
+        ((GuiButtonSkin) this.assemble.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E", 0.5f)));
 
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshMessage);
+        ((ListenerSlot) this.getContainer().getSlot(37))
+                .setOnChange(stack -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
         this.keypunch.getCanPrintProperty()
                 .addListener(obs -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
+        this.keypunch.getFilterStacks()
+                .addListener(obs -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
+        this.refreshMessage(this.getContainer().getSlot(36).getStack());
     }
 
     public void initPanels(final EntityPlayer player)
@@ -224,17 +237,50 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 this.body.addChild(this.assemble, 0.5f, 0.415f);
             if (stack.getTagCompound() == null)
             {
+                this.assemble.setText("PRINT");
+
                 if (this.keypunch.getCanPrintProperty().getValue())
                 {
-                    this.assemble.setText("PRINT");
-                    if (!this.body.hasChild(this.assemble))
-                        this.body.addChild(this.assemble, 0.5f, 0.415f);
+                    if (this.getContainer().getSlot(37).getStack().isEmpty())
+                        this.assemble.setDisabled(false);
+                    else
+                    {
+                        final ItemStack temp = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
+                        temp.setTagCompound(new NBTTagCompound());
+
+                        if (this.keypunch.getCraftTabProperty().getValue())
+                        {
+                            final CraftCard card = new CraftCard(ECardType.CRAFT.getID());
+                            for (int i = 0; i < this.keypunch.getCraftStacks().size(); i++)
+                                card.recipe[i] = this.keypunch.getCraftStacks().get(i);
+                            card.result = this.keypunch.getRecipeResult();
+                            PunchedCardDataManager.getInstance().writeToNBT(temp.getTagCompound(), card);
+                        }
+                        else
+                        {
+                            final FilterCard card = new FilterCard(ECardType.FILTER.getID());
+                            for (int i = 0; i < this.keypunch.getFilterStacks().size(); i++)
+                                card.stacks[i] = this.keypunch.getFilterStacks().get(i);
+                            PunchedCardDataManager.getInstance().writeToNBT(temp.getTagCompound(), card);
+                        }
+                        this.assemble.setDisabled(
+                                !ItemUtils.canMergeStacks(temp, this.getContainer().getSlot(37).getStack()));
+                    }
                 }
                 else
-                    this.body.removeChild(this.assemble);
+                    this.assemble.setDisabled(true);
             }
             else if (stack.getTagCompound() != null)
+            {
                 this.assemble.setText("LOAD");
+                if (this.keypunch.getCraftTabProperty().getValue()
+                        && stack.getTagCompound().getInteger("cardTypeID") == ECardType.CRAFT.getID()
+                        || !this.keypunch.getCraftTabProperty().getValue()
+                                && stack.getTagCompound().getInteger("cardTypeID") == ECardType.FILTER.getID())
+                    this.assemble.setDisabled(false);
+                else
+                    this.assemble.setDisabled(true);
+            }
         }
         else if (stack.isEmpty() && this.body.hasChild(this.assemble))
             this.body.removeChild(this.assemble);
