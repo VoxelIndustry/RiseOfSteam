@@ -23,7 +23,9 @@
             "down": {}
         },
         "slop": {
-            "true": {},
+            "true": {
+                "model": "qbar:belt_slope.obj"
+            },
             "false": {}
         },
         "inventory": {

@@ -42,6 +42,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
     private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
 
+    private boolean                                         isSlope;
+
     public TileBelt(final float beltSpeed)
     {
         this.beltSpeed = beltSpeed;
@@ -54,6 +56,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         this.input = null;
 
         this.items = new ArrayList<>(3);
+        this.isSlope = false;
     }
 
     public TileBelt()
@@ -91,6 +94,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
         tag.setInteger("facing", this.facing.ordinal());
         tag.setFloat("beltSpeed", this.beltSpeed);
+        tag.setBoolean("isSlope", this.isSlope);
 
         for (final ItemBelt belt : this.items)
         {
@@ -123,6 +127,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.beltSpeed = tag.getFloat("beltSpeed");
+        this.isSlope = tag.getBoolean("isSlope");
 
         this.items.clear();
         for (int i = 0; i < tag.getInteger("itemCount"); i++)
@@ -301,7 +306,12 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     @Override
     public boolean isSlope()
     {
-        return false;
+        return this.isSlope;
+    }
+
+    public void setSlope(final boolean slope)
+    {
+        this.isSlope = slope;
     }
 
     @Override
