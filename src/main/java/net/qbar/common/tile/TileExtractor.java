@@ -2,6 +2,7 @@ package net.qbar.common.tile;
 
 import java.util.List;
 
+import fr.ourten.teabeans.value.BaseProperty;
 import mezz.jei.ItemFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -13,6 +14,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.qbar.common.block.BlockExtractor;
+import net.qbar.common.card.FilterCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -21,13 +23,14 @@ import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;
 
 public class TileExtractor extends TileInventoryBase
-        implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable
+        implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable, IFilteredMachine
 {
-    private EnumFacing facing;
+    private EnumFacing                  facing;
 
-    private boolean    hasFilter;
+    private boolean                     hasFilter;
+    private final BaseProperty<Boolean> whitelistProperty;
 
-    private ItemFilter filter;
+    private ItemFilter                  filter;
 
     public TileExtractor(final boolean hasFilter)
     {
@@ -36,6 +39,8 @@ public class TileExtractor extends TileInventoryBase
         this.facing = EnumFacing.UP;
 
         this.hasFilter = hasFilter;
+
+        this.whitelistProperty = new BaseProperty<>(true, "whitelistProperty");
     }
 
     public TileExtractor()
@@ -141,7 +146,8 @@ public class TileExtractor extends TileInventoryBase
     {
         return new ContainerBuilder("itemextractor", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this)
-                .filterSlot(0, 80, 63, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(0, 26, 33, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .syncBooleanValue(this.getWhitelistProperty()::getValue, this.getWhitelistProperty()::setValue)
                 .addInventory().create();
     }
 
@@ -184,13 +190,26 @@ public class TileExtractor extends TileInventoryBase
         this.hasFilter = hasFilter;
     }
 
-    public ItemFilter getFilter()
+    public BaseProperty<Boolean> getWhitelistProperty()
     {
-        return this.filter;
+        return this.whitelistProperty;
     }
 
-    public void setFilter(final ItemFilter filter)
+    @Override
+    public boolean isWhitelist()
     {
-        this.filter = filter;
+        return this.getWhitelistProperty().getValue();
+    }
+
+    @Override
+    public void setWhitelist(final boolean isWhitelist)
+    {
+        this.getWhitelistProperty().setValue(isWhitelist);
+    }
+
+    @Override
+    public FilterCard getFilter()
+    {
+        return null;
     }
 }

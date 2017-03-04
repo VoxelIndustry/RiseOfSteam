@@ -8,6 +8,9 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public abstract class TileInventoryBase extends QBarTileBase implements IInventory
 {
@@ -140,5 +143,12 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     public void clear()
     {
 
+    }
+
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return this.hasCustomName() ? new TextComponentString(this.getName())
+                : new TextComponentTranslation(this.getName(), new Object[0]);
     }
 }

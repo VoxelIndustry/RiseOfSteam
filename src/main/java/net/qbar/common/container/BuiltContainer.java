@@ -103,7 +103,7 @@ public class BuiltContainer extends Container
     {
         super.detectAndSendChanges();
 
-        if (!this.syncablesValues.isEmpty())
+        if (this.syncablesValues != null && !this.syncablesValues.isEmpty())
         {
             for (final SyncableProperty<?> syncable : this.syncablesValues)
             {
@@ -122,7 +122,7 @@ public class BuiltContainer extends Container
     {
         super.addListener(listener);
 
-        if (!this.syncablesValues.isEmpty())
+        if (this.syncablesValues != null && !this.syncablesValues.isEmpty())
         {
             for (final SyncableProperty<?> syncable : this.syncablesValues)
             {

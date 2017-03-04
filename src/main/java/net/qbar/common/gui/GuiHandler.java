@@ -44,7 +44,7 @@ public class GuiHandler implements IGuiHandler
             case BOILER:
                 return new GuiBoiler(player, (TileBoiler) tile);
             case EXTRACTOR:
-                return new GuiExtractor(player, (TileExtractor) tile);
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
             case KEYPUNCH:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiKeypunch(player, (TileKeypunch) tile));
             default:
