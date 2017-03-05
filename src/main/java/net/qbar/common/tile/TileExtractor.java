@@ -3,7 +3,6 @@ package net.qbar.common.tile;
 import java.util.List;
 
 import fr.ourten.teabeans.value.BaseProperty;
-import mezz.jei.ItemFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,12 +14,16 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.qbar.common.block.BlockExtractor;
 import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.IPunchedCard;
+import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.util.ItemUtils;
 
 public class TileExtractor extends TileInventoryBase
         implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable, IFilteredMachine
@@ -30,7 +33,8 @@ public class TileExtractor extends TileInventoryBase
     private boolean                     hasFilter;
     private final BaseProperty<Boolean> whitelistProperty;
 
-    private ItemFilter                  filter;
+    private FilterCard                  filter;
+    private ItemStack                   cached = ItemStack.EMPTY;
 
     public TileExtractor(final boolean hasFilter)
     {
@@ -53,6 +57,19 @@ public class TileExtractor extends TileInventoryBase
     {
         if (this.hasItemHandler() && this.hasBelt())
         {
+            if (this.hasFilter() && !ItemUtils.deepEquals(this.cached, this.getStackInSlot(0)))
+            {
+                this.filter = null;
+                this.cached = this.getStackInSlot(0).copy();
+                if (this.cached.hasTagCompound())
+                {
+                    final IPunchedCard card = PunchedCardDataManager.getInstance()
+                            .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                    if (card.getID() == ECardType.FILTER.getID())
+                        this.filter = (FilterCard) card;
+                }
+            }
+
             final IItemHandler itemHandler = this.getItemHandler();
 
             final int slots = itemHandler.getSlots();
@@ -64,6 +81,12 @@ public class TileExtractor extends TileInventoryBase
                 if (!simulated.isEmpty())
                     break;
             }
+
+            if (this.hasFilter() && this.filter != null
+                    && (simulated.isEmpty() || (this.getWhitelistProperty().getValue() ? !this.filter.filter(simulated)
+                            : this.filter.filter(simulated))))
+                return;
+
             if (!simulated.isEmpty() && this.canInsert(simulated) && this.useSteam(1, false))
             {
                 this.insert(itemHandler.extractItem(currentSlot, 1, false));

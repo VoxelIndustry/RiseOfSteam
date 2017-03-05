@@ -69,4 +69,14 @@ public class FilterCard implements IPunchedCard
     {
         return this.ID;
     }
+
+    public boolean filter(final ItemStack stack)
+    {
+        for (final ItemStack filter : this.stacks)
+        {
+            if (ItemUtils.deepEquals(filter, stack))
+                return true;
+        }
+        return false;
+    }
 }
