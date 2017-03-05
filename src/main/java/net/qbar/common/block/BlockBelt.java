@@ -125,14 +125,6 @@ public class BlockBelt extends BlockOrientableMachine
     }
 
     @Override
-    public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
-            final BlockPos posNeighbor)
-    {
-        if (!w.isRemote && posNeighbor.equals(pos.offset(EnumFacing.UP)))
-            ((TileBelt) w.getTileEntity(pos)).scanInput();
-    }
-
-    @Override
     public void breakBlock(final World w, final BlockPos pos, final IBlockState state)
     {
         GridManager.getInstance().disconnectCable((TileBelt) w.getTileEntity(pos));
@@ -245,10 +237,7 @@ public class BlockBelt extends BlockOrientableMachine
     {
         super.rotateBlock(world, pos, facing);
         if (!world.isRemote)
-        {
             ((TileBelt) world.getTileEntity(pos)).setFacing(facing);
-            ((TileBelt) world.getTileEntity(pos)).scanInput();
-        }
         return true;
     }
 

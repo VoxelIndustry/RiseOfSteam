@@ -12,7 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.qbar.common.block.BlockExtractor;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
@@ -139,9 +138,6 @@ public class TileExtractor extends TileInventoryBase
     public void addInfo(final List<String> lines)
     {
         lines.add("Orientation: " + this.getFacing());
-
-        if (this.world.getBlockState(this.getPos()).getValue(BlockExtractor.FILTER))
-            lines.add("Filter: ");
         lines.add("Inventory: " + this.hasItemHandler());
         lines.add("Belt: " + this.hasBelt());
     }
@@ -231,8 +227,8 @@ public class TileExtractor extends TileInventoryBase
     }
 
     @Override
-    public FilterCard getFilter()
+    public FilterCard getFilter(final EnumFacing facing)
     {
-        return null;
+        return this.filter;
     }
 }

@@ -10,7 +10,6 @@ import org.lwjgl.util.vector.Vector2f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.event.TickHandler;
@@ -33,7 +32,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
     private EnumFacing                                      facing;
 
-    private IBeltInput                                      input;
+    private final IBeltInput                                input;
 
     private final List<ItemBelt>                            items;
 
@@ -212,8 +211,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     {
         this.gridID = gridIdentifier;
 
-        if (this.getGridObject() != null && this.input != null)
-            this.getGridObject().addInput(this);
         if (this.getGridObject() != null)
             this.world.notifyNeighborsOfStateChange(this.getPos(), this.getBlockType(), true);
     }
@@ -278,7 +275,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     public void load()
     {
         GridManager.getInstance().connectCable(this);
-        this.scanInput();
     }
 
     public float getBeltSpeed()
@@ -312,41 +308,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     public void setSlope(final boolean slope)
     {
         this.isSlope = slope;
-    }
-
-    @Override
-    public void connectInput(final BlockPos pos)
-    {
-        this.input = (IBeltInput) this.world.getTileEntity(pos);
-
-        if (this.getGridObject() != null)
-            this.getGridObject().addInput(this);
-    }
-
-    public void scanInput()
-    {
-        final BlockPos search = this.getPos().offset(EnumFacing.UP);
-        if (this.input == null)
-        {
-            if (this.world.getTileEntity(search) != null && this.world.getTileEntity(search) instanceof IBeltInput
-                    && ((IBeltInput) this.world.getTileEntity(search)).canInput(this))
-            {
-                this.input = (IBeltInput) this.world.getTileEntity(search);
-
-                if (this.getGridObject() != null)
-                    this.getGridObject().addInput(this);
-            }
-        }
-        else
-        {
-            if (this.world.getTileEntity(search) == null || !(this.world.getTileEntity(search) instanceof IBeltInput)
-                    || !((IBeltInput) this.world.getTileEntity(search)).canInput(this))
-            {
-                this.input = null;
-                if (this.getGridObject() != null)
-                    this.getGridObject().removeInput(this);
-            }
-        }
     }
 
     @Override

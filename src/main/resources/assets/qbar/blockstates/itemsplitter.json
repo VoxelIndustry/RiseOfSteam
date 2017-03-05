@@ -8,6 +8,12 @@
         "model": "qbar:item_splitter.obj"
     },
     "variants": {
+    	"filter": {
+    		"true": {
+    		    "model": "qbar:item_splitter_filtered.obj"
+    		},
+    		"false": {}
+    	},
         "facing": {
             "north": {
                 "y": 270

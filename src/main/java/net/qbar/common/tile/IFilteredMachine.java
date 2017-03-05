@@ -1,5 +1,6 @@
 package net.qbar.common.tile;
 
+import net.minecraft.util.EnumFacing;
 import net.qbar.common.card.FilterCard;
 
 public interface IFilteredMachine
@@ -13,5 +14,5 @@ public interface IFilteredMachine
 
     void setWhitelist(boolean isWhitelist);
 
-    FilterCard getFilter();
+    FilterCard getFilter(EnumFacing facing);
 }

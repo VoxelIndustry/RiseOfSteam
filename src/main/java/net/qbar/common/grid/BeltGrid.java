@@ -1,9 +1,6 @@
 package net.qbar.common.grid;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -20,17 +17,15 @@ import net.qbar.common.steam.SteamTank;
 
 public class BeltGrid extends CableGrid
 {
-    private final SteamTank  tank;
+    private final SteamTank tank;
 
-    private final Set<IBelt> inputs;
+    private final float     beltSpeed;
 
-    private final float      beltSpeed;
+    private final float     BELT_MIDDLE      = 10 / 32F;
 
-    private final float      BELT_MIDDLE      = 10 / 32F;
+    private int             movedCount       = 0;
 
-    private int              movedCount       = 0;
-
-    private boolean          lastWorkingState = false;
+    private boolean         lastWorkingState = false;
 
     public BeltGrid(final int identifier, final float beltSpeed)
     {
@@ -38,8 +33,6 @@ public class BeltGrid extends CableGrid
 
         this.beltSpeed = beltSpeed;
         this.tank = new SteamTank(0, 32 * 4, 1.5f);
-
-        this.inputs = new HashSet<>();
     }
 
     @Override
@@ -59,7 +52,6 @@ public class BeltGrid extends CableGrid
     @Override
     void onMerge(final CableGrid grid)
     {
-        this.inputs.addAll(((BeltGrid) grid).getInputs());
         this.getTank().setCapacity(this.getSteamCapacity());
         if (((BeltGrid) grid).getTank().getSteam() != 0)
             this.getTank().fillInternal(((BeltGrid) grid).getTank().getSteam(), true);
@@ -76,8 +68,6 @@ public class BeltGrid extends CableGrid
     @Override
     void onSplit(final CableGrid grid)
     {
-        this.getInputs().addAll(
-                ((BeltGrid) grid).getInputs().stream().filter(this.getCables()::contains).collect(Collectors.toSet()));
         this.getTank()
                 .fillInternal(((BeltGrid) grid).getTank().drainInternal(
                         ((BeltGrid) grid).getTank().getSteam() / grid.getCables().size() * this.getCables().size(),
@@ -275,27 +265,14 @@ public class BeltGrid extends CableGrid
         if (super.removeCable(cable))
         {
             this.getTank().setCapacity(this.getSteamCapacity());
-
-            if (this.inputs.contains(cable))
-                this.inputs.remove(cable);
             return true;
         }
         return false;
     }
 
-    public void addInput(final IBelt input)
-    {
-        this.inputs.add(input);
-    }
-
-    public void removeInput(final IBelt input)
-    {
-        this.inputs.remove(input);
-    }
-
     public boolean insert(final IBelt belt, final ItemStack stack, final boolean doInsert)
     {
-        if (this.inputs.contains(belt) && !belt.isSlope())
+        if (!belt.isSlope())
         {
             boolean enoughSpace = true;
             for (final ItemBelt item : belt.getItems())
@@ -364,11 +341,6 @@ public class BeltGrid extends CableGrid
     public float getBeltSpeed()
     {
         return this.beltSpeed;
-    }
-
-    public Set<IBelt> getInputs()
-    {
-        return this.inputs;
     }
 
     public boolean getLastWorkingState()

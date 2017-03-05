@@ -2,7 +2,6 @@ package net.qbar.common.block;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -22,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.qbar.QBar;
-import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.TileExtractor;
 
@@ -176,18 +174,6 @@ public class BlockExtractor extends BlockMachineBase
 
         if (!w.isRemote)
             ((TileExtractor) w.getTileEntity(pos)).setFacing(state.getValue(BlockExtractor.FACING));
-    }
-
-    @Override
-    public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
-            final BlockPos posNeighbor)
-    {
-        if (pos.offset(state.getValue(BlockExtractor.FACING)).equals(posNeighbor))
-        {
-            if (w.getTileEntity(posNeighbor) != null && w.getTileEntity(posNeighbor) instanceof IBelt
-                    && ((IBelt) w.getTileEntity(posNeighbor)).getFacing() == state.getValue(BlockExtractor.FACING))
-                ((IBelt) w.getTileEntity(posNeighbor)).connectInput(pos);
-        }
     }
 
     @Override

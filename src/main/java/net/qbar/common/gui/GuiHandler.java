@@ -10,10 +10,12 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.GuiBoiler;
 import net.qbar.client.gui.GuiExtractor;
 import net.qbar.client.gui.GuiKeypunch;
+import net.qbar.client.gui.GuiSplitter;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.tile.TileBoiler;
 import net.qbar.common.tile.TileExtractor;
 import net.qbar.common.tile.TileKeypunch;
+import net.qbar.common.tile.TileSplitter;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -47,6 +49,8 @@ public class GuiHandler implements IGuiHandler
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
             case KEYPUNCH:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiKeypunch(player, (TileKeypunch) tile));
+            case SPLITTER:
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiSplitter(player, (TileSplitter) tile));
             default:
                 break;
         }

@@ -74,7 +74,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockAssembler());
         QBarBlocks.registerBlock(new BlockBelt());
         QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
-        QBarBlocks.registerBlock(new BlockSplitter());
+        QBarBlocks.registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
