@@ -116,17 +116,17 @@ public class TileSplitter extends TileInventoryBase
             int split = 0;
             this.choices.clear();
 
-            if (left)
+            if (left && this.checkFilter(this.getFacing().rotateY(), this.getStackInSlot(3)))
             {
                 split++;
                 this.choices.add(this.getFacing().rotateY());
             }
-            if (front)
+            if (front && this.checkFilter(this.getFacing().getOpposite(), this.getStackInSlot(3)))
             {
                 split++;
                 this.choices.add(this.getFacing().getOpposite());
             }
-            if (right)
+            if (right && this.checkFilter(this.getFacing().rotateY().getOpposite(), this.getStackInSlot(3)))
             {
                 split++;
                 this.choices.add(this.getFacing().rotateY().getOpposite());
@@ -137,8 +137,7 @@ public class TileSplitter extends TileInventoryBase
 
             for (int i = 0; i < split; i++)
             {
-                if (this.checkFilter(this.choices.get(i == 0 ? this.lastSplit : 0), this.getStackInSlot(3))
-                        && this.canInsert(this.getStackInSlot(3), this.choices.get(i == 0 ? this.lastSplit : 0)))
+                if (this.canInsert(this.getStackInSlot(3), this.choices.get(i == 0 ? this.lastSplit : 0)))
                 {
                     this.insert(this.getStackInSlot(3), this.choices.get(i == 0 ? this.lastSplit : 0));
                     this.setInventorySlotContents(3, ItemStack.EMPTY);
