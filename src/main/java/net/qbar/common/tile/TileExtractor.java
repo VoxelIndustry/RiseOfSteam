@@ -148,6 +148,7 @@ public class TileExtractor extends TileInventoryBase
         tag.setInteger("facing", this.facing.ordinal());
         tag.setBoolean("filtered", this.hasFilter);
 
+        tag.setBoolean("whitelist", this.whitelistProperty.getValue());
         return super.writeToNBT(tag);
     }
 
@@ -157,6 +158,7 @@ public class TileExtractor extends TileInventoryBase
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.hasFilter = tag.getBoolean("filtered");
 
+        this.whitelistProperty.setValue(tag.getBoolean("whitelist"));
         super.readFromNBT(tag);
     }
 
@@ -215,13 +217,13 @@ public class TileExtractor extends TileInventoryBase
     }
 
     @Override
-    public boolean isWhitelist()
+    public boolean isWhitelist(final EnumFacing facing)
     {
         return this.getWhitelistProperty().getValue();
     }
 
     @Override
-    public void setWhitelist(final boolean isWhitelist)
+    public void setWhitelist(final EnumFacing facing, final boolean isWhitelist)
     {
         this.getWhitelistProperty().setValue(isWhitelist);
     }

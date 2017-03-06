@@ -5,14 +5,14 @@ import net.qbar.common.card.FilterCard;
 
 public interface IFilteredMachine
 {
-    boolean isWhitelist();
+    boolean isWhitelist(EnumFacing facing);
 
-    default boolean isBlacklist()
+    default boolean isBlacklist(final EnumFacing facing)
     {
-        return !this.isWhitelist();
+        return !this.isWhitelist(facing);
     }
 
-    void setWhitelist(boolean isWhitelist);
+    void setWhitelist(EnumFacing facing, boolean isWhitelist);
 
     FilterCard getFilter(EnumFacing facing);
 }

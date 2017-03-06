@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import fr.ourten.teabeans.value.BaseProperty;
+import fr.ourten.teabeans.value.BaseListProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -19,23 +19,27 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.IPunchedCard;
+import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
+import net.qbar.common.init.QBarItems;
+import net.qbar.common.util.ItemUtils;
 
 public class TileSplitter extends TileInventoryBase
         implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable, IFilteredMachine, ISidedInventory
 {
-    private EnumFacing                  facing;
+    private EnumFacing                      facing;
 
-    private boolean                     hasFilter;
-    private final BaseProperty<Boolean> whitelistProperty;
+    private boolean                         hasFilter;
+    private final BaseListProperty<Boolean> whitelistProperty;
 
-    private ItemStack                   cacheWest, cacheNorth;
-
-    private final ItemStack             cacheEast;
-    private FilterCard                  filterWest, filterNorth, filterEast;
+    private ItemStack                       cachedWest, cachedNorth, cachedEast;
+    private FilterCard                      filterWest, filterNorth, filterEast;
 
     public TileSplitter(final boolean hasFilter)
     {
@@ -43,10 +47,13 @@ public class TileSplitter extends TileInventoryBase
 
         this.hasFilter = hasFilter;
 
-        this.whitelistProperty = new BaseProperty<>(true, "whitelistProperty");
+        this.whitelistProperty = new BaseListProperty<>(null, "whitelistProperty");
+        this.whitelistProperty.add(true);
+        this.whitelistProperty.add(true);
+        this.whitelistProperty.add(true);
         this.facing = EnumFacing.UP;
 
-        this.cacheEast = this.cacheNorth = this.cacheWest = ItemStack.EMPTY;
+        this.cachedEast = this.cachedNorth = this.cachedWest = ItemStack.EMPTY;
     }
 
     public TileSplitter()
@@ -62,6 +69,46 @@ public class TileSplitter extends TileInventoryBase
     {
         if (this.isServer() && !this.getStackInSlot(3).isEmpty())
         {
+            if (this.hasFilter())
+            {
+                if (!ItemUtils.deepEquals(this.cachedWest, this.getStackInSlot(0)))
+                {
+                    this.filterWest = null;
+                    this.cachedWest = this.getStackInSlot(0).copy();
+                    if (this.cachedWest.hasTagCompound())
+                    {
+                        final IPunchedCard card = PunchedCardDataManager.getInstance()
+                                .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                        if (card.getID() == ECardType.FILTER.getID())
+                            this.filterWest = (FilterCard) card;
+                    }
+                }
+                if (!ItemUtils.deepEquals(this.cachedNorth, this.getStackInSlot(1)))
+                {
+                    this.filterNorth = null;
+                    this.cachedNorth = this.getStackInSlot(1).copy();
+                    if (this.cachedNorth.hasTagCompound())
+                    {
+                        final IPunchedCard card = PunchedCardDataManager.getInstance()
+                                .readFromNBT(this.getStackInSlot(1).getTagCompound());
+                        if (card.getID() == ECardType.FILTER.getID())
+                            this.filterNorth = (FilterCard) card;
+                    }
+                }
+                if (!ItemUtils.deepEquals(this.cachedEast, this.getStackInSlot(2)))
+                {
+                    this.filterEast = null;
+                    this.cachedEast = this.getStackInSlot(2).copy();
+                    if (this.cachedEast.hasTagCompound())
+                    {
+                        final IPunchedCard card = PunchedCardDataManager.getInstance()
+                                .readFromNBT(this.getStackInSlot(2).getTagCompound());
+                        if (card.getID() == ECardType.FILTER.getID())
+                            this.filterEast = (FilterCard) card;
+                    }
+                }
+            }
+
             final boolean left = this.hasBelt(this.getFacing().rotateY());
             final boolean front = this.hasBelt(this.getFacing().getOpposite());
             final boolean right = this.hasBelt(this.getFacing().rotateY().getOpposite());
@@ -90,7 +137,8 @@ public class TileSplitter extends TileInventoryBase
 
             for (int i = 0; i < split; i++)
             {
-                if (this.canInsert(this.getStackInSlot(3), this.choices.get(i == 0 ? this.lastSplit : 0)))
+                if (this.checkFilter(this.choices.get(i == 0 ? this.lastSplit : 0), this.getStackInSlot(3))
+                        && this.canInsert(this.getStackInSlot(3), this.choices.get(i == 0 ? this.lastSplit : 0)))
                 {
                     this.insert(this.getStackInSlot(3), this.choices.get(i == 0 ? this.lastSplit : 0));
                     this.setInventorySlotContents(3, ItemStack.EMPTY);
@@ -99,6 +147,29 @@ public class TileSplitter extends TileInventoryBase
                 this.choices.remove(i == 0 ? this.lastSplit : 0);
             }
         }
+    }
+
+    private boolean checkFilter(final EnumFacing facing, final ItemStack stack)
+    {
+        if (!this.hasFilter())
+            return true;
+
+        if (facing == this.getFacing().getOpposite())
+        {
+            if (this.filterNorth != null && (stack.isEmpty() || (this.getWhitelistProperty().get(1)
+                    ? !this.filterNorth.filter(stack) : this.filterNorth.filter(stack))))
+                return false;
+        }
+        else if (facing == this.getFacing().rotateY())
+        {
+            if (this.filterWest != null && (stack.isEmpty() || (this.getWhitelistProperty().get(0)
+                    ? !this.filterWest.filter(stack) : this.filterWest.filter(stack))))
+                return false;
+        }
+        else if (this.filterEast != null && (stack.isEmpty() || (this.getWhitelistProperty().get(2)
+                ? !this.filterEast.filter(stack) : this.filterEast.filter(stack))))
+            return false;
+        return true;
     }
 
     private void insert(final ItemStack stack, final EnumFacing facing)
@@ -137,6 +208,9 @@ public class TileSplitter extends TileInventoryBase
         tag.setInteger("facing", this.facing.ordinal());
         tag.setBoolean("filtered", this.hasFilter);
 
+        for (int i = 0; i < this.whitelistProperty.size(); i++)
+            tag.setBoolean("whitelist" + i, this.whitelistProperty.get(i));
+        tag.setInteger("whitelistSize", this.whitelistProperty.size());
         return super.writeToNBT(tag);
     }
 
@@ -146,6 +220,8 @@ public class TileSplitter extends TileInventoryBase
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.hasFilter = tag.getBoolean("filtered");
 
+        for (int i = 0; i < tag.getInteger("whitelistSize"); i++)
+            this.whitelistProperty.set(i, tag.getBoolean("whitelist" + i));
         super.readFromNBT(tag);
     }
 
@@ -174,7 +250,18 @@ public class TileSplitter extends TileInventoryBase
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return null;
+        return new ContainerBuilder("itemsplitter", player).player(player.inventory).inventory(8, 103).hotbar(8, 161)
+                .addInventory().tile(this)
+                .filterSlot(0, 8, -5, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(1, 8, 34, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(2, 8, 73, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .syncBooleanValue(() -> this.getWhitelistProperty().get(0),
+                        bool -> this.getWhitelistProperty().set(0, bool))
+                .syncBooleanValue(() -> this.getWhitelistProperty().get(1),
+                        bool -> this.getWhitelistProperty().set(1, bool))
+                .syncBooleanValue(() -> this.getWhitelistProperty().get(2),
+                        bool -> this.getWhitelistProperty().set(2, bool))
+                .addInventory().create();
     }
 
     @Override
@@ -194,27 +281,30 @@ public class TileSplitter extends TileInventoryBase
         this.hasFilter = hasFilter;
     }
 
-    public BaseProperty<Boolean> getWhitelistProperty()
+    public BaseListProperty<Boolean> getWhitelistProperty()
     {
         return this.whitelistProperty;
     }
 
     @Override
-    public boolean isWhitelist()
+    public boolean isWhitelist(final EnumFacing facing)
     {
-        return this.getWhitelistProperty().getValue();
+        return this.getWhitelistProperty()
+                .get(facing == this.getFacing().getOpposite() ? 1 : facing == this.getFacing().rotateY() ? 0 : 2);
     }
 
     @Override
-    public void setWhitelist(final boolean isWhitelist)
+    public void setWhitelist(final EnumFacing facing, final boolean isWhitelist)
     {
-        this.getWhitelistProperty().setValue(isWhitelist);
+        this.getWhitelistProperty().set(
+                facing == this.getFacing().getOpposite() ? 1 : facing == this.getFacing().rotateY() ? 0 : 2,
+                isWhitelist);
     }
 
     @Override
     public FilterCard getFilter(final EnumFacing facing)
     {
-        if (facing == this.facing)
+        if (facing == this.facing.getOpposite())
             return this.filterNorth;
         if (facing == this.facing.rotateY())
             return this.filterEast;

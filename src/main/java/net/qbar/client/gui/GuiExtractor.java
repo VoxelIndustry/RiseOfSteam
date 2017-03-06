@@ -14,6 +14,7 @@ import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.qbar.QBar;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.IPunchedCard;
@@ -88,9 +89,8 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
                 this.whitelist.setTextColor(Color.fromHex("#ffffff", 0.87f));
             }
         });
-        this.whitelist.setOnActionEvent(
-                e -> new FilteredMachinePacket(extractor, !this.extractor.getWhitelistProperty().getValue())
-                        .sendToServer());
+        this.whitelist.setOnActionEvent(e -> new FilteredMachinePacket(extractor, EnumFacing.UP,
+                !this.extractor.getWhitelistProperty().getValue()).sendToServer());
 
         ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
         ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
