@@ -1,51 +1,40 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "textures": {
-            "all": "qbar:blocks/item_extractor",
-            "bottom": "#all",
-            "top": "#all",
-            "side": "#all"
-        },
-        "model": "half_slab"
+        "textures": {},
+        "transform": "forge:default-block",
+        "custom": { "flip-v": true },
+        "model": "qbar:item_extractor.obj"
     },
     "variants": {
-        "normal": {
-            "model": "half_slab"
-        },
         "filter": {
             "true": {
-                "textures": {
-                    "all": "qbar:blocks/item_extractor_filter",
-                    "bottom": "#all",
-                    "top": "#all",
-                    "side": "#all"
-                }
+        		"model": "qbar:item_extractor_filtered.obj"
             },
             "false": {}
         },
         "facing": {
-            "down": {
-                "x": 180
-            },
-            "up": {},
+            "down": {},
+            "up": {
+				"x": 180
+          	},
             "north": {
-                "x": 90
-            },
-            "south": {
                 "x": 270
             },
+            "south": {
+                "x": 90
+            },
             "west": {
-                "x": 270,
+                "x": 90,
                 "y": 90
             },
             "east": {
-                "x": 90,
+                "x": 270,
                 "y": 90
             }
         },
         "inventory": {
-            "model": "half_slab"
+        	"model": "qbar:item_extractor.obj"
         }
     }
 }
