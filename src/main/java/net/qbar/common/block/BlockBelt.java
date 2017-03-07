@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -228,16 +229,30 @@ public class BlockBelt extends BlockOrientableMachine
 
     public void setSlopState(final World world, final BlockPos pos, final boolean value)
     {
+        final NBTTagCompound tag = world.getTileEntity(pos).writeToNBT(new NBTTagCompound());
+        GridManager.getInstance().disconnectCable((TileBelt) world.getTileEntity(pos));
         world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.SLOP, value));
+        world.getTileEntity(pos).readFromNBT(tag);
         ((TileBelt) world.getTileEntity(pos)).setSlope(value);
     }
 
     @Override
     public boolean rotateBlock(final World world, final BlockPos pos, final EnumFacing facing)
     {
-        super.rotateBlock(world, pos, facing);
+        NBTTagCompound tag = null;
         if (!world.isRemote)
+        {
+            tag = world.getTileEntity(pos).writeToNBT(new NBTTagCompound());
+            GridManager.getInstance().disconnectCable((TileBelt) world.getTileEntity(pos));
+        }
+
+        super.rotateBlock(world, pos, facing);
+
+        if (!world.isRemote)
+        {
+            world.getTileEntity(pos).readFromNBT(tag);
             ((TileBelt) world.getTileEntity(pos)).setFacing(facing);
+        }
         return true;
     }
 
