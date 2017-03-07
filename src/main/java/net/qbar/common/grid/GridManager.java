@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public class GridManager
@@ -72,16 +71,7 @@ public class GridManager
 
     public <T extends CableGrid> void connectCable(final ITileCable<T> added)
     {
-        for (final EnumFacing facing : EnumFacing.VALUES)
-        {
-
-            final TileEntity adjacent = added.getWorld().getTileEntity(added.getPos().add(facing.getDirectionVec()));
-            if (adjacent != null && adjacent instanceof ITileCable && added.canConnect((ITileCable<?>) adjacent))
-            {
-                added.connect(facing, (ITileCable<T>) adjacent);
-                ((ITileCable<T>) adjacent).connect(facing.getOpposite(), added);
-            }
-        }
+        added.adjacentConnect();
         for (final EnumFacing facing : added.getConnections())
         {
             final ITileCable<T> adjacent = added.getConnected(facing);
@@ -100,7 +90,6 @@ public class GridManager
 
         if (added.getGrid() == -1)
         {
-
             final CableGrid newGrid = this.addGrid(added.createGrid(this.getNextID()));
             newGrid.addCable(added);
             added.setGrid(newGrid.getIdentifier());

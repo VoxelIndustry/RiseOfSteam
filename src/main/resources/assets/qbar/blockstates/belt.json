@@ -22,11 +22,14 @@
             "up": {},
             "down": {}
         },
-        "slop": {
-            "true": {
+        "slope": {
+            "down": {
                 "model": "qbar:belt_slope.obj"
             },
-            "false": {}
+            "normal": {},
+            "up": {
+                "model": "qbar:belt_slope.obj"
+            }
         },
         "inventory": {
             "model": "qbar:belt.obj"

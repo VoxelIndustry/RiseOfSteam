@@ -9,9 +9,12 @@ import org.lwjgl.util.vector.Vector2f;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
 import net.qbar.common.grid.GridManager;
@@ -41,7 +44,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
     private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
 
-    private boolean                                         isSlope;
+    private EBeltSlope                                      slopeState;
 
     public TileBelt(final float beltSpeed)
     {
@@ -55,7 +58,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         this.input = null;
 
         this.items = new ArrayList<>(3);
-        this.isSlope = false;
+        this.slopeState = EBeltSlope.NORMAL;
     }
 
     public TileBelt()
@@ -93,7 +96,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
         tag.setInteger("facing", this.facing.ordinal());
         tag.setFloat("beltSpeed", this.beltSpeed);
-        tag.setBoolean("isSlope", this.isSlope);
+        tag.setInteger("isSlope", this.slopeState.ordinal());
 
         for (final ItemBelt belt : this.items)
         {
@@ -126,7 +129,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
 
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.beltSpeed = tag.getFloat("beltSpeed");
-        this.isSlope = tag.getBoolean("isSlope");
+        this.slopeState = EBeltSlope.values()[tag.getInteger("isSlope")];
 
         this.items.clear();
         for (int i = 0; i < tag.getInteger("itemCount"); i++)
@@ -170,8 +173,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     @Override
     public void addInfo(final List<String> lines)
     {
-        if (this.isSlope)
-            lines.add("Slope: true");
+        lines.add("Slope: " + this.slopeState);
         lines.add("Orientation: " + this.getFacing());
         lines.add("Grid: " + this.getGrid());
 
@@ -228,13 +230,9 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     {
         if (to instanceof TileBelt)
         {
-            final BeltGrid grid = ((TileBelt) to).getGridObject();
-            if (grid != null)
-            {
-                final IBelt adjacentBelt = (IBelt) to;
-                if (adjacentBelt.getFacing() != this.getFacing().getOpposite())
-                    return true;
-            }
+            final IBelt adjacentBelt = (IBelt) to;
+            if (adjacentBelt.getFacing() != this.getFacing().getOpposite())
+                return true;
             return false;
         }
         return false;
@@ -279,6 +277,44 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         GridManager.getInstance().connectCable(this);
     }
 
+    @Override
+    public BlockPos getAdjacentPos(final EnumFacing facing)
+    {
+        if (this.slopeState.equals(EBeltSlope.DOWN) && facing == this.getFacing())
+            return this.getPos().down().offset(facing);
+        else if (this.slopeState.equals(EBeltSlope.UP) && facing == this.getFacing().getOpposite())
+            return this.getPos().down().offset(facing);
+        return this.getPos().offset(facing);
+    }
+
+    @Override
+    public void adjacentConnect()
+    {
+        for (final EnumFacing facing : EnumFacing.HORIZONTALS)
+        {
+            final TileEntity adjacent = this.getWorld().getTileEntity(this.getAdjacentPos(facing).up());
+            if (adjacent != null && adjacent instanceof IBelt && ((IBelt) adjacent).isSlope()
+                    && this.canConnect((IBelt) adjacent) && ((IBelt) adjacent).canConnect(this))
+            {
+                this.connect(facing, (IBelt) adjacent);
+                ((IBelt) adjacent).connect(facing.getOpposite(), this);
+            }
+        }
+
+        for (final EnumFacing facing : EnumFacing.HORIZONTALS)
+        {
+            if (this.isConnected(facing))
+                continue;
+            final TileEntity adjacent = this.getWorld().getTileEntity(this.getAdjacentPos(facing));
+            if (adjacent != null && adjacent instanceof IBelt && this.canConnect((IBelt) adjacent)
+                    && ((IBelt) adjacent).canConnect(this))
+            {
+                this.connect(facing, (IBelt) adjacent);
+                ((IBelt) adjacent).connect(facing.getOpposite(), this);
+            }
+        }
+    }
+
     public float getBeltSpeed()
     {
         return this.beltSpeed;
@@ -304,12 +340,12 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     @Override
     public boolean isSlope()
     {
-        return this.isSlope;
+        return this.slopeState.isSlope();
     }
 
-    public void setSlope(final boolean slope)
+    public void setSlope(final EBeltSlope slope)
     {
-        this.isSlope = slope;
+        this.slopeState = slope;
     }
 
     @Override

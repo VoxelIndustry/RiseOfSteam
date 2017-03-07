@@ -2,6 +2,7 @@ package net.qbar.common.grid;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -42,5 +43,24 @@ public interface ITileCable<T extends CableGrid>
             e.printStackTrace();
         }
         return null;
+    }
+
+    public default void adjacentConnect()
+    {
+        for (final EnumFacing facing : EnumFacing.VALUES)
+        {
+            final TileEntity adjacent = this.getWorld().getTileEntity(this.getAdjacentPos(facing));
+            if (adjacent != null && adjacent instanceof ITileCable && this.canConnect((ITileCable<?>) adjacent)
+                    && ((ITileCable<?>) adjacent).canConnect(this))
+            {
+                this.connect(facing, (ITileCable<T>) adjacent);
+                ((ITileCable<T>) adjacent).connect(facing.getOpposite(), this);
+            }
+        }
+    }
+
+    public default BlockPos getAdjacentPos(final EnumFacing facing)
+    {
+        return this.getPos().offset(facing);
     }
 }
