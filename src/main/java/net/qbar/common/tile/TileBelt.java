@@ -170,6 +170,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     @Override
     public void addInfo(final List<String> lines)
     {
+        if (this.isSlope)
+            lines.add("Slope: true");
         lines.add("Orientation: " + this.getFacing());
         lines.add("Grid: " + this.getGrid());
 
@@ -262,7 +264,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
     public void onLoad()
     {
         super.onLoad();
-        if (!this.world.isRemote && this.getGrid() == -1)
+        if (this.isServer() && this.getGrid() == -1)
             TickHandler.loadables.add(this);
         if (this.isClient())
         {

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.qbar.QBar;
 import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
+import net.qbar.common.grid.GridManager;
 import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
@@ -60,7 +61,7 @@ public class CommonProxy
 
     public void serverStopping(final FMLServerStoppingEvent e)
     {
-
+        GridManager.getInstance().cableGrids.clear();
     }
 
     public void registerItemRenderer(final Item item, final int meta, final String id)
