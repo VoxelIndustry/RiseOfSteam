@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.animation.FastTESR;
+import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.TileBelt;
 
@@ -80,12 +81,27 @@ public class RenderBelt extends FastTESR<TileBelt>
         }
 
         GlStateManager.translate(0, 1.438, 0);
+        if (belt.isSlope())
+        {
+            if (belt.getSlopeState().equals(EBeltSlope.DOWN))
+            {
+                GL11.glRotated(-45, 0, 0, 1);
+                GlStateManager.translate(5 / 16F, 2 / 16F, 0);
+            }
+            else
+            {
+                GL11.glRotated(45, 0, 0, 1);
+                GlStateManager.translate(-15 / 16F, -12 / 16F, 0);
+            }
+        }
 
         ItemBelt previous = null;
         for (final ItemBelt item : belt.getItems())
         {
             if (previous == null)
+            {
                 GlStateManager.translate(1 + item.getPos().y - 9 / 16.0, 0, item.getPos().x + 7 / 64.0);
+            }
             else
                 GlStateManager.translate(-(1 + previous.getPos().y - 9 / 16.0) + (1 + item.getPos().y - 9 / 16.0), 0,
                         -(previous.getPos().x + 7 / 64.0) + (item.getPos().x + 7 / 64.0));

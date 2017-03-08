@@ -343,6 +343,11 @@ public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, 
         return this.slopeState.isSlope();
     }
 
+    public EBeltSlope getSlopeState()
+    {
+        return this.slopeState;
+    }
+
     public void setSlope(final EBeltSlope slope)
     {
         this.slopeState = slope;
