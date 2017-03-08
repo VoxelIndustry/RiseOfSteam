@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
@@ -139,6 +140,7 @@ public abstract class BlockOrientableMachine extends BlockMachineBase implements
     @Override
     public boolean rotateBlock(final World world, final BlockPos pos, final EnumFacing facing)
     {
+        final NBTTagCompound previous = world.getTileEntity(pos).writeToNBT(new NBTTagCompound());
         if (this.horizontal && this.vertical)
         {
             if (facing == null)
@@ -157,6 +159,7 @@ public abstract class BlockOrientableMachine extends BlockMachineBase implements
                 return false;
             world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockOrientableMachine.FACING, facing));
         }
+        world.getTileEntity(pos).readFromNBT(previous);
         return true;
     }
 

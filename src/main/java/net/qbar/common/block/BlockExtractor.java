@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -175,7 +176,9 @@ public class BlockExtractor extends BlockMachineBase
     {
         if (facing == null)
             return false;
+        final NBTTagCompound previous = world.getTileEntity(pos).writeToNBT(new NBTTagCompound());
         world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockExtractor.FACING, facing));
+        world.getTileEntity(pos).readFromNBT(previous);
         if (!world.isRemote)
             ((TileExtractor) world.getTileEntity(pos)).setFacing(facing);
         return true;
