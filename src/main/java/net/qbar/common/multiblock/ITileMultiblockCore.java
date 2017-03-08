@@ -9,6 +9,24 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public interface ITileMultiblockCore extends ITileMultiblock
 {
+    @Override
+    default boolean isCore()
+    {
+        return true;
+    }
+
+    @Override
+    default boolean isCorePresent()
+    {
+        return true;
+    }
+
+    @Override
+    default ITileMultiblockCore getCore()
+    {
+        return this;
+    }
+
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing);
 
     @Nullable

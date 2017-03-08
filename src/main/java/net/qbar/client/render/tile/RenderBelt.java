@@ -91,7 +91,7 @@ public class RenderBelt extends FastTESR<TileBelt>
             else
             {
                 GL11.glRotated(45, 0, 0, 1);
-                GlStateManager.translate(-11 / 16F, -10 / 16F, 0);
+                GlStateManager.translate(-11 / 16F, -.58f, 0);
             }
         }
 

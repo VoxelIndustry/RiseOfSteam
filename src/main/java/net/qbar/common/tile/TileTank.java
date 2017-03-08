@@ -99,12 +99,6 @@ public class TileTank extends QBarTileBase implements ITileInfoProvider, ITileMu
     }
 
     @Override
-    public ITileMultiblockCore getCore()
-    {
-        return this;
-    }
-
-    @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
