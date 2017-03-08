@@ -15,7 +15,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "0.0.1"
+version = "0.1.0" + "-" + System.env.TRAVIS_BRANCH +"-r" + System.env.TRAVIS_BUILD_NUMBER
 group= "net.qbar" 
 archivesBaseName = "qbar"
 
@@ -64,6 +64,11 @@ shadowJar {
     classifier = ''
     relocate 'io.github.elytra.concrete', 'net.qbar.io.github.elytra.concrete'
     configurations = [project.configurations.shadow]
+    dependencies {
+       exclude(dependency {
+            it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' || it.moduleGroup == "com.google.code.findbugs" 
+       })
+   }
 }
 
 reobf {
@@ -79,8 +84,9 @@ artifacts {
 dependencies {
 	deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.4-47"
 	deobfCompile "mezz.jei:jei_1.11.2:4.2.2.220"
-	deobfCompile 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
-	compile 'io.github.elytra:concrete:0.0.6'
+    compile 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
+	shadow 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
+    compile 'io.github.elytra:concrete:0.0.6'
     shadow 'io.github.elytra:concrete:0.0.6'
 }
 
