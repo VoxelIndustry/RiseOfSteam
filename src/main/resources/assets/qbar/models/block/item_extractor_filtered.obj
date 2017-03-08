@@ -1,4 +1,4 @@
-mtllib models/block/item_extractor_filtered.mtl
+mtllib models/block/item_extractor.mtl
 usemtl None
 
 # Extractor

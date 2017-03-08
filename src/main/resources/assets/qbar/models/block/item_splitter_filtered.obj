@@ -1,4 +1,4 @@
-mtllib models/block/item_splitter_filtered.mtl
+mtllib models/block/item_splitter.mtl
 usemtl None
 
 o body

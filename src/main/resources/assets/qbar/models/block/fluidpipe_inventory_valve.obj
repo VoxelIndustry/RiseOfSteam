@@ -1,3 +1,6 @@
+mtllib models/block/fluidpipe.mtl
+usemtl None
+
 # Base
 v 1.995 0.5625 0.65625
 v 1.005 0.5625 0.65625
