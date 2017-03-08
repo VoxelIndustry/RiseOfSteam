@@ -10,6 +10,7 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'org.hidetake.ssh' version '2.8.0'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -61,7 +62,7 @@ jar {
 }
 
 shadowJar {
-    classifier = ''
+    classifier = 'fat'
     relocate 'io.github.elytra.concrete', 'net.qbar.io.github.elytra.concrete'
     configurations = [project.configurations.shadow]
     dependencies {
@@ -102,4 +103,26 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+apply plugin: 'org.hidetake.ssh'
+
+remotes {
+  prodServer {
+    retryCount = 3
+    retryWaitSec = 10
+    knownHosts = allowAnyHosts
+    host = System.env.BUILD_SSH_HOST
+    user = System.env.BUILD_SSH_USER
+    port = System.env.BUILD_SSH_PORT as Integer
+    password = System.env.BUILD_SSH_PASSWD
+  }
+}
+
+task deploy(dependsOn: "build") << {
+  ssh.run {
+    session(remotes.prodServer) {
+        put from: file('build/libs/'), into: '/home/games/minecraft/dev/'
+    }
+  }
 }

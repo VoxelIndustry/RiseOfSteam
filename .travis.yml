@@ -8,7 +8,7 @@
     "./gradlew setupCIWorkspace -S"
   ],
   "script": [
-    "./gradlew build -S"
+    "./gradlew build deploy -S"
   ],
   "before_cache": [
     "rm -f $HOME/.gradle/caches/modules-2/modules-2.lock",
