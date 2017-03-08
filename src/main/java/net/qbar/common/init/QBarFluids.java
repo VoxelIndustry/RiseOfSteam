@@ -1,13 +1,7 @@
 package net.qbar.common.init;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.qbar.QBar;
@@ -29,23 +23,5 @@ public class QBarFluids
 
         QBarFluids.blockFluidSteam = new BlockQBarFluid(QBarFluids.fluidSteam, Material.WATER, "blockfluidsteam");
         QBarBlocks.registerBlock(QBarFluids.blockFluidSteam, "blockfluidsteam");
-    }
-
-    public static final void registerFluidsClient()
-    {
-        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluid",
-                "steam");
-        ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
-        {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(final IBlockState state)
-            {
-                return fluidSteamLocation;
-            }
-        });
-
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam));
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
-                stack -> fluidSteamLocation);
     }
 }

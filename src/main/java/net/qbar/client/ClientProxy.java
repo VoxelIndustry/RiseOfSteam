@@ -1,6 +1,9 @@
 package net.qbar.client;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -33,7 +36,7 @@ public class ClientProxy extends CommonProxy
 
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
 
-        QBarFluids.registerFluidsClient();
+        ClientProxy.registerFluidsClient();
     }
 
     @Override
@@ -49,5 +52,23 @@ public class ClientProxy extends CommonProxy
     {
         ModelLoader.setCustomModelResourceLocation(item, meta,
                 new ModelResourceLocation(QBar.MODID + ":" + id, "inventory"));
+    }
+
+    public static final void registerFluidsClient()
+    {
+        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluid",
+                "steam");
+        ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
+        {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(final IBlockState state)
+            {
+                return fluidSteamLocation;
+            }
+        });
+
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam));
+        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
+                stack -> fluidSteamLocation);
     }
 }
