@@ -3,6 +3,7 @@ package net.qbar.common.block;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -20,6 +21,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.Properties;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.TileExtractor;
@@ -41,6 +46,15 @@ public class BlockExtractor extends BlockMachineBase
         super("itemextractor", Material.IRON);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP)
                 .withProperty(BlockExtractor.FILTER, false));
+    }
+
+    @Override
+    public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos)
+    {
+        if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileExtractor)
+            return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty,
+                    ((TileExtractor) world.getTileEntity(pos)).state);
+        return state;
     }
 
     @Override
@@ -108,7 +122,8 @@ public class BlockExtractor extends BlockMachineBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, BlockExtractor.FACING, BlockExtractor.FILTER);
+        return new ExtendedBlockState(this, new IProperty[] { BlockExtractor.FACING, BlockExtractor.FILTER },
+                new IUnlistedProperty[] { Properties.AnimationProperty });
     }
 
     @Override

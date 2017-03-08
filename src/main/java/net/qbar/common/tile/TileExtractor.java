@@ -12,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
@@ -54,21 +55,25 @@ public class TileExtractor extends TileInventoryBase
     @Override
     public void update()
     {
-        if (this.hasItemHandler() && this.hasBelt())
+        if (this.hasFilter() && !ItemUtils.deepEquals(this.cached, this.getStackInSlot(0)))
         {
-            if (this.hasFilter() && !ItemUtils.deepEquals(this.cached, this.getStackInSlot(0)))
+            final boolean had = this.filter == null;
+            this.filter = null;
+            this.cached = this.getStackInSlot(0).copy();
+            if (this.cached.hasTagCompound())
             {
-                this.filter = null;
-                this.cached = this.getStackInSlot(0).copy();
-                if (this.cached.hasTagCompound())
-                {
-                    final IPunchedCard card = PunchedCardDataManager.getInstance()
-                            .readFromNBT(this.getStackInSlot(0).getTagCompound());
-                    if (card.getID() == ECardType.FILTER.getID())
-                        this.filter = (FilterCard) card;
-                }
+                final IPunchedCard card = PunchedCardDataManager.getInstance()
+                        .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                if (card.getID() == ECardType.FILTER.getID())
+                    this.filter = (FilterCard) card;
             }
 
+            if (this.isClient() && had != (this.filter == null))
+                this.updateState();
+        }
+
+        if (this.hasItemHandler() && this.hasBelt())
+        {
             final IItemHandler itemHandler = this.getItemHandler();
 
             final int slots = itemHandler.getSlots();
@@ -155,11 +160,15 @@ public class TileExtractor extends TileInventoryBase
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
+        final EnumFacing previous = this.facing;
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.hasFilter = tag.getBoolean("filtered");
 
         this.whitelistProperty.setValue(tag.getBoolean("whitelist"));
         super.readFromNBT(tag);
+
+        if (this.isClient() && previous != this.facing)
+            this.updateState();
     }
 
     @Override
@@ -232,5 +241,32 @@ public class TileExtractor extends TileInventoryBase
     public FilterCard getFilter(final EnumFacing facing)
     {
         return this.filter;
+    }
+
+    ////////////
+    // RENDER //
+    ////////////
+
+    public final VisibilityModelState state = new VisibilityModelState();
+
+    private void updateState()
+    {
+        if (this.isServer())
+        {
+            this.sync();
+            return;
+        }
+        this.state.hidden.clear();
+
+        if (this.getFacing().getAxis().isHorizontal())
+            this.state.hidden.add("legs");
+
+        if (this.hasFilter())
+        {
+            if (this.filter == null)
+                this.state.hidden.add("card");
+        }
+
+        this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
     }
 }
