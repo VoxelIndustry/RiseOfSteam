@@ -28,7 +28,7 @@
             },
             "normal": {},
             "up": {
-                "model": "qbar:belt_slope.obj"
+                "model": "qbar:belt_slope2.obj"
             }
         },
         "inventory": {
