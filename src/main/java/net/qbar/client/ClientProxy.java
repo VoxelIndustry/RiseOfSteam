@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.qbar.QBar;
 import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.common.CommonProxy;
+import net.qbar.common.init.QBarFluids;
 import net.qbar.common.tile.TileBelt;
 
 public class ClientProxy extends CommonProxy
@@ -31,6 +32,8 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
 
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
+
+        QBarFluids.registerFluidsClient();
     }
 
     @Override

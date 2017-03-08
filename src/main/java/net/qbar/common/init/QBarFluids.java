@@ -10,20 +10,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.QBar;
 import net.qbar.common.fluid.BlockQBarFluid;
 
 public class QBarFluids
 {
-    public static Fluid                  fluidSteam;
-    public static BlockQBarFluid         blockFluidSteam;
-
-    @SideOnly(Side.CLIENT)
-    private static ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluid",
-            "steam");
+    public static Fluid          fluidSteam;
+    public static BlockQBarFluid blockFluidSteam;
 
     public static final void registerFluids()
     {
@@ -36,21 +29,23 @@ public class QBarFluids
 
         QBarFluids.blockFluidSteam = new BlockQBarFluid(QBarFluids.fluidSteam, Material.WATER, "blockfluidsteam");
         QBarBlocks.registerBlock(QBarFluids.blockFluidSteam, "blockfluidsteam");
+    }
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+    public static final void registerFluidsClient()
+    {
+        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluid",
+                "steam");
+        ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
         {
-            ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(final IBlockState state)
             {
-                @Override
-                protected ModelResourceLocation getModelResourceLocation(final IBlockState state)
-                {
-                    return QBarFluids.fluidSteamLocation;
-                }
-            });
+                return fluidSteamLocation;
+            }
+        });
 
-            ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam));
-            ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
-                    stack -> QBarFluids.fluidSteamLocation);
-        }
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam));
+        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
+                stack -> fluidSteamLocation);
     }
 }
