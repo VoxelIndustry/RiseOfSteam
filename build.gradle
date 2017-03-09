@@ -114,7 +114,7 @@ remotes {
     knownHosts = allowAnyHosts
     host = System.env.BUILD_SSH_HOST
     user = System.env.BUILD_SSH_USER
-    port = System.env.BUILD_SSH_PORT as Integer
+    port = (System.env.BUILD_SSH_PORT ?: "0") as Integer
     password = System.env.BUILD_SSH_PASSWD
   }
 }
