@@ -21,4 +21,4 @@ dist: precise
 jdk: oraclejdk8
 os: linux
 notifications:
-  webhooks: http://your-domain.com/notifications
+  webhooks: http://ferenyr.info:8750/notifications/travis/
