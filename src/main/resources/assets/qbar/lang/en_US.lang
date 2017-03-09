@@ -1,6 +1,9 @@
 #Misc
 itemGroup.QBar=QBar
 
+#Creative
+tile.creative_steam_generator.name=Creative Steam Generator
+
 #Machines
 tile.keypunch.name=KeyPunch
 tile.fluidtank.name=Fluid Tank
