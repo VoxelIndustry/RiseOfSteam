@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 
 import fr.ourten.teabeans.value.BaseListProperty;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -133,7 +134,8 @@ public class TileSplitter extends TileInventoryBase
             }
 
             this.lastSplit += 1;
-            this.lastSplit %= split;
+            if (split > 0)
+                this.lastSplit %= split;
 
             for (int i = 0; i < split; i++)
             {
