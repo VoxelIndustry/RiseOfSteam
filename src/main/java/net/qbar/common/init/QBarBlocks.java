@@ -21,6 +21,7 @@ import net.qbar.common.block.BlockOffshorePump;
 import net.qbar.common.block.BlockSplitter;
 import net.qbar.common.block.BlockSteamPipe;
 import net.qbar.common.block.BlockTank;
+import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileAssembler;
@@ -34,6 +35,7 @@ import net.qbar.common.tile.TileOffshorePump;
 import net.qbar.common.tile.TileSplitter;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileTank;
+import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
 
 @ObjectHolder(QBar.MODID)
 public class QBarBlocks
@@ -54,6 +56,10 @@ public class QBarBlocks
     public static final BlockMachineBase OFFSHORE_PUMP    = null;
     @ObjectHolder("assembler")
     public static final BlockMachineBase ASSEMBLER        = null;
+
+    // Creative
+    @ObjectHolder("creative_boiler")
+    public static final BlockMachineBase CREATIVE_BOILER  = null;
 
     @ObjectHolder("belt")
     public static final BlockMachineBase BELT             = null;
@@ -76,6 +82,8 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         QBarBlocks.registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
 
+        QBarBlocks.registerBlock(new BlockCreativeSteamGenerator());
+
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
         QBarBlocks.registerTile(TileBoiler.class, "boiler");
@@ -88,6 +96,8 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileExtractor.class, "itemextractor");
         QBarBlocks.registerTile(TileSplitter.class, "itemsplitter");
         QBarBlocks.registerTile(TileMultiblockGag.class, "multiblockgag");
+        QBarBlocks.registerTile(TileCreativeSteamGenerator.class, "creative_steam_generator");
+
     }
 
     public static final void registerBlock(final Block block, final String name)
