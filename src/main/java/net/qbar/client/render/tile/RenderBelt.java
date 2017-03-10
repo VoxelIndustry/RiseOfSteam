@@ -3,21 +3,15 @@ package net.qbar.client.render.tile;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.grid.ItemBelt;
@@ -25,28 +19,11 @@ import net.qbar.common.tile.TileBelt;
 
 public class RenderBelt extends FastTESR<TileBelt>
 {
-    protected static BlockRendererDispatcher blockRenderer;
-    private TextureManager                   textureManager;
-
     @Override
     public void renderTileEntityFast(final TileBelt belt, final double x, final double y, final double z,
             final float partialTicks, final int destroyStage, final VertexBuffer renderer)
     {
-        if (RenderBelt.blockRenderer == null)
-            RenderBelt.blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        if (this.textureManager == null)
-            this.textureManager = Minecraft.getMinecraft().getTextureManager();
-
         final BlockPos pos = belt.getPos();
-        final IBlockAccess world = MinecraftForgeClient.getRegionRenderCache(belt.getWorld(), pos);
-        final IBlockState state = world.getBlockState(pos);
-
-        renderer.setTranslation(x - pos.getX(), y - pos.getY(), z - pos.getZ());
-
-        final IBakedModel model = RenderBelt.blockRenderer.getBlockModelShapes().getModelForState(state);
-
-        RenderBelt.blockRenderer.getBlockModelRenderer().renderModel(world, model,
-                state.getBlock().getExtendedState(state, world, pos), pos, renderer, false);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);

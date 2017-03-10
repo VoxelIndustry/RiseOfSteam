@@ -144,7 +144,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     @Override
     public EnumBlockRenderType getRenderType(final IBlockState state)
     {
-        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+        return EnumBlockRenderType.MODEL;
     }
 
     @Override
