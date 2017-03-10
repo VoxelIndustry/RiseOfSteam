@@ -1,9 +1,10 @@
 package net.qbar.common.network;
 
-import io.github.elytra.concrete.Message;
-import io.github.elytra.concrete.NetworkContext;
-import io.github.elytra.concrete.annotation.field.MarshalledAs;
-import io.github.elytra.concrete.annotation.type.ReceivedOn;
+import com.elytradev.concrete.Message;
+import com.elytradev.concrete.NetworkContext;
+import com.elytradev.concrete.annotation.field.MarshalledAs;
+import com.elytradev.concrete.annotation.type.ReceivedOn;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

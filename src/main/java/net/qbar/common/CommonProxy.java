@@ -1,6 +1,7 @@
 package net.qbar.common;
 
-import io.github.elytra.concrete.NetworkContext;
+import com.elytradev.concrete.NetworkContext;
+
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
