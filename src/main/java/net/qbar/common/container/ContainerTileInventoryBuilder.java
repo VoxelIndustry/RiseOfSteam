@@ -79,6 +79,12 @@ public class ContainerTileInventoryBuilder
         return this;
     }
 
+    public ContainerTileInventoryBuilder syncFloatValue(final Supplier<Float> supplier, final Consumer<Float> setter)
+    {
+        this.parent.syncables.add(new DefaultSyncables.SyncableFloat(supplier, setter));
+        return this;
+    }
+
     public ContainerTileInventoryBuilder syncStringValue(final Supplier<String> supplier, final Consumer<String> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableString(supplier, setter));

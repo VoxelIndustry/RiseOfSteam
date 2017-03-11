@@ -30,6 +30,27 @@ public class DefaultSyncables
         }
     }
 
+    public static final class SyncableFloat extends SyncableProperty<Float>
+    {
+        public SyncableFloat(final Supplier<Float> supplier, final Consumer<Float> consumer)
+        {
+            super(supplier, consumer);
+        }
+
+        @Override
+        public NBTTagCompound toNBT(final NBTTagCompound tag)
+        {
+            tag.setFloat("float", this.stored);
+            return tag;
+        }
+
+        @Override
+        public void fromNBT(final NBTTagCompound tag)
+        {
+            this.stored = tag.getFloat("float");
+        }
+    }
+
     public static final class SyncableBoolean extends SyncableProperty<Boolean>
     {
         public SyncableBoolean(final Supplier<Boolean> supplier, final Consumer<Boolean> consumer)
