@@ -17,8 +17,7 @@ import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
 
-public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase
-        implements ITileInfoProvider, ILoadable, ITileCable<G>
+public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
     protected final EnumMap<EnumFacing, ITileCable<G>> connections;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;

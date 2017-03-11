@@ -26,7 +26,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.util.ItemUtils;
 
 public class TileExtractor extends TileInventoryBase
-        implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable, IFilteredMachine
+        implements IContainerProvider, IBeltInput, ITickable, IFilteredMachine
 {
     private EnumFacing                  facing;
 

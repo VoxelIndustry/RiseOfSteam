@@ -19,7 +19,7 @@ import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 
-public class TileOffshorePump extends QBarTileBase implements ITickable, ITileInfoProvider
+public class TileOffshorePump extends QBarTileBase implements ITickable
 {
     private int               transferCapacity;
     private IFluidHandler     top;

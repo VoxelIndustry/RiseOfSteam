@@ -15,7 +15,7 @@ import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.util.FluidUtils;
 
-public class TileTank extends QBarTileBase implements ITileInfoProvider, ITileMultiblockCore
+public class TileTank extends QBarTileBase implements ITileMultiblockCore
 {
     private BlockPos              inputPos;
 

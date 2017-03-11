@@ -22,7 +22,7 @@ import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 
-public class TileBoiler extends TileInventoryBase implements ITileInfoProvider, ITickable, IContainerProvider
+public class TileBoiler extends TileInventoryBase implements ITickable, IContainerProvider
 {
     private final DirectionalTank fluidTank;
     private final SteamTank       steamTank;

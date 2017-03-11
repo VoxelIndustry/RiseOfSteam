@@ -28,7 +28,7 @@ import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.ItemUtils;
 
 public class TileAssembler extends TileInventoryBase
-        implements ITileInfoProvider, IContainerProvider, ITickable, ITileMultiblockCore, ISidedInventory
+        implements IContainerProvider, ITickable, ITileMultiblockCore, ISidedInventory
 {
     private final SteamTank steamTank;
 
@@ -154,9 +154,9 @@ public class TileAssembler extends TileInventoryBase
         return new ContainerBuilder("assembler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this)
                 .filterSlot(0, 26, 33, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
-                .outputSlot(1, 44, 33).outputSlot(2, 62, 33).outputSlot(3, 80, 33).outputSlot(1, 44, 51)
-                .outputSlot(2, 62, 51).outputSlot(3, 80, 51).outputSlot(1, 44, 69).outputSlot(2, 62, 69)
-                .outputSlot(3, 80, 69).addInventory().create();
+                .outputSlot(1, 44, 33).outputSlot(2, 62, 33).outputSlot(3, 80, 33).outputSlot(4, 44, 51)
+                .outputSlot(5, 62, 51).outputSlot(6, 80, 51).outputSlot(7, 44, 69).outputSlot(8, 62, 69)
+                .outputSlot(9, 80, 69).outputSlot(10, 105, 51).addInventory().create();
     }
 
     @Override

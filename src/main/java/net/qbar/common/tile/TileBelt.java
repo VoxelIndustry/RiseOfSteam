@@ -27,7 +27,7 @@ import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 
-public class TileBelt extends QBarTileBase implements IBelt, ITileInfoProvider, ILoadable, IConnectionAware
+public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnectionAware
 {
     private int                                             gridID;
     private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connections;

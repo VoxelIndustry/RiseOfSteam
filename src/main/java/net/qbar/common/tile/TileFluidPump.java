@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
 
-public class TileFluidPump extends QBarTileBase implements ITickable, ITileInfoProvider
+public class TileFluidPump extends QBarTileBase implements ITickable
 {
     private int               transferCapacity;
     private IFluidHandler     top;

@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 
 import fr.ourten.teabeans.value.BaseListProperty;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.util.ItemUtils;
 
 public class TileSplitter extends TileInventoryBase
-        implements ITileInfoProvider, IContainerProvider, IBeltInput, ITickable, IFilteredMachine, ISidedInventory
+        implements IContainerProvider, IBeltInput, ITickable, IFilteredMachine, ISidedInventory
 {
     private EnumFacing                      facing;
 
