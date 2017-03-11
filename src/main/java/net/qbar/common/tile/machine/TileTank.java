@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.tile.machine;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.tile.QBarTileBase;
 import net.qbar.common.util.FluidUtils;
 
 public class TileTank extends QBarTileBase implements ITileMultiblockCore

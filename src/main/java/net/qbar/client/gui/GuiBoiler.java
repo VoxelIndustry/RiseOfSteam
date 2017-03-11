@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
-import net.qbar.common.tile.TileBoiler;
+import net.qbar.common.tile.machine.TileBoiler;
 
 public class GuiBoiler extends GuiContainer
 {

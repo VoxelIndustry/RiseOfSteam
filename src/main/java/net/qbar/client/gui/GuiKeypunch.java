@@ -24,7 +24,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.KeypunchPacket;
-import net.qbar.common.tile.TileKeypunch;
+import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.util.ItemUtils;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>

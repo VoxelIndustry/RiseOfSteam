@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.grid.ItemBelt;
-import net.qbar.common.tile.TileBelt;
+import net.qbar.common.tile.machine.TileBelt;
 
 public class RenderBelt extends FastTESR<TileBelt>
 {

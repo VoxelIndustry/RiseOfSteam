@@ -14,7 +14,7 @@ import net.qbar.QBar;
 import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.init.QBarFluids;
-import net.qbar.common.tile.TileBelt;
+import net.qbar.common.tile.machine.TileBelt;
 
 public class ClientProxy extends CommonProxy
 {

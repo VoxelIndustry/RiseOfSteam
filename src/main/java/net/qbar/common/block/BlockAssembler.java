@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
-import net.qbar.common.tile.TileAssembler;
+import net.qbar.common.tile.machine.TileAssembler;
 
 public class BlockAssembler extends BlockMultiblockBase implements IWrenchable
 {

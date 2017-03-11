@@ -23,7 +23,7 @@ import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.FilteredMachinePacket;
-import net.qbar.common.tile.TileExtractor;
+import net.qbar.common.tile.machine.TileExtractor;
 
 public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
 {

@@ -19,7 +19,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
-import net.qbar.common.tile.TileSplitter;
+import net.qbar.common.tile.machine.TileSplitter;
 
 public class BlockSplitter extends BlockOrientableMachine
 {

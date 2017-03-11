@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.tile.machine;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -26,6 +26,8 @@ import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
+import net.qbar.common.tile.ILoadable;
+import net.qbar.common.tile.QBarTileBase;
 
 public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnectionAware
 {

@@ -33,7 +33,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.grid.GridManager;
-import net.qbar.common.tile.TileBelt;
+import net.qbar.common.tile.machine.TileBelt;
 
 public class BlockBelt extends BlockMachineBase implements IWrenchable
 {

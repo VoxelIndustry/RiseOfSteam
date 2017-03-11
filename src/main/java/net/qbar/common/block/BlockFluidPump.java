@@ -11,7 +11,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.qbar.common.tile.TileFluidPump;
+import net.qbar.common.tile.machine.TileFluidPump;
 
 public class BlockFluidPump extends BlockOrientableMachine
 {

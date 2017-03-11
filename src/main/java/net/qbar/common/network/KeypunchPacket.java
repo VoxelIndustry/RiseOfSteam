@@ -16,7 +16,7 @@ import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.tile.TileKeypunch;
+import net.qbar.common.tile.machine.TileKeypunch;
 
 @ReceivedOn(Side.SERVER)
 public class KeypunchPacket extends Message

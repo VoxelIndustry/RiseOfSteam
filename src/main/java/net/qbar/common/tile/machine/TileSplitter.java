@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.tile.machine;
 
 import java.util.List;
 
@@ -28,6 +28,8 @@ import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.tile.IFilteredMachine;
+import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
 public class TileSplitter extends TileInventoryBase

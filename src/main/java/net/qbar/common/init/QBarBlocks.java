@@ -24,18 +24,18 @@ import net.qbar.common.block.BlockTank;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.multiblock.TileMultiblockGag;
-import net.qbar.common.tile.TileAssembler;
-import net.qbar.common.tile.TileBelt;
-import net.qbar.common.tile.TileBoiler;
-import net.qbar.common.tile.TileExtractor;
 import net.qbar.common.tile.TileFluidPipe;
-import net.qbar.common.tile.TileFluidPump;
-import net.qbar.common.tile.TileKeypunch;
-import net.qbar.common.tile.TileOffshorePump;
-import net.qbar.common.tile.TileSplitter;
 import net.qbar.common.tile.TileSteamPipe;
-import net.qbar.common.tile.TileTank;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
+import net.qbar.common.tile.machine.TileAssembler;
+import net.qbar.common.tile.machine.TileBelt;
+import net.qbar.common.tile.machine.TileBoiler;
+import net.qbar.common.tile.machine.TileExtractor;
+import net.qbar.common.tile.machine.TileFluidPump;
+import net.qbar.common.tile.machine.TileKeypunch;
+import net.qbar.common.tile.machine.TileOffshorePump;
+import net.qbar.common.tile.machine.TileSplitter;
+import net.qbar.common.tile.machine.TileTank;
 
 @ObjectHolder(QBar.MODID)
 public class QBarBlocks

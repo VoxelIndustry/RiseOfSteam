@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.tile.machine;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
+import net.qbar.common.tile.TileInventoryBase;
 
 public class TileBoiler extends TileInventoryBase implements ITickable, IContainerProvider
 {

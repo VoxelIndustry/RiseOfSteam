@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.tile.machine;
 
 import fr.ourten.teabeans.value.BaseListProperty;
 import fr.ourten.teabeans.value.BaseProperty;
@@ -16,6 +16,7 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.tile.TileInventoryBase;
 
 public class TileKeypunch extends TileInventoryBase implements IContainerProvider, ISidedInventory
 {

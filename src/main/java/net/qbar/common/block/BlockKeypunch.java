@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
-import net.qbar.common.tile.TileKeypunch;
+import net.qbar.common.tile.machine.TileKeypunch;
 
 public class BlockKeypunch extends BlockMachineBase
 {

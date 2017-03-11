@@ -27,7 +27,7 @@ import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.FilteredMachinePacket;
-import net.qbar.common.tile.TileSplitter;
+import net.qbar.common.tile.machine.TileSplitter;
 
 public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 {

@@ -28,7 +28,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
-import net.qbar.common.tile.TileExtractor;
+import net.qbar.common.tile.machine.TileExtractor;
 
 public class BlockExtractor extends BlockMachineBase
 {

@@ -13,7 +13,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
-import net.qbar.common.tile.TileBoiler;
+import net.qbar.common.tile.machine.TileBoiler;
 import net.qbar.common.util.FluidUtils;
 
 public class BlockBoiler extends BlockMachineBase
