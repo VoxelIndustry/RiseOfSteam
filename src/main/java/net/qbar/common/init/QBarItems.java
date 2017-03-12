@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.qbar.QBar;
 import net.qbar.common.item.ItemBase;
+import net.qbar.common.item.ItemBlueprint;
 import net.qbar.common.item.ItemPunchedCard;
 import net.qbar.common.item.ItemWrench;
 
@@ -16,10 +17,14 @@ public class QBarItems
     @ObjectHolder("wrench")
     public static final ItemBase WRENCH       = null;
 
+    @ObjectHolder("blueprint")
+    public static final ItemBase BLUEPRINT    = null;
+
     public static final void registerItems()
     {
         QBarItems.registerItem(new ItemPunchedCard());
         QBarItems.registerItem(new ItemWrench());
+        QBarItems.registerItem(new ItemBlueprint());
     }
 
     private static final void registerItem(final ItemBase item)

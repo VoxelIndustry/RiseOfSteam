@@ -26,6 +26,8 @@ tile.itemsplitter.filter.name=Filtered Item Splitter
 item.punched_card.name=Punched Card
 item.wrench.name=Wrench
 
+item.blueprint.name=%s Blueprint
+
 #Fluids
 fluid.steam=Steam
 tile.blockfluidsteam.name=Steam Source

@@ -42,7 +42,7 @@ public class QBarBlocks
 {
     @ObjectHolder("keypunch")
     public static final BlockMachineBase PUNCHING_MACHINE = null;
-    @ObjectHolder("tank")
+    @ObjectHolder("fluidtank")
     public static final BlockMachineBase FLUID_TANK       = null;
     @ObjectHolder("boiler")
     public static final BlockMachineBase SOLID_BOILER     = null;
