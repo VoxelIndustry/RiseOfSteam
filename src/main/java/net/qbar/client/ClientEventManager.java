@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -159,9 +159,6 @@ public class ClientEventManager
         final IBakedModel model = this.blockRender.getModelForState(state);
         final IBlockState extendedState = state.getBlock().getExtendedState(state, world, pos);
 
-        for (final EnumFacing facing : EnumFacing.values())
-            this.renderQuads(world, state, pos, model.getQuads(extendedState, facing, 0), alpha);
-
         this.renderQuads(world, state, pos, model.getQuads(extendedState, null, 0), alpha);
     }
 
@@ -173,21 +170,8 @@ public class ClientEventManager
 
         if (quads == null || quads.isEmpty())
             return;
-        for (final BakedQuad quad : quads)
-        {
-            buffer.begin(GL11.GL_QUADS, quad.getFormat());
-
-            final int color = quad.hasTintIndex() ? this.getTint(world, actualState, pos, alpha, quad.getTintIndex())
-                    : alpha | 0xffffff;
-            LightUtil.renderQuadColor(buffer, quad, color);
-
-            tessellator.draw();
-        }
-    }
-
-    private int getTint(final World world, final IBlockState actualState, final BlockPos pos, final int alpha,
-            final int tintIndex)
-    {
-        return alpha | Minecraft.getMinecraft().getBlockColors().colorMultiplier(actualState, world, pos, tintIndex);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        quads.forEach(quad -> LightUtil.renderQuadColor(buffer, quad, alpha | 0xffffff));
+        tessellator.draw();
     }
 }
