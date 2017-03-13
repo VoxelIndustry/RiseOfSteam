@@ -29,7 +29,6 @@ public class ClientProxy extends CommonProxy
     {
         OBJLoader.INSTANCE.addDomain(QBar.MODID);
         MinecraftForge.EVENT_BUS.register(this);
-
         super.preInit(e);
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
@@ -53,6 +52,7 @@ public class ClientProxy extends CommonProxy
         super.init(e);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileBelt.class, new RenderBelt());
+        MinecraftForge.EVENT_BUS.register(new ClientEventManager());
     }
 
     @Override

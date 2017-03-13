@@ -122,13 +122,13 @@ public class BlueprintRender implements IBakedModel
 
     private final IdentityHashMap<IBakedModel, CompositeBakedModel> cache = new IdentityHashMap<>();
 
-    private CompositeBakedModel getModel(final IBakedModel lens)
+    private CompositeBakedModel getModel(final IBakedModel multiblock)
     {
-        CompositeBakedModel model = this.cache.get(lens);
+        CompositeBakedModel model = this.cache.get(multiblock);
         if (model == null)
         {
-            model = new CompositeBakedModel(lens, this.originalModel);
-            this.cache.put(lens, model);
+            model = new CompositeBakedModel(multiblock, this.originalModel);
+            this.cache.put(multiblock, model);
         }
         return model;
     }
@@ -168,13 +168,13 @@ public class BlueprintRender implements IBakedModel
     private static class CompositeBakedModel implements IPerspectiveAwareModel
     {
 
-        private final IBakedModel                      gun;
+        private final IBakedModel                      blueprint;
         private final List<BakedQuad>                  genQuads;
         private final Map<EnumFacing, List<BakedQuad>> faceQuads = new EnumMap<>(EnumFacing.class);
 
-        CompositeBakedModel(final IBakedModel lens, final IBakedModel gun)
+        CompositeBakedModel(final IBakedModel multiblock, final IBakedModel blueprint)
         {
-            this.gun = gun;
+            this.blueprint = blueprint;
 
             final ImmutableList.Builder<BakedQuad> genBuilder = ImmutableList.builder();
             final TRSRTransformation transform = TRSRTransformation.blockCenterToCorner(
@@ -184,23 +184,21 @@ public class BlueprintRender implements IBakedModel
             for (final EnumFacing e : EnumFacing.VALUES)
                 this.faceQuads.put(e, new ArrayList<>());
 
-            // Add lens quads, scaled and translated
-            for (final BakedQuad quad : lens.getQuads(null, null, 0))
+            for (final BakedQuad quad : multiblock.getQuads(null, null, 0))
             {
                 genBuilder.add(BlueprintRender.transform(quad, transform));
             }
 
             for (final EnumFacing e : EnumFacing.VALUES)
             {
-                this.faceQuads.get(e).addAll(lens.getQuads(null, e, 0).stream()
+                this.faceQuads.get(e).addAll(multiblock.getQuads(null, e, 0).stream()
                         .map(input -> BlueprintRender.transform(input, transform)).collect(Collectors.toList()));
             }
 
-            // Add gun quads
-            genBuilder.addAll(gun.getQuads(null, null, 0));
+            genBuilder.addAll(blueprint.getQuads(null, null, 0));
             for (final EnumFacing e : EnumFacing.VALUES)
             {
-                this.faceQuads.get(e).addAll(gun.getQuads(null, e, 0));
+                this.faceQuads.get(e).addAll(blueprint.getQuads(null, e, 0));
             }
 
             this.genQuads = genBuilder.build();
@@ -217,33 +215,33 @@ public class BlueprintRender implements IBakedModel
         @Override
         public boolean isAmbientOcclusion()
         {
-            return this.gun.isAmbientOcclusion();
+            return this.blueprint.isAmbientOcclusion();
         }
 
         @Override
         public boolean isGui3d()
         {
-            return this.gun.isGui3d();
+            return this.blueprint.isGui3d();
         }
 
         @Override
         public boolean isBuiltInRenderer()
         {
-            return this.gun.isBuiltInRenderer();
+            return this.blueprint.isBuiltInRenderer();
         }
 
         @Nonnull
         @Override
         public TextureAtlasSprite getParticleTexture()
         {
-            return this.gun.getParticleTexture();
+            return this.blueprint.getParticleTexture();
         }
 
         @Nonnull
         @Override
         public ItemCameraTransforms getItemCameraTransforms()
         {
-            return this.gun.getItemCameraTransforms();
+            return this.blueprint.getItemCameraTransforms();
         }
 
         @Nonnull
