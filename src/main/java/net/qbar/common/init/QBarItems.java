@@ -19,12 +19,16 @@ public class QBarItems
 
     @ObjectHolder("blueprint")
     public static final ItemBase BLUEPRINT    = null;
+    @ObjectHolder("ironrod")
+    public static final ItemBase IRON_ROD     = null;
 
     public static final void registerItems()
     {
         QBarItems.registerItem(new ItemPunchedCard());
         QBarItems.registerItem(new ItemWrench());
+
         QBarItems.registerItem(new ItemBlueprint());
+        QBarItems.registerItem(new ItemBase("ironrod"));
     }
 
     private static final void registerItem(final ItemBase item)

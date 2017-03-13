@@ -41,7 +41,6 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
 
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
-        this.registerItemRenderer(Item.getByNameOrId("qbar:blueprint"), 0, "blueprint");
 
         ClientProxy.registerFluidsClient();
     }

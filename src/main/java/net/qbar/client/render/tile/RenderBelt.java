@@ -2,17 +2,14 @@ package net.qbar.client.render.tile;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.animation.FastTESR;
+import net.qbar.client.RenderUtil;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.machine.TileBelt;
@@ -80,38 +77,16 @@ public class RenderBelt extends FastTESR<TileBelt>
             else
                 GlStateManager.translate(-(1 + previous.getPos().y - 9 / 16.0) + (1 + item.getPos().y - 9 / 16.0), 0,
                         -(previous.getPos().x + 7 / 64.0) + (item.getPos().x + 7 / 64.0));
-            this.handleRenderItem(item.getStack());
+            GlStateManager.pushMatrix();
+            GlStateManager.rotate(180, 0, 1, 0);
+            GlStateManager.translate(0.25, -0.25, 0);
+            RenderUtil.handleRenderItem(item.getStack());
+            GlStateManager.popMatrix();
             previous = item;
         }
 
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
         RenderHelper.enableStandardItemLighting();
-    }
-
-    public void handleRenderItem(final ItemStack stack)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0, 1, 0);
-        GlStateManager.translate(0.25, -0.25, 0);
-
-        if (Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(stack, null, null).isGui3d())
-        {
-            GlStateManager.scale(0.75F, 0.75F, 0.75F);
-            if (Block.getBlockFromItem(stack.getItem()) != null
-                    && Block.getBlockFromItem(stack.getItem()).getDefaultState().isFullCube())
-                GlStateManager.translate(0, 0, -0.1);
-        }
-        else
-        {
-            GlStateManager.scale(0.46F, 0.5F, 0.46F);
-            GlStateManager.rotate(90, 1, 0, 0);
-            GlStateManager.rotate(90, 0, 0, 1);
-            GlStateManager.translate(0, 0.025, .33);
-        }
-
-        RenderHelper.enableStandardItemLighting();
-        Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-        GlStateManager.popMatrix();
     }
 }

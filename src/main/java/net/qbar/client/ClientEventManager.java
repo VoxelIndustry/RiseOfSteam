@@ -28,6 +28,9 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.qbar.common.item.ItemBlueprint;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.Blueprints;
+import net.qbar.common.multiblock.Blueprints.Blueprint;
+import net.qbar.common.util.ItemUtils;
 
 public class ClientEventManager
 {
@@ -44,6 +47,8 @@ public class ClientEventManager
                         && e.getPlayer().getHeldItemMainhand().getTagCompound().hasKey("blueprint"))
                 {
                     final String name = e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint");
+                    final Blueprint blueprint = Blueprints.getInstance().getBlueprints()
+                            .get(e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint"));
                     final BlockMultiblockBase base = (BlockMultiblockBase) Block.getBlockFromName("qbar:" + name);
                     final World w = Minecraft.getMinecraft().world;
                     if (base != null)
@@ -61,25 +66,58 @@ public class ClientEventManager
 
                             if (e.getPlayer().world.getWorldBorder().contains(pos))
                             {
-                                final double d0 = e.getPlayer().lastTickPosX
+                                final double x = e.getPlayer().lastTickPosX
                                         + (e.getPlayer().posX - e.getPlayer().lastTickPosX) * e.getPartialTicks();
-                                final double d1 = e.getPlayer().lastTickPosY
+                                final double y = e.getPlayer().lastTickPosY
                                         + (e.getPlayer().posY - e.getPlayer().lastTickPosY) * e.getPartialTicks();
-                                final double d2 = e.getPlayer().lastTickPosZ
+                                final double z = e.getPlayer().lastTickPosZ
                                         + (e.getPlayer().posZ - e.getPlayer().lastTickPosZ) * e.getPartialTicks();
                                 RenderGlobal.drawSelectionBoundingBox(
                                         base.getDefaultState().getSelectedBoundingBox(e.getPlayer().world, pos)
-                                                .expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2),
+                                                .expandXyz(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);
-                            }
-                            GlStateManager.depthMask(true);
-                            GlStateManager.enableTexture2D();
-                            GlStateManager.disableBlend();
 
-                            this.renderMultiblock(base.getStateForPlacement(w, pos, e.getTarget().sideHit, 0, 0, 0, 0,
-                                    e.getPlayer(), e.getPlayer().getActiveHand()), pos, e.getPartialTicks(),
-                                    e.getPlayer());
-                            e.setCanceled(true);
+                                GlStateManager.depthMask(true);
+                                GlStateManager.enableTexture2D();
+                                GlStateManager.disableBlend();
+
+                                this.renderMultiblock(
+                                        base.getStateForPlacement(w, pos, e.getTarget().sideHit, 0, 0, 0, 0,
+                                                e.getPlayer(), e.getPlayer().getActiveHand()),
+                                        pos, e.getPartialTicks(), e.getPlayer());
+
+                                GlStateManager.pushMatrix();
+                                GlStateManager.translate(pos.getX() - x + 0.5, pos.getY() - y, pos.getZ() - z + .5);
+                                GlStateManager.rotate(180, 1, 0, 0);
+                                GlStateManager.rotate(e.getPlayer().getHorizontalFacing().getHorizontalAngle() - 180, 0,
+                                        1, 0);
+                                GlStateManager.translate(0.15, -1.4, -.69);
+                                GlStateManager.scale(0.625f / 32, 0.625f / 32, 0.625f / 32);
+                                GlStateManager.disableLighting();
+
+                                Minecraft.getMinecraft().fontRendererObj.drawString(
+                                        String.valueOf(blueprint.getRodAmount()),
+                                        -Minecraft.getMinecraft().fontRendererObj
+                                                .getStringWidth(String.valueOf(blueprint.getRodAmount())) / 2,
+                                        0, ItemUtils.hasPlayerEnough(e.getPlayer().inventory, blueprint.getRodStack(),
+                                                false) ? 38400 : 9830400);
+
+                                GlStateManager.enableLighting();
+                                GlStateManager.popMatrix();
+
+                                GlStateManager.pushMatrix();
+                                GlStateManager.translate(pos.getX() - x + 0.5, pos.getY() - y, pos.getZ() - z + .5);
+
+                                GlStateManager.rotate(90, 1, 0, 0);
+                                GlStateManager.rotate(-90, 0, 1, 0);
+                                GlStateManager.rotate(e.getPlayer().getHorizontalFacing().getHorizontalAngle(), 1, 0,
+                                        0);
+                                GlStateManager.translate(-1.5, -0.5, 0);
+
+                                RenderUtil.handleRenderItem(blueprint.getRodStack());
+                                GlStateManager.popMatrix();
+                                e.setCanceled(true);
+                            }
                         }
                     }
                 }
@@ -101,8 +139,6 @@ public class ClientEventManager
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(pos.getX() - dx, pos.getY() - dy, pos.getZ() - dz);
-        GlStateManager.scale(0.8, 0.8, 0.8);
-        GlStateManager.translate(0.2, 0.2, 0.2);
 
         RenderHelper.disableStandardItemLighting();
         GlStateManager.color(1f, 1f, 1f, 1f);

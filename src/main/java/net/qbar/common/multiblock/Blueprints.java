@@ -2,6 +2,9 @@ package net.qbar.common.multiblock;
 
 import java.util.HashMap;
 
+import net.minecraft.item.ItemStack;
+import net.qbar.common.init.QBarItems;
+
 public class Blueprints
 {
     private static volatile Blueprints instance = null;
@@ -39,7 +42,7 @@ public class Blueprints
 
     public void registerBlueprint(final String name, final IMultiblockDescriptor multiblock)
     {
-        this.blueprints.put(name, new Blueprint(name, multiblock));
+        this.blueprints.put(name, new Blueprint(name, multiblock, multiblock.getBlockCount() * 4));
     }
 
     public HashMap<String, Blueprint> getBlueprints()
@@ -51,11 +54,16 @@ public class Blueprints
     {
         private final String                name;
         private final IMultiblockDescriptor multiblock;
+        private final int                   rodAmount;
+        private final ItemStack             rodStack;
 
-        public Blueprint(final String name, final IMultiblockDescriptor multiblock)
+        public Blueprint(final String name, final IMultiblockDescriptor multiblock, final int rodAmount)
         {
             this.name = name;
             this.multiblock = multiblock;
+            this.rodAmount = rodAmount;
+
+            this.rodStack = new ItemStack(QBarItems.IRON_ROD, this.getRodAmount());
         }
 
         public String getName()
@@ -66,6 +74,16 @@ public class Blueprints
         public IMultiblockDescriptor getMultiblock()
         {
             return this.multiblock;
+        }
+
+        public int getRodAmount()
+        {
+            return this.rodAmount;
+        }
+
+        public ItemStack getRodStack()
+        {
+            return this.rodStack;
         }
     }
 }

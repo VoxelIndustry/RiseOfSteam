@@ -13,14 +13,16 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileBoiler;
 import net.qbar.common.util.FluidUtils;
 
-public class BlockBoiler extends BlockMachineBase
+public class BlockBoiler extends BlockMultiblockBase
 {
     public BlockBoiler()
     {
-        super("boiler", Material.IRON);
+        super("boiler", Material.IRON, Multiblocks.SOLID_BOILER);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class BlockBoiler extends BlockMachineBase
     }
 
     @Override
-    public TileEntity createNewTileEntity(final World worldIn, final int meta)
+    public TileEntity getTile(final World w, final IBlockState state)
     {
         return new TileBoiler();
     }

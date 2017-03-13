@@ -1,5 +1,6 @@
 package net.qbar.common.util;
 
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -37,5 +38,28 @@ public class ItemUtils
         return stack2.getItem() == stack1.getItem()
                 && (!stack1.getHasSubtypes() || stack1.getMetadata() == stack2.getMetadata())
                 && ItemStack.areItemStackTagsEqual(stack1, stack2);
+    }
+
+    public static boolean hasPlayerEnough(final InventoryPlayer player, final ItemStack stack, final boolean deepEquals)
+    {
+        int needed = stack.getCount();
+        for (int i = 0; i < player.getSizeInventory(); ++i)
+        {
+            final ItemStack itemstack = player.getStackInSlot(i);
+
+            if (deepEquals && ItemUtils.deepEquals(stack, itemstack)
+                    || !deepEquals && ItemStack.areItemsEqual(stack, itemstack))
+            {
+                needed -= itemstack.getCount();
+                if (needed <= 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static void drainPlayer(final InventoryPlayer player, final ItemStack stack)
+    {
+        player.clearMatchingItems(stack.getItem(), stack.getItemDamage(), stack.getCount(), stack.getTagCompound());
     }
 }

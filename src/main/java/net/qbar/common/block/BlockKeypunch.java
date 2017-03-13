@@ -10,13 +10,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileKeypunch;
 
-public class BlockKeypunch extends BlockMachineBase
+public class BlockKeypunch extends BlockMultiblockBase
 {
     public BlockKeypunch()
     {
-        super("keypunch", Material.IRON);
+        super("keypunch", Material.IRON, Multiblocks.KEYPUNCH);
     }
 
     @Override
@@ -32,7 +34,7 @@ public class BlockKeypunch extends BlockMachineBase
     }
 
     @Override
-    public TileEntity createNewTileEntity(final World worldIn, final int meta)
+    public TileEntity getTile(final World w, final IBlockState state)
     {
         return new TileKeypunch();
     }
