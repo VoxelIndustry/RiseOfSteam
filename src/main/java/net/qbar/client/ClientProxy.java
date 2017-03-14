@@ -82,11 +82,9 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public void onModelBake(final ModelBakeEvent evt)
     {
-        System.out.println("CAAAAAAALLED BANANA");
         final ModelResourceLocation key = new ModelResourceLocation(QBar.MODID + ":" + QBarItems.BLUEPRINT.name,
                 "inventory");
         final IBakedModel originalModel = evt.getModelRegistry().getObject(key);
         evt.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
-
     }
 }
