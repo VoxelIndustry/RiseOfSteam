@@ -316,4 +316,10 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     {
         return null;
     }
+
+    @Override
+    public BlockPos getAdjacentPos(final EnumFacing facing)
+    {
+        return this.getPos().offset(facing);
+    }
 }

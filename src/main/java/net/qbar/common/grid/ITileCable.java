@@ -59,8 +59,5 @@ public interface ITileCable<T extends CableGrid>
         }
     }
 
-    public default BlockPos getAdjacentPos(final EnumFacing facing)
-    {
-        return this.getPos().offset(facing);
-    }
+    public BlockPos getAdjacentPos(final EnumFacing facing);
 }
