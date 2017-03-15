@@ -148,7 +148,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase 
     @Override
     public void load()
     {
-        GridManager.getInstance().connectCable(this);
+        GridManager.getInstance().connectCable(this, this.getWorld());
         for (final EnumFacing facing : EnumFacing.VALUES)
             this.scanHandlers(this.pos.offset(facing));
     }

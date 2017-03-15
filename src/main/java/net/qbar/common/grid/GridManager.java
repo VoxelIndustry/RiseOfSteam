@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 public class GridManager
 {
@@ -69,9 +70,9 @@ public class GridManager
             cableGrid.next().tick();
     }
 
-    public <T extends CableGrid> void connectCable(final ITileCable<T> added)
+    public <T extends CableGrid> void connectCable(final ITileCable<T> added, final World world)
     {
-        added.adjacentConnect();
+        added.adjacentConnect(world);
         for (final EnumFacing facing : added.getConnections())
         {
             final ITileCable<T> adjacent = added.getConnected(facing);

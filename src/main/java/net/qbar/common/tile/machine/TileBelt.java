@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
@@ -276,7 +277,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public void load()
     {
-        GridManager.getInstance().connectCable(this);
+        GridManager.getInstance().connectCable(this, this.getWorld());
     }
 
     @Override
@@ -290,7 +291,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public void adjacentConnect()
+    public void adjacentConnect(final World world)
     {
         for (final EnumFacing facing : EnumFacing.HORIZONTALS)
         {

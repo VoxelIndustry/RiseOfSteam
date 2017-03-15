@@ -45,11 +45,11 @@ public interface ITileCable<T extends CableGrid>
         return null;
     }
 
-    public default void adjacentConnect()
+    public default void adjacentConnect(final World world)
     {
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
-            final TileEntity adjacent = this.getWorld().getTileEntity(this.getAdjacentPos(facing));
+            final TileEntity adjacent = world.getTileEntity(this.getAdjacentPos(facing));
             if (adjacent != null && adjacent instanceof ITileCable && this.canConnect((ITileCable<?>) adjacent)
                     && ((ITileCable<?>) adjacent).canConnect(this))
             {
