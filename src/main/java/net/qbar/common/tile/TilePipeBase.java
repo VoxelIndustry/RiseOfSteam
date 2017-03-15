@@ -17,7 +17,7 @@ import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
 
-public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
+public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
     protected final EnumMap<EnumFacing, ITileCable<G>> connections;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;
@@ -57,7 +57,9 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase 
         this.adjacentHandler.forEach((facing, handler) -> lines.add("Handler " + facing + ": " + (handler != null)));
     }
 
-    public abstract void addSpecificInfo(final List<String> lines);
+    public void addSpecificInfo(final List<String> lines)
+    {
+    }
 
     @Override
     public EnumFacing[] getConnections()
@@ -195,7 +197,9 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase 
         return tagCompound;
     }
 
-    public abstract void scanHandlers(final BlockPos posNeighbor);
+    public void scanHandlers(final BlockPos posNeighbor)
+    {
+    }
 
     ////////////
     // RENDER //
@@ -295,4 +299,21 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase 
         return this.connections.containsKey(facing) || this.adjacentHandler.containsKey(facing);
     }
 
+    @Override
+    public void setGrid(final int gridIdentifier)
+    {
+
+    }
+
+    @Override
+    public boolean canConnect(final ITileCable<?> to)
+    {
+        return false;
+    }
+
+    @Override
+    public G createGrid(final int nextID)
+    {
+        return null;
+    }
 }
