@@ -76,18 +76,6 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
     }
 
     @Override
-    public boolean isCore()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean isCorePresent()
-    {
-        return true;
-    }
-
-    @Override
     public void breakCore()
     {
         this.world.destroyBlock(this.getPos(), true);

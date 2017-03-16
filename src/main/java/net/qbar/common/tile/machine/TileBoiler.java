@@ -8,22 +8,27 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.fluid.FilteredFluidTank;
+import net.qbar.common.gui.EGui;
+import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.util.FluidUtils;
 
-public class TileBoiler extends TileInventoryBase implements ITickable, IContainerProvider
+public class TileBoiler extends TileInventoryBase implements ITickable, IContainerProvider, ITileMultiblockCore
 {
     private final DirectionalTank fluidTank;
     private final SteamTank       steamTank;
@@ -304,5 +309,44 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
                 .syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
+    }
+
+    @Override
+    public void breakCore()
+    {
+        this.world.destroyBlock(this.getPos(), true);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
+    {
+        return false;
+    }
+
+    @Override
+    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
+    {
+        return null;
+    }
+
+    @Override
+    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+
+        if (FluidUtils.drainPlayerHand(this.getFluidTank().getInternalFluidHandler(), player)
+                || FluidUtils.fillPlayerHand(this.getFluidTank().getInternalFluidHandler(), player))
+            return true;
+        player.openGui(QBar.instance, EGui.BOILER.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+                this.pos.getZ());
+        return true;
     }
 }

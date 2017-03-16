@@ -11,14 +11,19 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.tile.TileInventoryBase;
 
-public class TileKeypunch extends TileInventoryBase implements IContainerProvider, ISidedInventory
+public class TileKeypunch extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileMultiblockCore
 {
     private final int[]                       INPUT   = new int[] { 0 };
     private final int[]                       OUTPUT  = new int[] { 1 };
@@ -167,5 +172,41 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
         for (int i = 0; i < 9; i++)
             this.fakeInv.setInventorySlotContents(i, this.getCraftStacks().get(i));
         return CraftingManager.getInstance().findMatchingRecipe(this.fakeInv, this.getWorld());
+    }
+
+    @Override
+    public void breakCore()
+    {
+        this.world.destroyBlock(this.getPos(), true);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
+    {
+        return false;
+    }
+
+    @Override
+    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
+    {
+        return null;
+    }
+
+    @Override
+    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+
+        player.openGui(QBar.instance, EGui.KEYPUNCH.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+                this.pos.getZ());
+        return true;
     }
 }
