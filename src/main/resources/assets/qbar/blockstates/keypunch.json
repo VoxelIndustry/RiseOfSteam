@@ -10,6 +10,9 @@
         "normal": {
             "model": "cube_all"
         },
+        "multiblockgag": {
+            "true": {}, "false": {}
+        },
         "inventory": {
             "model": "cube_all"
         }
