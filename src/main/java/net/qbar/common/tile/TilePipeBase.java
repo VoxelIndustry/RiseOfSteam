@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.event.TickHandler;
@@ -122,7 +123,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
 
         this.adjacentHandler.keySet().forEach(facing ->
         {
-            final TileEntity handler = this.getWorld().getTileEntity(this.getPos().offset(facing));
+            final TileEntity handler = this.getBlockWorld().getTileEntity(this.getBlockPos().offset(facing));
             if (handler != null && handler instanceof IConnectionAware)
                 ((IConnectionAware) handler).disconnectTrigger(facing.getOpposite());
         });
@@ -150,7 +151,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     @Override
     public void load()
     {
-        GridManager.getInstance().connectCable(this, this.getWorld());
+        GridManager.getInstance().connectCable(this);
         for (final EnumFacing facing : EnumFacing.VALUES)
             this.scanHandlers(this.pos.offset(facing));
     }
@@ -318,8 +319,14 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     }
 
     @Override
-    public BlockPos getAdjacentPos(final EnumFacing facing)
+    public BlockPos getBlockPos()
     {
-        return this.getPos().offset(facing);
+        return this.getPos();
+    }
+
+    @Override
+    public World getBlockWorld()
+    {
+        return this.getWorld();
     }
 }

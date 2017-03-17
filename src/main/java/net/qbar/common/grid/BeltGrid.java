@@ -149,11 +149,11 @@ public class BeltGrid extends CableGrid
                             }
                             else
                             {
-                                final BlockPos forward = belt.getPos().offset(belt.getFacing());
+                                final BlockPos forward = belt.getBlockPos().offset(belt.getFacing());
                                 final BlockPos upward = forward.up();
-                                if (belt.getWorld().getBlockState(upward).getMaterial() == Material.AIR)
+                                if (belt.getBlockWorld().getBlockState(upward).getMaterial() == Material.AIR)
                                 {
-                                    final TileEntity tile = belt.getWorld().getTileEntity(forward);
+                                    final TileEntity tile = belt.getBlockWorld().getTileEntity(forward);
 
                                     if (tile != null
                                             && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
@@ -171,18 +171,18 @@ public class BeltGrid extends CableGrid
                                                     item.getStack(), false);
                                         }
                                         else
-                                            InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
-                                                    belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
+                                            InventoryHelper.spawnItemStack(belt.getBlockWorld(), belt.getBlockPos().getX(),
+                                                    belt.getBlockPos().getY(), belt.getBlockPos().getZ(), item.getStack());
                                     }
                                     else
-                                        InventoryHelper.spawnItemStack(belt.getWorld(), belt.getPos().getX(),
-                                                belt.getPos().getY(), belt.getPos().getZ(), item.getStack());
+                                        InventoryHelper.spawnItemStack(belt.getBlockWorld(), belt.getBlockPos().getX(),
+                                                belt.getBlockPos().getY(), belt.getBlockPos().getZ(), item.getStack());
                                     iterator.remove();
                                     hasChanged = true;
                                 }
                                 else
                                 {
-                                    final TileEntity tile = belt.getWorld().getTileEntity(upward);
+                                    final TileEntity tile = belt.getBlockWorld().getTileEntity(upward);
 
                                     if (tile != null
                                             && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,

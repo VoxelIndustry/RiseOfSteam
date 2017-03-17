@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 public interface ITileCable<T extends CableGrid>
 {
-    BlockPos getPos();
+    BlockPos getBlockPos();
 
     EnumFacing[] getConnections();
 
@@ -25,7 +25,7 @@ public interface ITileCable<T extends CableGrid>
 
     void disconnect(EnumFacing facing);
 
-    World getWorld();
+    World getBlockWorld();
 
     T createGrid(int nextID);
 
@@ -45,11 +45,11 @@ public interface ITileCable<T extends CableGrid>
         return null;
     }
 
-    public default void adjacentConnect(final World world)
+    public default void adjacentConnect()
     {
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
-            final TileEntity adjacent = world.getTileEntity(this.getAdjacentPos(facing));
+            final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
             if (adjacent != null && adjacent instanceof ITileCable && this.canConnect((ITileCable<?>) adjacent)
                     && ((ITileCable<?>) adjacent).canConnect(this))
             {
@@ -59,5 +59,8 @@ public interface ITileCable<T extends CableGrid>
         }
     }
 
-    public BlockPos getAdjacentPos(final EnumFacing facing);
+    public default BlockPos getAdjacentPos(final EnumFacing facing)
+    {
+        return this.getBlockPos().offset(facing);
+    }
 }

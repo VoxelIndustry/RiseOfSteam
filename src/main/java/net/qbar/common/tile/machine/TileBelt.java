@@ -219,7 +219,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         this.gridID = gridIdentifier;
 
         if (this.getGridObject() != null)
-            this.world.notifyNeighborsOfStateChange(this.getPos(), this.getBlockType(), true);
+            this.world.notifyNeighborsOfStateChange(this.getBlockPos(), this.getBlockType(), true);
     }
 
     @Override
@@ -277,25 +277,25 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public void load()
     {
-        GridManager.getInstance().connectCable(this, this.getWorld());
+        GridManager.getInstance().connectCable(this);
     }
 
     @Override
     public BlockPos getAdjacentPos(final EnumFacing facing)
     {
         if (this.slopeState.equals(EBeltSlope.DOWN) && facing == this.getFacing())
-            return this.getPos().down().offset(facing);
+            return this.getBlockPos().down().offset(facing);
         else if (this.slopeState.equals(EBeltSlope.UP) && facing == this.getFacing().getOpposite())
-            return this.getPos().down().offset(facing);
-        return this.getPos().offset(facing);
+            return this.getBlockPos().down().offset(facing);
+        return this.getBlockPos().offset(facing);
     }
 
     @Override
-    public void adjacentConnect(final World world)
+    public void adjacentConnect()
     {
         for (final EnumFacing facing : EnumFacing.HORIZONTALS)
         {
-            final TileEntity adjacent = this.getWorld().getTileEntity(this.getAdjacentPos(facing).up());
+            final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing).up());
             if (adjacent != null && adjacent instanceof IBelt && ((IBelt) adjacent).isSlope()
                     && this.canConnect((IBelt) adjacent) && ((IBelt) adjacent).canConnect(this))
             {
@@ -308,7 +308,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         {
             if (this.isConnected(facing))
                 continue;
-            final TileEntity adjacent = this.getWorld().getTileEntity(this.getAdjacentPos(facing));
+            final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
             if (adjacent != null && adjacent instanceof IBelt && this.canConnect((IBelt) adjacent)
                     && ((IBelt) adjacent).canConnect(this))
             {
@@ -457,5 +457,17 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     public void disconnectTrigger(final EnumFacing facing)
     {
         this.disconnectSteam(facing);
+    }
+
+    @Override
+    public BlockPos getBlockPos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public World getBlockWorld()
+    {
+        return this.getWorld();
     }
 }
