@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.animation.FastTESR;
-import net.qbar.client.RenderUtil;
+import net.qbar.client.render.RenderUtil;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.machine.TileBelt;
@@ -20,13 +20,13 @@ public class RenderBelt extends FastTESR<TileBelt>
     public void renderTileEntityFast(final TileBelt belt, final double x, final double y, final double z,
             final float partialTicks, final int destroyStage, final VertexBuffer renderer)
     {
-        final BlockPos pos = belt.getPos();
+        final BlockPos pos = belt.getBlockPos();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
 
-        final int l = belt.getWorld().getCombinedLight(pos.offset(EnumFacing.UP),
-                belt.getWorld().getSkylightSubtracted());
+        final int l = belt.getBlockWorld().getCombinedLight(pos.offset(EnumFacing.UP),
+                belt.getBlockWorld().getSkylightSubtracted());
         final int j = l % 65536;
         final int k = l / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0F, k / 1.0F);
@@ -80,7 +80,7 @@ public class RenderBelt extends FastTESR<TileBelt>
             GlStateManager.pushMatrix();
             GlStateManager.rotate(180, 0, 1, 0);
             GlStateManager.translate(0.25, -0.25, 0);
-            RenderUtil.handleRenderItem(item.getStack());
+            RenderUtil.handleRenderItem(item.getStack(), true);
             GlStateManager.popMatrix();
             previous = item;
         }

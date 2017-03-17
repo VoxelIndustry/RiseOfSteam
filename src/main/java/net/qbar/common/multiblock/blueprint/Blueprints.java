@@ -1,9 +1,12 @@
-package net.qbar.common.multiblock;
+package net.qbar.common.multiblock.blueprint;
 
 import java.util.HashMap;
 
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.qbar.common.init.QBarItems;
+import net.qbar.common.multiblock.IMultiblockDescriptor;
+import net.qbar.common.multiblock.Multiblocks;
 
 public class Blueprints
 {
@@ -26,7 +29,10 @@ public class Blueprints
     {
         this.blueprints = new HashMap<>();
 
-        this.registerBlueprint("fluidtank", Multiblocks.FLUID_TANK);
+        this.registerBlueprint("fluidtank", Multiblocks.FLUID_TANK)
+                .addStep(60, new ItemStack(Blocks.DIRT, 40), new ItemStack(Blocks.IRON_BLOCK, 10))
+                .addStep(20, new ItemStack(Items.BLAZE_ROD, 8));
+
         this.registerBlueprint("mediumfluidtank", Multiblocks.MEDIUM_FLUID_TANK);
         this.registerBlueprint("bigfluidtank", Multiblocks.BIG_FLUID_TANK);
 
@@ -40,9 +46,10 @@ public class Blueprints
         this.registerBlueprint("steamfurnacemk2", Multiblocks.STEAM_FURNACE_MK2);
     }
 
-    public void registerBlueprint(final String name, final IMultiblockDescriptor multiblock)
+    public Blueprint registerBlueprint(final String name, final IMultiblockDescriptor multiblock)
     {
         this.blueprints.put(name, new Blueprint(name, multiblock, multiblock.getBlockCount() * 4));
+        return this.blueprints.get(name);
     }
 
     public HashMap<String, Blueprint> getBlueprints()
@@ -50,40 +57,8 @@ public class Blueprints
         return this.blueprints;
     }
 
-    public static final class Blueprint
+    public Blueprint getBlueprint(final String name)
     {
-        private final String                name;
-        private final IMultiblockDescriptor multiblock;
-        private final int                   rodAmount;
-        private final ItemStack             rodStack;
-
-        public Blueprint(final String name, final IMultiblockDescriptor multiblock, final int rodAmount)
-        {
-            this.name = name;
-            this.multiblock = multiblock;
-            this.rodAmount = rodAmount;
-
-            this.rodStack = new ItemStack(QBarItems.IRON_ROD, this.getRodAmount());
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-
-        public IMultiblockDescriptor getMultiblock()
-        {
-            return this.multiblock;
-        }
-
-        public int getRodAmount()
-        {
-            return this.rodAmount;
-        }
-
-        public ItemStack getRodStack()
-        {
-            return this.rodStack;
-        }
+        return this.blueprints.get(name);
     }
 }

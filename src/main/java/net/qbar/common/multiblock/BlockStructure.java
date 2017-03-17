@@ -4,12 +4,18 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.qbar.common.IWrenchable;
 import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.tile.TileStructure;
 
-public class BlockStructure extends BlockMachineBase
+public class BlockStructure extends BlockMachineBase implements IWrenchable
 {
     public static final PropertyBool MULTIBLOCK_GAG = PropertyBool.create("multiblockgag");
 
@@ -18,6 +24,18 @@ public class BlockStructure extends BlockMachineBase
         super("structure", Material.IRON);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockStructure.MULTIBLOCK_GAG, false));
+    }
+
+    @Override
+    public boolean isOpaqueCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(final IBlockState state)
+    {
+        return false;
     }
 
     @Override
@@ -36,6 +54,33 @@ public class BlockStructure extends BlockMachineBase
     public BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, BlockStructure.MULTIBLOCK_GAG);
+    }
+
+    @Override
+    public void breakBlock(final World w, final BlockPos pos, final IBlockState state)
+    {
+        final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
+        if (tile != null)
+            tile.breakCore();
+        super.breakBlock(w, pos, state);
+    }
+
+    @Override
+    public void onNeighborChange(final IBlockAccess w, final BlockPos pos, final BlockPos neighbor)
+    {
+        final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
+        if (tile != null && !tile.isCore() && !tile.isCorePresent())
+            w.getTileEntity(pos).getWorld().destroyBlock(pos, false);
+    }
+
+    @Override
+    public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
+            final EnumFacing facing, final IBlockState state)
+    {
+        final ITileMultiblock tile = (ITileMultiblock) world.getTileEntity(pos);
+        if (tile != null)
+            ((TileStructure) tile.getCore()).stepBuilding(player);
+        return true;
     }
 
     @Override

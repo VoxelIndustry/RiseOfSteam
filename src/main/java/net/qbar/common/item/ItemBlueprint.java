@@ -16,11 +16,17 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.Blueprints;
-import net.qbar.common.multiblock.Blueprints.Blueprint;
+import net.qbar.common.multiblock.BlockStructure;
+import net.qbar.common.multiblock.IMultiblockDescriptor;
+import net.qbar.common.multiblock.TileMultiblockGag;
+import net.qbar.common.multiblock.blueprint.Blueprint;
+import net.qbar.common.multiblock.blueprint.Blueprints;
+import net.qbar.common.tile.TileStructure;
 import net.qbar.common.util.ItemUtils;
 
 public class ItemBlueprint extends ItemBase
@@ -39,9 +45,7 @@ public class ItemBlueprint extends ItemBase
         final Block block = iblockstate.getBlock();
 
         if (!block.isReplaceable(world, pos))
-        {
             pos = pos.offset(facing);
-        }
 
         final ItemStack stack = player.getHeldItem(hand);
 
@@ -58,10 +62,10 @@ public class ItemBlueprint extends ItemBase
                     && world.mayPlace(base, pos, false, facing, (Entity) null))
             {
                 final int i = this.getMetadata(stack.getMetadata());
-                final IBlockState iblockstate1 = base.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i,
-                        player, hand);
+                final IBlockState state = base.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player,
+                        hand);
 
-                if (this.placeBlockAt(stack, player, world, pos, facing, hitX, hitY, hitZ, iblockstate1))
+                if (this.placeBlockAt(stack, player, world, pos, state, base.getDescriptor()))
                 {
                     final SoundType soundtype = world.getBlockState(pos).getBlock()
                             .getSoundType(world.getBlockState(pos), world, pos, player);
@@ -78,16 +82,36 @@ public class ItemBlueprint extends ItemBase
     }
 
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
-            final EnumFacing side, final float hitX, final float hitY, final float hitZ, final IBlockState newState)
+            final IBlockState newState, final IMultiblockDescriptor descriptor)
     {
-        if (!world.setBlockState(pos, newState, 11))
+        if (!world.setBlockState(pos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
 
         final IBlockState state = world.getBlockState(pos);
-        if (state.getBlock() == newState.getBlock())
+        ItemBlock.setTileEntityNBT(world, player, pos, stack);
+        state.getBlock().onBlockPlacedBy(world, pos, state, player, stack);
+        final TileStructure structure = (TileStructure) world.getTileEntity(pos);
+        if (structure != null)
         {
-            ItemBlock.setTileEntityNBT(world, player, pos, stack);
-            newState.getBlock().onBlockPlacedBy(world, pos, state, player, stack);
+            structure
+                    .setBlueprint(Blueprints.getInstance().getBlueprint(stack.getTagCompound().getString("blueprint")));
+            structure.setMeta(newState.getBlock().getMetaFromState(newState));
+        }
+
+        final Iterable<BlockPos> searchables = BlockPos.getAllInBox(
+                pos.subtract(new Vec3i(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ())),
+                pos.add(descriptor.getWidth() - 1, descriptor.getHeight() - 1, descriptor.getLength() - 1));
+        for (final BlockPos current : searchables)
+        {
+            if (!current.equals(pos))
+            {
+                if (!world.setBlockState(current,
+                        QBarBlocks.STRUCTURE.getDefaultState().withProperty(BlockStructure.MULTIBLOCK_GAG, true)))
+                    return false;
+                final TileMultiblockGag gag = (TileMultiblockGag) world.getTileEntity(current);
+                if (gag != null)
+                    gag.setCorePos(pos);
+            }
         }
         return true;
     }

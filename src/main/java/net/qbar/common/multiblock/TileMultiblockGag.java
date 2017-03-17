@@ -98,7 +98,7 @@ public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, 
         return this.corePos;
     }
 
-    void setCorePos(final BlockPos pos)
+    public void setCorePos(final BlockPos pos)
     {
         this.corePos = pos;
     }

@@ -41,7 +41,6 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 public class BlueprintRender implements IBakedModel
 {
-
     private final IBakedModel originalModel;
 
     public BlueprintRender(final IBakedModel originalModel)

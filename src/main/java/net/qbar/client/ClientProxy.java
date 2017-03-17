@@ -17,9 +17,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.qbar.QBar;
 import net.qbar.client.render.BlueprintRender;
 import net.qbar.client.render.tile.RenderBelt;
+import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.TileBelt;
 
 public class ClientProxy extends CommonProxy
@@ -51,6 +53,7 @@ public class ClientProxy extends CommonProxy
         super.init(e);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileBelt.class, new RenderBelt());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileStructure.class, new RenderStructure());
         MinecraftForge.EVENT_BUS.register(new ClientEventManager());
     }
 

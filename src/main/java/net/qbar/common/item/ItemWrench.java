@@ -11,17 +11,16 @@ import net.qbar.common.IWrenchable;
 
 public class ItemWrench extends ItemBase
 {
-
     public ItemWrench()
     {
         super("wrench");
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing,
-            float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos pos,
+            final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
     {
-        Block block = world.getBlockState(pos).getBlock();
+        final Block block = world.getBlockState(pos).getBlock();
         if (!world.isRemote)
         {
             if (block instanceof IWrenchable)
