@@ -1,6 +1,7 @@
 package net.qbar.client;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -53,6 +54,9 @@ public class ClientEventManager
 
                             if (e.getPlayer().world.getWorldBorder().contains(pos))
                             {
+                                final IBlockState placementState = base.getStateForPlacement(w, pos,
+                                        e.getTarget().sideHit, 0, 0, 0, 0, e.getPlayer(),
+                                        e.getPlayer().getActiveHand());
                                 final double x = e.getPlayer().lastTickPosX
                                         + (e.getPlayer().posX - e.getPlayer().lastTickPosX) * e.getPartialTicks();
                                 final double y = e.getPlayer().lastTickPosY
@@ -60,7 +64,7 @@ public class ClientEventManager
                                 final double z = e.getPlayer().lastTickPosZ
                                         + (e.getPlayer().posZ - e.getPlayer().lastTickPosZ) * e.getPartialTicks();
                                 RenderGlobal.drawSelectionBoundingBox(
-                                        base.getDefaultState().getSelectedBoundingBox(e.getPlayer().world, pos)
+                                        placementState.getSelectedBoundingBox(e.getPlayer().world, pos)
                                                 .expandXyz(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);
 
@@ -68,10 +72,8 @@ public class ClientEventManager
                                 GlStateManager.enableTexture2D();
                                 GlStateManager.disableBlend();
 
-                                RenderUtil.renderMultiblock(
-                                        base.getStateForPlacement(w, pos, e.getTarget().sideHit, 0, 0, 0, 0,
-                                                e.getPlayer(), e.getPlayer().getActiveHand()),
-                                        pos.getX() - x, pos.getY() - y, pos.getZ() - z, this.blockRender);
+                                RenderUtil.renderMultiblock(placementState, pos.getX() - x, pos.getY() - y,
+                                        pos.getZ() - z, this.blockRender);
 
                                 GlStateManager.pushMatrix();
                                 GlStateManager.translate(pos.getX() - x + 0.5, pos.getY() - y, pos.getZ() - z + .5);
