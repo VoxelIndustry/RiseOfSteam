@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -84,13 +85,21 @@ public class ItemBlueprint extends ItemBase
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
             final IBlockState newState, final IMultiblockDescriptor descriptor)
     {
-        if (!world.setBlockState(pos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
+        BlockPos corePos = pos;
+        if (descriptor.getOffsetX() != 0 || descriptor.getOffsetY() != 0 || descriptor.getOffsetZ() != 0)
+        {
+            if (BlockMultiblockBase.getFacing(newState).getAxis().equals(Axis.Z))
+                corePos = pos.add(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ());
+            else
+                corePos = pos.add(descriptor.getOffsetZ(), descriptor.getOffsetY(), descriptor.getOffsetX());
+        }
+        if (!world.setBlockState(corePos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
 
-        final IBlockState state = world.getBlockState(pos);
-        ItemBlock.setTileEntityNBT(world, player, pos, stack);
-        state.getBlock().onBlockPlacedBy(world, pos, state, player, stack);
-        final TileStructure structure = (TileStructure) world.getTileEntity(pos);
+        final IBlockState state = world.getBlockState(corePos);
+        ItemBlock.setTileEntityNBT(world, player, corePos, stack);
+        state.getBlock().onBlockPlacedBy(world, corePos, state, player, stack);
+        final TileStructure structure = (TileStructure) world.getTileEntity(corePos);
         if (structure != null)
         {
             structure
@@ -98,19 +107,35 @@ public class ItemBlueprint extends ItemBase
             structure.setMeta(newState.getBlock().getMetaFromState(newState));
         }
 
-        final Iterable<BlockPos> searchables = BlockPos.getAllInBox(
-                pos.subtract(new Vec3i(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ())),
-                pos.add(descriptor.getWidth() - 1, descriptor.getHeight() - 1, descriptor.getLength() - 1));
+        Iterable<BlockPos> searchables = null;
+        if (BlockMultiblockBase.getFacing(newState).getAxis().equals(Axis.Z))
+        {
+            searchables = BlockPos.getAllInBox(
+                    corePos.subtract(
+                            new Vec3i(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ())),
+                    corePos.add(descriptor.getWidth() - 1 - descriptor.getOffsetX(),
+                            descriptor.getHeight() - 1 - descriptor.getOffsetY(),
+                            descriptor.getLength() - 1 - descriptor.getOffsetZ()));
+        }
+        else
+        {
+            searchables = BlockPos.getAllInBox(
+                    corePos.subtract(
+                            new Vec3i(descriptor.getOffsetZ(), descriptor.getOffsetY(), descriptor.getOffsetX())),
+                    corePos.add(descriptor.getLength() - 1 - descriptor.getOffsetZ(),
+                            descriptor.getHeight() - 1 - descriptor.getOffsetY(),
+                            descriptor.getWidth() - 1 - descriptor.getOffsetX()));
+        }
         for (final BlockPos current : searchables)
         {
-            if (!current.equals(pos))
+            if (!current.equals(corePos))
             {
                 if (!world.setBlockState(current,
                         QBarBlocks.STRUCTURE.getDefaultState().withProperty(BlockStructure.MULTIBLOCK_GAG, true)))
                     return false;
                 final TileMultiblockGag gag = (TileMultiblockGag) world.getTileEntity(current);
                 if (gag != null)
-                    gag.setCorePos(pos);
+                    gag.setCorePos(corePos);
             }
         }
         return true;

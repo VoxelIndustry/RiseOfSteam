@@ -92,7 +92,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         return i > 5 ? null : EnumFacing.getFront(i);
     }
 
-    public EnumFacing getFacing(final IBlockState state)
+    public static EnumFacing getFacing(final IBlockState state)
     {
         return state.getValue(BlockMultiblockBase.FACING);
     }
@@ -127,7 +127,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     public AxisAlignedBB getSelectedBoundingBox(final IBlockState state, final World w, final BlockPos pos)
     {
         if (!state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))
-            return this.getFacing(state).getAxis() == Axis.Z ? this.ZCACHED_AABB.offset(pos)
+            return BlockMultiblockBase.getFacing(state).getAxis() == Axis.Z ? this.ZCACHED_AABB.offset(pos)
                     : this.XCACHED_AABB.offset(pos);
         if (w.getTileEntity(pos) instanceof ITileMultiblock)
         {
@@ -173,7 +173,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         BlockPos corePos = pos;
         if (this.descriptor.getOffsetX() != 0 || this.descriptor.getOffsetY() != 0 || this.descriptor.getOffsetZ() != 0)
         {
-            if (this.getFacing(state).getAxis().equals(Axis.Z))
+            if (BlockMultiblockBase.getFacing(state).getAxis().equals(Axis.Z))
                 corePos = pos.add(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
                         this.descriptor.getOffsetZ());
             else
@@ -185,7 +185,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         }
 
         Iterable<BlockPos> searchables = null;
-        if (this.getFacing(state).getAxis().equals(Axis.Z))
+        if (BlockMultiblockBase.getFacing(state).getAxis().equals(Axis.Z))
         {
             searchables = BlockPos.getAllInBox(
                     corePos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
