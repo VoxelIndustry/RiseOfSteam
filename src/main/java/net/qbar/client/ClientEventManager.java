@@ -41,7 +41,8 @@ public class ClientEventManager
                     final World w = Minecraft.getMinecraft().world;
                     if (base != null)
                     {
-                        if (base.canPlaceBlockAt(w, e.getTarget().getBlockPos().offset(e.getTarget().sideHit)))
+                        if (base.canPlaceBlockAt(w, e.getTarget().getBlockPos().offset(e.getTarget().sideHit),
+                                e.getPlayer().getHorizontalFacing().getOpposite()))
                         {
                             GlStateManager.enableBlend();
                             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
@@ -57,6 +58,7 @@ public class ClientEventManager
                                 final IBlockState placementState = base.getStateForPlacement(w, pos,
                                         e.getTarget().sideHit, 0, 0, 0, 0, e.getPlayer(),
                                         e.getPlayer().getActiveHand());
+
                                 final double x = e.getPlayer().lastTickPosX
                                         + (e.getPlayer().posX - e.getPlayer().lastTickPosX) * e.getPartialTicks();
                                 final double y = e.getPlayer().lastTickPosY

@@ -138,14 +138,26 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         return Block.FULL_BLOCK_AABB.offset(pos);
     }
 
-    @Override
-    public boolean canPlaceBlockAt(final World w, final BlockPos pos)
+    public boolean canPlaceBlockAt(final World w, final BlockPos pos, final EnumFacing facing)
     {
-        final Iterable<BlockPos> searchables = BlockPos.getAllInBox(
-                pos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
-                        this.descriptor.getOffsetZ())),
-                pos.add(this.descriptor.getWidth() - 1, this.descriptor.getHeight() - 1,
-                        this.descriptor.getLength() - 1));
+        Iterable<BlockPos> searchables;
+        if (facing.getAxis().equals(Axis.Z))
+        {
+            searchables = BlockPos.getAllInBox(
+                    pos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
+                            this.descriptor.getOffsetZ())),
+                    pos.add(this.descriptor.getWidth() - 1, this.descriptor.getHeight() - 1,
+                            this.descriptor.getLength() - 1));
+        }
+        else
+        {
+            searchables = BlockPos.getAllInBox(
+                    pos.subtract(new Vec3i(this.descriptor.getOffsetZ(), this.descriptor.getOffsetY(),
+                            this.descriptor.getOffsetX())),
+                    pos.add(this.descriptor.getLength() - 1, this.descriptor.getHeight() - 1,
+                            this.descriptor.getWidth() - 1));
+        }
+
         for (final BlockPos current : searchables)
         {
             if (!w.getBlockState(current).getBlock().isReplaceable(w, current))
