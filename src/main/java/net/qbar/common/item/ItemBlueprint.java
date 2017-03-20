@@ -60,7 +60,8 @@ public class ItemBlueprint extends ItemBase
             if ((player.capabilities.isCreativeMode
                     || ItemUtils.hasPlayerEnough(player.inventory, blueprint.getRodStack(), false))
                     && player.canPlayerEdit(pos, facing, stack)
-                    && world.mayPlace(base, pos, false, facing, (Entity) null))
+                    && world.mayPlace(base, pos, false, facing, (Entity) null)
+                    && base.canPlaceBlockAt(world, pos, player.getHorizontalFacing().getOpposite()))
             {
                 final int i = this.getMetadata(stack.getMetadata());
                 final IBlockState state = base.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player,
@@ -85,21 +86,13 @@ public class ItemBlueprint extends ItemBase
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
             final IBlockState newState, final IMultiblockDescriptor descriptor)
     {
-        BlockPos corePos = pos;
-        if (descriptor.getOffsetX() != 0 || descriptor.getOffsetY() != 0 || descriptor.getOffsetZ() != 0)
-        {
-            if (BlockMultiblockBase.getFacing(newState).getAxis().equals(Axis.Z))
-                corePos = pos.add(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ());
-            else
-                corePos = pos.add(descriptor.getOffsetZ(), descriptor.getOffsetY(), descriptor.getOffsetX());
-        }
-        if (!world.setBlockState(corePos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
+        if (!world.setBlockState(pos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
 
-        final IBlockState state = world.getBlockState(corePos);
-        ItemBlock.setTileEntityNBT(world, player, corePos, stack);
-        state.getBlock().onBlockPlacedBy(world, corePos, state, player, stack);
-        final TileStructure structure = (TileStructure) world.getTileEntity(corePos);
+        final IBlockState state = world.getBlockState(pos);
+        ItemBlock.setTileEntityNBT(world, player, pos, stack);
+        state.getBlock().onBlockPlacedBy(world, pos, state, player, stack);
+        final TileStructure structure = (TileStructure) world.getTileEntity(pos);
         if (structure != null)
         {
             structure
@@ -111,31 +104,29 @@ public class ItemBlueprint extends ItemBase
         if (BlockMultiblockBase.getFacing(newState).getAxis().equals(Axis.Z))
         {
             searchables = BlockPos.getAllInBox(
-                    corePos.subtract(
-                            new Vec3i(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ())),
-                    corePos.add(descriptor.getWidth() - 1 - descriptor.getOffsetX(),
-                            descriptor.getHeight() - 1 - descriptor.getOffsetY(),
-                            descriptor.getLength() - 1 - descriptor.getOffsetZ()));
+                    pos.subtract(new Vec3i(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ())),
+                    pos.add(descriptor.getWidth() - 1 - descriptor.getOffsetX(),
+                            descriptor.getHeight() - 1 - descriptor.getOffsetY(), descriptor.getLength() - 1
+                                    - descriptor.getOffsetZ()));
         }
         else
         {
             searchables = BlockPos.getAllInBox(
-                    corePos.subtract(
-                            new Vec3i(descriptor.getOffsetZ(), descriptor.getOffsetY(), descriptor.getOffsetX())),
-                    corePos.add(descriptor.getLength() - 1 - descriptor.getOffsetZ(),
-                            descriptor.getHeight() - 1 - descriptor.getOffsetY(),
-                            descriptor.getWidth() - 1 - descriptor.getOffsetX()));
+                    pos.subtract(new Vec3i(descriptor.getOffsetZ(), descriptor.getOffsetY(), descriptor.getOffsetX())),
+                    pos.add(descriptor.getLength() - 1 - descriptor.getOffsetZ(),
+                            descriptor.getHeight() - 1 - descriptor.getOffsetY(), descriptor.getWidth() - 1
+                                    - descriptor.getOffsetX()));
         }
         for (final BlockPos current : searchables)
         {
-            if (!current.equals(corePos))
+            if (!current.equals(pos))
             {
                 if (!world.setBlockState(current,
                         QBarBlocks.STRUCTURE.getDefaultState().withProperty(BlockStructure.MULTIBLOCK_GAG, true)))
                     return false;
                 final TileMultiblockGag gag = (TileMultiblockGag) world.getTileEntity(current);
                 if (gag != null)
-                    gag.setCorePos(corePos);
+                    gag.setCorePos(pos);
             }
         }
         return true;

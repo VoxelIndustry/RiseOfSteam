@@ -170,48 +170,34 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
             final EntityLivingBase placer, final ItemStack stack)
     {
-        BlockPos corePos = pos;
-        if (this.descriptor.getOffsetX() != 0 || this.descriptor.getOffsetY() != 0 || this.descriptor.getOffsetZ() != 0)
-        {
-            if (BlockMultiblockBase.getFacing(state).getAxis().equals(Axis.Z))
-                corePos = pos.add(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
-                        this.descriptor.getOffsetZ());
-            else
-                corePos = pos.add(this.descriptor.getOffsetZ(), this.descriptor.getOffsetY(),
-                        this.descriptor.getOffsetX());
-
-            w.setBlockState(corePos, w.getBlockState(pos));
-            w.setBlockToAir(pos);
-        }
-
         Iterable<BlockPos> searchables = null;
         if (BlockMultiblockBase.getFacing(state).getAxis().equals(Axis.Z))
         {
             searchables = BlockPos.getAllInBox(
-                    corePos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
+                    pos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
                             this.descriptor.getOffsetZ())),
-                    corePos.add(this.descriptor.getWidth() - 1 - this.descriptor.getOffsetX(),
+                    pos.add(this.descriptor.getWidth() - 1 - this.descriptor.getOffsetX(),
                             this.descriptor.getHeight() - 1 - this.descriptor.getOffsetY(),
                             this.descriptor.getLength() - 1 - this.descriptor.getOffsetZ()));
         }
         else
         {
             searchables = BlockPos.getAllInBox(
-                    corePos.subtract(new Vec3i(this.descriptor.getOffsetZ(), this.descriptor.getOffsetY(),
+                    pos.subtract(new Vec3i(this.descriptor.getOffsetZ(), this.descriptor.getOffsetY(),
                             this.descriptor.getOffsetX())),
-                    corePos.add(this.descriptor.getLength() - 1 - this.descriptor.getOffsetZ(),
+                    pos.add(this.descriptor.getLength() - 1 - this.descriptor.getOffsetZ(),
                             this.descriptor.getHeight() - 1 - this.descriptor.getOffsetY(),
                             this.descriptor.getWidth() - 1 - this.descriptor.getOffsetX()));
         }
 
         for (final BlockPos current : searchables)
         {
-            if (!current.equals(corePos))
+            if (!current.equals(pos))
             {
                 w.setBlockState(current, this.getDefaultState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, true));
                 final TileMultiblockGag gag = (TileMultiblockGag) w.getTileEntity(current);
                 if (gag != null)
-                    gag.setCorePos(corePos);
+                    gag.setCorePos(pos);
             }
         }
     }
