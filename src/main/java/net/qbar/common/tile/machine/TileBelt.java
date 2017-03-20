@@ -407,24 +407,24 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
             this.sync();
             return;
         }
-        this.state.hidden.clear();
+        this.state.parts.clear();
 
         if (this.isWorking())
-            this.state.hidden.add("static");
+            this.state.parts.add("static");
         else
-            this.state.hidden.add("animated");
+            this.state.parts.add("animated");
 
         if (this.getFacing().getAxis().isVertical())
         {
-            this.state.hidden.add("east");
-            this.state.hidden.add("west");
+            this.state.parts.add("east");
+            this.state.parts.add("west");
         }
         else
         {
             if (!this.isConnected(this.getFacing().rotateY()))
-                this.state.hidden.add("east");
+                this.state.parts.add("east");
             if (!this.isConnected(this.getFacing().rotateY().getOpposite()))
-                this.state.hidden.add("west");
+                this.state.parts.add("west");
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);

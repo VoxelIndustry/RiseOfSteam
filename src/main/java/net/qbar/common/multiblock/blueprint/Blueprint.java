@@ -18,6 +18,8 @@ public class Blueprint
     private final ArrayList<ArrayList<ItemStack>> steps;
     private final ArrayList<Integer>              stepsTime;
 
+    private ArrayList<MultiblockStep>             multiblockSteps;
+
     public Blueprint(final String name, final IMultiblockDescriptor multiblock, final int rodAmount)
     {
         this.name = name;
@@ -28,6 +30,7 @@ public class Blueprint
 
         this.steps = new ArrayList<>();
         this.stepsTime = new ArrayList<>();
+        this.multiblockSteps = new ArrayList<>();
     }
 
     public Blueprint addStep(final int time, final ItemStack... stacks)
@@ -65,5 +68,16 @@ public class Blueprint
     public ArrayList<Integer> getStepsTime()
     {
         return this.stepsTime;
+    }
+
+    public ArrayList<MultiblockStep> getMultiblockSteps()
+    {
+        return this.multiblockSteps;
+    }
+
+    public void setMultiblockSteps(final ArrayList<MultiblockStep> multiblockSteps)
+    {
+        this.multiblockSteps = multiblockSteps;
+        this.multiblockSteps.forEach(step -> step.reloadStates());
     }
 }

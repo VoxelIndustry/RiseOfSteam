@@ -13,16 +13,17 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.qbar.client.render.model.FlattenedModelCache;
+import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 
 public class RenderUtil
 {
@@ -74,8 +75,8 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    public static final void renderMultiblock(final IBlockState state, final BlockPos statePos, final double x,
-            final double y, final double z, final World world, final BlockRendererDispatcher blockRender)
+    public static final void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
+            final BlockRendererDispatcher blockRender)
     {
         final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -94,8 +95,39 @@ public class RenderUtil
 
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.depthFunc(GL11.GL_LEQUAL);
-        RenderUtil.renderQuads(blockRender.getModelForState(state)
-                .getQuads(state.getBlock().getExtendedState(state, world, statePos), null, 0), alpha);
+        RenderUtil.renderQuads(blockRender.getModelForState(state).getQuads(state, null, 0), alpha);
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
+    public static final void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
+            final BlockRendererDispatcher blockRender, final List<BakedQuad> alphaQuads,
+            final VisibilityModelState opaqueState)
+    {
+        final Minecraft minecraft = Minecraft.getMinecraft();
+
+        minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
+
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+        GlStateManager.enableTexture2D();
+
+        final IBakedModel model = blockRender.getModelForState(state);
+
+        blockRender.getBlockModelRenderer().renderModelBrightnessColor(
+                ((BlockMultiblockBase) state.getBlock()).getGhostState(state, opaqueState), model, 1, 1, 1, 1);
+
+        final int alpha = (int) (0.6 * 0xFF) << 24;
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        RenderUtil.renderQuads(alphaQuads, alpha);
+
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
@@ -107,7 +139,7 @@ public class RenderUtil
 
         if (quads == null || quads.isEmpty())
             return;
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
         quads.forEach(quad -> LightUtil.renderQuadColor(buffer, quad, alpha | 0xffffff));
         tessellator.draw();
     }

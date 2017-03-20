@@ -111,4 +111,11 @@ public class BlueprintState
     {
         return this.currentStacks;
     }
+
+    public MultiblockStep getMultiblockStep()
+    {
+        if (this.blueprint.getMultiblockSteps().size() > this.currentStep)
+            return this.blueprint.getMultiblockSteps().get(this.currentStep);
+        return null;
+    }
 }

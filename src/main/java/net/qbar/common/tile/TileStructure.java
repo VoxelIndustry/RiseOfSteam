@@ -1,5 +1,12 @@
 package net.qbar.common.tile;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -8,6 +15,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.qbar.QBar;
+import net.qbar.client.render.tile.RenderStructure;
+import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.BlueprintState;
@@ -15,12 +26,14 @@ import net.qbar.common.multiblock.blueprint.Blueprints;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
-    private Blueprint      blueprint;
-    private BlueprintState blueprintState;
+    private Blueprint                 blueprint;
+    private BlueprintState            blueprintState;
 
-    private int            meta;
+    private int                       meta;
 
-    private AxisAlignedBB  cachedBB;
+    private AxisAlignedBB             cachedBB;
+
+    public final VisibilityModelState state = new VisibilityModelState();
 
     public TileStructure()
     {
@@ -29,12 +42,6 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     public void stepBuilding(final EntityPlayer player)
     {
 
-    }
-
-    @Override
-    public boolean hasFastRenderer()
-    {
-        return true;
     }
 
     @Override
@@ -138,5 +145,35 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         if (this.cachedBB != null)
             return this.cachedBB;
         return super.getRenderBoundingBox();
+    }
+
+    private int             previousStep = -1;
+    private List<BakedQuad> quadsCache;
+
+    @SideOnly(Side.CLIENT)
+    public List<BakedQuad> getQuads()
+    {
+        if (this.quadsCache == null || this.previousStep != this.getBlueprintState().getCurrentStep())
+        {
+            final IBlockState state = Block.getBlockFromName(QBar.MODID + ":" + this.getBlueprint().getName())
+                    .getStateFromMeta(this.getMeta());
+
+            final IBakedModel model = RenderStructure.blockRender.getModelForState(state);
+
+            if (this.getBlueprintState().getMultiblockStep() != null)
+            {
+                this.quadsCache = model.getQuads(((BlockMultiblockBase) state.getBlock()).getGhostState(state,
+                        this.getBlueprintState().getMultiblockStep().getAlphaState()), null, 0);
+
+                System.out.println("FACE: " + this.getBlueprintState().getMultiblockStep().getOpaqueState());
+            }
+            else
+                this.quadsCache = new ArrayList<>(0);
+
+            this.previousStep = this.getBlueprintState().getCurrentStep();
+
+            System.out.println("Rebaked!");
+        }
+        return this.quadsCache;
     }
 }

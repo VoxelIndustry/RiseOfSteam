@@ -13,8 +13,9 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 public class VisibilityModelState implements IModelState
 {
-    public final List<String>                  hidden = new ArrayList<>();
-    private final Optional<TRSRTransformation> value  = Optional.of(TRSRTransformation.identity());
+    public final List<String>                  parts     = new ArrayList<>();
+    public boolean                             blacklist = true;
+    private final Optional<TRSRTransformation> value     = Optional.of(TRSRTransformation.identity());
 
     @Override
     public Optional<TRSRTransformation> apply(final Optional<? extends IModelPart> part)
@@ -25,7 +26,8 @@ public class VisibilityModelState implements IModelState
             if (parts.hasNext())
             {
                 final String name = parts.next();
-                if (!parts.hasNext() && this.hidden.contains(name))
+                if (!parts.hasNext() && this.blacklist && this.parts.contains(name)
+                        || !this.blacklist && !this.parts.contains(name))
                     return this.value;
             }
         }

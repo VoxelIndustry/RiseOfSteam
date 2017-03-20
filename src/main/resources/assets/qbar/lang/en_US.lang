@@ -22,6 +22,9 @@ tile.itemextractor.filter.name=Filtered Item Extractor
 tile.itemsplitter.name=Item Splitter
 tile.itemsplitter.filter.name=Filtered Item Splitter
 
+tile.steamfurnacemk1.name=Steam Furnace
+tile.steamfurnacemk2.name=STEAM FURNACE
+
 #Items
 item.punched_card.name=Punched Card
 item.wrench.name=Wrench

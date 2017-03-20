@@ -258,15 +258,15 @@ public class TileExtractor extends TileInventoryBase
             this.sync();
             return;
         }
-        this.state.hidden.clear();
+        this.state.parts.clear();
 
         if (this.getFacing().getAxis().isHorizontal())
-            this.state.hidden.add("legs");
+            this.state.parts.add("legs");
 
         if (this.hasFilter())
         {
             if (this.filter == null)
-                this.state.hidden.add("card");
+                this.state.parts.add("card");
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);

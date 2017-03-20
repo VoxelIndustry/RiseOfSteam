@@ -89,6 +89,8 @@ dependencies {
 	shadow 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
     compile 'com.elytradev:concrete:0.1.0'
     shadow 'com.elytradev:concrete:0.1.0'
+    compile 'org.hjson:hjson:1.0.0'
+    shadow 'org.hjson:hjson:1.0.0'
 }
 
 processResources

@@ -215,73 +215,73 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
             this.sync();
             return;
         }
-        this.state.hidden.clear();
+        this.state.parts.clear();
 
-        this.state.hidden.add("valvex1");
-        this.state.hidden.add("valvex2");
-        this.state.hidden.add("valvey1");
-        this.state.hidden.add("valvey2");
-        this.state.hidden.add("valvez1");
-        this.state.hidden.add("valvez2");
+        this.state.parts.add("valvex1");
+        this.state.parts.add("valvex2");
+        this.state.parts.add("valvey1");
+        this.state.parts.add("valvey2");
+        this.state.parts.add("valvez1");
+        this.state.parts.add("valvez2");
 
         if (this.connections.isEmpty() && this.adjacentHandler.isEmpty())
         {
-            this.state.hidden.add("armx1");
-            this.state.hidden.add("armx2");
-            this.state.hidden.add("army1");
-            this.state.hidden.add("army2");
-            this.state.hidden.add("armz1");
-            this.state.hidden.add("armz2");
-            this.state.hidden.add("straightx");
-            this.state.hidden.add("straighty");
-            this.state.hidden.add("straightz");
+            this.state.parts.add("armx1");
+            this.state.parts.add("armx2");
+            this.state.parts.add("army1");
+            this.state.parts.add("army2");
+            this.state.parts.add("armz1");
+            this.state.parts.add("armz2");
+            this.state.parts.add("straightx");
+            this.state.parts.add("straighty");
+            this.state.parts.add("straightz");
         }
         else if (this.isStraight())
         {
-            this.state.hidden.add("center");
-            this.state.hidden.add("armx1");
-            this.state.hidden.add("armx2");
+            this.state.parts.add("center");
+            this.state.parts.add("armx1");
+            this.state.parts.add("armx2");
 
-            this.state.hidden.add("army1");
-            this.state.hidden.add("army2");
+            this.state.parts.add("army1");
+            this.state.parts.add("army2");
 
-            this.state.hidden.add("armz1");
-            this.state.hidden.add("armz2");
+            this.state.parts.add("armz1");
+            this.state.parts.add("armz2");
 
             if (this.isConnected(EnumFacing.WEST))
             {
-                this.state.hidden.add("straighty");
-                this.state.hidden.add("straightz");
+                this.state.parts.add("straighty");
+                this.state.parts.add("straightz");
             }
             else if (this.isConnected(EnumFacing.NORTH))
             {
-                this.state.hidden.add("straighty");
-                this.state.hidden.add("straightx");
+                this.state.parts.add("straighty");
+                this.state.parts.add("straightx");
             }
             else if (this.isConnected(EnumFacing.UP))
             {
-                this.state.hidden.add("straightx");
-                this.state.hidden.add("straightz");
+                this.state.parts.add("straightx");
+                this.state.parts.add("straightz");
             }
         }
         else
         {
-            this.state.hidden.add("straightx");
-            this.state.hidden.add("straighty");
-            this.state.hidden.add("straightz");
+            this.state.parts.add("straightx");
+            this.state.parts.add("straighty");
+            this.state.parts.add("straightz");
 
             if (!this.isConnected(EnumFacing.UP))
-                this.state.hidden.add("army1");
+                this.state.parts.add("army1");
             if (!this.isConnected(EnumFacing.DOWN))
-                this.state.hidden.add("army2");
+                this.state.parts.add("army2");
             if (!this.isConnected(EnumFacing.NORTH))
-                this.state.hidden.add("armz1");
+                this.state.parts.add("armz1");
             if (!this.isConnected(EnumFacing.SOUTH))
-                this.state.hidden.add("armz2");
+                this.state.parts.add("armz2");
             if (!this.isConnected(EnumFacing.EAST))
-                this.state.hidden.add("armx1");
+                this.state.parts.add("armx1");
             if (!this.isConnected(EnumFacing.WEST))
-                this.state.hidden.add("armx2");
+                this.state.parts.add("armx2");
         }
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
     }
