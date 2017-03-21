@@ -38,6 +38,8 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.client.model.pipeline.VertexTransformer;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.qbar.common.multiblock.IMultiblockDescriptor;
+import net.qbar.common.multiblock.blueprint.Blueprints;
 
 public class BlueprintRender implements IBakedModel
 {
@@ -56,8 +58,10 @@ public class BlueprintRender implements IBakedModel
                 final EntityLivingBase entity)
         {
             final IBakedModel multiblock = BlueprintRender.this.getModel(stack);
+            final IMultiblockDescriptor descriptor = Blueprints.getInstance()
+                    .getBlueprint(stack.getTagCompound().getString("blueprint")).getMultiblock();
             if (multiblock != null)
-                return BlueprintRender.this.getModel(multiblock);
+                return BlueprintRender.this.getModel(multiblock, descriptor);
             return BlueprintRender.this;
         }
     };
@@ -121,12 +125,12 @@ public class BlueprintRender implements IBakedModel
 
     private final IdentityHashMap<IBakedModel, CompositeBakedModel> cache = new IdentityHashMap<>();
 
-    private CompositeBakedModel getModel(final IBakedModel multiblock)
+    private CompositeBakedModel getModel(final IBakedModel multiblock, final IMultiblockDescriptor descriptor)
     {
         CompositeBakedModel model = this.cache.get(multiblock);
         if (model == null)
         {
-            model = new CompositeBakedModel(multiblock, this.originalModel);
+            model = new CompositeBakedModel(multiblock, this.originalModel, descriptor);
             this.cache.put(multiblock, model);
         }
         return model;
@@ -171,14 +175,19 @@ public class BlueprintRender implements IBakedModel
         private final List<BakedQuad>                  genQuads;
         private final Map<EnumFacing, List<BakedQuad>> faceQuads = new EnumMap<>(EnumFacing.class);
 
-        CompositeBakedModel(final IBakedModel multiblock, final IBakedModel blueprint)
+        CompositeBakedModel(final IBakedModel multiblock, final IBakedModel blueprint,
+                final IMultiblockDescriptor descriptor)
         {
             this.blueprint = blueprint;
 
             final ImmutableList.Builder<BakedQuad> genBuilder = ImmutableList.builder();
-            final TRSRTransformation transform = TRSRTransformation.blockCenterToCorner(
-                    new TRSRTransformation(new Vector3f(0F, 0F, 0.3f), null, new Vector3f(0.625F, 0.625F, 0.625F),
-                            TRSRTransformation.quatFromXYZ((float) Math.PI / 2, (float) Math.PI / 2, 0)));
+
+            final float maxBlock = (float) Math.max(descriptor.getHeight() / 2.0,
+                    Math.max(descriptor.getWidth(), descriptor.getLength()));
+            final TRSRTransformation transform = TRSRTransformation
+                    .blockCenterToCorner(new TRSRTransformation(new Vector3f(0F, 0F, 0.3f - 0.045f * maxBlock), null,
+                            new Vector3f(0.625F / maxBlock, 0.625F / maxBlock, 0.625F / maxBlock),
+                            TRSRTransformation.quatFromXYZ((float) Math.PI / 2, (float) Math.PI / 3, 0)));
 
             for (final EnumFacing e : EnumFacing.VALUES)
                 this.faceQuads.put(e, new ArrayList<>());
@@ -262,7 +271,7 @@ public class BlueprintRender implements IBakedModel
                                 TRSRTransformation.quatFromXYZ(0, (float) Math.PI, 0)).getMatrix());
             }
             return Pair.of(this,
-                    new TRSRTransformation(new Vector3f(0F, -.25F, 0F), null,
+                    new TRSRTransformation(new Vector3f(0F, -.2F, 0F), null,
                             new Vector3f(0.625F / 2, 0.625F / 2, 0.625F / 2),
                             TRSRTransformation.quatFromXYZ((float) -Math.PI / 2, 0, 0)).getMatrix());
         }
