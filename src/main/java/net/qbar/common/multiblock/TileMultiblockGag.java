@@ -81,7 +81,7 @@ public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, 
     public boolean isCorePresent()
     {
         return this.world.getTileEntity(this.getCorePos()) != null
-                && this.world.getTileEntity(this.getCorePos()) instanceof ITileMultiblock;
+                && this.world.getTileEntity(this.getCorePos()) instanceof ITileMultiblockCore;
     }
 
     @Override

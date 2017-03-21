@@ -69,7 +69,8 @@ public class BlockStructure extends BlockMachineBase implements IWrenchable
     public void onNeighborChange(final IBlockAccess w, final BlockPos pos, final BlockPos neighbor)
     {
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
-        if (tile != null && !tile.isCore() && !tile.isCorePresent())
+        if (tile != null && !tile.isCore()
+                && (!tile.isCorePresent() || !(w.getTileEntity(tile.getCorePos()) instanceof TileStructure)))
             w.getTileEntity(pos).getWorld().destroyBlock(pos, false);
     }
 

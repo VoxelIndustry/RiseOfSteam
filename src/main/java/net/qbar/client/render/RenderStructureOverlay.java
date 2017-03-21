@@ -25,9 +25,9 @@ public class RenderStructureOverlay
         if (tile != null)
         {
             TileStructure structure = null;
-            if (tile instanceof TileMultiblockGag)
+            if (tile instanceof TileMultiblockGag && ((TileMultiblockGag) tile).getCore() instanceof TileStructure)
                 structure = (TileStructure) ((TileMultiblockGag) tile).getCore();
-            else
+            else if (tile instanceof TileStructure)
                 structure = (TileStructure) tile;
 
             if (structure != null && structure.getBlueprint() != null)

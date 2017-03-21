@@ -8,6 +8,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -23,6 +25,7 @@ import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.BlueprintState;
 import net.qbar.common.multiblock.blueprint.Blueprints;
+import net.qbar.common.util.ItemUtils;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
@@ -41,7 +44,64 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 
     public void stepBuilding(final EntityPlayer player)
     {
+        if (this.getBlueprintState().needStack())
+        {
+            int i = 0;
+            for (final ItemStack stack : this.getBlueprintState().getCurrentStacks())
+            {
+                if (stack.getCount() - 1 < this.getBlueprintState().getStepStacks().get(i).getCount())
+                {
+                    final ItemStack needed = stack.copy();
+                    needed.setCount(
+                            this.getBlueprintState().getStepStacks().get(i).getCount() - (stack.getCount() - 1));
 
+                    needed.setCount(ItemUtils.drainPlayer(player.inventory, needed));
+                    if (needed.getCount() != 0)
+                    {
+                        this.getBlueprintState().addStack(needed);
+                        this.sync();
+                    }
+
+                }
+                if (!this.getBlueprintState().needStack())
+                {
+                    this.getBlueprintState().setStepStackComplete();
+                    this.sync();
+                    break;
+                }
+                i++;
+            }
+        }
+        else
+        {
+            this.getBlueprintState().setCurrentTime(this.getBlueprintState().getCurrentTime() + 1);
+            if (this.getBlueprintState().getCurrentTime() > this.getBlueprintState().getStepTime())
+            {
+                if (this.getBlueprintState()
+                        .getCurrentStep() < this.getBlueprintState().getBlueprint().getSteps().size() - 1)
+                {
+                    this.getBlueprintState().setCurrentStep(this.getBlueprintState().getCurrentStep() + 1);
+                }
+                else
+                {
+                    final BlockMultiblockBase block = (BlockMultiblockBase) Block
+                            .getBlockFromName("qbar:" + this.blueprint.getName());
+                    final IBlockState state = block.getStateFromMeta(this.meta);
+                    final IBlockState previous = this.world.getBlockState(this.getPos());
+
+                    this.world.setBlockToAir(this.pos);
+                    this.world.notifyBlockUpdate(this.pos, previous, Blocks.AIR.getDefaultState(), 3);
+
+                    this.world.setBlockState(this.pos, state);
+                    block.onBlockPlacedBy(this.world, this.pos, state, null, ItemStack.EMPTY);
+
+                    this.world.notifyBlockUpdate(this.pos, previous, state, 3);
+                    return;
+                }
+            }
+            this.sync();
+
+        }
     }
 
     @Override

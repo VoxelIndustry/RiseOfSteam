@@ -1,5 +1,7 @@
 package net.qbar.common.multiblock.blueprint;
 
+import java.util.List;
+
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +14,8 @@ public class BlueprintState
     private final NonNullList<ItemStack> currentStacks;
     private int                          currentStep;
     private int                          currentTime;
+
+    private boolean                      isStepStackComplete;
 
     public BlueprintState(final Blueprint blueprint)
     {
@@ -27,6 +31,7 @@ public class BlueprintState
 
         this.currentStep = tag.getInteger("currentStep");
         this.currentTime = tag.getInteger("currentTime");
+        this.isStepStackComplete = tag.getBoolean("isStepStackComplete");
         ItemStackHelper.loadAllItems(tag, this.currentStacks);
     }
 
@@ -36,6 +41,7 @@ public class BlueprintState
 
         tag.setInteger("currentStep", this.currentStep);
         tag.setInteger("currentTime", this.currentTime);
+        tag.setBoolean("isStepStackComplete", this.isStepStackComplete);
         ItemStackHelper.saveAllItems(tag, this.currentStacks);
         return tag;
     }
@@ -62,6 +68,7 @@ public class BlueprintState
                 copy.setCount(1);
                 this.currentStacks.add(copy);
             });
+        this.isStepStackComplete = false;
         this.currentTime = 0;
     }
 
@@ -95,16 +102,23 @@ public class BlueprintState
         return this.currentStacks.stream().anyMatch(stack2 -> ItemUtils.deepEquals(stack2, stack));
     }
 
-    public boolean isCurrentComplete()
+    public boolean needStack()
     {
+        if (this.isStepStackComplete)
+            return false;
         int index = 0;
         for (final ItemStack stack : this.currentStacks)
         {
             if (stack.getCount() - 1 != this.blueprint.getSteps().get(this.currentStep).get(index).getCount())
-                return false;
+                return true;
             index++;
         }
-        return true;
+        return false;
+    }
+
+    public void setStepStackComplete()
+    {
+        this.isStepStackComplete = true;
     }
 
     public NonNullList<ItemStack> getCurrentStacks()
@@ -117,5 +131,15 @@ public class BlueprintState
         if (this.blueprint.getMultiblockSteps().size() > this.currentStep)
             return this.blueprint.getMultiblockSteps().get(this.currentStep);
         return null;
+    }
+
+    public List<ItemStack> getStepStacks()
+    {
+        return this.blueprint.getSteps().get(this.currentStep);
+    }
+
+    public int getStepTime()
+    {
+        return this.blueprint.getStepsTime().get(this.currentStep);
     }
 }

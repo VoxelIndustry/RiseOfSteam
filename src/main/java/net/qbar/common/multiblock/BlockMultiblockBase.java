@@ -194,7 +194,9 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         {
             if (!current.equals(pos))
             {
+                final IBlockState previous = w.getBlockState(current);
                 w.setBlockState(current, this.getDefaultState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, true));
+                w.notifyBlockUpdate(current, previous, w.getBlockState(current), 3);
                 final TileMultiblockGag gag = (TileMultiblockGag) w.getTileEntity(current);
                 if (gag != null)
                     gag.setCorePos(pos);

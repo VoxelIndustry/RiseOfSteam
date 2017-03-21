@@ -58,8 +58,9 @@ public class ItemUtils
         return false;
     }
 
-    public static void drainPlayer(final InventoryPlayer player, final ItemStack stack)
+    public static int drainPlayer(final InventoryPlayer player, final ItemStack stack)
     {
-        player.clearMatchingItems(stack.getItem(), stack.getItemDamage(), stack.getCount(), stack.getTagCompound());
+        return player.clearMatchingItems(stack.getItem(), stack.getItemDamage(), stack.getCount(),
+                stack.getTagCompound());
     }
 }
