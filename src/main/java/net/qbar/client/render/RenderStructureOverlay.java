@@ -78,10 +78,26 @@ public class RenderStructureOverlay
         if (step != 0)
             GlStateManager.translate(0, 1, 0);
         GlStateManager.pushMatrix();
+
+        float timeRatio = 0;
+
+        if (state.getCurrentStep() == step)
+            timeRatio = (float) state.getCurrentTime() / state.getStepTime();
+        else if (state.getCurrentStep() > step)
+            timeRatio = 1;
+        else
+            timeRatio = 0;
+        GlStateManager.translate(0, 0, 0.1);
+        GlStateManager.disableLighting();
+        GlStateManager.resetColor();
+        RenderUtil.renderRect(-0.5, 0.35, -0.5 + 3.3 * timeRatio, -0.3, 0, 0.5f, 0, 0.6f);
+        GlStateManager.translate(0, 0, -0.1);
+
         for (int stack = 0; stack < stackList.size(); stack++)
         {
             if (stack != 0)
                 GlStateManager.translate(1, 0, 0);
+
             RenderUtil.handleRenderItem(stackList.get(stack), false);
 
             GlStateManager.pushMatrix();
@@ -96,7 +112,6 @@ public class RenderStructureOverlay
             else
                 count = "0/" + stackList.get(stack).getCount();
 
-            GlStateManager.disableLighting();
             Minecraft.getMinecraft().fontRendererObj.drawString(count,
                     -Minecraft.getMinecraft().fontRendererObj.getStringWidth(count) / 2, 0, 16777215);
             GlStateManager.popMatrix();

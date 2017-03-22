@@ -143,4 +143,25 @@ public class RenderUtil
         quads.forEach(quad -> LightUtil.renderQuadColor(buffer, quad, alpha | 0xffffff));
         tessellator.draw();
     }
+
+    public static final void renderRect(final double left, final double top, final double right, final double bottom,
+            final float r, final float g, final float b, final float a)
+    {
+        final Tessellator tessellator = Tessellator.getInstance();
+        final VertexBuffer vertexbuffer = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(r, g, b, a);
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION);
+        vertexbuffer.pos(left, bottom, 0.0D).endVertex();
+        vertexbuffer.pos(right, bottom, 0.0D).endVertex();
+        vertexbuffer.pos(right, top, 0.0D).endVertex();
+        vertexbuffer.pos(left, top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
 }

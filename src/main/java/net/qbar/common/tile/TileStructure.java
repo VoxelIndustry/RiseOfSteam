@@ -56,7 +56,8 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
                     needed.setCount(
                             this.getBlueprintState().getStepStacks().get(i).getCount() - (stack.getCount() - 1));
 
-                    needed.setCount(ItemUtils.drainPlayer(player.inventory, needed));
+                    if (!player.capabilities.isCreativeMode)
+                        needed.setCount(ItemUtils.drainPlayer(player.inventory, needed));
                     if (needed.getCount() != 0)
                     {
                         this.getBlueprintState().addStack(needed);
