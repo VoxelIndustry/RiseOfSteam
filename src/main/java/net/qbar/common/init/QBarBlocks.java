@@ -9,26 +9,15 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.qbar.QBar;
-import net.qbar.common.block.BlockAssembler;
-import net.qbar.common.block.BlockBase;
-import net.qbar.common.block.BlockBelt;
-import net.qbar.common.block.BlockBoiler;
-import net.qbar.common.block.BlockExtractor;
-import net.qbar.common.block.BlockFluidPipe;
-import net.qbar.common.block.BlockFluidPump;
-import net.qbar.common.block.BlockKeypunch;
-import net.qbar.common.block.BlockMachineBase;
-import net.qbar.common.block.BlockOffshorePump;
-import net.qbar.common.block.BlockSplitter;
-import net.qbar.common.block.BlockSteamFurnace;
-import net.qbar.common.block.BlockSteamPipe;
-import net.qbar.common.block.BlockTank;
+import net.qbar.common.block.*;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.multiblock.BlockStructure;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileFluidPipe;
+import net.qbar.common.tile.TileSolarBoiler;
+import net.qbar.common.tile.TileSolarMirror;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
@@ -101,6 +90,8 @@ public class QBarBlocks
 
         QBarBlocks.registerBlock(new BlockStructure());
         QBarBlocks.registerBlock(new BlockSteamFurnace());
+        QBarBlocks.registerBlock(new BlockSolarBoiler());
+        QBarBlocks.registerBlock(new BlockSolarMirror());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -117,6 +108,8 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileCreativeSteamGenerator.class, "creative_steam_generator");
         QBarBlocks.registerTile(TileStructure.class, "structure");
         QBarBlocks.registerTile(TileSteamFurnace.class, "steamfurnace");
+        QBarBlocks.registerTile(TileSolarBoiler.class, "solarboiler");
+        QBarBlocks.registerTile(TileSolarMirror.class, "solarmirror");
     }
 
     public static final void registerBlock(final Block block, final String name)

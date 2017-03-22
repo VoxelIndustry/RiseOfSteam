@@ -51,9 +51,9 @@ public class Blueprints
 
         this.registerBlueprint("boiler", Multiblocks.SOLID_BOILER);
         this.registerBlueprint("assembler", Multiblocks.ASSEMBLER);
-        this.registerBlueprint("solarboiler", Multiblocks.SOLAR_BOILER);
+        this.registerBlueprint("solar_boiler", Multiblocks.SOLAR_BOILER);
         this.registerBlueprint("keypunch", Multiblocks.KEYPUNCH);
-        this.registerBlueprint("liquidfuelboiler", Multiblocks.LIQUID_FUEL_BOILER);
+        this.registerBlueprint("liquidfuel_boiler", Multiblocks.LIQUID_FUEL_BOILER);
         this.registerBlueprint("rollingmill", Multiblocks.ROLLING_MILL);
         this.registerBlueprint("steamfurnacemk1", Multiblocks.STEAM_FURNACE_MK1)
                 .addStep(20, new ItemStack(Blocks.BRICK_BLOCK, 4)).addStep(10, new ItemStack(QBarItems.IRON_ROD, 8));
