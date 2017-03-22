@@ -16,8 +16,6 @@ import net.qbar.common.multiblock.BlockStructure;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileFluidPipe;
-import net.qbar.common.tile.TileSolarBoiler;
-import net.qbar.common.tile.TileSolarMirror;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
@@ -28,6 +26,9 @@ import net.qbar.common.tile.machine.TileExtractor;
 import net.qbar.common.tile.machine.TileFluidPump;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.tile.machine.TileOffshorePump;
+import net.qbar.common.tile.machine.TileRollingMill;
+import net.qbar.common.tile.machine.TileSolarBoiler;
+import net.qbar.common.tile.machine.TileSolarMirror;
 import net.qbar.common.tile.machine.TileSplitter;
 import net.qbar.common.tile.machine.TileSteamFurnace;
 import net.qbar.common.tile.machine.TileTank;
@@ -92,6 +93,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockSteamFurnace());
         QBarBlocks.registerBlock(new BlockSolarBoiler());
         QBarBlocks.registerBlock(new BlockSolarMirror());
+        QBarBlocks.registerBlock(new BlockRollingMill());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -110,6 +112,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileSteamFurnace.class, "steamfurnace");
         QBarBlocks.registerTile(TileSolarBoiler.class, "solarboiler");
         QBarBlocks.registerTile(TileSolarMirror.class, "solarmirror");
+        QBarBlocks.registerTile(TileRollingMill.class, "rollingmill");
     }
 
     public static final void registerBlock(final Block block, final String name)

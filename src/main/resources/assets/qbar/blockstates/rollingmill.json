@@ -11,15 +11,15 @@
             "transform": "forge:default-block"
         },
         "facing": {
-            "north": {
+            "north": { },
+            "south": {
                 "y": 180
             },
-            "south": {},
             "east": {
-                "y": 270
+                "y": 90
             },
             "west": {
-                "y": 90
+                "y": 270
             }
         },
         "multiblockgag": {

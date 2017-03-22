@@ -24,7 +24,7 @@ public class Multiblocks
 
         MEDIUM_FLUID_TANK = new MultiblockDescriptorBase("MEDIUM_FLUID_TANK", 2, 3, 2, 1, 0, 1);
         BIG_FLUID_TANK = new MultiblockDescriptorBase("BIG_FLUID_TANK", 3, 4, 3, 1, 0, 1);
-        ROLLING_MILL = new MultiblockDescriptorBase("ROLLING_MILL", 2, 2, 3, 0, 0, 0);
+        ROLLING_MILL = new MultiblockDescriptorBase("ROLLING_MILL", 3, 2, 2, 1, 0, 0);
         SOLAR_BOILER = new MultiblockDescriptorBase("SOLAR_BOILER", 3, 6, 3, 1, 0, 1);
         LIQUID_FUEL_BOILER = new MultiblockDescriptorBase("LIQUID_FUEL_BOILER", 1, 1, 1, 0, 0, 0);
         STEAM_FURNACE_MK1 = new MultiblockDescriptorBase("STEAM_FURNACE_MK1", 1, 1, 3, 0, 0, 1);
