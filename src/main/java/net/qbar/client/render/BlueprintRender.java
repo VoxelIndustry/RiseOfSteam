@@ -58,10 +58,13 @@ public class BlueprintRender implements IBakedModel
                 final EntityLivingBase entity)
         {
             final IBakedModel multiblock = BlueprintRender.this.getModel(stack);
-            final IMultiblockDescriptor descriptor = Blueprints.getInstance()
-                    .getBlueprint(stack.getTagCompound().getString("blueprint")).getMultiblock();
-            if (multiblock != null)
-                return BlueprintRender.this.getModel(multiblock, descriptor);
+            if (Blueprints.getInstance().getBlueprints().containsKey(stack.getTagCompound().getString("blueprint")))
+            {
+                final IMultiblockDescriptor descriptor = Blueprints.getInstance()
+                        .getBlueprint(stack.getTagCompound().getString("blueprint")).getMultiblock();
+                if (multiblock != null)
+                    return BlueprintRender.this.getModel(multiblock, descriptor);
+            }
             return BlueprintRender.this;
         }
     };

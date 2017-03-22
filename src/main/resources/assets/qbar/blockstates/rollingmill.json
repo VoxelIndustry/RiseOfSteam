@@ -3,7 +3,7 @@
     "defaults": {
         "textures": {
         },
-        "model": "qbar:fluidtank.obj",
+        "model": "qbar:rollingmill.obj",
         "custom": { "flip-v": true }
     },
     "variants": {
@@ -26,7 +26,7 @@
             "true": {}, "false": {}
         },
         "inventory": {
-        	"model": "qbar:fluidtank.obj",
+        	"model": "qbar:rollingmill.obj",
 			"transform": {
 				"scale": 0.23,
 				"rotation": [{"x": 20}, {"y": -45}],

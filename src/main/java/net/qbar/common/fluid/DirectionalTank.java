@@ -48,6 +48,7 @@ public class DirectionalTank
                 subTag.setString(facing.name(), "inputs");
         }
         this.internalTank.writeToNBT(subTag);
+        tag.setInteger("capacity", this.internalTank.getCapacity());
         tag.setTag(this.name, subTag);
         return tag;
     }
@@ -71,6 +72,7 @@ public class DirectionalTank
                     this.inputs.add(facing);
             }
             this.internalTank.readFromNBT(subTag);
+            this.internalTank.setCapacity(tag.getInteger("capacity"));
         }
         return this;
     }

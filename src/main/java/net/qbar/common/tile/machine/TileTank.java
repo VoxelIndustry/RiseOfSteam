@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -22,10 +21,15 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
 
     private final DirectionalTank tank;
 
+    public TileTank(final int capacity)
+    {
+        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[] { EnumFacing.DOWN },
+                new EnumFacing[] { EnumFacing.UP });
+    }
+
     public TileTank()
     {
-        this.tank = new DirectionalTank("TileTank", new FluidTank(Fluid.BUCKET_VOLUME * 16),
-                new EnumFacing[] { EnumFacing.DOWN }, new EnumFacing[] { EnumFacing.UP });
+        this(0);
     }
 
     @Override

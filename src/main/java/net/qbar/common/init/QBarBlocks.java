@@ -5,6 +5,7 @@ import java.util.function.Function;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.qbar.QBar;
@@ -25,9 +26,9 @@ import net.qbar.common.block.BlockTank;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.multiblock.BlockStructure;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileFluidPipe;
-import net.qbar.common.tile.TileSteamFurnace;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
@@ -39,6 +40,7 @@ import net.qbar.common.tile.machine.TileFluidPump;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.tile.machine.TileOffshorePump;
 import net.qbar.common.tile.machine.TileSplitter;
+import net.qbar.common.tile.machine.TileSteamFurnace;
 import net.qbar.common.tile.machine.TileTank;
 
 @ObjectHolder(QBar.MODID)
@@ -80,7 +82,11 @@ public class QBarBlocks
     public static final void registerBlocks()
     {
         QBarBlocks.registerBlock(new BlockKeypunch());
-        QBarBlocks.registerBlock(new BlockTank());
+        QBarBlocks.registerBlock(
+                new BlockTank("fluidtank_small", Multiblocks.SMALL_FLUID_TANK, Fluid.BUCKET_VOLUME * 48));
+        QBarBlocks.registerBlock(
+                new BlockTank("fluidtank_medium", Multiblocks.MEDIUM_FLUID_TANK, Fluid.BUCKET_VOLUME * 128));
+        QBarBlocks.registerBlock(new BlockTank("fluidtank_big", Multiblocks.BIG_FLUID_TANK, Fluid.BUCKET_VOLUME * 432));
         QBarBlocks.registerBlock(new BlockBoiler());
         QBarBlocks.registerBlock(new BlockFluidPipe(), block -> new ItemBlockMetadata(block, "valve"));
         QBarBlocks.registerBlock(new BlockSteamPipe(), block -> new ItemBlockMetadata(block, "valve"));

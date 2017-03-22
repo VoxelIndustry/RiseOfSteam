@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
-import net.qbar.common.tile.TileSteamFurnace;
+import net.qbar.common.tile.machine.TileSteamFurnace;
 
 public class BlockSteamFurnace extends BlockMultiblockBase
 {

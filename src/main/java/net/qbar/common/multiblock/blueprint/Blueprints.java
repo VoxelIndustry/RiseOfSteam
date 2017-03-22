@@ -42,12 +42,12 @@ public class Blueprints
         this.gson = new Gson();
         this.blueprints = new HashMap<>();
 
-        this.registerBlueprint("fluidtank", Multiblocks.FLUID_TANK)
+        this.registerBlueprint("fluidtank_small", Multiblocks.SMALL_FLUID_TANK)
                 .addStep(60, new ItemStack(Blocks.DIRT, 40), new ItemStack(Blocks.IRON_BLOCK, 10))
                 .addStep(20, new ItemStack(Items.BLAZE_ROD, 8));
 
-        this.registerBlueprint("mediumfluidtank", Multiblocks.MEDIUM_FLUID_TANK);
-        this.registerBlueprint("bigfluidtank", Multiblocks.BIG_FLUID_TANK);
+        this.registerBlueprint("fluidtank_medium", Multiblocks.MEDIUM_FLUID_TANK);
+        this.registerBlueprint("fluidtank_big", Multiblocks.BIG_FLUID_TANK);
 
         this.registerBlueprint("boiler", Multiblocks.SOLID_BOILER);
         this.registerBlueprint("assembler", Multiblocks.ASSEMBLER);
