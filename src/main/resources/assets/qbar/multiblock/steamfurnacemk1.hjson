@@ -2,6 +2,12 @@
   {
     parts:
     [
+    
+    ]
+  }
+  {
+    parts:
+    [
       FurnaceBody0
       FurnaceBody0A
       FurnaceBody0B
