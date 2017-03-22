@@ -3,6 +3,7 @@ package net.qbar.common.block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
@@ -13,6 +14,12 @@ public class BlockSolarBoiler extends BlockMultiblockBase
     public BlockSolarBoiler()
     {
         super("solar_boiler", Material.IRON, Multiblocks.SOLAR_BOILER);
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

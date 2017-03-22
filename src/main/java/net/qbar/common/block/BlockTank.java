@@ -3,6 +3,7 @@ package net.qbar.common.block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.IMultiblockDescriptor;
@@ -17,6 +18,12 @@ public class BlockTank extends BlockMultiblockBase
         super(name, Material.IRON, descriptor);
 
         this.capacity = capacity;
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
