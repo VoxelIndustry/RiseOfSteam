@@ -101,7 +101,7 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
                 return this.XPOSCACHED_AABB;
             return this.XNEGCACHED_AABB;
         }
-        return this.ZPOSCACHED_AABB;
+        return this.XPOSCACHED_AABB.offset(0, 0, 1);
     }
 
     @Override

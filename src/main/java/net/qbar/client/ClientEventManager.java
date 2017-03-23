@@ -66,7 +66,8 @@ public class ClientEventManager
                                 final double z = e.getPlayer().lastTickPosZ
                                         + (e.getPlayer().posZ - e.getPlayer().lastTickPosZ) * e.getPartialTicks();
                                 RenderGlobal.drawSelectionBoundingBox(
-                                        placementState.getSelectedBoundingBox(e.getPlayer().world, pos)
+                                        blueprint.getMultiblock()
+                                                .getBox(e.getPlayer().getHorizontalFacing().getOpposite()).offset(pos)
                                                 .expandXyz(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);
 
