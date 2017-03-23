@@ -38,37 +38,45 @@ import net.qbar.common.tile.machine.TileTank;
 public class QBarBlocks
 {
     @ObjectHolder("keypunch")
-    public static final BlockMachineBase PUNCHING_MACHINE = null;
+    public static final BlockMachineBase PUNCHING_MACHINE   = null;
     @ObjectHolder("fluidtank")
-    public static final BlockMachineBase FLUID_TANK       = null;
+    public static final BlockMachineBase FLUID_TANK         = null;
     @ObjectHolder("boiler")
-    public static final BlockMachineBase SOLID_BOILER     = null;
+    public static final BlockMachineBase SOLID_BOILER       = null;
     @ObjectHolder("fluidpipe")
-    public static final BlockMachineBase FLUID_PIPE       = null;
+    public static final BlockMachineBase FLUID_PIPE         = null;
     @ObjectHolder("steampipe")
-    public static final BlockMachineBase STEAM_PIPE       = null;
+    public static final BlockMachineBase STEAM_PIPE         = null;
     @ObjectHolder("fluidpump")
-    public static final BlockMachineBase FLUID_PUMP       = null;
+    public static final BlockMachineBase FLUID_PUMP         = null;
     @ObjectHolder("offshorepump")
-    public static final BlockMachineBase OFFSHORE_PUMP    = null;
+    public static final BlockMachineBase OFFSHORE_PUMP      = null;
     @ObjectHolder("assembler")
-    public static final BlockMachineBase ASSEMBLER        = null;
+    public static final BlockMachineBase ASSEMBLER          = null;
 
     // Creative
     @ObjectHolder("creative_steam_generator")
-    public static final BlockMachineBase CREATIVE_BOILER  = null;
+    public static final BlockMachineBase CREATIVE_BOILER    = null;
 
     @ObjectHolder("belt")
-    public static final BlockMachineBase BELT             = null;
+    public static final BlockMachineBase BELT               = null;
     @ObjectHolder("itemextractor")
-    public static final BlockMachineBase ITEM_EXTRACTOR   = null;
+    public static final BlockMachineBase ITEM_EXTRACTOR     = null;
     @ObjectHolder("itemsplitter")
-    public static final BlockMachineBase ITEM_SPLITTER    = null;
+    public static final BlockMachineBase ITEM_SPLITTER      = null;
 
     @ObjectHolder("structure")
-    public static final BlockMachineBase STRUCTURE        = null;
+    public static final BlockMachineBase STRUCTURE          = null;
     @ObjectHolder("steamfurnace")
-    public static final BlockMachineBase STEAM_FURNACE    = null;
+    public static final BlockMachineBase STEAM_FURNACE      = null;
+    @ObjectHolder("rollingmill")
+    public static final BlockMachineBase ROLLING_MILL       = null;
+    @ObjectHolder("solar_mirror")
+    public static final BlockMachineBase SOLAR_MIRROR       = null;
+    @ObjectHolder("solar_boiler")
+    public static final BlockMachineBase SOLAR_BOILER       = null;
+    @ObjectHolder("liquidfuel_boiler")
+    public static final BlockMachineBase LIQUID_FUEL_BOILER = null;
 
     public static final void registerBlocks()
     {

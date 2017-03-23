@@ -6,7 +6,9 @@ tile.creative_steam_generator.name=Creative Steam Generator
 
 #Machines
 tile.keypunch.name=KeyPunch
-tile.fluidtank.name=Fluid Tank
+tile.fluidtank_small.name=Small Fluid Tank
+tile.fluidtank_medium.name=Medium Fluid Tank
+tile.fluidtank_big.name=Big Fluid Tank
 tile.boiler.name=Solid Boiler
 tile.fluidpipe.name=Fluid Pipe
 tile.fluidpipe.valve.name=Fluid Pipe Valve
@@ -24,13 +26,34 @@ tile.itemsplitter.filter.name=Filtered Item Splitter
 
 tile.steamfurnacemk1.name=Steam Furnace
 tile.steamfurnacemk2.name=STEAM FURNACE
+tile.structure.name=Structure
+tile.solar_mirror.name=Solar Mirror
+tile.solar_boiler.name=Solar Boiler
+tile.rollingmill.name=Rolling Mill
+tile.liquidfuel_boiler.name=Liquid Fuel Boiler
 
 #Items
 item.punched_card.name=Punched Card
 item.wrench.name=Wrench
 
 item.blueprint.name=%s Blueprint
+item.ironrod.name=Iron Rod
+item.metalplate.iron.name=Iron Plate
+item.metalplate.gold.name=Gold Plate
 
 #Fluids
 fluid.steam=Steam
 tile.blockfluidsteam.name=Steam Source
+
+#Gui
+gui.rollingmill.name=Rolling Mill
+gui.steamfurnacemk1.name=Steam Furnace MK1
+gui.steamfurnacemk2.name=Steam Furnace MK2
+gui.assembler.name=Assembler
+gui.keypunch.name=KeyPunch
+gui.solidboiler.name=Solid Boiler
+gui.liquidfuel_boiler.name=Liquid Fuel Boiler
+gui.solar_boiler.name=Solar Boiler
+gui.fluidtank_small.name=Small Fluid Tank
+gui.fluidtank_medium.name=Medium Fluid Tank
+gui.fluidtank_big.name=Big Fluid Tank
