@@ -22,6 +22,7 @@ import net.qbar.common.network.ContainerUpdatePacket;
 import net.qbar.common.network.FilteredMachinePacket;
 import net.qbar.common.network.KeypunchPacket;
 import net.qbar.common.network.TileSyncRequestPacket;
+import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 
 public class CommonProxy
@@ -48,6 +49,8 @@ public class CommonProxy
 
     public void init(final FMLInitializationEvent e)
     {
+        QBarRecipeHandler.registerRecipes();
+
         CompatManager.init(e);
     }
 
