@@ -86,50 +86,73 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
         return this.offsetZ;
     }
 
+    // TODO: Fix this for even width multiblock and clear this mess
     @Override
     public AxisAlignedBB getBox(final EnumFacing facing)
     {
-        if (facing.getAxis() == Axis.Z)
+        if (this.getLength() % 2 == 0 && this.getWidth() % 2 == 0)
         {
-            if (this.getLength() % 2 == 0 && facing.getAxisDirection() == AxisDirection.NEGATIVE)
-                return this.ZNEGCACHED_AABB;
-            return this.ZPOSCACHED_AABB;
-        }
-        if (this.getWidth() % 2 == 0)
-        {
+            if (facing.getAxis().equals(Axis.Z))
+            {
+                if (facing.getAxisDirection() == AxisDirection.NEGATIVE)
+                    return this.ZNEGCACHED_AABB;
+                return this.ZPOSCACHED_AABB;
+            }
             if (facing.getAxisDirection() == AxisDirection.POSITIVE)
                 return this.XPOSCACHED_AABB;
             return this.XNEGCACHED_AABB;
         }
-        return this.XPOSCACHED_AABB.offset(0, 0, 1);
+        else if (this.getLength() % 2 == 0 || this.getWidth() % 2 == 0)
+        {
+            if (facing.getAxis().equals(Axis.Z))
+            {
+                if (this.getLength() % 2 == 0 && facing.getAxisDirection() == AxisDirection.NEGATIVE)
+                    return this.ZNEGCACHED_AABB.offset(1, 0, 0);
+                return this.ZPOSCACHED_AABB;
+            }
+            if (this.getLength() % 2 == 0)
+            {
+                if (facing.getAxisDirection() == AxisDirection.POSITIVE)
+                    return this.XPOSCACHED_AABB.offset(0, 0, 1);
+                return this.XNEGCACHED_AABB;
+            }
+            return this.XPOSCACHED_AABB.offset(0, 0, 1);
+        }
+        else
+        {
+            if (facing.getAxis().equals(Axis.Z))
+                return this.ZPOSCACHED_AABB;
+            return this.XPOSCACHED_AABB.offset(0, 0, 1);
+        }
     }
 
     @Override
     public Iterable<BlockPos> getAllInBox(final BlockPos pos, final EnumFacing facing)
     {
         Iterable<BlockPos> searchables = null;
-        if (facing.getAxis().equals(Axis.Z))
-        {
-            if (this.getLength() % 2 == 0 && facing.getAxisDirection() == AxisDirection.NEGATIVE)
-            {
-                searchables = BlockPos.getAllInBox(
-                        pos.subtract(new Vec3i(this.getOffsetX() + 1, this.getOffsetY(), this.getOffsetZ() + 1)),
-                        pos.add(this.getWidth() - 1 - this.getOffsetX() - 1, this.getHeight() - 1 - this.getOffsetY(),
-                                this.getLength() - 1 - this.getOffsetZ() - 1));
 
+        if (this.getLength() % 2 == 0 && this.getWidth() % 2 == 0)
+        {
+            if (facing.getAxis().equals(Axis.Z))
+            {
+                if (facing.getAxisDirection() == AxisDirection.NEGATIVE)
+                {
+                    searchables = BlockPos.getAllInBox(
+                            pos.subtract(new Vec3i(this.getOffsetX() + 1, this.getOffsetY(), this.getOffsetZ() + 1)),
+                            pos.add(this.getWidth() - 1 - this.getOffsetX() - 1,
+                                    this.getHeight() - 1 - this.getOffsetY(), this.getLength() - 1 - this.getOffsetZ()
+                                            - 1));
+
+                }
+                else
+                {
+                    searchables = BlockPos.getAllInBox(
+                            pos.subtract(new Vec3i(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ())),
+                            pos.add(this.getWidth() - 1 - this.getOffsetX(), this.getHeight() - 1 - this.getOffsetY(),
+                                    this.getLength() - 1 - this.getOffsetZ()));
+                }
             }
             else
-            {
-                searchables = BlockPos
-                        .getAllInBox(pos.subtract(new Vec3i(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ())),
-                                pos.add(this.getWidth() - 1 - this.getOffsetX(),
-                                        this.getHeight() - 1 - this.getOffsetY(),
-                                        this.getLength() - 1 - this.getOffsetZ()));
-            }
-        }
-        else
-        {
-            if (this.getWidth() % 2 == 0)
             {
                 if (facing.getAxisDirection() == AxisDirection.POSITIVE)
                 {
@@ -145,15 +168,72 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
                             pos.add(this.getLength() - 1 - this.getOffsetZ() - 1,
                                     this.getHeight() - 1 - this.getOffsetY(), this.getWidth() - 1 - this.getOffsetX()));
             }
+        }
+        else if (this.getLength() % 2 == 0 || this.getWidth() % 2 == 0)
+        {
+            if (facing.getAxis().equals(Axis.Z))
+            {
+                if (this.getLength() % 2 == 0 && facing.getAxisDirection() == AxisDirection.NEGATIVE)
+                {
+                    searchables = BlockPos.getAllInBox(
+                            pos.subtract(new Vec3i(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ() + 1)),
+                            pos.add(this.getWidth() - 1 - this.getOffsetX(), this.getHeight() - 1 - this.getOffsetY(),
+                                    this.getLength() - 1 - this.getOffsetZ() - 1));
+
+                }
+                else
+                {
+                    searchables = BlockPos.getAllInBox(
+                            pos.subtract(new Vec3i(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ())),
+                            pos.add(this.getWidth() - 1 - this.getOffsetX(), this.getHeight() - 1 - this.getOffsetY(),
+                                    this.getLength() - 1 - this.getOffsetZ()));
+                }
+            }
             else
             {
+                if (this.getLength() % 2 == 0)
+                {
+                    if (facing.getAxisDirection() == AxisDirection.POSITIVE)
+                    {
+                        searchables = BlockPos.getAllInBox(
+                                pos.subtract(new Vec3i(this.getOffsetZ(), this.getOffsetY(), this.getOffsetX())),
+                                pos.add(this.getLength() - 1 - this.getOffsetZ(),
+                                        this.getHeight() - 1 - this.getOffsetY(),
+                                        this.getWidth() - 1 - this.getOffsetX()));
+
+                    }
+                    else
+                        searchables = BlockPos.getAllInBox(
+                                pos.subtract(new Vec3i(this.getOffsetZ() + 1, this.getOffsetY(), this.getOffsetX())),
+                                pos.add(this.getLength() - 1 - this.getOffsetZ() - 1,
+                                        this.getHeight() - 1 - this.getOffsetY(), this.getWidth() - 1
+                                                - this.getOffsetX()));
+                }
+                else
+                {
+                    searchables = BlockPos.getAllInBox(
+                            pos.subtract(new Vec3i(this.getOffsetZ(), this.getOffsetY(), this.getOffsetX())),
+                            pos.add(this.getLength() - 1 - this.getOffsetZ(), this.getHeight() - 1 - this.getOffsetY(),
+                                    this.getWidth() - 1 - this.getOffsetX()));
+                }
+            }
+        }
+        else
+        {
+            if (facing.getAxis().equals(Axis.Z))
+                searchables = BlockPos
+                        .getAllInBox(pos.subtract(new Vec3i(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ())),
+                                pos.add(this.getWidth() - 1 - this.getOffsetX(),
+                                        this.getHeight() - 1 - this.getOffsetY(),
+                                        this.getLength() - 1 - this.getOffsetZ()));
+            else
                 searchables = BlockPos
                         .getAllInBox(pos.subtract(new Vec3i(this.getOffsetZ(), this.getOffsetY(), this.getOffsetX())),
                                 pos.add(this.getLength() - 1 - this.getOffsetZ(),
                                         this.getHeight() - 1 - this.getOffsetY(),
                                         this.getWidth() - 1 - this.getOffsetX()));
-            }
         }
+
         return searchables;
     }
 }
