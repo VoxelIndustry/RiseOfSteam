@@ -4,7 +4,6 @@ import java.util.List;
 
 import fr.ourten.teabeans.value.BaseProperty;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,14 +20,12 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.IFilteredMachine;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
-public class TileExtractor extends TileInventoryBase
-        implements IContainerProvider, IBeltInput, ITickable, IFilteredMachine
+public class TileExtractor extends TileInventoryBase implements IContainerProvider, ITickable, IFilteredMachine
 {
     private EnumFacing                  facing;
 
@@ -191,18 +188,6 @@ public class TileExtractor extends TileInventoryBase
     public EnumFacing getFacing()
     {
         return this.facing;
-    }
-
-    @Override
-    public ItemStack[] inputItems()
-    {
-        return new ItemStack[] { new ItemStack(Items.APPLE, 1) };
-    }
-
-    @Override
-    public boolean canInput(final IBelt into)
-    {
-        return into.getFacing() == this.getFacing();
     }
 
     @Override

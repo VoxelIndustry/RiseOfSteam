@@ -26,14 +26,13 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.IFilteredMachine;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
 public class TileSplitter extends TileInventoryBase
-        implements IContainerProvider, IBeltInput, ITickable, IFilteredMachine, ISidedInventory
+        implements IContainerProvider, ITickable, IFilteredMachine, ISidedInventory
 {
     private EnumFacing                      facing;
 
@@ -235,18 +234,6 @@ public class TileSplitter extends TileInventoryBase
     public EnumFacing getFacing()
     {
         return this.facing;
-    }
-
-    @Override
-    public ItemStack[] inputItems()
-    {
-        return null;
-    }
-
-    @Override
-    public boolean canInput(final IBelt into)
-    {
-        return false;
     }
 
     @Override

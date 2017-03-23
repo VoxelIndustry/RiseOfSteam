@@ -20,7 +20,6 @@ import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.BeltGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.grid.IBeltInput;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.ItemBelt;
@@ -37,8 +36,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     private float                                           beltSpeed;
 
     private EnumFacing                                      facing;
-
-    private final IBeltInput                                input;
 
     private final List<ItemBelt>                            items;
 
@@ -57,8 +54,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         this.connections = new EnumMap<>(EnumFacing.class);
         this.steamConnections = new EnumMap<>(EnumFacing.class);
         this.facing = EnumFacing.UP;
-
-        this.input = null;
 
         this.items = new ArrayList<>(3);
         this.slopeState = EBeltSlope.NORMAL;
@@ -189,7 +184,6 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         }
         else
             lines.add("Errored grid!");
-        lines.add("Connected: " + (this.input != null));
 
         for (final ItemBelt item : this.items)
             lines.add("Slot " + this.items.indexOf(item) + ": " + item.getStack());
