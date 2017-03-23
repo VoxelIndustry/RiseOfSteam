@@ -16,13 +16,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -40,21 +38,11 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     private final IMultiblockDescriptor   descriptor;
 
-    private final AxisAlignedBB           XCACHED_AABB;
-    private final AxisAlignedBB           ZCACHED_AABB;
-
     public BlockMultiblockBase(final String name, final Material material, final IMultiblockDescriptor descriptor)
     {
         super(name, material);
 
         this.descriptor = descriptor;
-
-        this.XCACHED_AABB = new AxisAlignedBB(-descriptor.getOffsetZ(), -descriptor.getOffsetY(),
-                -descriptor.getOffsetX(), descriptor.getLength() - descriptor.getOffsetZ(),
-                descriptor.getHeight() - descriptor.getOffsetY(), descriptor.getWidth() - descriptor.getOffsetX());
-        this.ZCACHED_AABB = new AxisAlignedBB(-descriptor.getOffsetX(), -descriptor.getOffsetY(),
-                -descriptor.getOffsetZ(), descriptor.getWidth() - descriptor.getOffsetX(),
-                descriptor.getHeight() - descriptor.getOffsetY(), descriptor.getLength() - descriptor.getOffsetZ());
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, false)
                 .withProperty(BlockMultiblockBase.FACING, EnumFacing.NORTH));
@@ -127,8 +115,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     public AxisAlignedBB getSelectedBoundingBox(final IBlockState state, final World w, final BlockPos pos)
     {
         if (!state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))
-            return BlockMultiblockBase.getFacing(state).getAxis() == Axis.Z ? this.ZCACHED_AABB.offset(pos)
-                    : this.XCACHED_AABB.offset(pos);
+            return this.descriptor.getBox(BlockMultiblockBase.getFacing(state)).offset(pos);
         if (w.getTileEntity(pos) instanceof ITileMultiblock)
         {
             final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
@@ -140,23 +127,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     public boolean canPlaceBlockAt(final World w, final BlockPos pos, final EnumFacing facing)
     {
-        Iterable<BlockPos> searchables;
-        if (facing.getAxis().equals(Axis.Z))
-        {
-            searchables = BlockPos.getAllInBox(
-                    pos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
-                            this.descriptor.getOffsetZ())),
-                    pos.add(this.descriptor.getWidth() - 1, this.descriptor.getHeight() - 1,
-                            this.descriptor.getLength() - 1));
-        }
-        else
-        {
-            searchables = BlockPos.getAllInBox(
-                    pos.subtract(new Vec3i(this.descriptor.getOffsetZ(), this.descriptor.getOffsetY(),
-                            this.descriptor.getOffsetX())),
-                    pos.add(this.descriptor.getLength() - 1, this.descriptor.getHeight() - 1,
-                            this.descriptor.getWidth() - 1));
-        }
+        final Iterable<BlockPos> searchables = this.descriptor.getAllInBox(pos, facing);
 
         for (final BlockPos current : searchables)
         {
@@ -170,25 +141,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
             final EntityLivingBase placer, final ItemStack stack)
     {
-        Iterable<BlockPos> searchables = null;
-        if (BlockMultiblockBase.getFacing(state).getAxis().equals(Axis.Z))
-        {
-            searchables = BlockPos.getAllInBox(
-                    pos.subtract(new Vec3i(this.descriptor.getOffsetX(), this.descriptor.getOffsetY(),
-                            this.descriptor.getOffsetZ())),
-                    pos.add(this.descriptor.getWidth() - 1 - this.descriptor.getOffsetX(),
-                            this.descriptor.getHeight() - 1 - this.descriptor.getOffsetY(),
-                            this.descriptor.getLength() - 1 - this.descriptor.getOffsetZ()));
-        }
-        else
-        {
-            searchables = BlockPos.getAllInBox(
-                    pos.subtract(new Vec3i(this.descriptor.getOffsetZ(), this.descriptor.getOffsetY(),
-                            this.descriptor.getOffsetX())),
-                    pos.add(this.descriptor.getLength() - 1 - this.descriptor.getOffsetZ(),
-                            this.descriptor.getHeight() - 1 - this.descriptor.getOffsetY(),
-                            this.descriptor.getWidth() - 1 - this.descriptor.getOffsetX()));
-        }
+        final Iterable<BlockPos> searchables = this.descriptor.getAllInBox(pos, BlockMultiblockBase.getFacing(state));
 
         for (final BlockPos current : searchables)
         {

@@ -12,12 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.qbar.common.init.QBarBlocks;
@@ -100,23 +98,8 @@ public class ItemBlueprint extends ItemBase
             structure.setMeta(newState.getBlock().getMetaFromState(newState));
         }
 
-        Iterable<BlockPos> searchables = null;
-        if (BlockMultiblockBase.getFacing(newState).getAxis().equals(Axis.Z))
-        {
-            searchables = BlockPos.getAllInBox(
-                    pos.subtract(new Vec3i(descriptor.getOffsetX(), descriptor.getOffsetY(), descriptor.getOffsetZ())),
-                    pos.add(descriptor.getWidth() - 1 - descriptor.getOffsetX(),
-                            descriptor.getHeight() - 1 - descriptor.getOffsetY(), descriptor.getLength() - 1
-                                    - descriptor.getOffsetZ()));
-        }
-        else
-        {
-            searchables = BlockPos.getAllInBox(
-                    pos.subtract(new Vec3i(descriptor.getOffsetZ(), descriptor.getOffsetY(), descriptor.getOffsetX())),
-                    pos.add(descriptor.getLength() - 1 - descriptor.getOffsetZ(),
-                            descriptor.getHeight() - 1 - descriptor.getOffsetY(), descriptor.getWidth() - 1
-                                    - descriptor.getOffsetX()));
-        }
+        final Iterable<BlockPos> searchables = descriptor.getAllInBox(pos, BlockMultiblockBase.getFacing(newState));
+
         for (final BlockPos current : searchables)
         {
             if (!current.equals(pos))
