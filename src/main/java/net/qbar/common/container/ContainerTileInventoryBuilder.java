@@ -17,6 +17,7 @@ import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.container.slot.SlotFuel;
 import net.qbar.common.container.slot.SlotOutput;
 import net.qbar.common.container.sync.DefaultSyncables;
+import net.qbar.common.recipe.QBarRecipeHandler;
 
 public class ContainerTileInventoryBuilder
 {
@@ -41,6 +42,14 @@ public class ContainerTileInventoryBuilder
     public ContainerTileInventoryBuilder outputSlot(final int index, final int x, final int y)
     {
         this.parent.slots.add(new SlotOutput(this.tile, index, x, y));
+        return this;
+    }
+
+    public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
+            final int x, final int y)
+    {
+        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
+                .setFilter(stack -> QBarRecipeHandler.inputMatch(recipeID, recipeSlot, stack)));
         return this;
     }
 

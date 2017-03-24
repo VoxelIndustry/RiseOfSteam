@@ -35,7 +35,7 @@ public class ItemUtils
     {
         if (stack1.isEmpty() || stack2.isEmpty())
             return true;
-        return stack2.getItem() == stack1.getItem()
+        return stack1.getCount() + stack2.getCount() <= 64 && stack2.getItem() == stack1.getItem()
                 && (!stack1.getHasSubtypes() || stack1.getMetadata() == stack2.getMetadata())
                 && ItemStack.areItemStackTagsEqual(stack1, stack2);
     }

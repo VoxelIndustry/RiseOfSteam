@@ -19,7 +19,7 @@ public class QBarJEIPlugin extends BlankModPlugin
         final IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         final IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
-        registry.addRecipes(QBarRecipeHandler.ROLLINGMILL);
+        registry.addRecipes(QBarRecipeHandler.RECIPES.values());
 
         registry.addRecipeCategories(new RollingMillRecipeCategory(guiHelper));
 

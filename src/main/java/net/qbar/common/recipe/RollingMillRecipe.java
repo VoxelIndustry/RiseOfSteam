@@ -25,4 +25,10 @@ public class RollingMillRecipe extends QBarRecipe
     {
         return this.output;
     }
+
+    @Override
+    public int getTime()
+    {
+        return 40;
+    }
 }
