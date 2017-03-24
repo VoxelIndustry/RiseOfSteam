@@ -1,5 +1,7 @@
 package net.qbar.common.compat.jei;
 
+import java.util.stream.Collectors;
+
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.gui.IDrawableAnimated;
@@ -37,7 +39,9 @@ public class RollingMillRecipeWrapper extends BlankRecipeWrapper
     @Override
     public void getIngredients(final IIngredients ingredients)
     {
-        ingredients.setInputs(ItemStack.class, this.recipe.getRecipeInputs());
-        ingredients.setOutputs(ItemStack.class, this.recipe.getRecipeOutputs());
+        ingredients.setInputs(ItemStack.class, this.recipe.getRecipeInputs(ItemStack.class).stream()
+                .map(ingredient -> ingredient.getRawIngredient()).collect(Collectors.toList()));
+        ingredients.setOutputs(ItemStack.class, this.recipe.getRecipeOutputs(ItemStack.class).stream()
+                .map(ingredient -> ingredient.getRawIngredient()).collect(Collectors.toList()));
     }
 }

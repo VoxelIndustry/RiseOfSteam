@@ -9,10 +9,8 @@ import com.google.common.collect.ArrayListMultimap;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.util.ItemUtils;
 
 public class QBarRecipeHandler
 {
@@ -31,15 +29,29 @@ public class QBarRecipeHandler
         });
     }
 
-    public static boolean inputMatch(final String recipeID, final int recipeSlot, final ItemStack stack)
+    public static boolean inputMatchWithoutCount(final String recipeID, final int recipeSlot, final ItemStack stack)
     {
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
         {
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
             {
-                if (recipe.getRecipeInputs().size() < recipeSlot)
+                if (recipe.getRecipeInputs(ItemStack.class).size() < recipeSlot)
                     return false;
-                return ItemUtils.deepEquals(stack, recipe.getRecipeInputs().get(recipeSlot));
+                return recipe.getRecipeInputs(ItemStack.class).get(recipeSlot).match(stack);
+            });
+        }
+        return false;
+    }
+
+    public static boolean inputMatchWithCount(final String recipeID, final int recipeSlot, final ItemStack stack)
+    {
+        if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
+        {
+            return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
+            {
+                if (recipe.getRecipeInputs(ItemStack.class).size() < recipeSlot)
+                    return false;
+                return recipe.getRecipeInputs(ItemStack.class).get(recipeSlot).matchWithQuantity(stack);
             });
         }
         return false;
@@ -54,10 +66,9 @@ public class QBarRecipeHandler
                 int i = 0;
                 for (final ItemStack stack : inputs)
                 {
-                    if (i >= recipe.getRecipeInputs().size())
+                    if (i >= recipe.getRecipeInputs(ItemStack.class).size())
                         break;
-                    if (stack.getCount() < recipe.getRecipeInputs().get(i).getCount()
-                            || !ItemUtils.deepEquals(stack, recipe.getRecipeInputs().get(i)))
+                    if (!recipe.getRecipeInputs(ItemStack.class).get(i).matchWithQuantity(stack))
                         return false;
                     i++;
                 }
@@ -69,26 +80,25 @@ public class QBarRecipeHandler
 
     private static void addBlockToPlateRecipe(final String metalName)
     {
-        final ItemStack metal = OreDictionary.getOres("block" + StringUtils.capitalize(metalName)).get(0).copy();
-        metal.setCount(1);
-
         final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 9);
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setString("metal", metalName);
         plate.setTagCompound(tag);
 
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID, new RollingMillRecipe(metal, plate));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID,
+                new RollingMillRecipe(new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metalName), 1),
+                        new ItemStackRecipeIngredient(plate)));
     }
 
     private static void addIngotToPlateRecipe(final String metalName)
     {
-        final ItemStack metal = OreDictionary.getOres("ingot" + StringUtils.capitalize(metalName)).get(0).copy();
-        metal.setCount(1);
         final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 1);
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setString("metal", metalName);
         plate.setTagCompound(tag);
 
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID, new RollingMillRecipe(metal, plate));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID,
+                new RollingMillRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
+                        new ItemStackRecipeIngredient(plate)));
     }
 }

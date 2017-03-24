@@ -14,6 +14,7 @@ import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import net.qbar.common.recipe.RecipeIngredient;
 import net.qbar.common.util.ItemUtils;
 
 public abstract class TileMachineBase extends TileInventoryBase
@@ -79,10 +80,10 @@ public abstract class TileMachineBase extends TileInventoryBase
 
                 this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
                 int i = 0;
-                for (final ItemStack stack : this.currentRecipe.getRecipeInputs())
+                for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeInputs(ItemStack.class))
                 {
-                    this.decrStackSize(this.inputs[i], stack.getCount());
-                    this.setInventorySlotContents(this.buffers[i], stack.copy());
+                    this.decrStackSize(this.inputs[i], stack.getRawIngredient().getCount());
+                    this.setInventorySlotContents(this.buffers[i], stack.getRawIngredient().copy());
                     i++;
                 }
             }
@@ -94,21 +95,21 @@ public abstract class TileMachineBase extends TileInventoryBase
             else
             {
                 int i = 0;
-                for (final ItemStack stack : this.currentRecipe.getRecipeOutputs())
+                for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeOutputs(ItemStack.class))
                 {
-                    if (!ItemUtils.canMergeStacks(stack, this.getStackInSlot(this.outputs[i])))
+                    if (!ItemUtils.canMergeStacks(stack.getRawIngredient(), this.getStackInSlot(this.outputs[i])))
                         return;
                     i++;
                 }
                 for (final int buffer : this.buffers)
                     this.setInventorySlotContents(buffer, ItemStack.EMPTY);
                 i = 0;
-                for (final ItemStack stack : this.currentRecipe.getRecipeOutputs())
+                for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeOutputs(ItemStack.class))
                 {
                     if (!this.getStackInSlot(this.outputs[i]).isEmpty())
-                        this.getStackInSlot(this.outputs[i]).grow(stack.getCount());
+                        this.getStackInSlot(this.outputs[i]).grow(stack.getRawIngredient().getCount());
                     else
-                        this.setInventorySlotContents(this.outputs[i], stack.copy());
+                        this.setInventorySlotContents(this.outputs[i], stack.getRawIngredient().copy());
                     i++;
                 }
                 this.currentRecipe = null;

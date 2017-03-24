@@ -49,7 +49,7 @@ public class ContainerTileInventoryBuilder
             final int x, final int y)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
-                .setFilter(stack -> QBarRecipeHandler.inputMatch(recipeID, recipeSlot, stack)));
+                .setFilter(stack -> QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
         return this;
     }
 
