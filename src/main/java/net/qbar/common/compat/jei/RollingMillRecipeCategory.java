@@ -45,7 +45,7 @@ public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRe
             final IIngredients ingredients)
     {
         final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        guiItemStacks.init(0, true, 0, 18);
+        guiItemStacks.init(0, true, 0, 19);
         guiItemStacks.init(1, false, 69, 18);
 
         guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));

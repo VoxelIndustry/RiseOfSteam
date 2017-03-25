@@ -54,7 +54,6 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
         return this.hasCapability(capability, BlockPos.ORIGIN, facing);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
@@ -100,6 +99,7 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
         return super.hasCapability(capability, facing);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {

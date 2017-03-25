@@ -15,6 +15,8 @@ import net.qbar.common.init.QBarItems;
 public class QBarRecipeHandler
 {
     public static final String                                ROLLINGMILL_UID = QBar.MODID + ".rollingmill";
+    public static final String                                FURNACE_UID     = QBar.MODID + ".furnace";
+    public static final String                                CRAFT_UID       = QBar.MODID + ".craft";
 
     public static final ArrayListMultimap<String, QBarRecipe> RECIPES         = ArrayListMultimap.create();
 
