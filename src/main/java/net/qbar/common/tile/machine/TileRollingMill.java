@@ -1,12 +1,18 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -15,9 +21,65 @@ import net.qbar.common.tile.TileCraftingMachineBase;
 
 public class TileRollingMill extends TileCraftingMachineBase
 {
+    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
+
     public TileRollingMill()
     {
         super(QBarMachines.ROLLING_MILL);
+    }
+
+    @Override
+    public void update()
+    {
+        if (this.isClient())
+            return;
+        super.update();
+
+        final EnumFacing orientation = this.getFacing();
+
+        BlockPos search = null;
+        switch (orientation)
+        {
+            case NORTH:
+                search = this.getPos().south();
+                break;
+            case SOUTH:
+                search = this.getPos().north();
+                break;
+            case WEST:
+                search = this.getPos().east();
+                break;
+            case EAST:
+                search = this.getPos().west();
+                break;
+            default:
+                search = this.getPos();
+                break;
+        }
+        if (!this.isOutputEmpty() && this.hasBelt(orientation, search))
+        {
+            if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), search))
+                this.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), search);
+        }
+    }
+
+    private void insert(final ItemStack stack, final BlockPos pos)
+    {
+        ((IBelt) this.world.getTileEntity(pos)).insert(stack, true);
+    }
+
+    private boolean canInsert(final ItemStack stack, final BlockPos pos)
+    {
+        final IBelt belt = (IBelt) this.world.getTileEntity(pos);
+
+        return belt.insert(stack, false);
+    }
+
+    private boolean hasBelt(final EnumFacing facing, final BlockPos pos)
+    {
+        final TileEntity tile = this.world.getTileEntity(pos);
+
+        return tile != null && tile instanceof IBelt;
     }
 
     @Override
@@ -36,7 +98,19 @@ public class TileRollingMill extends TileCraftingMachineBase
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
         final EnumFacing orientation = this.getFacing();
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            if (orientation == EnumFacing.SOUTH && from.getX() == 0 && from.getZ() == 1)
+                return true;
+            if (orientation == EnumFacing.EAST && from.getX() == 1 && from.getZ() == 0)
+                return true;
+            if (orientation == EnumFacing.NORTH && from.getX() == 0 && from.getZ() == -1)
+                return true;
+            if (orientation == EnumFacing.WEST && from.getX() == -1 && from.getZ() == 0)
+                return true;
+        }
+        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
             if (orientation == EnumFacing.EAST && from.getX() == 0 && from.getY() == 0 && from.getZ() == 1
                     && facing == EnumFacing.SOUTH)
@@ -59,7 +133,19 @@ public class TileRollingMill extends TileCraftingMachineBase
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
         final EnumFacing orientation = this.getFacing();
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            if (orientation == EnumFacing.SOUTH && from.getX() == 0 && from.getZ() == 1)
+                return (T) this.inventoryHandler;
+            if (orientation == EnumFacing.EAST && from.getX() == 1 && from.getZ() == 0)
+                return (T) this.inventoryHandler;
+            if (orientation == EnumFacing.NORTH && from.getX() == 0 && from.getZ() == -1)
+                return (T) this.inventoryHandler;
+            if (orientation == EnumFacing.WEST && from.getX() == -1 && from.getZ() == 0)
+                return (T) this.inventoryHandler;
+        }
+        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
             if (orientation == EnumFacing.EAST && from.getX() == 0 && from.getY() == 0 && from.getZ() == 1
                     && facing == EnumFacing.SOUTH)
