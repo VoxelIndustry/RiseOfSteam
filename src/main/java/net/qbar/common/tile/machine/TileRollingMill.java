@@ -169,12 +169,20 @@ public class TileRollingMill extends TileCraftingMachineBase
     }
 
     @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
+    }
+
+    @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("rollingmill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this).recipeSlot(0, QBarRecipeHandler.ROLLINGMILL_UID, 0, 47, 36)
                 .outputSlot(1, 116, 35).syncFloatValue(this::getCurrentProgress, this::setCurrentProgress)
-                .syncFloatValue(this::getMaxProgress, this::setMaxProgress).addInventory().create();
+                .syncFloatValue(this::getMaxProgress, this::setMaxProgress)
+                .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam).addInventory().create();
     }
 
     @Override
