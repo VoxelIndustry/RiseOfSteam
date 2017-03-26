@@ -31,6 +31,12 @@ public class TileRollingMill extends TileCraftingMachineBase
     }
 
     @Override
+    public boolean hasFastRenderer()
+    {
+        return true;
+    }
+
+    @Override
     public void update()
     {
         if (this.isClient())
@@ -63,6 +69,7 @@ public class TileRollingMill extends TileCraftingMachineBase
             if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), search))
             {
                 this.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), search);
+                this.sync();
             }
         }
     }

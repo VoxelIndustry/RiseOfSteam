@@ -11,6 +11,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.qbar.common.util.ItemUtils;
 
 public abstract class TileInventoryBase extends QBarTileBase implements IInventory
 {
@@ -28,8 +29,7 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     {
         super.writeToNBT(tag);
 
-        ItemStackHelper.saveAllItems(tag, this.stacks);
-
+        ItemUtils.saveAllItems(tag, this.stacks);
         return tag;
     }
 
@@ -38,7 +38,7 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     {
         super.readFromNBT(tag);
 
-        ItemStackHelper.loadAllItems(tag, this.stacks);
+        ItemUtils.loadAllItems(tag, this.stacks);
     }
 
     @Override

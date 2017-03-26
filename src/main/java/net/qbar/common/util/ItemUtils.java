@@ -2,6 +2,9 @@ package net.qbar.common.util;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemUtils
@@ -62,5 +65,36 @@ public class ItemUtils
     {
         return player.clearMatchingItems(stack.getItem(), stack.getItemDamage(), stack.getCount(),
                 stack.getTagCompound());
+    }
+
+    public static NBTTagCompound saveAllItems(final NBTTagCompound tag, final NonNullList<ItemStack> list)
+    {
+        final NBTTagList nbttaglist = new NBTTagList();
+
+        for (int i = 0; i < list.size(); ++i)
+        {
+            final ItemStack itemstack = list.get(i);
+
+            final NBTTagCompound nbttagcompound = new NBTTagCompound();
+            nbttagcompound.setByte("Slot", (byte) i);
+            itemstack.writeToNBT(nbttagcompound);
+            nbttaglist.appendTag(nbttagcompound);
+        }
+        tag.setTag("Items", nbttaglist);
+        return tag;
+    }
+
+    public static void loadAllItems(final NBTTagCompound tag, final NonNullList<ItemStack> list)
+    {
+        final NBTTagList nbttaglist = tag.getTagList("Items", 10);
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            final NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+            final int j = nbttagcompound.getByte("Slot") & 255;
+
+            if (j >= 0 && j < list.size())
+                list.set(j, new ItemStack(nbttagcompound));
+        }
     }
 }

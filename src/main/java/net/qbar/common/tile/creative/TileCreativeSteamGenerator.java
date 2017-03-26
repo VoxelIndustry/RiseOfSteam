@@ -4,15 +4,13 @@ import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.CreativeSteamTank;
 import net.qbar.common.steam.SteamTank;
-import net.qbar.common.tile.ITileInfoProvider;
 import net.qbar.common.tile.TileInventoryBase;
 
-public class TileCreativeSteamGenerator extends TileInventoryBase implements ITileInfoProvider, ITickable
+public class TileCreativeSteamGenerator extends TileInventoryBase
 {
     private final SteamTank steamTank;
 
@@ -21,13 +19,6 @@ public class TileCreativeSteamGenerator extends TileInventoryBase implements ITi
         super("TileCreativeSteamGenerator", 0);
 
         this.steamTank = new CreativeSteamTank();
-    }
-
-    @Override
-    public void update()
-    {
-        if (this.isServer())
-            this.sync();
     }
 
     @Override

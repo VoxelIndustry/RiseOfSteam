@@ -31,6 +31,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
     private final SteamTank                 steamTank;
 
+    private ItemStack                       cachedStack;
+
     public TileCraftingMachineBase(final CraftingMachineDescriptor descriptor)
     {
         super(descriptor.getName(), descriptor.getInventorySize());
@@ -38,6 +40,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.descriptor = descriptor;
 
         this.steamTank = new SteamTank(0, descriptor.getSteamCapacity(), descriptor.getMaxPressureCapacity());
+
+        this.cachedStack = ItemStack.EMPTY;
     }
 
     @Override
@@ -68,6 +72,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                         this.setInventorySlotContents(this.descriptor.getBuffers()[i], stack.getRawIngredient().copy());
                         i++;
                     }
+                    this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
+                    this.sync();
                 }
             }
         }
@@ -79,6 +85,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                 {
                     this.setCurrentProgress(this.getCurrentProgress() + this.getCurrentCraftingSpeed());
                     this.useSteam(this.descriptor.getSteamConsumption());
+                    this.sync();
                 }
             }
             else
@@ -104,6 +111,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                 }
                 this.currentRecipe = null;
                 this.setCurrentProgress(0);
+                this.sync();
             }
         }
     }
@@ -118,6 +126,11 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         return this.steamTank.getPressure() / this.descriptor.getWorkingPressure();
     }
 
+    public QBarRecipe getCurrentRecipe()
+    {
+        return this.currentRecipe;
+    }
+
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
@@ -127,6 +140,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         tag.setFloat("maxProgress", this.maxProgress);
 
         this.steamTank.writeToNBT(tag);
+
+        tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
         return tag;
     }
 
@@ -139,6 +154,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.maxProgress = tag.getFloat("maxProgress");
 
         this.steamTank.readFromNBT(tag);
+        this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
     }
 
     @Override
@@ -263,5 +279,10 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public SteamTank getSteamTank()
     {
         return this.steamTank;
+    }
+
+    public ItemStack getCachedStack()
+    {
+        return this.cachedStack;
     }
 }
