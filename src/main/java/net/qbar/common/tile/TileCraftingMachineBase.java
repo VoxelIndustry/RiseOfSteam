@@ -45,6 +45,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     {
         if (this.isClient())
             return;
+
         if (this.currentRecipe == null && this.isBufferEmpty() && !this.isInputEmpty())
         {
             if (this.steamTank.getSteam() >= this.descriptor.getSteamConsumption())

@@ -175,9 +175,7 @@ public class BuiltContainer extends Container
                     }
 
             slot.onSlotChange(stackInSlot, originalStack);
-            if (stackInSlot.getCount() <= 0)
-                slot.putStack(ItemStack.EMPTY);
-            else
+            if (!stackInSlot.isEmpty())
                 slot.onSlotChanged();
             if (stackInSlot.getCount() == originalStack.getCount())
                 return ItemStack.EMPTY;
@@ -195,11 +193,14 @@ public class BuiltContainer extends Container
             {
                 final Slot slot = this.inventorySlots.get(slotIndex);
                 final ItemStack stackInSlot = slot.getStack();
-                if (stackInSlot != ItemStack.EMPTY && ItemStack.areItemStacksEqual(stackInSlot, stackToShift)
-                        && slot.isItemValid(stackToShift))
+                if (!stackInSlot.isEmpty() && ItemStack.areItemStacksEqual(stackInSlot, stackToShift)
+                        && slot.isItemValid(stackToShift)
+                        && slot.getItemStackLimit(stackToShift) > stackInSlot.getCount())
                 {
-                    final int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
-                    final int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+                    final int resultingStackSize = Math.min(slot.getItemStackLimit(stackToShift),
+                            stackInSlot.getCount() + stackToShift.getCount());
+                    final int max = Math.min(stackToShift.getMaxStackSize(), slot.getItemStackLimit(stackToShift));
+
                     if (resultingStackSize <= max)
                     {
                         stackToShift.setCount(0);
@@ -223,12 +224,13 @@ public class BuiltContainer extends Container
             {
                 final Slot slot = this.inventorySlots.get(slotIndex);
                 ItemStack stackInSlot = slot.getStack();
-                if (stackInSlot == ItemStack.EMPTY && slot.isItemValid(stackToShift))
+                if (stackInSlot.isEmpty() && slot.isItemValid(stackToShift))
                 {
                     final int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+
                     stackInSlot = stackToShift.copy();
                     stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-                    stackToShift.setCount(-stackInSlot.getCount());
+                    stackToShift.shrink(stackInSlot.getCount());
                     slot.putStack(stackInSlot);
                     slot.onSlotChanged();
                     changed = true;

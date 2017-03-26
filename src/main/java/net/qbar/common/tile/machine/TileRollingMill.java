@@ -1,5 +1,7 @@
 package net.qbar.common.tile.machine;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -59,7 +61,9 @@ public class TileRollingMill extends TileCraftingMachineBase
         if (!this.isOutputEmpty() && this.hasBelt(orientation, search))
         {
             if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), search))
+            {
                 this.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), search);
+            }
         }
     }
 
@@ -179,8 +183,11 @@ public class TileRollingMill extends TileCraftingMachineBase
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("rollingmill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).recipeSlot(0, QBarRecipeHandler.ROLLINGMILL_UID, 0, 47, 36)
-                .outputSlot(1, 116, 35).syncFloatValue(this::getCurrentProgress, this::setCurrentProgress)
+                .addInventory().tile(this)
+                .recipeSlot(0, QBarRecipeHandler.ROLLINGMILL_UID, 0, 47, 36,
+                        slot -> this.isBufferEmpty() && this.isOutputEmpty())
+                .outputSlot(1, 116, 35).displaySlot(2, -1000, 0)
+                .syncFloatValue(this::getCurrentProgress, this::setCurrentProgress)
                 .syncFloatValue(this::getMaxProgress, this::setMaxProgress)
                 .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam).addInventory().create();
     }
@@ -195,5 +202,20 @@ public class TileRollingMill extends TileCraftingMachineBase
         player.openGui(QBar.instance, EGui.ROLLINGMILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
+    {
+        if (ArrayUtils.contains(this.getDescriptor().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
+                && this.isOutputEmpty())
+            return this.isItemValidForSlot(index, itemStackIn);
+        return false;
+    }
+
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 1;
     }
 }

@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.common.container.slot.FilteredSlot;
 import net.qbar.common.container.slot.ListenerSlot;
+import net.qbar.common.container.slot.SlotDisplay;
 import net.qbar.common.container.slot.SlotFuel;
 import net.qbar.common.container.slot.SlotOutput;
 import net.qbar.common.container.sync.DefaultSyncables;
@@ -53,6 +54,14 @@ public class ContainerTileInventoryBuilder
         return this;
     }
 
+    public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
+            final int x, final int y, final Predicate<Integer> predicate)
+    {
+        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(stack -> predicate.test(index)
+                && QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
+        return this;
+    }
+
     public ContainerTileInventoryBuilder filterSlot(final int index, final int x, final int y,
             final Predicate<ItemStack> filter)
     {
@@ -71,6 +80,12 @@ public class ContainerTileInventoryBuilder
     public ContainerTileInventoryBuilder fuelSlot(final int index, final int x, final int y)
     {
         this.parent.slots.add(new SlotFuel(this.tile, index, x, y));
+        return this;
+    }
+
+    public ContainerTileInventoryBuilder displaySlot(final int index, final int x, final int y)
+    {
+        this.parent.slots.add(new SlotDisplay(this.tile, index, x, y));
         return this;
     }
 
