@@ -7,15 +7,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.qbar.QBar;
+import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.DirectionalTank;
+import net.qbar.common.gui.EGui;
 import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.tile.QBarTileBase;
+import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
-public class TileTank extends QBarTileBase implements ITileMultiblockCore
+public class TileTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider
 {
     private BlockPos              inputPos;
 
@@ -23,6 +28,7 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
 
     public TileTank(final int capacity)
     {
+        super("fluidtank", 0);
         this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[] { EnumFacing.DOWN },
                 new EnumFacing[] { EnumFacing.UP });
     }
@@ -73,7 +79,7 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
         }
     }
 
-    public IFluidHandler getTank()
+    public FluidTank getTank()
     {
         return this.tank.getInternalFluidHandler();
     }
@@ -129,6 +135,25 @@ public class TileTank extends QBarTileBase implements ITileMultiblockCore
 
         if (FluidUtils.drainPlayerHand(this.getTank(), player) || FluidUtils.fillPlayerHand(this.getTank(), player))
             return true;
+        player.openGui(QBar.instance, EGui.FLUIDTANK.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+                this.pos.getZ());
         return false;
+    }
+
+    public FluidStack getFluid()
+    {
+        return this.tank.getInternalFluidHandler().getTankProperties()[0].getContents();
+    }
+
+    public void setFluid(final FluidStack fluid)
+    {
+        this.tank.setFluidStack(fluid);
+    }
+
+    @Override
+    public BuiltContainer createContainer(final EntityPlayer player)
+    {
+        return new ContainerBuilder("fluidtank", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this).syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
     }
 }

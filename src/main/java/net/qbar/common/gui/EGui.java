@@ -2,7 +2,7 @@ package net.qbar.common.gui;
 
 public enum EGui
 {
-    BOILER(true), EXTRACTOR(true), KEYPUNCH(true), SPLITTER(true), ROLLINGMILL(true);
+    BOILER(true), EXTRACTOR(true), KEYPUNCH(true), SPLITTER(true), ROLLINGMILL(true), FLUIDTANK(true);
 
     private final boolean containerBuilder;
 

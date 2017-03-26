@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.GuiBoiler;
 import net.qbar.client.gui.GuiExtractor;
+import net.qbar.client.gui.GuiFluidTank;
 import net.qbar.client.gui.GuiKeypunch;
 import net.qbar.client.gui.GuiRollingMill;
 import net.qbar.client.gui.GuiSplitter;
@@ -18,6 +19,7 @@ import net.qbar.common.tile.machine.TileExtractor;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.tile.machine.TileRollingMill;
 import net.qbar.common.tile.machine.TileSplitter;
+import net.qbar.common.tile.machine.TileTank;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -55,6 +57,8 @@ public class GuiHandler implements IGuiHandler
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiSplitter(player, (TileSplitter) tile));
             case ROLLINGMILL:
                 return new GuiRollingMill(player, (TileRollingMill) tile);
+            case FLUIDTANK:
+                return new GuiFluidTank(player, (TileTank) tile);
             default:
                 break;
         }
