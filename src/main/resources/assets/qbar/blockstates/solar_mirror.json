@@ -26,7 +26,7 @@
             "true": {}, "false": {}
         },
         "inventory": {
-            "transform": "forge:default-block"
+            "transform": "forge:default-block",
         	"model": "qbar:solar_mirror.obj"
         }
     }
