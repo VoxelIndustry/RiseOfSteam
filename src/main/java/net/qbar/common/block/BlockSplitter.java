@@ -7,6 +7,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -130,6 +132,20 @@ public class BlockSplitter extends BlockOrientableMachine
         super.onBlockPlacedBy(w, pos, state, placer, stack);
         if (!w.isRemote)
             ((TileSplitter) w.getTileEntity(pos)).setFacing(this.getFacing(state));
+    }
+
+    @Override
+    public void breakBlock(final World worldIn, final BlockPos pos, final IBlockState state)
+    {
+        final TileEntity tileentity = worldIn.getTileEntity(pos);
+
+        if (tileentity instanceof IInventory)
+        {
+            InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) tileentity);
+            worldIn.updateComparatorOutputLevel(pos, this);
+        }
+
+        super.breakBlock(worldIn, pos, state);
     }
 
     @Override
