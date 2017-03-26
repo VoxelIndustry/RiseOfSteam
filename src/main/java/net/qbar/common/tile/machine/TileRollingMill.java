@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -224,5 +225,11 @@ public class TileRollingMill extends TileCraftingMachineBase
     public int getInventoryStackLimit()
     {
         return 1;
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return ((BlockMultiblockBase) this.getBlockType()).getDescriptor().getBox(this.getFacing()).offset(this.pos);
     }
 }

@@ -23,7 +23,6 @@ public class RenderRollingMill extends FastTESR<TileRollingMill>
                 break;
             case SOUTH:
                 GlStateManager.rotate(-90, 0, 1, 0);
-                GlStateManager.translate(0, 0, 0);
                 break;
             case WEST:
                 GlStateManager.rotate(180, 0, 1, 0);
