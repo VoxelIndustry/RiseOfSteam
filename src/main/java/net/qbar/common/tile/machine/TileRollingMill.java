@@ -95,18 +95,6 @@ public class TileRollingMill extends TileCraftingMachineBase
     }
 
     @Override
-    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
-    {
-        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
-    {
-        return this.getCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
         final EnumFacing orientation = this.getFacing();
@@ -178,13 +166,6 @@ public class TileRollingMill extends TileCraftingMachineBase
     public EnumFacing getFacing()
     {
         return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
-    @Override
-    public void onLoad()
-    {
-        if (this.isClient())
-            this.forceSync();
     }
 
     @Override

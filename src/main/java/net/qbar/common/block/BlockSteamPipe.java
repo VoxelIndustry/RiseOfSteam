@@ -32,24 +32,25 @@ public class BlockSteamPipe extends BlockPipeBase
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos)
     {
-        TilePipeBase<?, ?> tile = (TilePipeBase<?, ?>) source.getTileEntity(pos);
-        AxisAlignedBB res = AABB_NONE;
-        if (tile != null)
+        final TileEntity tile = source.getTileEntity(pos);
+        AxisAlignedBB res = BlockSteamPipe.AABB_NONE;
+        if (tile != null && tile instanceof TilePipeBase)
         {
-            if (tile.isConnected(EnumFacing.EAST))
-                res = res.union(AABB_EAST);
-            if (tile.isConnected(EnumFacing.WEST))
-                res = res.union(AABB_WEST);
-            if (tile.isConnected(EnumFacing.NORTH))
-                res = res.union(AABB_NORTH);
-            if (tile.isConnected(EnumFacing.SOUTH))
-                res = res.union(AABB_SOUTH);
-            if (tile.isConnected(EnumFacing.UP))
-                res = res.union(AABB_UP);
-            if (tile.isConnected(EnumFacing.DOWN))
-                res = res.union(AABB_DOWN);
+            final TilePipeBase<?, ?> pipe = (TilePipeBase<?, ?>) tile;
+            if (pipe.isConnected(EnumFacing.EAST))
+                res = res.union(BlockSteamPipe.AABB_EAST);
+            if (pipe.isConnected(EnumFacing.WEST))
+                res = res.union(BlockSteamPipe.AABB_WEST);
+            if (pipe.isConnected(EnumFacing.NORTH))
+                res = res.union(BlockSteamPipe.AABB_NORTH);
+            if (pipe.isConnected(EnumFacing.SOUTH))
+                res = res.union(BlockSteamPipe.AABB_SOUTH);
+            if (pipe.isConnected(EnumFacing.UP))
+                res = res.union(BlockSteamPipe.AABB_UP);
+            if (pipe.isConnected(EnumFacing.DOWN))
+                res = res.union(BlockSteamPipe.AABB_DOWN);
         }
         return res;
     }

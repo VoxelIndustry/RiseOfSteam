@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.recipe.QBarRecipe;
@@ -284,5 +285,24 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public ItemStack getCachedStack()
     {
         return this.cachedStack;
+    }
+
+    @Override
+    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
+    {
+        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
+    }
+
+    @Override
+    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
+    {
+        return this.getCapability(capability, BlockPos.ORIGIN, facing);
+    }
+
+    @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
     }
 }

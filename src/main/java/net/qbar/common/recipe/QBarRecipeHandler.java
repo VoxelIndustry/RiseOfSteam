@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ArrayListMultimap;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.QBar;
 import net.qbar.common.init.QBarItems;
@@ -33,6 +34,8 @@ public class QBarRecipeHandler
 
     public static boolean inputMatchWithoutCount(final String recipeID, final int recipeSlot, final ItemStack stack)
     {
+        if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
+            return !FurnaceRecipes.instance().getSmeltingResult(stack).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
         {
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
@@ -47,6 +50,8 @@ public class QBarRecipeHandler
 
     public static boolean inputMatchWithCount(final String recipeID, final int recipeSlot, final ItemStack stack)
     {
+        if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
+            return !FurnaceRecipes.instance().getSmeltingResult(stack).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
         {
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
@@ -61,6 +66,14 @@ public class QBarRecipeHandler
 
     public static Optional<QBarRecipe> getRecipe(final String recipeID, final ItemStack... inputs)
     {
+        if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
+        {
+            final ItemStack result = FurnaceRecipes.instance().getSmeltingResult(inputs[0]);
+            if (!result.isEmpty())
+                return Optional.of(new FurnaceRecipeWrapper(inputs[0].copy(), result));
+            else
+                return Optional.empty();
+        }
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
         {
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().filter(recipe ->

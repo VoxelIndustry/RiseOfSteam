@@ -5,8 +5,10 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.ItemStack;
 import net.qbar.client.gui.GuiRollingMill;
+import net.qbar.client.gui.GuiSteamFurnace;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 
@@ -29,5 +31,6 @@ public class QBarJEIPlugin extends BlankModPlugin
         registry.addRecipeHandlers(new RollingMillRecipeHandler(jeiHelpers));
 
         registry.addRecipeClickArea(GuiRollingMill.class, 80, 35, 26, 20, QBarRecipeHandler.ROLLINGMILL_UID);
+        registry.addRecipeClickArea(GuiSteamFurnace.class, 80, 35, 26, 20, VanillaRecipeCategoryUid.SMELTING);
     }
 }

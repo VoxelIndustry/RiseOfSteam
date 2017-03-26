@@ -13,12 +13,14 @@ import net.qbar.client.gui.GuiFluidTank;
 import net.qbar.client.gui.GuiKeypunch;
 import net.qbar.client.gui.GuiRollingMill;
 import net.qbar.client.gui.GuiSplitter;
+import net.qbar.client.gui.GuiSteamFurnace;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.tile.machine.TileBoiler;
 import net.qbar.common.tile.machine.TileExtractor;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.tile.machine.TileRollingMill;
 import net.qbar.common.tile.machine.TileSplitter;
+import net.qbar.common.tile.machine.TileSteamFurnace;
 import net.qbar.common.tile.machine.TileTank;
 
 public class GuiHandler implements IGuiHandler
@@ -59,6 +61,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiRollingMill(player, (TileRollingMill) tile);
             case FLUIDTANK:
                 return new GuiFluidTank(player, (TileTank) tile);
+            case STEAMFURNACE:
+                return new GuiSteamFurnace(player, (TileSteamFurnace) tile);
             default:
                 break;
         }
