@@ -66,7 +66,6 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     {
         final TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2).down());
 
-        System.out.println(this.pos.offset(facing).down());
         return tile != null && tile instanceof IBelt;
     }
 

@@ -12,14 +12,16 @@
         },
         "facing": {
             "north": {
-                "y": 270
-            },
-            "south": {
                 "y": 90
             },
-            "east": {},
-            "west": {
+            "south": {
+                "y": 270
+            },
+            "east": {
                 "y": 180
+            },
+            "west": {
+                "y": 0
             }
         },
         "multiblockgag": {
