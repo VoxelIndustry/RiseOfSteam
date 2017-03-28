@@ -19,20 +19,7 @@ import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
-import net.qbar.common.tile.machine.TileAssembler;
-import net.qbar.common.tile.machine.TileBelt;
-import net.qbar.common.tile.machine.TileBoiler;
-import net.qbar.common.tile.machine.TileExtractor;
-import net.qbar.common.tile.machine.TileFluidPump;
-import net.qbar.common.tile.machine.TileKeypunch;
-import net.qbar.common.tile.machine.TileLiquidBoiler;
-import net.qbar.common.tile.machine.TileOffshorePump;
-import net.qbar.common.tile.machine.TileRollingMill;
-import net.qbar.common.tile.machine.TileSolarBoiler;
-import net.qbar.common.tile.machine.TileSolarMirror;
-import net.qbar.common.tile.machine.TileSplitter;
-import net.qbar.common.tile.machine.TileSteamFurnace;
-import net.qbar.common.tile.machine.TileTank;
+import net.qbar.common.tile.machine.*;
 
 @ObjectHolder(QBar.MODID)
 public class QBarBlocks
@@ -41,7 +28,7 @@ public class QBarBlocks
     public static final BlockMachineBase PUNCHING_MACHINE   = null;
     @ObjectHolder("fluidtank")
     public static final BlockMachineBase FLUID_TANK         = null;
-    @ObjectHolder("boiler")
+    @ObjectHolder("solid_boiler")
     public static final BlockMachineBase SOLID_BOILER       = null;
     @ObjectHolder("fluidpipe")
     public static final BlockMachineBase FLUID_PIPE         = null;

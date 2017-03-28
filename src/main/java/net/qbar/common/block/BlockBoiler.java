@@ -16,7 +16,7 @@ public class BlockBoiler extends BlockMultiblockBase
 {
     public BlockBoiler()
     {
-        super("boiler", Material.IRON, Multiblocks.SOLID_BOILER);
+        super("solid_boiler", Material.IRON, Multiblocks.SOLID_BOILER);
     }
 
     @Override
