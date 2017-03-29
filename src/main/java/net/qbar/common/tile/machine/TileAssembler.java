@@ -158,10 +158,11 @@ public class TileAssembler extends TileInventoryBase
         return new ContainerBuilder("assembler", player).player(player.inventory).inventory(8, 103).hotbar(8, 161)
                 .addInventory().tile(this)
                 .filterSlot(0, 26, 17, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
-                .slot(1, 8, 61).slot(2, 26, 61).slot(3, 44, 61).slot(4, 62, 61).slot(5, 80, 61).slot(6, 8, 79).slot(7, 26, 79).slot(8, 44, 79).slot(9, 62, 79)
-                .outputSlot(10, 144, 19).outputSlot(11, 98, 61).outputSlot(12, 116, 61).outputSlot(13, 134, 61)
-                .outputSlot(14, 152, 61).outputSlot(15, 80, 79).outputSlot(16, 98, 79).outputSlot(17, 116, 79)
-                .outputSlot(18, 134, 79).outputSlot(19, 155, 79).addInventory().create();
+                .slot(1, 8, 61).slot(2, 26, 61).slot(3, 44, 61).slot(4, 62, 61).slot(5, 80, 61).slot(6, 8, 79)
+                .slot(7, 26, 79).slot(8, 44, 79).slot(9, 62, 79).outputSlot(10, 144, 19).outputSlot(11, 98, 61)
+                .outputSlot(12, 116, 61).outputSlot(13, 134, 61).outputSlot(14, 152, 61).outputSlot(15, 80, 79)
+                .outputSlot(16, 98, 79).outputSlot(17, 116, 79).outputSlot(18, 134, 79).outputSlot(19, 155, 79)
+                .addInventory().create();
     }
 
     @Override
