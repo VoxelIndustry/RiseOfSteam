@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -21,12 +19,15 @@ import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
+
+import java.util.List;
 
 public class TileBoiler extends TileInventoryBase implements ITickable, IContainerProvider, ITileMultiblockCore
 {
@@ -200,22 +201,13 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return this.fluidTank.canInteract(facing);
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing == EnumFacing.UP)
-            return true;
-        return super.hasCapability(capability, facing);
+        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return (T) this.fluidTank.getFluidHandler(facing);
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
-            return (T) this.steamTank;
-        return super.getCapability(capability, facing);
+        return this.getCapability(capability, BlockPos.ORIGIN, facing);
     }
 
     @Override
@@ -326,13 +318,82 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
+        EnumFacing orientation = this.getFacing();
+
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        {
+            if (from.getX() == -1 && from.getY() == 0 && from.getZ() == 1 && orientation == EnumFacing.WEST
+                    && facing == EnumFacing.SOUTH)
+                return true;
+            if (from.getX() == -1 && from.getY() == 0 && from.getZ() == -1 && orientation == EnumFacing.NORTH
+                    && facing == EnumFacing.WEST)
+                return true;
+            if (from.getX() == 1 && from.getY() == 0 && from.getZ() == -1 && orientation == EnumFacing.EAST
+                    && facing == EnumFacing.NORTH)
+                return true;
+            if (from.getX() == 1 && from.getY() == 0 && from.getZ() == 1 && orientation == EnumFacing.SOUTH
+                    && facing == EnumFacing.EAST)
+                return true;
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            if (from.getX() == 0 && from.getY() == 0 && from.getZ() == 1 && orientation == EnumFacing.WEST
+                    && facing == EnumFacing.SOUTH)
+                return true;
+            if (from.getX() == -1 && from.getY() == 0 && from.getZ() == 0 && orientation == EnumFacing.NORTH
+                    && facing == EnumFacing.WEST)
+                return true;
+            if (from.getX() == 0 && from.getY() == 0 && from.getZ() == -1 && orientation == EnumFacing.EAST
+                    && facing == EnumFacing.NORTH)
+                return true;
+            if (from.getX() == 1 && from.getY() == 0 && from.getZ() == 0 && orientation == EnumFacing.SOUTH
+                    && facing == EnumFacing.EAST)
+                return true;
+        }
         return false;
     }
 
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
+        EnumFacing orientation = this.getFacing();
+
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        {
+            if (from.getX() == -1 && from.getY() == 0 && from.getZ() == 1 && orientation == EnumFacing.WEST
+                    && facing == EnumFacing.SOUTH)
+                return (T) this.getSteamTank();
+            if (from.getX() == -1 && from.getY() == 0 && from.getZ() == -1 && orientation == EnumFacing.NORTH
+                    && facing == EnumFacing.WEST)
+                return (T) this.getSteamTank();
+            if (from.getX() == 1 && from.getY() == 0 && from.getZ() == -1 && orientation == EnumFacing.EAST
+                    && facing == EnumFacing.NORTH)
+                return (T) this.getSteamTank();
+            if (from.getX() == 1 && from.getY() == 0 && from.getZ() == 1 && orientation == EnumFacing.SOUTH
+                    && facing == EnumFacing.EAST)
+                return (T) this.getSteamTank();
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            if (from.getX() == 0 && from.getY() == 0 && from.getZ() == 1 && orientation == EnumFacing.WEST
+                    && facing == EnumFacing.SOUTH)
+                return (T) getFluidTank().getInternalFluidHandler();
+            if (from.getX() == -1 && from.getY() == 0 && from.getZ() == 0 && orientation == EnumFacing.NORTH
+                    && facing == EnumFacing.WEST)
+                return (T) getFluidTank().getInternalFluidHandler();
+            if (from.getX() == 0 && from.getY() == 0 && from.getZ() == -1 && orientation == EnumFacing.EAST
+                    && facing == EnumFacing.NORTH)
+                return (T) getFluidTank().getInternalFluidHandler();
+            if (from.getX() == 1 && from.getY() == 0 && from.getZ() == 0 && orientation == EnumFacing.SOUTH
+                    && facing == EnumFacing.EAST)
+                return (T) getFluidTank().getInternalFluidHandler();
+        }
         return null;
+    }
+
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
     @Override
