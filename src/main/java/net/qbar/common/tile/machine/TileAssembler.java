@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -13,6 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.qbar.QBar;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
@@ -20,6 +19,7 @@ import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.steam.CapabilitySteamHandler;
@@ -27,6 +27,9 @@ import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.List;
 
 public class TileAssembler extends TileInventoryBase
         implements IContainerProvider, ITickable, ITileMultiblockCore, ISidedInventory
@@ -41,9 +44,10 @@ public class TileAssembler extends TileInventoryBase
     // 0 : PunchedCard
     // 1 - 9 : Crafting Ingredients
     // 10 : Result
+    // 11 - 19 : Remaining Ingredients
     public TileAssembler()
     {
-        super("InventoryAssembler", 11);
+        super("assembler", 20);
 
         this.steamTank = new SteamTank(0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
         this.facing = EnumFacing.NORTH;
@@ -130,7 +134,6 @@ public class TileAssembler extends TileInventoryBase
         return super.hasCapability(capability, facing);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
@@ -152,12 +155,25 @@ public class TileAssembler extends TileInventoryBase
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("assembler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+        return new ContainerBuilder("assembler", player).player(player.inventory).inventory(8, 103).hotbar(8, 161)
                 .addInventory().tile(this)
-                .filterSlot(0, 26, 33, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
-                .outputSlot(1, 44, 33).outputSlot(2, 62, 33).outputSlot(3, 80, 33).outputSlot(4, 44, 51)
-                .outputSlot(5, 62, 51).outputSlot(6, 80, 51).outputSlot(7, 44, 69).outputSlot(8, 62, 69)
-                .outputSlot(9, 80, 69).outputSlot(10, 105, 51).addInventory().create();
+                .filterSlot(0, 26, 17, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .slot(1, 8, 61).slot(2, 26, 61).slot(3, 44, 61).slot(4, 62, 61).slot(5, 80, 61).slot(6, 8, 79).slot(7, 26, 79).slot(8, 44, 79).slot(9, 62, 79)
+                .outputSlot(10, 144, 19).outputSlot(11, 98, 61).outputSlot(12, 116, 61).outputSlot(13, 134, 61)
+                .outputSlot(14, 152, 61).outputSlot(15, 80, 79).outputSlot(16, 98, 79).outputSlot(17, 116, 79)
+                .outputSlot(18, 134, 79).outputSlot(19, 155, 79).addInventory().create();
+    }
+
+    @Override
+    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
+            final float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+
+        player.openGui(QBar.instance, EGui.ASSEMBLER.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+                this.pos.getZ());
+        return true;
     }
 
     @Override
@@ -184,7 +200,8 @@ public class TileAssembler extends TileInventoryBase
         return null;
     }
 
-    private final int[] inputSlots = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    private final int[] inputSlots   = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    private final int[] outputsSlots = new int[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
     @Override
     public int[] getSlotsForFace(final EnumFacing side)
@@ -195,7 +212,7 @@ public class TileAssembler extends TileInventoryBase
     @Override
     public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
     {
-        if (index >= 1 && index <= 9)
+        if (ArrayUtils.contains(this.inputSlots, index))
             return this.isItemValidForSlot(index, itemStackIn);
         return false;
     }
@@ -203,6 +220,8 @@ public class TileAssembler extends TileInventoryBase
     @Override
     public boolean canExtractItem(final int index, final ItemStack stack, final EnumFacing direction)
     {
+        if (ArrayUtils.contains(this.outputsSlots, index))
+            return true;
         return false;
     }
 }

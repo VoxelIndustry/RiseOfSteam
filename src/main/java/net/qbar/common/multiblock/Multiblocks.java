@@ -19,7 +19,7 @@ public class Multiblocks
     {
         SMALL_FLUID_TANK = new MultiblockDescriptorBase("SMALL_FLUID_TANK", 1, 4, 1, 0, 0, 0);
         KEYPUNCH = new MultiblockDescriptorBase("KEYPUNCH", 2, 1, 1, 0, 0, 0);
-        ASSEMBLER = new MultiblockDescriptorBase("ASSEMBLER", 2, 2, 1, 0, 0, 0);
+        ASSEMBLER = new MultiblockDescriptorBase("ASSEMBLER", 1, 2, 2, 0, 0, 0);
         SOLID_BOILER = new MultiblockDescriptorBase("SOLID_BOILER", 2, 3, 2, 0, 0, 0);
 
         MEDIUM_FLUID_TANK = new MultiblockDescriptorBase("MEDIUM_FLUID_TANK", 2, 3, 2, 0, 0, 0);
