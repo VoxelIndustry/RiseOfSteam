@@ -183,7 +183,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                     }
                 }
             });
-            this.craftPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
+            this.craftPane.addChild(view, 0.195f + 0.104f * (i % 3), 0.2f + 0.3f * (i / 3));
         }
 
         final InventoryCrafting fakeInv = new InventoryCrafting(this.getContainer(), 3, 3);

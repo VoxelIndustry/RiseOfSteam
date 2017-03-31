@@ -1,18 +1,19 @@
 package net.qbar.common.card;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.List;
+
 public class CraftCard implements IPunchedCard
 {
-    private final int  ID;
-    public ItemStack[] recipe = new ItemStack[9];
-    public ItemStack   result = ItemStack.EMPTY;
+    private final int   ID;
+    public ItemStack[]  recipe = new ItemStack[9];
+    private ItemStack[] cachedCombine;
+    public ItemStack    result = ItemStack.EMPTY;
 
     public CraftCard(final int ID)
     {

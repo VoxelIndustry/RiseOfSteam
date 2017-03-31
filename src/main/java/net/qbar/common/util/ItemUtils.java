@@ -38,9 +38,33 @@ public class ItemUtils
     {
         if (stack1.isEmpty() || stack2.isEmpty())
             return true;
-        return stack1.getCount() + stack2.getCount() <= 64 && stack2.getItem() == stack1.getItem()
-                && (!stack1.getHasSubtypes() || stack1.getMetadata() == stack2.getMetadata())
-                && ItemStack.areItemStackTagsEqual(stack1, stack2);
+
+        return stack1.getCount() + stack2.getCount() <= stack1.getMaxStackSize()
+                && (ItemUtils.deepEquals(stack1, stack2) || OreDictionary.itemMatches(stack1, stack2, true));
+    }
+
+    public static int mergeStacks(ItemStack dest, ItemStack from, boolean doMerge)
+    {
+        if (dest.isEmpty() || from.isEmpty())
+        {
+            if (doMerge)
+            {
+                dest.grow(from.getCount());
+                from.setCount(0);
+            }
+            return 0;
+        }
+        if ((ItemUtils.deepEquals(dest, from) || OreDictionary.itemMatches(dest, from, true)))
+        {
+            int merged = Math.min(dest.getMaxStackSize() - dest.getCount(), from.getCount());
+            if (doMerge)
+            {
+                dest.grow(merged);
+                from.shrink(merged);
+            }
+            return merged;
+        }
+        return from.getCount();
     }
 
     public static boolean hasPlayerEnough(final InventoryPlayer player, final ItemStack stack, final boolean deepEquals)

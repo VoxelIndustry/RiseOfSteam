@@ -1,11 +1,11 @@
 package net.qbar.common.container.sync;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class DefaultSyncables
 {
@@ -109,7 +109,8 @@ public class DefaultSyncables
         @Override
         public NBTTagCompound toNBT(final NBTTagCompound tag)
         {
-            this.stored.writeToNBT(tag);
+            if (this.stored != null)
+                this.stored.writeToNBT(tag);
             return tag;
         }
 
