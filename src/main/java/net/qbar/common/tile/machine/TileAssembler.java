@@ -7,6 +7,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
@@ -25,8 +26,10 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
@@ -42,6 +45,7 @@ public class TileAssembler extends TileInventoryBase
         implements IContainerProvider, ITickable, ITileMultiblockCore, ISidedInventory
 {
     private final CraftingMachineDescriptor descriptor = QBarMachines.ASSEMBLER;
+    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
     private final BaseProperty<Float>       currentProgress;
     private float                           maxProgress;
 
@@ -49,8 +53,6 @@ public class TileAssembler extends TileInventoryBase
 
     private CraftCard                       craft;
     private ItemStack                       cached     = ItemStack.EMPTY;
-
-    private EnumFacing                      facing;
 
     private ItemStack                       resultTemp;
     private NonNullList<ItemStack>          remainingsTemp;
@@ -66,7 +68,6 @@ public class TileAssembler extends TileInventoryBase
         super("assembler", 39);
 
         this.steamTank = new SteamTank(0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
-        this.facing = EnumFacing.NORTH;
 
         this.resultTemp = ItemStack.EMPTY;
         this.currentProgress = new BaseProperty<>(0f, "currentProgressProperty");
@@ -155,6 +156,43 @@ public class TileAssembler extends TileInventoryBase
                 this.sync();
             }
         }
+
+        final EnumFacing orientation = this.getFacing().getOpposite();
+
+        if (!this.isOutputEmpty() && this.hasBelt(orientation))
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (!this.getStackInSlot(i + 11).isEmpty())
+                {
+                    if (this.canInsert(this.getStackInSlot(i + 11), orientation))
+                    {
+                        this.insert(this.decrStackSize(i+11,1), orientation);
+                        this.sync();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void insert(final ItemStack stack, final EnumFacing facing)
+    {
+        ((IBelt) this.world.getTileEntity(this.pos.offset(facing))).insert(stack, true);
+    }
+
+    private boolean canInsert(final ItemStack stack, final EnumFacing facing)
+    {
+        final IBelt belt = (IBelt) this.world.getTileEntity(this.pos.offset(facing));
+
+        return belt.insert(stack, false);
+    }
+
+    private boolean hasBelt(final EnumFacing facing)
+    {
+        final TileEntity tile = this.world.getTileEntity(this.pos.offset(facing));
+
+        return tile != null && tile instanceof IBelt;
     }
 
     private boolean canOutput(ItemStack result)
@@ -189,8 +227,6 @@ public class TileAssembler extends TileInventoryBase
         this.steamTank.writeToNBT(subTag);
         tag.setTag("steamTank", subTag);
 
-        tag.setInteger("facing", this.facing.ordinal());
-
         tag.setFloat("currentProgress", this.currentProgress.getValue());
         tag.setFloat("maxProgress", this.maxProgress);
 
@@ -204,7 +240,6 @@ public class TileAssembler extends TileInventoryBase
 
         if (tag.hasKey("steamTank"))
             this.steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
-        this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
 
         this.currentProgress.setValue(tag.getFloat("currentProgress"));
         this.maxProgress = tag.getFloat("maxProgress");
@@ -212,34 +247,7 @@ public class TileAssembler extends TileInventoryBase
 
     public EnumFacing getFacing()
     {
-        return this.facing;
-    }
-
-    public void setFacing(final EnumFacing facing)
-    {
-        this.facing = facing;
-    }
-
-    IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-
-    @Override
-    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
-    {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
-            return true;
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
-            return true;
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
-    {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
-            return (T) this.steamTank;
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
-            return (T) this.inventoryHandler;
-        return super.getCapability(capability, facing);
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
     @Override
@@ -292,15 +300,35 @@ public class TileAssembler extends TileInventoryBase
     }
 
     @Override
+    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
+    {
+        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
+    }
+
+    @Override
+    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
+    {
+        return this.getCapability(capability, BlockPos.ORIGIN, facing);
+    }
+
+    @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        return false;
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 0)
+            return true;
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
+            return true;
+        return super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        return null;
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 0)
+            return (T) this.steamTank;
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
+            return (T) this.inventoryHandler;
+        return super.getCapability(capability, facing);
     }
 
     private final int[] inputSlots   = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -373,5 +401,15 @@ public class TileAssembler extends TileInventoryBase
     public float getCraftingSpeed()
     {
         return this.descriptor.getCraftingSpeed();
+    }
+
+    public boolean isOutputEmpty()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (!this.getStackInSlot(i + 10).isEmpty())
+                return false;
+        }
+        return true;
     }
 }
