@@ -1,4 +1,4 @@
-package net.qbar.common.recipe;
+package net.qbar.common.recipe.ingredient;
 
 public abstract class RecipeIngredient<T>
 {

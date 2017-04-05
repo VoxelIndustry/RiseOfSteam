@@ -2,6 +2,7 @@ package net.qbar.common.recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
 
 public class FurnaceRecipeWrapper extends QBarRecipe
 {

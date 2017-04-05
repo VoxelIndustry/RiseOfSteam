@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -19,6 +17,8 @@ import net.qbar.common.gui.EGui;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
+
+import java.util.List;
 
 public class TileTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider
 {
@@ -128,7 +128,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

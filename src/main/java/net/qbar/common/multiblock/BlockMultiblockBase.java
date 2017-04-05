@@ -1,7 +1,5 @@
 package net.qbar.common.multiblock;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
@@ -14,11 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -30,6 +24,8 @@ import net.minecraftforge.common.property.Properties;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.block.BlockMachineBase;
+
+import javax.annotation.Nullable;
 
 public abstract class BlockMultiblockBase extends BlockMachineBase implements IWrenchable
 {
@@ -182,12 +178,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
 
         if (tile != null)
-        {
-            if (tile.isCore())
-                return ((ITileMultiblockCore) tile).onRightClick(player, facing, hitX, hitY, hitZ);
-            else if (tile.isCorePresent())
-                return tile.getCore().onRightClick(player, facing, hitX, hitY, hitZ);
-        }
+            return tile.getCore().onRightClick(player, facing, hitX, hitY, hitZ, tile.getCoreOffset());
         return false;
     }
 

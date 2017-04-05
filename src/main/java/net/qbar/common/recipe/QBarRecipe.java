@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.qbar.common.recipe.ingredient.RecipeIngredient;
 
 public abstract class QBarRecipe
 {

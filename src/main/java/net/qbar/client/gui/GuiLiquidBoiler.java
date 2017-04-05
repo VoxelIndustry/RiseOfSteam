@@ -6,19 +6,21 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
-import net.qbar.common.tile.machine.TileBoiler;
+import net.qbar.common.tile.machine.TileLiquidBoiler;
 
 import java.util.Arrays;
 
-public class GuiBoiler extends GuiMachineBase<TileBoiler>
+public class GuiLiquidBoiler extends GuiMachineBase<TileLiquidBoiler>
 {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(QBar.MODID, "textures/gui/boiler.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(QBar.MODID,
+            "textures/gui/liquidboiler.png");
 
-    public GuiBoiler(final EntityPlayer player, final TileBoiler boiler)
+    public GuiLiquidBoiler(final EntityPlayer player, final TileLiquidBoiler boiler)
     {
         super(player, boiler);
 
-        this.addFluidTank(boiler.getFluidTank().getInternalFluidHandler(), 128, 7, 18, 73);
+        this.addFluidTank(boiler.getWaterTank(), 128, 7, 18, 73);
+        this.addFluidTank(boiler.getFuelTank(), 79, 7, 18, 73);
         this.addSteamTank(boiler.getSteamTank(), 151, 7, 18, 73);
     }
 
@@ -44,14 +46,11 @@ public class GuiBoiler extends GuiMachineBase<TileBoiler>
     @Override
     protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY)
     {
-        this.mc.renderEngine.bindTexture(GuiBoiler.BACKGROUND);
+        this.mc.renderEngine.bindTexture(BACKGROUND);
 
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-
-        final int burnProgress = this.getBurnLeftScaled(13);
-        this.drawTexturedModalRect(x + 81, y + 38 - burnProgress, 176, 12 - burnProgress, 14, burnProgress + 1);
 
         final int heatProgress = this.getHeatScaled(71);
         this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 85 - heatProgress, 12, heatProgress);
@@ -67,15 +66,5 @@ public class GuiBoiler extends GuiMachineBase<TileBoiler>
             return -1;
 
         return Math.min(this.getMachine().getHeat() * pixels / i, pixels);
-    }
-
-    private int getBurnLeftScaled(final int pixels)
-    {
-        final int i = this.getMachine().getMaxBurnTime();
-
-        if (i == 0)
-            return -1;
-
-        return this.getMachine().getCurrentBurnTime() * pixels / i;
     }
 }

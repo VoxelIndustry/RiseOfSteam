@@ -1,4 +1,4 @@
-package net.qbar.common.recipe;
+package net.qbar.common.recipe.ingredient;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

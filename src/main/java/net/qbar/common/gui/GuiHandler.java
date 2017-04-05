@@ -53,6 +53,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiSteamFurnace(player, (TileSteamFurnace) tile);
             case ASSEMBLER:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiAssembler(player, (TileAssembler) tile));
+            case LIQUIDBOILER:
+                return new GuiLiquidBoiler(player, (TileLiquidBoiler) tile);
             default:
                 break;
         }

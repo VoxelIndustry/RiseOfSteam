@@ -1,27 +1,29 @@
 package net.qbar.common.recipe;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ArrayListMultimap;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.qbar.QBar;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class QBarRecipeHandler
 {
-    public static final String                                ROLLINGMILL_UID = QBar.MODID + ".rollingmill";
-    public static final String                                FURNACE_UID     = QBar.MODID + ".furnace";
-    public static final String                                CRAFT_UID       = QBar.MODID + ".craft";
+    public static final String                                ROLLINGMILL_UID  = QBar.MODID + ".rollingmill";
+    public static final String                                FURNACE_UID      = QBar.MODID + ".furnace";
+    public static final String                                CRAFT_UID        = QBar.MODID + ".craft";
+    public static final String                                LIQUIDBOILER_UID = QBar.MODID + ".liquidboiler";
 
-    public static final ArrayListMultimap<String, QBarRecipe> RECIPES         = ArrayListMultimap.create();
+    public static final ArrayListMultimap<String, QBarRecipe> RECIPES          = ArrayListMultimap.create();
 
-    public static final ArrayList<String>                     metals          = new ArrayList<>();
+    public static final ArrayList<String>                     metals           = new ArrayList<>();
 
     public static void registerRecipes()
     {
@@ -30,6 +32,8 @@ public class QBarRecipeHandler
             QBarRecipeHandler.addIngotToPlateRecipe(metalName);
             QBarRecipeHandler.addBlockToPlateRecipe(metalName);
         });
+
+        QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 50,600);
     }
 
     public static boolean inputMatchWithoutCount(final String recipeID, final int recipeSlot, final ItemStack stack)
@@ -115,5 +119,11 @@ public class QBarRecipeHandler
         QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID,
                 new RollingMillRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
                         new ItemStackRecipeIngredient(plate)));
+    }
+
+    private static void addLiquidBoilerRecipe(Fluid fuel, int steamPerMb, int timePerBucket)
+    {
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.LIQUIDBOILER_UID,
+                new LiquidBoilerRecipe(fuel, steamPerMb, timePerBucket));
     }
 }

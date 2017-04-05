@@ -13,4 +13,6 @@ public interface ITileMultiblock
     BlockPos getCorePos();
 
     ITileMultiblockCore getCore();
+
+    BlockPos getCoreOffset();
 }

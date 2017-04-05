@@ -16,7 +16,7 @@ import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.recipe.RecipeIngredient;
+import net.qbar.common.recipe.ingredient.RecipeIngredient;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.ItemUtils;

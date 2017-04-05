@@ -200,7 +200,7 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
