@@ -34,7 +34,7 @@ public class QBarRecipeHandler
             QBarRecipeHandler.addBlockToPlateRecipe(metalName);
         });
 
-        QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 50, 600);
+        QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
     }
 
     @SuppressWarnings("unchecked")
@@ -131,9 +131,9 @@ public class QBarRecipeHandler
                         new ItemStackRecipeIngredient(plate)));
     }
 
-    private static void addLiquidBoilerRecipe(Fluid fuel, int steamPerMb, int timePerBucket)
+    private static void addLiquidBoilerRecipe(Fluid fuel, int heatPerMb, int timePerBucket)
     {
         QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.LIQUIDBOILER_UID,
-                new LiquidBoilerRecipe(fuel, steamPerMb, timePerBucket));
+                new LiquidBoilerRecipe(fuel, heatPerMb, timePerBucket));
     }
 }

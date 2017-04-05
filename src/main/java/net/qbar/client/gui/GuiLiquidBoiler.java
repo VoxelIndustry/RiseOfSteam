@@ -65,6 +65,6 @@ public class GuiLiquidBoiler extends GuiMachineBase<TileLiquidBoiler>
         if (i == 0)
             return -1;
 
-        return Math.min(this.getMachine().getHeat() * pixels / i, pixels);
+        return (int) Math.min(this.getMachine().getHeat() * pixels / i, pixels);
     }
 }
