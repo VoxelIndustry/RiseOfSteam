@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.qbar.QBar;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
+import net.qbar.common.recipe.ingredient.RecipeIngredient;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -33,48 +34,55 @@ public class QBarRecipeHandler
             QBarRecipeHandler.addBlockToPlateRecipe(metalName);
         });
 
-        QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 50,600);
+        QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 50, 600);
     }
 
-    public static boolean inputMatchWithoutCount(final String recipeID, final int recipeSlot, final ItemStack stack)
+    @SuppressWarnings("unchecked")
+    public static <T> boolean inputMatchWithoutCount(final String recipeID, final int recipeSlot, final T ingredient)
     {
         if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
-            return !FurnaceRecipes.instance().getSmeltingResult(stack).isEmpty();
+            return !FurnaceRecipes.instance().getSmeltingResult((ItemStack) ingredient).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
         {
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
             {
-                if (recipe.getRecipeInputs(ItemStack.class).size() < recipeSlot)
+                if (!recipe.hasInputType(ingredient.getClass())
+                        || recipe.getRecipeInputs(ingredient.getClass()).size() < recipeSlot)
                     return false;
-                return recipe.getRecipeInputs(ItemStack.class).get(recipeSlot).match(stack);
+                return ((RecipeIngredient<T>) recipe.getRecipeInputs(ingredient.getClass()).get(recipeSlot))
+                        .match(ingredient);
             });
         }
         return false;
     }
 
-    public static boolean inputMatchWithCount(final String recipeID, final int recipeSlot, final ItemStack stack)
+    @SuppressWarnings("unchecked")
+    public static <T> boolean inputMatchWithCount(final String recipeID, final int recipeSlot, final T ingredient)
     {
         if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
-            return !FurnaceRecipes.instance().getSmeltingResult(stack).isEmpty();
+            return !FurnaceRecipes.instance().getSmeltingResult((ItemStack) ingredient).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
         {
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
             {
-                if (recipe.getRecipeInputs(ItemStack.class).size() < recipeSlot)
+                if (!recipe.hasInputType(ingredient.getClass())
+                        || recipe.getRecipeInputs(ingredient.getClass()).size() < recipeSlot)
                     return false;
-                return recipe.getRecipeInputs(ItemStack.class).get(recipeSlot).matchWithQuantity(stack);
+                return ((RecipeIngredient<T>) recipe.getRecipeInputs(ingredient.getClass()).get(recipeSlot))
+                        .matchWithQuantity(ingredient);
             });
         }
         return false;
     }
 
-    public static Optional<QBarRecipe> getRecipe(final String recipeID, final ItemStack... inputs)
+    @SuppressWarnings("unchecked")
+    public static Optional<QBarRecipe> getRecipe(final String recipeID, final Object... inputs)
     {
         if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
         {
-            final ItemStack result = FurnaceRecipes.instance().getSmeltingResult(inputs[0]);
+            final ItemStack result = FurnaceRecipes.instance().getSmeltingResult((ItemStack) inputs[0]);
             if (!result.isEmpty())
-                return Optional.of(new FurnaceRecipeWrapper(inputs[0].copy(), result));
+                return Optional.of(new FurnaceRecipeWrapper(((ItemStack) inputs[0]).copy(), result));
             else
                 return Optional.empty();
         }
@@ -83,11 +91,13 @@ public class QBarRecipeHandler
             return QBarRecipeHandler.RECIPES.get(recipeID).stream().filter(recipe ->
             {
                 int i = 0;
-                for (final ItemStack stack : inputs)
+                for (final Object ingredient : inputs)
                 {
-                    if (i >= recipe.getRecipeInputs(ItemStack.class).size())
+                    if (!recipe.hasInputType(ingredient.getClass())
+                            || i >= recipe.getRecipeInputs(ingredient.getClass()).size())
                         break;
-                    if (!recipe.getRecipeInputs(ItemStack.class).get(i).matchWithQuantity(stack))
+                    if (!((RecipeIngredient<Object>) recipe.getRecipeInputs(ingredient.getClass()).get(i))
+                            .matchWithQuantity(ingredient))
                         return false;
                     i++;
                 }

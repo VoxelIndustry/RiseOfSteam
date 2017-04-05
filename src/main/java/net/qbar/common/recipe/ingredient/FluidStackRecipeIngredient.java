@@ -14,7 +14,7 @@ public class FluidStackRecipeIngredient extends RecipeIngredient<FluidStack>
 
     public FluidStackRecipeIngredient(Fluid ingredient)
     {
-        this(new FluidStack(ingredient, Fluid.BUCKET_VOLUME));
+        this(new FluidStack(ingredient, 1));
     }
 
     @Override
