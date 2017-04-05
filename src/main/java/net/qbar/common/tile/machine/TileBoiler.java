@@ -405,7 +405,10 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
 
         if (FluidUtils.drainPlayerHand(this.getFluidTank().getInternalFluidHandler(), player)
                 || FluidUtils.fillPlayerHand(this.getFluidTank().getInternalFluidHandler(), player))
+        {
+            this.markDirty();
             return true;
+        }
         player.openGui(QBar.instance, EGui.BOILER.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;

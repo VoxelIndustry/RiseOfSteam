@@ -95,9 +95,9 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
             this.steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
 
         if (tag.hasKey("waterTank"))
-            this.waterTank.readFromNBT(tag);
+            this.waterTank.readFromNBT(tag.getCompoundTag("waterTank"));
         if (tag.hasKey("fuelTank"))
-            this.fuelTank.readFromNBT(tag);
+            this.fuelTank.readFromNBT(tag.getCompoundTag("fuelTank"));
 
         this.heat = tag.getInteger("heat");
     }
@@ -207,16 +207,29 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
         {
             if (FluidUtils.drainPlayerHand(this.getFuelTank(), player)
                     || FluidUtils.fillPlayerHand(this.getFuelTank(), player))
+            {
+                this.markDirty();
                 return true;
+            }
         }
         else
         {
             if (FluidUtils.drainPlayerHand(this.getWaterTank(), player)
                     || FluidUtils.fillPlayerHand(this.getWaterTank(), player))
+            {
+                this.markDirty();
                 return true;
+            }
         }
         player.openGui(QBar.instance, EGui.LIQUIDBOILER.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
     }
 }

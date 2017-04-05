@@ -412,4 +412,11 @@ public class TileAssembler extends TileInventoryBase
         }
         return true;
     }
+
+    @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
+    }
 }

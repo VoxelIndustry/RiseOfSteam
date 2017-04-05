@@ -134,7 +134,10 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
             return false;
 
         if (FluidUtils.drainPlayerHand(this.getTank(), player) || FluidUtils.fillPlayerHand(this.getTank(), player))
+        {
+            this.markDirty();
             return true;
+        }
         player.openGui(QBar.instance, EGui.FLUIDTANK.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return false;
