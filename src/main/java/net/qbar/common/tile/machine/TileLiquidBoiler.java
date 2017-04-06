@@ -18,7 +18,10 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.LiquidBoilerRecipe;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -242,6 +245,7 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
+        System.out.println("ORIGIN");
         return this.hasCapability(capability, BlockPos.ORIGIN, facing);
     }
 
@@ -254,10 +258,11 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        System.out.println(from+" "+facing);
-        if(capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2 && facing == EnumFacing.UP)
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2
+                && facing == EnumFacing.UP)
             return true;
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0 && facing.getAxis().isHorizontal())
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0
+                && facing.getAxis().isHorizontal())
             return true;
         return false;
     }
@@ -265,37 +270,39 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if(capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2 && facing == EnumFacing.UP)
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2
+                && facing == EnumFacing.UP)
             return (T) this.getSteamTank();
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
         {
-            System.out.println(facing+" "+from);
-            if(facing == EnumFacing.NORTH)
+            MultiblockSide side = Multiblocks.LIQUID_FUEL_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+            if (side.getFacing() == EnumFacing.NORTH)
             {
-                if(from.getX() == -1 && from.getZ() == -1)
+                if (side.getPos().equals(BlockPos.ORIGIN))
                     return (T) this.getWaterTank();
-                else if(from.getX() == 0 && from.getZ() == -1)
+                else if (side.getPos().getX() == 1 && side.getPos().getZ() == 0)
                     return (T) this.getFuelTank();
             }
-            else if(facing == EnumFacing.WEST)
+            else if (side.getFacing() == EnumFacing.WEST)
             {
-                if(from.getX() == -1 && from.getZ() == 0)
+                if (side.getPos().getX() == 0 && side.getPos().getZ() == 1)
                     return (T) this.getWaterTank();
-                else if(from.getX() == -1 && from.getZ() == -1)
+                else if (side.getPos().equals(BlockPos.ORIGIN))
                     return (T) this.getFuelTank();
             }
-            else if(facing == EnumFacing.SOUTH)
+            else if (side.getFacing() == EnumFacing.SOUTH)
             {
-                if(from.getX() == 0 && from.getZ() == 0)
+                if (side.getPos().getX() == 1 && side.getPos().getZ() == 1)
                     return (T) this.getWaterTank();
-                else if(from.getX() == -1 && from.getZ() == 0)
+                else if (side.getPos().getX() == 0 && side.getPos().getZ() == 1)
                     return (T) this.getFuelTank();
             }
-            else if(facing == EnumFacing.EAST)
+            else if (side.getFacing() == EnumFacing.EAST)
             {
-                if(from.getX() == 0 && from.getZ() == -1)
+                if (side.getPos().getX() == 1 && side.getPos().getZ() == 0)
                     return (T) this.getWaterTank();
-                else if(from.getX() == 0 && from.getZ() == 0)
+                else if (side.getPos().getX() == 1 && side.getPos().getZ() == 1)
                     return (T) this.getFuelTank();
             }
         }
@@ -407,5 +414,10 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
     {
         if (this.isClient())
             this.forceSync();
+    }
+
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 }
