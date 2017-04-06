@@ -1,7 +1,5 @@
 package net.qbar.common.tile;
 
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -13,6 +11,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.grid.IFluidPipe;
 import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.PipeGrid;
+
+import java.util.List;
 
 public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> implements IFluidPipe
 {
@@ -151,7 +151,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     {
         for (final IFluidHandler fluidHandler : this.adjacentHandler.values())
         {
-            if (this.getGridObject().getTank().getFluidAmount() != 0)
+            if (this.getGridObject().getTank().getFluidAmount() != 0 && fluidHandler != null)
             {
                 final int simulated = fluidHandler
                         .fill(this.getGridObject().getTank().drain(this.getGridObject().getCapacity(), false), false);
