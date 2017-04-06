@@ -18,6 +18,8 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
@@ -97,32 +99,21 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        final EnumFacing orientation = this.getFacing();
+        MultiblockSide side = Multiblocks.ROLLING_MILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            if (orientation == EnumFacing.SOUTH && from.getX() == 0 && from.getZ() == 1)
+            if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 0
+                    && side.getPos().getZ() == 1)
                 return true;
-            if (orientation == EnumFacing.EAST && from.getX() == 1 && from.getZ() == 0)
-                return true;
-            if (orientation == EnumFacing.NORTH && from.getX() == 0 && from.getZ() == -1)
-                return true;
-            if (orientation == EnumFacing.WEST && from.getX() == -1 && from.getZ() == 0)
+            else if (side.getFacing() == EnumFacing.NORTH && side.getPos().equals(BlockPos.ORIGIN))
                 return true;
         }
         else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            if (orientation == EnumFacing.EAST && from.getX() == 0 && from.getY() == 0 && from.getZ() == 1
-                    && facing == EnumFacing.SOUTH)
-                return true;
-            if (orientation == EnumFacing.WEST && from.getX() == 0 && from.getY() == 0 && from.getZ() == -1
-                    && facing == EnumFacing.NORTH)
-                return true;
-            if (orientation == EnumFacing.SOUTH && from.getX() == -1 && from.getY() == 0 && from.getZ() == 0
-                    && facing == EnumFacing.WEST)
-                return true;
-            if (orientation == EnumFacing.NORTH && from.getX() == 1 && from.getY() == 0 && from.getZ() == 0
-                    && facing == EnumFacing.EAST)
+            if (side.getFacing() == EnumFacing.WEST && side.getPos().getX() == -1 && side.getPos().getY() == 0
+                    && side.getPos().getZ() == 0)
                 return true;
         }
         return false;
@@ -132,32 +123,21 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        final EnumFacing orientation = this.getFacing();
+        MultiblockSide side = Multiblocks.ROLLING_MILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            if (orientation == EnumFacing.SOUTH && from.getX() == 0 && from.getZ() == 1)
+            if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 0
+                    && side.getPos().getZ() == 1)
                 return (T) this.inventoryHandler;
-            if (orientation == EnumFacing.EAST && from.getX() == 1 && from.getZ() == 0)
-                return (T) this.inventoryHandler;
-            if (orientation == EnumFacing.NORTH && from.getX() == 0 && from.getZ() == -1)
-                return (T) this.inventoryHandler;
-            if (orientation == EnumFacing.WEST && from.getX() == -1 && from.getZ() == 0)
+            else if (side.getFacing() == EnumFacing.NORTH && side.getPos().equals(BlockPos.ORIGIN))
                 return (T) this.inventoryHandler;
         }
         else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            if (orientation == EnumFacing.EAST && from.getX() == 0 && from.getY() == 0 && from.getZ() == 1
-                    && facing == EnumFacing.SOUTH)
-                return (T) this.getSteamTank();
-            if (orientation == EnumFacing.WEST && from.getX() == 0 && from.getY() == 0 && from.getZ() == -1
-                    && facing == EnumFacing.NORTH)
-                return (T) this.getSteamTank();
-            if (orientation == EnumFacing.SOUTH && from.getX() == -1 && from.getY() == 0 && from.getZ() == 0
-                    && facing == EnumFacing.WEST)
-                return (T) this.getSteamTank();
-            if (orientation == EnumFacing.NORTH && from.getX() == 1 && from.getY() == 0 && from.getZ() == 0
-                    && facing == EnumFacing.EAST)
+            if (side.getFacing() == EnumFacing.WEST && side.getPos().getX() == -1 && side.getPos().getY() == 0
+                    && side.getPos().getZ() == 0)
                 return (T) this.getSteamTank();
         }
         return null;

@@ -142,4 +142,27 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
                             this.getWidth() - 1 - this.getOffsetX()));
         return searchables;
     }
+
+    public MultiblockSide worldSideToMultiblockSide(MultiblockSide side, EnumFacing orientation)
+    {
+        EnumFacing resultFacing = side.getFacing();
+        BlockPos resultPos = side.getPos();
+
+        if(orientation == EnumFacing.EAST)
+        {
+            resultFacing = resultFacing.rotateY();
+            resultPos = new BlockPos(-resultPos.getZ(), resultPos.getY(), resultPos.getX());
+        }
+        else if(orientation == EnumFacing.WEST)
+        {
+            resultFacing = resultFacing.rotateY().getOpposite();
+            resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
+        }
+        else if(orientation == EnumFacing.NORTH)
+        {
+            resultFacing = resultFacing.getOpposite();
+            resultPos = new BlockPos(-resultPos.getX(), resultPos.getY(), -resultPos.getZ());
+        }
+        return new MultiblockSide(resultPos,resultFacing);
+    }
 }

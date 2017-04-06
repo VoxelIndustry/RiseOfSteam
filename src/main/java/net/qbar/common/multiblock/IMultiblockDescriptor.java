@@ -28,4 +28,6 @@ public interface IMultiblockDescriptor
     AxisAlignedBB getBox(EnumFacing facing);
 
     Iterable<BlockPos> getAllInBox(BlockPos from, EnumFacing facing);
+
+    MultiblockSide worldSideToMultiblockSide(MultiblockSide side, EnumFacing orientation);
 }
