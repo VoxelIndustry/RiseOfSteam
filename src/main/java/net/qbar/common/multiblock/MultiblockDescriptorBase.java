@@ -148,21 +148,24 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
         EnumFacing resultFacing = side.getFacing();
         BlockPos resultPos = side.getPos();
 
-        if(orientation == EnumFacing.EAST)
+        if (side.getFacing().getAxis().isHorizontal())
         {
-            resultFacing = resultFacing.rotateY();
-            resultPos = new BlockPos(-resultPos.getZ(), resultPos.getY(), resultPos.getX());
+            if (orientation == EnumFacing.EAST)
+            {
+                resultFacing = resultFacing.rotateY();
+                resultPos = new BlockPos(-resultPos.getZ(), resultPos.getY(), resultPos.getX());
+            }
+            else if (orientation == EnumFacing.WEST)
+            {
+                resultFacing = resultFacing.rotateY().getOpposite();
+                resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
+            }
+            else if (orientation == EnumFacing.NORTH)
+            {
+                resultFacing = resultFacing.getOpposite();
+                resultPos = new BlockPos(-resultPos.getX(), resultPos.getY(), -resultPos.getZ());
+            }
         }
-        else if(orientation == EnumFacing.WEST)
-        {
-            resultFacing = resultFacing.rotateY().getOpposite();
-            resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
-        }
-        else if(orientation == EnumFacing.NORTH)
-        {
-            resultFacing = resultFacing.getOpposite();
-            resultPos = new BlockPos(-resultPos.getX(), resultPos.getY(), -resultPos.getZ());
-        }
-        return new MultiblockSide(resultPos,resultFacing);
+        return new MultiblockSide(resultPos, resultFacing);
     }
 }
