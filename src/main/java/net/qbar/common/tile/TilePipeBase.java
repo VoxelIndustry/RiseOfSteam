@@ -1,10 +1,5 @@
 package net.qbar.common.tile;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map.Entry;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +12,11 @@ import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
+
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
@@ -105,7 +105,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.updateState();
 
         if (tile != null && tile instanceof IConnectionAware)
-            ((IConnectionAware) tile).connectTrigger(facing.getOpposite());
+            ((IConnectionAware) tile).connectTrigger(facing.getOpposite(), this.getGridObject());
     }
 
     public void disconnectHandler(final EnumFacing facing, final TileEntity tile)
@@ -114,7 +114,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.updateState();
 
         if (tile != null && tile instanceof IConnectionAware)
-            ((IConnectionAware) tile).disconnectTrigger(facing.getOpposite());
+            ((IConnectionAware) tile).disconnectTrigger(facing.getOpposite(), this.getGridObject());
     }
 
     public void disconnectItself()
@@ -125,7 +125,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         {
             final TileEntity handler = this.getBlockWorld().getTileEntity(this.getBlockPos().offset(facing));
             if (handler != null && handler instanceof IConnectionAware)
-                ((IConnectionAware) handler).disconnectTrigger(facing.getOpposite());
+                ((IConnectionAware) handler).disconnectTrigger(facing.getOpposite(), this.getGridObject());
         });
     }
 

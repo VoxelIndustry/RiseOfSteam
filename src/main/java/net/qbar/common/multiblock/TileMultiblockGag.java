@@ -1,17 +1,18 @@
 package net.qbar.common.multiblock;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.common.grid.CableGrid;
+import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.tile.ITileInfoProvider;
 import net.qbar.common.tile.QBarTileBase;
 
-public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, ITileInfoProvider
+import javax.annotation.Nullable;
+import java.util.List;
+
+public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, ITileInfoProvider, IConnectionAware
 {
     private BlockPos corePos    = this.pos;
 
@@ -114,5 +115,17 @@ public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, 
         if (this.coreOffset == null)
             this.coreOffset = this.pos.subtract(this.corePos);
         return this.coreOffset;
+    }
+
+    @Override
+    public void connectTrigger(EnumFacing facing, CableGrid grid)
+    {
+        this.getCore().connectTrigger(this.getCoreOffset(), facing, grid);
+    }
+
+    @Override
+    public void disconnectTrigger(EnumFacing facing, CableGrid grid)
+    {
+        this.getCore().disconnectTrigger(this.getCoreOffset(), facing, grid);
     }
 }

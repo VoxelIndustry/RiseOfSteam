@@ -13,10 +13,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.QBar;
+import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
+import net.qbar.common.grid.CableGrid;
+import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
@@ -32,16 +35,19 @@ import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IContainerProvider, ITileMultiblockCore
+public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IContainerProvider, ITileMultiblockCore, IConnectionAware
 {
-    private final FluidTank waterTank, fuelTank;
-    private final SteamTank steamTank;
+    private final FluidTank           waterTank, fuelTank;
+    private final SteamTank           steamTank;
 
-    private float           heat;
-    private final int       maxHeat;
+    private float                     heat;
+    private final int                 maxHeat;
+
+    private final ArrayList<MultiblockSide> connections;
 
     public TileLiquidBoiler()
     {
@@ -53,6 +59,7 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
         steamTank = new SteamTank(0, Fluid.BUCKET_VOLUME * 32, SteamUtil.AMBIANT_PRESSURE * 2);
 
         this.maxHeat = 3000;
+        this.connections = new ArrayList<>();
     }
 
     private Fluid              cachedFluid;
@@ -211,8 +218,19 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
 
         tag.setFloat("heat", this.heat);
 
+        if (this.isServer())
+        {
+            for (MultiblockSide side : this.connections)
+            {
+                tag.setLong("connPos" + this.connections.indexOf(side), side.getPos().toLong());
+                tag.setByte("connFacing" + this.connections.indexOf(side), (byte) side.getFacing().ordinal());
+            }
+            tag.setInteger("connLength", this.connections.size());
+        }
         return tag;
     }
+
+    private ArrayList<MultiblockSide> tmpConnections = new ArrayList<>();
 
     @Override
     public void readFromNBT(final NBTTagCompound tag)
@@ -228,6 +246,20 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
             this.fuelTank.readFromNBT(tag.getCompoundTag("fuelTank"));
 
         this.heat = tag.getFloat("heat");
+
+        if (this.isClient())
+        {
+            tmpConnections.clear();
+            tmpConnections.addAll(this.connections);
+            this.connections.clear();
+
+            for (int i = 0; i < tag.getInteger("connLength"); i++)
+                this.connections.add(new MultiblockSide(BlockPos.fromLong(tag.getLong("connPos" + i)),
+                        EnumFacing.values()[tag.getByte("connFacing" + i)]));
+
+            if (tmpConnections.size() != this.connections.size() || !tmpConnections.equals(this.connections))
+                this.updateState();
+        }
     }
 
     @Override
@@ -245,7 +277,6 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        System.out.println("ORIGIN");
         return this.hasCapability(capability, BlockPos.ORIGIN, facing);
     }
 
@@ -275,8 +306,8 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
             return (T) this.getSteamTank();
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
         {
-            MultiblockSide side = Multiblocks.LIQUID_FUEL_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = Multiblocks.LIQUID_FUEL_BOILER
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getFacing() == EnumFacing.NORTH)
             {
                 if (side.getPos().equals(BlockPos.ORIGIN))
@@ -413,11 +444,120 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
     public void onLoad()
     {
         if (this.isClient())
+        {
             this.forceSync();
+            this.updateState();
+        }
     }
 
     public EnumFacing getFacing()
     {
         return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
+    }
+
+    public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
+    {
+        this.connections.add(Multiblocks.LIQUID_FUEL_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing()));
+        this.updateState();
+    }
+
+    public void disconnectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
+    {
+        this.connections.remove(Multiblocks.LIQUID_FUEL_BOILER
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        this.updateState();
+    }
+
+    @Override
+    public void connectTrigger(EnumFacing facing, CableGrid grid)
+    {
+        this.getCore().connectTrigger(BlockPos.ORIGIN, facing, grid);
+    }
+
+    @Override
+    public void disconnectTrigger(EnumFacing facing, CableGrid grid)
+    {
+        this.getCore().disconnectTrigger(BlockPos.ORIGIN, facing, grid);
+    }
+
+    ////////////
+    // RENDER //
+    ////////////
+
+    public final VisibilityModelState state = new VisibilityModelState();
+
+    private void updateState()
+    {
+        if (this.isServer())
+        {
+            this.sync();
+            return;
+        }
+        this.state.parts.clear();
+
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 0, 1), EnumFacing.SOUTH)))
+        {
+            this.state.parts.add("InputA E");
+            this.state.parts.add("Input1A E");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 0, 1), EnumFacing.SOUTH)))
+        {
+            this.state.parts.add("InputB E");
+            this.state.parts.add("Input1B E");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 0, 1), EnumFacing.EAST)))
+        {
+            this.state.parts.add("InputA S");
+            this.state.parts.add("Input1A S");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 0, 0), EnumFacing.EAST)))
+        {
+            this.state.parts.add("InputB S");
+            this.state.parts.add("Input1B S");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 0, 0), EnumFacing.NORTH)))
+        {
+            this.state.parts.add("InputA O");
+            this.state.parts.add("Input1A O");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN, EnumFacing.NORTH)))
+        {
+            this.state.parts.add("InputB O");
+            this.state.parts.add("Input1B O");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN, EnumFacing.WEST)))
+        {
+            this.state.parts.add("InputA N");
+            this.state.parts.add("Input1A N");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 0, 1), EnumFacing.WEST)))
+        {
+            this.state.parts.add("InputB N");
+            this.state.parts.add("Input1B N");
+        }
+
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 2, 0), EnumFacing.DOWN)))
+        {
+            this.state.parts.add("OutputD");
+            this.state.parts.add("OutputD1");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 2, 0), EnumFacing.DOWN)))
+        {
+            this.state.parts.add("OutputC");
+            this.state.parts.add("OutputC1");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 2, 1), EnumFacing.DOWN)))
+        {
+            this.state.parts.add("OutputB");
+            this.state.parts.add("OutputB1");
+        }
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 2, 1), EnumFacing.DOWN)))
+        {
+            this.state.parts.add("OutputA");
+            this.state.parts.add("OutputA1");
+        }
+
+        this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
     }
 }

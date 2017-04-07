@@ -1,12 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.lwjgl.util.vector.Vector2f;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -17,17 +10,18 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.BeltGrid;
-import net.qbar.common.grid.GridManager;
-import net.qbar.common.grid.IBelt;
-import net.qbar.common.grid.IConnectionAware;
-import net.qbar.common.grid.ITileCable;
-import net.qbar.common.grid.ItemBelt;
+import net.qbar.common.grid.*;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnectionAware
 {
@@ -442,13 +436,13 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public void connectTrigger(final EnumFacing facing)
+    public void connectTrigger(final EnumFacing facing, CableGrid grid)
     {
         this.connectSteam(facing, null);
     }
 
     @Override
-    public void disconnectTrigger(final EnumFacing facing)
+    public void disconnectTrigger(final EnumFacing facing, CableGrid grid)
     {
         this.disconnectSteam(facing);
     }
