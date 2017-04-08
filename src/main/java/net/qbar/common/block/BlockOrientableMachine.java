@@ -1,7 +1,5 @@
 package net.qbar.common.block;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -19,6 +17,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.IWrenchable;
+
+import javax.annotation.Nullable;
 
 public abstract class BlockOrientableMachine extends BlockMachineBase implements IWrenchable
 {
@@ -95,7 +95,7 @@ public abstract class BlockOrientableMachine extends BlockMachineBase implements
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state)
+            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         this.rotateBlock(world, pos, this.getFacing(state).rotateAround(Axis.Y));
         return true;

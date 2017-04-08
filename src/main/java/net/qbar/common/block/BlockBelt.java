@@ -1,11 +1,6 @@
 package net.qbar.common.block;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -34,6 +29,9 @@ import net.minecraftforge.common.property.Properties;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.machine.TileBelt;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class BlockBelt extends BlockMachineBase implements IWrenchable
 {
@@ -283,7 +281,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state)
+            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         if (player.isSneaking())
             this.setSlopState(world, pos, this.getSlopState(state).cycle());

@@ -1,20 +1,15 @@
 package net.qbar.common.block;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +18,8 @@ import net.qbar.common.IWrenchable;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileAssembler;
+
+import javax.annotation.Nullable;
 
 public class BlockAssembler extends BlockMultiblockBase implements IWrenchable
 {
@@ -126,13 +123,5 @@ public class BlockAssembler extends BlockMultiblockBase implements IWrenchable
     public TileEntity getTile(final World w, final IBlockState state)
     {
         return new TileAssembler();
-    }
-
-    @Override
-    public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state)
-    {
-        this.rotateBlock(world, pos, state.getValue(BlockAssembler.FACING).rotateAround(Axis.Y));
-        return true;
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -70,9 +71,16 @@ public class BlockSolarMirror extends BlockMachineBase implements IWrenchable
 
     @Override
     public boolean onWrench(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing,
-            IBlockState state)
+            IBlockState state, ItemStack wrench)
     {
-        ((TileSolarMirror)world.getTileEntity(pos)).setSolarBoilerPos(player.getPosition());
+        float angle = ((TileSolarMirror) world.getTileEntity(pos)).getHorizontalAngle();
+
+        if (player.isSneaking())
+            angle -= 10;
+        else
+            angle += 10;
+        angle %= 360;
+        ((TileSolarMirror) world.getTileEntity(pos)).setHorizontalAngle(angle);
         return false;
     }
 }

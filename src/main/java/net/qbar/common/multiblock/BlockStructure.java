@@ -5,6 +5,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -76,7 +77,7 @@ public class BlockStructure extends BlockMachineBase implements IWrenchable
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state)
+            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         final ITileMultiblock tile = (ITileMultiblock) world.getTileEntity(pos);
         if (tile != null)

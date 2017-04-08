@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -18,6 +19,7 @@ import net.qbar.common.item.ItemBlueprint;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.Blueprints;
+import net.qbar.common.tile.machine.TileSolarMirror;
 import net.qbar.common.util.ItemUtils;
 
 public class ClientEventManager
@@ -119,7 +121,16 @@ public class ClientEventManager
             else if (e.getPlayer().world.getBlockState(e.getTarget().getBlockPos()).getBlock() == QBarBlocks.STRUCTURE)
                 RenderStructureOverlay.renderStructureOverlay(e.getPlayer(), e.getTarget().getBlockPos(),
                         e.getPartialTicks());
+            else if (e.getPlayer().world.getBlockState(e.getTarget().getBlockPos())
+                    .getBlock() == QBarBlocks.SOLAR_MIRROR)
+                renderMirrorRaytrace(e.getPlayer(), e.getTarget().getBlockPos(), e.getPartialTicks());
         }
     }
 
+    public void renderMirrorRaytrace(EntityPlayer player, BlockPos pos, float partialTicks)
+    {
+        TileSolarMirror mirror = (TileSolarMirror) player.getEntityWorld().getTileEntity(pos);
+
+
+    }
 }

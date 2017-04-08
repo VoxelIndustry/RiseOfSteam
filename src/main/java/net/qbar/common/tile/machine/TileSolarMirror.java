@@ -13,10 +13,12 @@ public class TileSolarMirror extends QBarTileBase
 {
     public TRSRTransformation transform = TRSRTransformation.identity();
     private BlockPos          solarBoilerPos;
+    private float             horizontalAngle;
 
     public TileSolarMirror()
     {
         this.solarBoilerPos = BlockPos.ORIGIN;
+        this.horizontalAngle = 0.0f;
     }
 
     @Override
@@ -25,6 +27,7 @@ public class TileSolarMirror extends QBarTileBase
         super.writeToNBT(tag);
 
         tag.setLong("solarBoilerPos", this.solarBoilerPos.toLong());
+        tag.setFloat("horizontalAngle", this.horizontalAngle);
         return tag;
     }
 
@@ -33,9 +36,12 @@ public class TileSolarMirror extends QBarTileBase
     {
         super.readFromNBT(tag);
 
-        BlockPos previous = this.solarBoilerPos;
+        float previousAngle = this.horizontalAngle;
+
         this.solarBoilerPos = BlockPos.fromLong(tag.getLong("solarBoilerPos"));
-        if (this.isClient() && !previous.equals(this.solarBoilerPos))
+        this.horizontalAngle = tag.getFloat("horizontalAngle");
+
+        if (this.isClient() && previousAngle != this.horizontalAngle)
             this.updateState();
     }
 
@@ -47,6 +53,16 @@ public class TileSolarMirror extends QBarTileBase
     public void setSolarBoilerPos(BlockPos solarBoilerPos)
     {
         this.solarBoilerPos = solarBoilerPos;
+    }
+
+    public float getHorizontalAngle()
+    {
+        return horizontalAngle;
+    }
+
+    public void setHorizontalAngle(float horizontalAngle)
+    {
+        this.horizontalAngle = horizontalAngle;
         this.sync();
     }
 
@@ -58,12 +74,8 @@ public class TileSolarMirror extends QBarTileBase
             return;
         }
 
-        BlockPos boilerPos = new BlockPos(this.getSolarBoilerPos().getX(), this.getPos().getY(), this.getSolarBoilerPos().getZ());
-        BlockPos lookVec = boilerPos.subtract(this.getPos());
-        
-        AxisAngle4d yaw = new AxisAngle4d(0, 1, 0, -(Math.atan2(lookVec.getZ(), lookVec.getX()) - Math.PI));
-        AxisAngle4d pitch = new AxisAngle4d(1, 0, 0, -(Math.atan2(lookVec.getY(),
-                Math.sqrt(lookVec.getX() * lookVec.getX() + lookVec.getZ() * lookVec.getZ()))));
+        AxisAngle4d yaw = new AxisAngle4d(0, 1, 0, Math.toRadians(horizontalAngle));
+        AxisAngle4d pitch = new AxisAngle4d(1, 0, 0, 0);
         Quat4f rot = new Quat4f(0, 0, 0, 1);
         Quat4f yawQuat = new Quat4f();
         Quat4f pitchQuat = new Quat4f();

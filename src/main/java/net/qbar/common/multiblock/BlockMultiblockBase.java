@@ -204,7 +204,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state)
+            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         return false;
     }
