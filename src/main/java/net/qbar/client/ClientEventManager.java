@@ -3,9 +3,8 @@ package net.qbar.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -21,6 +20,7 @@ import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.tile.machine.TileSolarMirror;
 import net.qbar.common.util.ItemUtils;
+import org.lwjgl.opengl.GL11;
 
 public class ClientEventManager
 {
@@ -129,8 +129,43 @@ public class ClientEventManager
 
     public void renderMirrorRaytrace(EntityPlayer player, BlockPos pos, float partialTicks)
     {
+        final double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
+        final double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
+        final double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
+
         TileSolarMirror mirror = (TileSolarMirror) player.getEntityWorld().getTileEntity(pos);
 
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
+        GlStateManager.glLineWidth(2.0F);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(pos.getX() - x + 0.5, pos.getY() - y + 0.5, pos.getZ() - z + 0.5);
+        GlStateManager.rotate(mirror.getHorizontalAngle(), 0, 1, 0);
+        GlStateManager.rotate(45, 0, 0, 1);
+        VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+        buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
 
+        GL11.glLineWidth(8.0F);
+
+        if (!mirror.getSolarBoilerPos().equals(BlockPos.ORIGIN))
+        {
+            buffer.pos(0, 0, 0).color(0, 0.5f, 0, 0.5f).endVertex();
+            buffer.pos(0, 16, 0).color(0, 0.5f, 0, 0.5f).endVertex();
+        }
+        else
+        {
+            buffer.pos(0, 0, 0).color(0.5f, 0, 0, 0.5f).endVertex();
+            buffer.pos(0, 16, 0).color(0.5f, 0, 0, 0.5f).endVertex();
+        }
+        Tessellator.getInstance().draw();
+
+        GlStateManager.popMatrix();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 }
