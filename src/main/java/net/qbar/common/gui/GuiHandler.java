@@ -55,6 +55,8 @@ public class GuiHandler implements IGuiHandler
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiAssembler(player, (TileAssembler) tile));
             case LIQUIDBOILER:
                 return new GuiLiquidBoiler(player, (TileLiquidBoiler) tile);
+            case SOLARBOILER:
+                return new GuiSolarBoiler(player, (TileSolarBoiler) tile);
             default:
                 break;
         }
