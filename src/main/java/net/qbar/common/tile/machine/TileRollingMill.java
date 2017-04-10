@@ -104,7 +104,7 @@ public class TileRollingMill extends TileCraftingMachineBase
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 0
+            if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 1
                     && side.getPos().getZ() == 1)
                 return true;
             else if (side.getFacing() == EnumFacing.NORTH && side.getPos().equals(BlockPos.ORIGIN))
@@ -128,7 +128,7 @@ public class TileRollingMill extends TileCraftingMachineBase
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 0
+            if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 1
                     && side.getPos().getZ() == 1)
                 return (T) this.inventoryHandler;
             else if (side.getFacing() == EnumFacing.NORTH && side.getPos().equals(BlockPos.ORIGIN))

@@ -32,7 +32,7 @@ public class BeltGrid extends CableGrid
         super(identifier);
 
         this.beltSpeed = beltSpeed;
-        this.tank = new SteamTank(0, 32 * 4, 1.5f);
+        this.tank = new SteamTank(0, 64 * 4, 1.5f);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class BeltGrid extends CableGrid
 
     public int getSteamCapacity()
     {
-        return this.getCables().size() * 32;
+        return this.getCables().size() * 64;
     }
 
     @Override

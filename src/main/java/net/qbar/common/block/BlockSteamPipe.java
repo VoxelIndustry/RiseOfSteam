@@ -28,7 +28,7 @@ public class BlockSteamPipe extends BlockPipeBase
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileSteamPipe(8);
+        return new TileSteamPipe(64);
     }
 
     @Override

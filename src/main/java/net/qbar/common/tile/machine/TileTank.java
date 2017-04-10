@@ -113,7 +113,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
         else
         {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                    && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing.getAxis().isVertical()))
+                    && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
                 return true;
         }
         return super.hasCapability(capability, facing);
@@ -137,7 +137,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
         else
         {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                    && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing.getAxis().isVertical()))
+                    && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
             {
                 if (from.getY() == 0)
                     return (T) this.tank.getOutputHandler();

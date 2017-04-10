@@ -51,30 +51,55 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         if (this.isClient())
             return;
 
-        if (this.currentRecipe == null && this.isBufferEmpty() && !this.isInputEmpty())
+        if (this.currentRecipe == null && (!this.isInputEmpty() || !this.isBufferEmpty()))
         {
             if (this.steamTank.getSteam() >= this.descriptor.getSteamConsumption())
             {
-                final ItemStack[] stacks = new ItemStack[this.descriptor.getInputs().length];
-                for (int i = 0; i < this.descriptor.getInputs().length; i++)
-                    stacks[i] = this.getStackInSlot(this.descriptor.getInputs()[i]);
-
-                final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
-                        stacks);
-                if (recipe.isPresent())
+                if (this.isBufferEmpty())
                 {
-                    this.currentRecipe = recipe.get();
+                    final ItemStack[] stacks = new ItemStack[this.descriptor.getInputs().length];
+                    for (int i = 0; i < this.descriptor.getInputs().length; i++)
+                        stacks[i] = this.getStackInSlot(this.descriptor.getInputs()[i]);
 
-                    this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
-                    int i = 0;
-                    for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeInputs(ItemStack.class))
+                    final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
+                            stacks);
+                    if (recipe.isPresent())
                     {
-                        this.decrStackSize(this.descriptor.getInputs()[i], stack.getRawIngredient().getCount());
-                        this.setInventorySlotContents(this.descriptor.getBuffers()[i], stack.getRawIngredient().copy());
-                        i++;
+                        this.currentRecipe = recipe.get();
+
+                        this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
+                        int i = 0;
+                        for (final RecipeIngredient<ItemStack> stack : this.currentRecipe
+                                .getRecipeInputs(ItemStack.class))
+                        {
+                            this.decrStackSize(this.descriptor.getInputs()[i], stack.getRawIngredient().getCount());
+                            this.setInventorySlotContents(this.descriptor.getBuffers()[i],
+                                    stack.getRawIngredient().copy());
+                            i++;
+                        }
+                        this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0)
+                                .getRawIngredient();
+                        this.sync();
                     }
-                    this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
-                    this.sync();
+                }
+                else
+                {
+                    final ItemStack[] stacks = new ItemStack[this.descriptor.getBuffers().length];
+                    for (int i = 0; i < this.descriptor.getBuffers().length; i++)
+                        stacks[i] = this.getStackInSlot(this.descriptor.getBuffers()[i]);
+
+                    final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
+                            stacks);
+                    if (recipe.isPresent())
+                    {
+                        this.currentRecipe = recipe.get();
+
+                        this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
+
+                        this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0)
+                                .getRawIngredient();
+                        this.sync();
+                    }
                 }
             }
         }
