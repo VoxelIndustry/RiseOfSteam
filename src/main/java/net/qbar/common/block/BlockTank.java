@@ -12,12 +12,14 @@ import net.qbar.common.tile.machine.TileTank;
 public class BlockTank extends BlockMultiblockBase
 {
     private final int capacity;
+    private final int tier;
 
-    public BlockTank(final String name, final IMultiblockDescriptor descriptor, final int capacity)
+    public BlockTank(final String name, final IMultiblockDescriptor descriptor, final int capacity, final int tier)
     {
         super(name, Material.IRON, descriptor);
 
         this.capacity = capacity;
+        this.tier = tier;
     }
 
     @Override
@@ -29,6 +31,6 @@ public class BlockTank extends BlockMultiblockBase
     @Override
     public TileEntity getTile(final World w, final IBlockState state)
     {
-        return new TileTank(this.capacity);
+        return new TileTank(this.capacity, this.tier);
     }
 }
