@@ -58,6 +58,7 @@ public class Blueprints
         this.registerBlueprint("steamfurnacemk1", Multiblocks.STEAM_FURNACE_MK1)
                 .addStep(20, new ItemStack(Blocks.BRICK_BLOCK, 4)).addStep(10, new ItemStack(QBarItems.IRON_ROD, 8));
         this.registerBlueprint("steamfurnacemk2", Multiblocks.STEAM_FURNACE_MK2);
+        this.registerBlueprint("solarmirror", Multiblocks.SOLAR_MIRROR);
 
         this.getBlueprint("steamfurnacemk1").setMultiblockSteps(this.loadBlueprintModel("steamfurnacemk1"));
     }

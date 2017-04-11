@@ -121,51 +121,6 @@ public class ClientEventManager
             else if (e.getPlayer().world.getBlockState(e.getTarget().getBlockPos()).getBlock() == QBarBlocks.STRUCTURE)
                 RenderStructureOverlay.renderStructureOverlay(e.getPlayer(), e.getTarget().getBlockPos(),
                         e.getPartialTicks());
-            else if (e.getPlayer().world.getBlockState(e.getTarget().getBlockPos())
-                    .getBlock() == QBarBlocks.SOLAR_MIRROR)
-                renderMirrorRaytrace(e.getPlayer(), e.getTarget().getBlockPos(), e.getPartialTicks());
         }
-    }
-
-    public void renderMirrorRaytrace(EntityPlayer player, BlockPos pos, float partialTicks)
-    {
-        final double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
-        final double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
-        final double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-
-        TileSolarMirror mirror = (TileSolarMirror) player.getEntityWorld().getTileEntity(pos);
-
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-                GlStateManager.DestFactor.ZERO);
-        GlStateManager.glLineWidth(2.0F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(pos.getX() - x + 0.5, pos.getY() - y + 0.5, pos.getZ() - z + 0.5);
-        GlStateManager.rotate(mirror.getHorizontalAngle(), 0, 1, 0);
-        GlStateManager.rotate(45, 0, 0, 1);
-        VertexBuffer buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-
-        GL11.glLineWidth(8.0F);
-
-        if (!mirror.getSolarBoilerPos().equals(BlockPos.ORIGIN))
-        {
-            buffer.pos(0, 0, 0).color(0, 0.5f, 0, 0.5f).endVertex();
-            buffer.pos(0, 16, 0).color(0, 0.5f, 0, 0.5f).endVertex();
-        }
-        else
-        {
-            buffer.pos(0, 0, 0).color(0.5f, 0, 0, 0.5f).endVertex();
-            buffer.pos(0, 16, 0).color(0.5f, 0, 0, 0.5f).endVertex();
-        }
-        Tessellator.getInstance().draw();
-
-        GlStateManager.popMatrix();
-        GlStateManager.depthMask(true);
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
     }
 }

@@ -1,24 +1,26 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.tile.QBarTileBase;
 
+import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 
-public class TileSolarMirror extends QBarTileBase
+public class TileSolarMirror extends QBarTileBase implements ITileMultiblockCore
 {
-    public TRSRTransformation transform = TRSRTransformation.identity();
-    private BlockPos          solarBoilerPos;
-    private float             horizontalAngle;
+    private int mirrorCount;
 
     public TileSolarMirror()
     {
-        this.solarBoilerPos = BlockPos.ORIGIN;
-        this.horizontalAngle = 0.0f;
+        this.mirrorCount = 0;
     }
 
     @Override
@@ -26,8 +28,7 @@ public class TileSolarMirror extends QBarTileBase
     {
         super.writeToNBT(tag);
 
-        tag.setLong("solarBoilerPos", this.solarBoilerPos.toLong());
-        tag.setFloat("horizontalAngle", this.horizontalAngle);
+        tag.setInteger("mirrorCount", this.mirrorCount);
         return tag;
     }
 
@@ -36,35 +37,28 @@ public class TileSolarMirror extends QBarTileBase
     {
         super.readFromNBT(tag);
 
-        float previousAngle = this.horizontalAngle;
+        int previousMirrorCount = this.mirrorCount;
+        this.mirrorCount = tag.getInteger("mirrorCount");
 
-        this.solarBoilerPos = BlockPos.fromLong(tag.getLong("solarBoilerPos"));
-        this.horizontalAngle = tag.getFloat("horizontalAngle");
-
-        if (this.isClient() && previousAngle != this.horizontalAngle)
+        if (this.isClient() && previousMirrorCount != this.mirrorCount)
             this.updateState();
     }
 
-    public BlockPos getSolarBoilerPos()
+    @Override
+    public void onLoad()
     {
-        return solarBoilerPos;
+        if (this.isClient())
+        {
+            this.forceSync();
+            this.updateState();
+        }
     }
 
-    public void setSolarBoilerPos(BlockPos solarBoilerPos)
-    {
-        this.solarBoilerPos = solarBoilerPos;
-    }
+    ////////////
+    // RENDER //
+    ////////////
 
-    public float getHorizontalAngle()
-    {
-        return horizontalAngle;
-    }
-
-    public void setHorizontalAngle(float horizontalAngle)
-    {
-        this.horizontalAngle = horizontalAngle;
-        this.sync();
-    }
+    public final VisibilityModelState state = new VisibilityModelState();
 
     public void updateState()
     {
@@ -74,19 +68,42 @@ public class TileSolarMirror extends QBarTileBase
             return;
         }
 
-        AxisAngle4d yaw = new AxisAngle4d(0, 1, 0, Math.toRadians(horizontalAngle));
-        AxisAngle4d pitch = new AxisAngle4d(1, 0, 0, 0);
-        Quat4f rot = new Quat4f(0, 0, 0, 1);
-        Quat4f yawQuat = new Quat4f();
-        Quat4f pitchQuat = new Quat4f();
-        yawQuat.set(yaw);
-        rot.mul(yawQuat);
-        pitchQuat.set(pitch);
-        rot.mul(pitchQuat);
-        Matrix4f matrix = new Matrix4f();
-        matrix.setIdentity();
-        matrix.setRotation(rot);
-        transform = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(matrix));
+        this.state.parts.clear();
+
+        for (int i = 0; i < 8; i++)
+        {
+            if (i >= this.mirrorCount)
+                continue;
+            this.state.parts.add("AddedMiror" + i);
+            for (int j = 1; j < 8; j++)
+                this.state.parts.add("Miror Component" + i + " " + j);
+        }
+
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+
+    @Override
+    public void breakCore()
+    {
+        this.world.destroyBlock(this.getPos(), false);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
+    {
+        return super.hasCapability(capability, facing);
+    }
+
+    @Nullable
+    @Override
+    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
+    {
+        return super.getCapability(capability, facing);
     }
 }

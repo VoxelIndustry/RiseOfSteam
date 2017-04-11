@@ -14,6 +14,7 @@ public class Multiblocks
     public static final IMultiblockDescriptor LIQUID_FUEL_BOILER;
     public static final IMultiblockDescriptor STEAM_FURNACE_MK1;
     public static final IMultiblockDescriptor STEAM_FURNACE_MK2;
+    public static final IMultiblockDescriptor SOLAR_MIRROR;
 
     static
     {
@@ -29,5 +30,6 @@ public class Multiblocks
         LIQUID_FUEL_BOILER = new MultiblockDescriptorBase("LIQUID_FUEL_BOILER", 2, 3, 2, 0, 0, 0);
         STEAM_FURNACE_MK1 = new MultiblockDescriptorBase("STEAM_FURNACE_MK1", 1, 1, 3, 0, 0, 1);
         STEAM_FURNACE_MK2 = new MultiblockDescriptorBase("STEAM_FURNACE_MK2", 1, 1, 1, 0, 0, 0);
+        SOLAR_MIRROR = new MultiblockDescriptorBase("SOLAR_MIRROR", 3, 2, 2, 1, 0, 0);
     }
 }
