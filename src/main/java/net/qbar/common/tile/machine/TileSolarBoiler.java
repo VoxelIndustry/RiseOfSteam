@@ -6,13 +6,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblock;
+import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
+import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.util.FluidUtils;
@@ -83,13 +88,54 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        {
+            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+
+            if (side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
+                    && side.getFacing() == EnumFacing.SOUTH)
+                return true;
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+
+            if (side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
+                    && side.getFacing() == EnumFacing.SOUTH)
+                return true;
+        }
         return false;
     }
 
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        {
+            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+
+            if (side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
+                    && side.getFacing() == EnumFacing.SOUTH)
+                return (T) this.getSteamTank();
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+
+            if (side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
+                    && side.getFacing() == EnumFacing.SOUTH)
+                return (T) this.getWaterTank();
+        }
         return null;
+    }
+
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
     @Override
