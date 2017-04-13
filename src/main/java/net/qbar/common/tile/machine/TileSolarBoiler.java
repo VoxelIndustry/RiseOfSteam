@@ -14,25 +14,32 @@ import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.event.TickHandler;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.multiblock.ITileMultiblock;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.QBarTileBase;
+import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
-public class TileSolarBoiler extends TileInventoryBase implements ITickable, IContainerProvider, ITileMultiblockCore
+public class TileSolarBoiler extends TileInventoryBase
+        implements ITickable, IContainerProvider, ITileMultiblockCore, ILoadable
 {
-    private FluidTank fluidTank;
-    private SteamTank steamTank;
-    private float     heat;
-    private int       maxHeat;
+    private FluidTank                            fluidTank;
+    private SteamTank                            steamTank;
+    private float                                heat;
+    private int                                  maxHeat;
+
+    private EnumMap<EnumFacing, TileSolarMirror> mirrors;
 
     public TileSolarBoiler()
     {
@@ -43,12 +50,46 @@ public class TileSolarBoiler extends TileInventoryBase implements ITickable, ICo
 
         this.heat = 0;
         this.maxHeat = 3000;
+
+        this.mirrors = new EnumMap<>(EnumFacing.class);
     }
 
     @Override
     public void update()
     {
+        if (this.isClient())
+            return;
+        float sunValue = getSunValue();
 
+        int totalMirrorCount = this.mirrors.values().stream().mapToInt(mirror -> mirror.getMirrorCount()).sum();
+        float producedHeat = (0.01f * totalMirrorCount) * sunValue;
+
+        if (this.heat < this.maxHeat)
+        {
+            if (this.heat + producedHeat < this.maxHeat)
+                this.heat += producedHeat;
+            else
+                this.heat = this.maxHeat;
+            if(this.heat < this.getMinimumTemp())
+                this.heat = this.getMinimumTemp();
+        }
+    }
+
+    public int getMinimumTemp()
+    {
+        return (int) (this.world.getBiome(this.getPos()).getFloatTemperature(this.pos) * 200);
+    }
+
+    private float getSunValue()
+    {
+        float baseValue = 1;
+        if (this.world.isRaining())
+            baseValue -= 0.4f;
+        if (this.world.isThundering())
+            baseValue -= 0.3f;
+        if (!this.world.isDaytime())
+            baseValue = 0;
+        return baseValue;
     }
 
     @Override
@@ -209,5 +250,25 @@ public class TileSolarBoiler extends TileInventoryBase implements ITickable, ICo
     {
         if (this.isClient())
             this.forceSync();
+        else
+            TickHandler.loadables.add(this);
+    }
+
+    @Override
+    public void load()
+    {
+        this.checkMirrors();
+    }
+
+    public void checkMirrors()
+    {
+        this.mirrors.clear();
+        for (EnumFacing facing : EnumFacing.HORIZONTALS)
+        {
+            BlockPos search = this.getPos().offset(facing, 2).up(3);
+            if (this.world.getBlockState(search).getBlock() == QBarBlocks.SOLAR_MIRROR)
+                this.mirrors.put(facing,
+                        (TileSolarMirror) ((ITileMultiblock) this.world.getTileEntity(search)).getCore());
+        }
     }
 }

@@ -129,7 +129,7 @@ public class TileLiquidBoiler extends TileInventoryBase implements ITickable, IC
                 if (this.heat > this.getMinimumTemp())
                     this.heat--;
                 else if (this.heat < this.getMinimumTemp())
-                    this.heat++;
+                    this.heat = this.getMinimumTemp();
             }
             this.sync();
         }

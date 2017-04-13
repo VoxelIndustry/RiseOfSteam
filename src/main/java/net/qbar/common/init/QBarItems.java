@@ -17,17 +17,19 @@ import net.qbar.common.recipe.QBarRecipeHandler;
 public class QBarItems
 {
     @ObjectHolder("punched_card")
-    public static final ItemBase          PUNCHED_CARD = null;
+    public static final ItemBase PUNCHED_CARD    = null;
 
     @ObjectHolder("wrench")
-    public static final ItemBase          WRENCH       = null;
+    public static final ItemBase WRENCH          = null;
 
     @ObjectHolder("blueprint")
-    public static final ItemBase          BLUEPRINT    = null;
+    public static final ItemBase BLUEPRINT       = null;
     @ObjectHolder("ironrod")
-    public static final ItemBase          IRON_ROD     = null;
+    public static final ItemBase IRON_ROD        = null;
     @ObjectHolder("metalplate")
-    public static final ItemBase          METALPLATE   = null;
+    public static final ItemBase METALPLATE      = null;
+    @ObjectHolder("solarreflector")
+    public static final ItemBase SOLAR_REFLECTOR = null;
 
     public static final void registerItems()
     {
@@ -40,6 +42,7 @@ public class QBarItems
         QBarItems.registerItem(new ItemBlueprint());
         QBarItems.registerItem(new ItemBase("ironrod"));
         QBarItems.registerItem(new ItemPlate());
+        QBarItems.registerItem(new ItemBase("solarreflector"));
     }
 
     private static final void registerItem(final ItemBase item)

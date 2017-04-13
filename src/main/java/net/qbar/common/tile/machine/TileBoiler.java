@@ -110,7 +110,7 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
                 if (this.heat > this.getMinimumTemp())
                     this.heat--;
                 else if (this.heat < this.getMinimumTemp())
-                    this.heat++;
+                    this.heat = this.getMinimumTemp();
             }
             this.sync();
         }

@@ -15,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -163,8 +162,10 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     }
 
     @Override
-    public void onNeighborChange(final IBlockAccess w, final BlockPos pos, final BlockPos neighbor)
+    public void neighborChanged(IBlockState state, World w, BlockPos pos, Block block, BlockPos from)
     {
+        super.neighborChanged(state, w, pos, block, from);
+
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
         if (tile != null && !tile.isCore() && !tile.isCorePresent())
             w.getTileEntity(pos).getWorld().destroyBlock(pos, false);
