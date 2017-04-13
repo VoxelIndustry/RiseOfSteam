@@ -4,74 +4,36 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.container.IContainerProvider;
-import net.qbar.common.fluid.DirectionalTank;
-import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
-import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
-import java.util.List;
-
-public class TileBoiler extends TileInventoryBase implements ITickable, IContainerProvider, ITileMultiblockCore
+public class TileBoiler extends TileBoilerBase
 {
-    private final DirectionalTank fluidTank;
-    private final SteamTank       steamTank;
-
-    private int                   heat;
-    private final int             maxHeat;
-
-    private int                   currentBurnTime;
-    private int                   maxBurnTime;
+    private int currentBurnTime;
+    private int maxBurnTime;
 
     public TileBoiler()
     {
-        super("TileBoiler", 1);
-
-        this.fluidTank = new DirectionalTank("TileBoiler", new FilteredFluidTank(Fluid.BUCKET_VOLUME * 4,
-                stack -> stack != null && stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER)),
-                new EnumFacing[0], new EnumFacing[] { EnumFacing.SOUTH, EnumFacing.EAST, EnumFacing.WEST });
-        this.steamTank = new SteamTank(0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
-
-        this.maxHeat = 3000;
+        super("TileBoiler", 1, 3000, 4000, SteamUtil.AMBIANT_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
     }
 
     @Override
     public void update()
     {
-        if (this.isClient())
-        {
-            if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.8f)
-            {
-                this.spawnParticles(EnumParticleTypes.SMOKE_LARGE);
-                this.spawnParticles(EnumParticleTypes.FLAME);
-            }
-            else if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.65f)
-                this.spawnParticles(EnumParticleTypes.SMOKE_NORMAL);
-            if (this.steamTank.getPressure() / this.steamTank.getMaxPressure() >= 0.9f)
-                this.spawnParticles(EnumParticleTypes.LAVA);
-        }
-
-        if (this.steamTank.getPressure() >= this.steamTank.getMaxPressure() && this.isServer())
-            this.world.createExplosion(null, this.pos.getX(), this.pos.getY(), this.pos.getZ(), 3, true);
+        super.update();
 
         if (this.isServer())
         {
@@ -95,12 +57,12 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
             if (this.heat >= 900)
             {
                 int toProduce = (int) (1 / Math.E * (this.heat / 100));
-                final FluidStack drained = this.fluidTank.getInternalFluidHandler().drain(toProduce, true);
+                final FluidStack drained = this.getWaterTank().drain(toProduce, true);
                 if (drained != null)
                     toProduce = drained.amount;
                 else
                     toProduce = 0;
-                this.steamTank.fillSteam(toProduce, true);
+                this.getSteamTank().fillSteam(toProduce, true);
                 if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
                     this.heat--;
             }
@@ -112,58 +74,8 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
                 else if (this.heat < this.getMinimumTemp())
                     this.heat = this.getMinimumTemp();
             }
-            this.sync();
+            //this.sync();
         }
-    }
-
-    private void spawnParticles(final EnumParticleTypes particle)
-    {
-        final int rand = this.world.rand.nextInt(5);
-
-        switch (rand)
-        {
-            case 0:
-                this.world.spawnParticle(particle, this.pos.getX(),
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2,
-                        this.pos.getZ() + .25 + this.world.rand.nextFloat() / 2, -0.01, 0.1f, 0);
-                this.world.spawnParticle(particle, this.pos.getX(),
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2,
-                        this.pos.getZ() + .25 + this.world.rand.nextFloat() / 2, -0.01, 0.1f, 0);
-                break;
-            case 1:
-                this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2, this.pos.getZ(), 0, 0.1f, -0.01);
-                this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2, this.pos.getZ(), 0, 0.1f, -0.01);
-                break;
-            case 2:
-                this.world.spawnParticle(particle, this.pos.getX() + 1,
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2,
-                        this.pos.getZ() + .25 + this.world.rand.nextFloat() / 2, 0.01, 0.1f, 0);
-                this.world.spawnParticle(particle, this.pos.getX() + 1,
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2,
-                        this.pos.getZ() + .25 + this.world.rand.nextFloat() / 2, 0.01, 0.1f, 0);
-                break;
-            case 3:
-                this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2, this.pos.getZ() + 1, 0, 0.1f, 0.01);
-                this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
-                        this.pos.getY() + this.world.rand.nextFloat() / 2 + 0.2, this.pos.getZ() + 1, 0, 0.1f, 0.01);
-                break;
-            case 4:
-                this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
-                        this.pos.getY() + 1, this.pos.getZ() + this.world.rand.nextFloat() / 2, 0.01, 0.1f, 0.01);
-                this.world.spawnParticle(particle, this.pos.getX() + .25 + this.world.rand.nextFloat() / 2,
-                        this.pos.getY() + 1, this.pos.getZ() + this.world.rand.nextFloat() / 2, 0.01, 0.1f, 0.01);
-                break;
-            default:
-                break;
-        }
-    }
-
-    public int getMinimumTemp()
-    {
-        return (int) (this.world.getBiome(this.getPos()).getFloatTemperature(this.pos) * 200);
     }
 
     @Override
@@ -171,13 +83,6 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
     {
         super.writeToNBT(tag);
 
-        tag.setTag("fluidTank", this.fluidTank.writeToNBT(new NBTTagCompound()));
-
-        final NBTTagCompound subTag = new NBTTagCompound();
-        this.steamTank.writeToNBT(subTag);
-        tag.setTag("steamTank", subTag);
-
-        tag.setInteger("heat", this.heat);
         tag.setInteger("currentBurnTime", this.currentBurnTime);
         tag.setInteger("maxBurnTime", this.maxBurnTime);
 
@@ -189,74 +94,8 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
     {
         super.readFromNBT(tag);
 
-        if (tag.hasKey("steamTank"))
-            this.steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
-
-        if (tag.hasKey("fluidTank"))
-            this.fluidTank.readFromNBT(tag);
-
-        this.heat = tag.getInteger("heat");
         this.currentBurnTime = tag.getInteger("currentBurnTime");
         this.maxBurnTime = tag.getInteger("maxBurnTime");
-    }
-
-    @Override
-    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
-    {
-        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
-    {
-        return this.getCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public void addInfo(final List<String> lines)
-    {
-        if (this.fluidTank.getInternalFluidHandler() != null
-                && this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getContents() != null)
-        {
-            lines.add("Containing " + this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getContents()
-                    .getFluid().getName());
-            lines.add(this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getContents().amount + " / "
-                    + this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getCapacity() + " mB");
-        }
-        lines.add("Heat " + this.heat + " / " + this.maxHeat);
-        lines.add("Steam " + this.steamTank.getSteam() + " / " + this.steamTank.getCapacity());
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.steamTank.getPressure()) + " / "
-                + SteamUtil.pressureFormat.format(this.steamTank.getMaxPressure()));
-    }
-
-    public DirectionalTank getFluidTank()
-    {
-        return this.fluidTank;
-    }
-
-    public FluidStack getFluid()
-    {
-        return this.fluidTank.getInternalFluidHandler().getTankProperties()[0].getContents();
-    }
-
-    public void setFluid(final FluidStack fluid)
-    {
-        this.fluidTank.setFluidStack(fluid);
-    }
-
-    public SteamTank getSteamTank()
-    {
-        return this.steamTank;
-    }
-
-    public int getHeat()
-    {
-        return this.heat;
-    }
-
-    public void setHeat(final int heat)
-    {
-        this.heat = heat;
     }
 
     public int getCurrentBurnTime()
@@ -279,42 +118,15 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
         this.maxBurnTime = maxBurnTime;
     }
 
-    public int getMaxHeat()
-    {
-        return this.maxHeat;
-    }
-
-    public int getSteamAmount()
-    {
-        return this.getSteamTank().getSteam();
-    }
-
-    public void setSteamAmount(final int amount)
-    {
-        this.getSteamTank().setSteam(amount);
-    }
-
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("boiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).slot(0, 80, 43).syncIntegerValue(this::getHeat, this::setHeat)
+                .addInventory().tile(this).slot(0, 80, 43).syncFloatValue(this::getHeat, this::setHeat)
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
-                .syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), true);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
+                .syncFluidValue(this::getWater, this::setWater).addInventory().create();
     }
 
     @Override
@@ -354,7 +166,7 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
         {
             if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
                     && side.getPos().getZ() == 0)
-                return (T) getFluidTank().getInternalFluidHandler();
+                return (T) this.getWaterTank();
         }
         return null;
     }
@@ -371,8 +183,8 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
         if (player.isSneaking())
             return false;
 
-        if (FluidUtils.drainPlayerHand(this.getFluidTank().getInternalFluidHandler(), player)
-                || FluidUtils.fillPlayerHand(this.getFluidTank().getInternalFluidHandler(), player))
+        if (FluidUtils.drainPlayerHand(this.getWaterTank(), player)
+                || FluidUtils.fillPlayerHand(this.getWaterTank(), player))
         {
             this.markDirty();
             return true;
@@ -380,5 +192,12 @@ public class TileBoiler extends TileInventoryBase implements ITickable, IContain
         player.openGui(QBar.instance, EGui.BOILER.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
     }
 }

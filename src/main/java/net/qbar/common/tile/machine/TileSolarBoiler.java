@@ -1,55 +1,32 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.multiblock.ITileMultiblock;
-import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
-import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 
-public class TileSolarBoiler extends TileInventoryBase
-        implements ITickable, IContainerProvider, ITileMultiblockCore, ILoadable
+public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 {
-    private FluidTank                            fluidTank;
-    private SteamTank                            steamTank;
-    private float                                heat;
-    private int                                  maxHeat;
-
     private EnumMap<EnumFacing, TileSolarMirror> mirrors;
 
     public TileSolarBoiler()
     {
-        super("solarboiler", 0);
-        fluidTank = new FilteredFluidTank(Fluid.BUCKET_VOLUME * 144,
-                fluidStack -> fluidStack != null && fluidStack.getFluid() == (FluidRegistry.WATER));
-        steamTank = new SteamTank(0, Fluid.BUCKET_VOLUME * 128, SteamUtil.AMBIANT_PRESSURE * 2);
-
-        this.heat = 0;
-        this.maxHeat = 3000;
+        super("solarboiler", 0, 3000, Fluid.BUCKET_VOLUME * 128, SteamUtil.AMBIANT_PRESSURE * 2,
+                Fluid.BUCKET_VOLUME * 144);
 
         this.mirrors = new EnumMap<>(EnumFacing.class);
     }
@@ -57,6 +34,8 @@ public class TileSolarBoiler extends TileInventoryBase
     @Override
     public void update()
     {
+        super.update();
+
         if (this.isClient())
             return;
         float sunValue = getSunValue();
@@ -64,20 +43,29 @@ public class TileSolarBoiler extends TileInventoryBase
         int totalMirrorCount = this.mirrors.values().stream().mapToInt(mirror -> mirror.getMirrorCount()).sum();
         float producedHeat = (0.01f * totalMirrorCount) * sunValue;
 
-        if (this.heat < this.maxHeat)
+        if (this.heat < this.getMaxHeat())
         {
-            if (this.heat + producedHeat < this.maxHeat)
+            if (this.heat + producedHeat < this.getMaxHeat())
                 this.heat += producedHeat;
             else
-                this.heat = this.maxHeat;
-            if(this.heat < this.getMinimumTemp())
+                this.heat = this.getMaxHeat();
+            if (this.heat < this.getMinimumTemp())
                 this.heat = this.getMinimumTemp();
         }
-    }
 
-    public int getMinimumTemp()
-    {
-        return (int) (this.world.getBiome(this.getPos()).getFloatTemperature(this.pos) * 200);
+        if (this.heat >= 900)
+        {
+            int toProduce = (int) (1 / Math.E * (this.heat / 100));
+            final FluidStack drained = this.getWaterTank().drain(toProduce, true);
+            if (drained != null)
+                toProduce = drained.amount;
+            else
+                toProduce = 0;
+            this.getSteamTank().fillSteam(toProduce, true);
+            if (toProduce != 0 && this.world.getTotalWorldTime() % 5 == 0)
+                this.heat--;
+            this.sync();
+        }
     }
 
     private float getSunValue()
@@ -90,75 +78,6 @@ public class TileSolarBoiler extends TileInventoryBase
         if (!this.world.isDaytime())
             baseValue = 0;
         return baseValue;
-    }
-
-    @Override
-    public void addInfo(final List<String> lines)
-    {
-        if (this.getFluidTank().getFluid() != null)
-        {
-            lines.add("Containing " + this.getFluidTank().getFluid().getFluid().getName());
-            lines.add(this.getFluidTank().getFluidAmount() + " / " + this.getFluidTank().getCapacity() + " mB");
-        }
-        lines.add("Heat " + this.heat + " / " + this.maxHeat);
-        lines.add("Steam " + this.steamTank.getSteam() + " / " + this.steamTank.getCapacity());
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.steamTank.getPressure()) + " / "
-                + SteamUtil.pressureFormat.format(this.steamTank.getMaxPressure()));
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
-    {
-        super.writeToNBT(tag);
-
-        tag.setTag("waterTank", this.fluidTank.writeToNBT(new NBTTagCompound()));
-
-        final NBTTagCompound subTag = new NBTTagCompound();
-        this.steamTank.writeToNBT(subTag);
-        tag.setTag("steamTank", subTag);
-
-        tag.setFloat("heat", this.heat);
-        return tag;
-    }
-
-    private ArrayList<MultiblockSide> tmpConnections = new ArrayList<>();
-
-    @Override
-    public void readFromNBT(final NBTTagCompound tag)
-    {
-        super.readFromNBT(tag);
-
-        if (tag.hasKey("steamTank"))
-            this.steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
-
-        if (tag.hasKey("waterTank"))
-            this.fluidTank.readFromNBT(tag.getCompoundTag("waterTank"));
-
-        this.heat = tag.getFloat("heat");
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.pos, false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
-    @Override
-    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
-    {
-        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
-    {
-        return this.getCapability(capability, BlockPos.ORIGIN, facing);
     }
 
     @Override
@@ -182,51 +101,6 @@ public class TileSolarBoiler extends TileInventoryBase
                 .syncFluidValue(this::getWater, this::setWater).addInventory().create();
     }
 
-    public int getSteamAmount()
-    {
-        return this.getSteamTank().getSteam();
-    }
-
-    public void setSteamAmount(final int amount)
-    {
-        this.getSteamTank().setSteam(amount);
-    }
-
-    public SteamTank getSteamTank()
-    {
-        return this.steamTank;
-    }
-
-    public FluidTank getFluidTank()
-    {
-        return this.fluidTank;
-    }
-
-    public FluidStack getWater()
-    {
-        return this.fluidTank.getFluid();
-    }
-
-    public void setWater(final FluidStack fluid)
-    {
-        this.fluidTank.setFluid(fluid);
-    }
-
-    public float getHeat()
-    {
-        return this.heat;
-    }
-
-    public void setHeat(final float heat)
-    {
-        this.heat = heat;
-    }
-
-    public int getMaxHeat()
-    {
-        return this.maxHeat;
-    }
-
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
             final float hitZ, BlockPos from)
@@ -234,8 +108,8 @@ public class TileSolarBoiler extends TileInventoryBase
         if (player.isSneaking())
             return false;
 
-        if (FluidUtils.drainPlayerHand(this.getFluidTank(), player)
-                || FluidUtils.fillPlayerHand(this.getFluidTank(), player))
+        if (FluidUtils.drainPlayerHand(this.getWaterTank(), player)
+                || FluidUtils.fillPlayerHand(this.getWaterTank(), player))
         {
             this.markDirty();
             return true;

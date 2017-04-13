@@ -18,7 +18,7 @@ public class GuiBoiler extends GuiMachineBase<TileBoiler>
     {
         super(player, boiler);
 
-        this.addFluidTank(boiler.getFluidTank().getInternalFluidHandler(), 128, 7, 18, 73);
+        this.addFluidTank(boiler.getWaterTank(), 128, 7, 18, 73);
         this.addSteamTank(boiler.getSteamTank(), 151, 7, 18, 73);
     }
 
@@ -66,7 +66,7 @@ public class GuiBoiler extends GuiMachineBase<TileBoiler>
         if (i == 0)
             return -1;
 
-        return Math.min(this.getMachine().getHeat() * pixels / i, pixels);
+        return (int) Math.min(this.getMachine().getHeat() * pixels / i, pixels);
     }
 
     private int getBurnLeftScaled(final int pixels)

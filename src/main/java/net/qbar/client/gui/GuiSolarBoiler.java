@@ -1,7 +1,5 @@
 package net.qbar.client.gui;
 
-import java.util.Arrays;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -10,16 +8,27 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
 import net.qbar.common.tile.machine.TileSolarBoiler;
 
+import java.text.NumberFormat;
+import java.util.Arrays;
+
 public class GuiSolarBoiler extends GuiMachineBase<TileSolarBoiler>
 {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(QBar.MODID,
-            "textures/gui/solarboiler.png");
+    public static final NumberFormat heatFormat;
+
+    static
+    {
+        heatFormat = NumberFormat.getInstance();
+        heatFormat.setMaximumFractionDigits(1);
+        heatFormat.setMinimumFractionDigits(1);
+    }
+
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(QBar.MODID, "textures/gui/solarboiler.png");
 
     public GuiSolarBoiler(final EntityPlayer player, final TileSolarBoiler boiler)
     {
         super(player, boiler);
 
-        this.addFluidTank(boiler.getFluidTank(), 128, 7, 18, 73);
+        this.addFluidTank(boiler.getWaterTank(), 128, 7, 18, 73);
         this.addSteamTank(boiler.getSteamTank(), 151, 7, 18, 73);
     }
 
@@ -35,7 +44,7 @@ public class GuiSolarBoiler extends GuiMachineBase<TileSolarBoiler>
         if (mouseX > x + 10 && mouseX < x + 22 && mouseY > y + 8 && mouseY < y + 79)
         {
             GuiUtils.drawHoveringText(
-                    Arrays.asList(TextFormatting.GOLD + "" + this.getMachine().getHeat() / 10 + " / "
+                    Arrays.asList(TextFormatting.GOLD + "" + heatFormat.format(this.getMachine().getHeat() / 10) + " / "
                             + this.getMachine().getMaxHeat() / 10 + " °C"),
                     mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
         }
