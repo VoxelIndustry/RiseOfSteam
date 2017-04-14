@@ -178,7 +178,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     {
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
 
-        if (tile != null)
+        if (tile != null && tile.getCore() != null)
             return tile.getCore().onRightClick(player, facing, hitX, hitY, hitZ, tile.getCoreOffset());
         return false;
     }
