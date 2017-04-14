@@ -1,7 +1,5 @@
 package net.qbar.common.init;
 
-import java.util.function.Function;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -12,14 +10,14 @@ import net.qbar.QBar;
 import net.qbar.common.block.*;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.item.ItemBlockMetadata;
-import net.qbar.common.multiblock.BlockStructure;
-import net.qbar.common.multiblock.Multiblocks;
-import net.qbar.common.multiblock.TileMultiblockGag;
+import net.qbar.common.multiblock.*;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
 import net.qbar.common.tile.machine.*;
+
+import java.util.function.Function;
 
 @ObjectHolder(QBar.MODID)
 public class QBarBlocks
@@ -116,7 +114,10 @@ public class QBarBlocks
 
     public static final void registerBlock(final Block block, final String name)
     {
-        QBarBlocks.registerBlock(block, ItemBlock::new, name);
+        if(block instanceof BlockMultiblockBase)
+            QBarBlocks.registerBlock(block, ItemBlockMultiblockBase::new, name);
+        else
+            QBarBlocks.registerBlock(block, ItemBlock::new, name);
     }
 
     public static final void registerBlock(final Block block, final Function<Block, ItemBlock> supplier,
