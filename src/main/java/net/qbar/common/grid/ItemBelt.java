@@ -1,10 +1,9 @@
 package net.qbar.common.grid;
 
-import javax.annotation.Nonnull;
-
-import org.lwjgl.util.vector.Vector2f;
-
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.vecmath.Vector2f;
 
 public class ItemBelt
 {

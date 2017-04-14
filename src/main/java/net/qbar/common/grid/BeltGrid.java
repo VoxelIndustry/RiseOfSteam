@@ -1,11 +1,5 @@
 package net.qbar.common.grid;
 
-import java.util.Iterator;
-
-import javax.annotation.Nonnull;
-
-import org.lwjgl.util.vector.Vector2f;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -14,6 +8,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.qbar.common.steam.SteamTank;
+
+import javax.annotation.Nonnull;
+import javax.vecmath.Vector2f;
+import java.util.Iterator;
 
 public class BeltGrid extends CableGrid
 {

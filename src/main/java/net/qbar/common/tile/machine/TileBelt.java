@@ -16,8 +16,8 @@ import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
-import org.lwjgl.util.vector.Vector2f;
 
+import javax.vecmath.Vector2f;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
