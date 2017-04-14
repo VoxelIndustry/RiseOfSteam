@@ -1,11 +1,11 @@
 package net.qbar.common.grid;
 
+import net.minecraft.util.EnumFacing;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import net.minecraft.util.EnumFacing;
 
 public class GridManager
 {
@@ -78,7 +78,7 @@ public class GridManager
 
             if (adjacent.getGrid() != -1)
             {
-                if (added.getGrid() == -1 && added.canConnect(adjacent))
+                if (added.getGrid() == -1 && this.getGrid(adjacent.getGrid()) != null && added.canConnect(adjacent))
                 {
                     added.setGrid(adjacent.getGrid());
                     this.getGrid(added.getGrid()).addCable(added);
