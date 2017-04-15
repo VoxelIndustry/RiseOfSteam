@@ -388,7 +388,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
 
     public final VisibilityModelState state = new VisibilityModelState();
 
-    private void updateState()
+    public void updateState()
     {
         if (this.isServer())
         {

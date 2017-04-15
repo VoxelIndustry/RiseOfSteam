@@ -89,7 +89,6 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     public void connect(final EnumFacing facing, final ITileCable<G> to)
     {
         this.connections.put(facing, to);
-        this.updateState();
     }
 
     @Override
@@ -178,8 +177,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
                     this.connectHandler(facing, null, null);
             }
 
-            if (this.connections.size() == 0 && previousConnections != 0
-                    || this.adjacentHandler.size() == 0 && previousHandlers != 0)
+            if (this.connections.size() != previousConnections || this.adjacentHandler.size() != previousHandlers)
                 this.updateState();
         }
     }
@@ -208,7 +206,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
 
     public final VisibilityModelState state = new VisibilityModelState();
 
-    private void updateState()
+    public void updateState()
     {
         if (this.isServer())
         {
