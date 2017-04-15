@@ -2,19 +2,50 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "all": "blocks/dirt"
         },
-        "uvlock": true
+        "model": "qbar:keypunch.obj",
+        "custom": {
+            "flip-v": true
+        }
     },
     "variants": {
         "normal": {
-            "model": "cube_all"
+            "transform": "forge:default-block"
+        },
+        "facing": {
+            "north": {
+                "y": 270
+            },
+            "south": {
+                "y": 90
+            },
+            "east": {},
+            "west": {
+                "y": 180
+            }
         },
         "multiblockgag": {
-            "true": {}, "false": {}
+            "true": {},
+            "false": {}
         },
         "inventory": {
-            "model": "cube_all"
+            "model": "qbar:keypunch.obj",
+            "transform": {
+                "scale": 0.23,
+                "rotation": [
+                    {
+                        "x": 20
+                    },
+                    {
+                        "y": -45
+                    }
+                ],
+                "translation": [
+                    0,
+                    -0.3,
+                    0
+                ]
+            }
         }
     }
 }
