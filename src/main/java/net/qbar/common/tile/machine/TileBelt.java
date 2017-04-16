@@ -7,6 +7,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.client.ClientTickHandler;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.event.TickHandler;
@@ -67,7 +68,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing.getAxis().isHorizontal())
             return this.getGrid() != -1 && this.getGridObject() != null;
         return super.hasCapability(capability, facing);
     }
@@ -76,7 +77,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing.getAxis().isHorizontal())
             return (T) this.getGridObject().getTank();
         return super.getCapability(capability, facing);
     }
@@ -415,7 +416,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
                 this.state.parts.add("west");
         }
 
-        this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+        ClientTickHandler.scheduledRender.add(this.getWorld().getChunkFromBlockCoords(this.getPos()));
     }
 
     public boolean isConnected(final EnumFacing facing)
