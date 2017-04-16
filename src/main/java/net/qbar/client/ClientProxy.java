@@ -20,6 +20,7 @@ import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.client.render.tile.RenderRollingMill;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
+import net.qbar.common.event.TickHandler;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileStructure;
@@ -47,6 +48,7 @@ public class ClientProxy extends CommonProxy
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
 
         ClientProxy.registerFluidsClient();
+        MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
     }
 
     @Override
