@@ -47,7 +47,7 @@ public interface ITileCable<T extends CableGrid>
 
     void updateState();
 
-    public default void adjacentConnect()
+    default void adjacentConnect()
     {
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
@@ -63,7 +63,7 @@ public interface ITileCable<T extends CableGrid>
         this.updateState();
     }
 
-    public default BlockPos getAdjacentPos(final EnumFacing facing)
+    default BlockPos getAdjacentPos(final EnumFacing facing)
     {
         return this.getBlockPos().offset(facing);
     }

@@ -17,6 +17,7 @@ import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Vector2f;
 import java.util.ArrayList;
@@ -416,7 +417,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
                 this.state.parts.add("west");
         }
 
-        ClientTickHandler.scheduledRender.add(this.getWorld().getChunkFromBlockCoords(this.getPos()));
+        ClientTickHandler.scheduledRender
+                .add(Pair.of(this.getWorld().getChunkFromBlockCoords(this.getPos()), this.getPos().getY() - (this.getPos().getY() % 16)));
     }
 
     public boolean isConnected(final EnumFacing facing)

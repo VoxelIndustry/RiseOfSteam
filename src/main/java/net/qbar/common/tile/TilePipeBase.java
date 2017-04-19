@@ -1,12 +1,10 @@
 package net.qbar.common.tile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.ClientTickHandler;
 import net.qbar.client.render.tile.VisibilityModelState;
@@ -15,8 +13,8 @@ import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
@@ -219,13 +217,6 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         }
         this.state.parts.clear();
 
-        this.state.parts.add("valvex1");
-        this.state.parts.add("valvex2");
-        this.state.parts.add("valvey1");
-        this.state.parts.add("valvey2");
-        this.state.parts.add("valvez1");
-        this.state.parts.add("valvez2");
-
         if (this.connections.isEmpty() && this.adjacentHandler.isEmpty())
         {
             this.state.parts.add("armx1");
@@ -286,7 +277,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
                 this.state.parts.add("armx2");
         }
         ClientTickHandler.scheduledRender
-                .add(this.getWorld().getChunkFromBlockCoords(this.getPos()));
+                .add(Pair.of(this.getWorld().getChunkFromBlockCoords(this.getPos()), this.getPos().getY()));
     }
 
     public boolean isStraight()
