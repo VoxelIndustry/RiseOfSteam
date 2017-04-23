@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.qbar.QBar;
 import net.qbar.client.render.BlueprintRender;
+import net.qbar.client.render.model.obj.QBarOBJLoader;
 import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.client.render.tile.RenderRollingMill;
 import net.qbar.client.render.tile.RenderStructure;
@@ -33,6 +35,9 @@ public class ClientProxy extends CommonProxy
     public void preInit(final FMLPreInitializationEvent e)
     {
         OBJLoader.INSTANCE.addDomain(QBar.MODID);
+        ModelLoaderRegistry.registerLoader(QBarOBJLoader.INSTANCE);
+        QBarOBJLoader.INSTANCE.addDomain(QBar.MODID);
+
         MinecraftForge.EVENT_BUS.register(this);
         super.preInit(e);
 

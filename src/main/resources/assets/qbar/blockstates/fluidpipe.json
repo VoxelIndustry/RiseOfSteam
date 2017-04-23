@@ -8,7 +8,7 @@
     },
     "variants": {
         "normal": {
-			"model": "qbar:fluidpipe.obj"
+			"model": "qbar:fluidpipe.mwm"
         },
         "inventory": {
 			"model": "qbar:fluidpipe_inventory.obj"

@@ -8,7 +8,7 @@
     },
     "variants": {
         "normal": {
-			"model": "qbar:steampipe.obj"
+			"model": "qbar:steampipe.mwm"
         },
         "inventory": {
 			"model": "qbar:steampipe_inventory.obj"

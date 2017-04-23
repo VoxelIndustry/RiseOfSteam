@@ -16,6 +16,7 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
+import net.qbar.client.render.model.obj.QBarStateProperties;
 import net.qbar.common.tile.TilePipeBase;
 
 public abstract class BlockPipeBase extends BlockMachineBase
@@ -56,7 +57,7 @@ public abstract class BlockPipeBase extends BlockMachineBase
         if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TilePipeBase)
         {
             final TilePipeBase<?, ?> tile = (TilePipeBase<?, ?>) world.getTileEntity(pos);
-            return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, tile.state);
+            return ((IExtendedBlockState) state).withProperty(QBarStateProperties.VISIBILITY_PROPERTY, tile.getVisibilityState());
         }
         return state;
     }
@@ -64,7 +65,7 @@ public abstract class BlockPipeBase extends BlockMachineBase
     @Override
     public BlockStateContainer createBlockState()
     {
-        return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[] { Properties.AnimationProperty });
+        return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[] {QBarStateProperties.VISIBILITY_PROPERTY});
     }
 
     @Override
