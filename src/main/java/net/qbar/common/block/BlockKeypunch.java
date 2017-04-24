@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -24,15 +25,9 @@ public class BlockKeypunch extends BlockMultiblockBase
     }
 
     @Override
-    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-            final float hitZ)
+    public BlockRenderLayer getBlockLayer()
     {
-        if (player.isSneaking())
-            return false;
-
-        player.openGui(QBar.instance, EGui.KEYPUNCH.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
-        return true;
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
