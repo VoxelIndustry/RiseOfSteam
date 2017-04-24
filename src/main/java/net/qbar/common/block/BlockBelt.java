@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -26,6 +27,7 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
+import net.qbar.client.render.model.obj.QBarStateProperties;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.machine.TileBelt;
@@ -50,12 +52,23 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     public static final PropertyEnum<EBeltDirection> FACING           = PropertyEnum.create("facing",
             EBeltDirection.class);
     public static final PropertyEnum<EBeltSlope>     SLOP             = PropertyEnum.create("slope", EBeltSlope.class);
+    public static final PropertyBool                 ANIMATED         = PropertyBool.create("animated");
 
     public BlockBelt()
     {
         super("belt", Material.IRON);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EBeltDirection.NORTH)
-                .withProperty(BlockBelt.SLOP, EBeltSlope.NORMAL));
+                .withProperty(BlockBelt.SLOP, EBeltSlope.NORMAL).withProperty(BlockBelt.ANIMATED, false));
+    }
+
+    @Deprecated
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileBelt belt = (TileBelt) worldIn.getTileEntity(pos);
+
+        if (belt != null)
+            state = state.withProperty(BlockBelt.ANIMATED, belt.isWorking());
+        return state;
     }
 
     @Override
@@ -227,7 +240,8 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
         if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileBelt)
         {
             final TileBelt tile = (TileBelt) world.getTileEntity(pos);
-            return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, tile.state);
+            return ((IExtendedBlockState) state).withProperty(QBarStateProperties.VISIBILITY_PROPERTY,
+                    tile.getVisibilityState());
         }
         return state;
     }
@@ -235,8 +249,8 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new ExtendedBlockState(this, new IProperty[] { BlockBelt.FACING, BlockBelt.SLOP },
-                new IUnlistedProperty[] { Properties.AnimationProperty });
+        return new ExtendedBlockState(this, new IProperty[] { BlockBelt.FACING, BlockBelt.SLOP, BlockBelt.ANIMATED },
+                new IUnlistedProperty[] { QBarStateProperties.VISIBILITY_PROPERTY });
     }
 
     public EBeltSlope getSlopState(final IBlockState state)
@@ -290,7 +304,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
         return true;
     }
 
-    public static enum EBeltSlope implements IStringSerializable
+    public enum EBeltSlope implements IStringSerializable
     {
         NORMAL, UP, DOWN;
 
@@ -334,7 +348,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
         }
     }
 
-    public static enum EBeltDirection implements IStringSerializable
+    public enum EBeltDirection implements IStringSerializable
     {
         NORTH, EAST, SOUTH, WEST;
 

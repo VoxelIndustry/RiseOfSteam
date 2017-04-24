@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -51,6 +52,10 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
 
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
+
+        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
+                new ResourceLocation(QBar.MODID + ":block/belt.mwm"), new String[] { "Top" },
+                new String[] { "qbar:blocks/belt_top_anim" });
 
         ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());

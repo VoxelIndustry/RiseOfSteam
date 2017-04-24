@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.ClientTickHandler;
+import net.qbar.client.render.model.obj.QBarOBJState;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.event.TickHandler;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.vecmath.Vector2f;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -388,7 +390,49 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     // RENDER //
     ////////////
 
-    public final VisibilityModelState state = new VisibilityModelState();
+    private static final HashMap<String, QBarOBJState> variants = new HashMap<>();
+
+    public QBarOBJState getVisibilityState()
+    {
+        String key = this.getVariantKey();
+
+        if (!this.variants.containsKey(key))
+            this.variants.put(key, buildVisibilityState());
+        return this.variants.get(key);
+    }
+
+    public String getVariantKey()
+    {
+        if (this.getFacing().getAxis().isVertical())
+            return "vertical";
+
+        StringBuilder rtn = new StringBuilder(2);
+
+        if (this.isConnected(this.getFacing().rotateY()))
+            rtn.append("e");
+        if (this.isConnected(this.getFacing().rotateY().getOpposite()))
+            rtn.append("w");
+        return rtn.toString();
+    }
+
+    private QBarOBJState buildVisibilityState()
+    {
+        List<String> parts = new ArrayList<>();
+
+        if (this.getFacing().getAxis().isVertical())
+        {
+            parts.add("east");
+            parts.add("west");
+        }
+        else
+        {
+            if (!this.isConnected(this.getFacing().rotateY()))
+                parts.add("east");
+            if (!this.isConnected(this.getFacing().rotateY().getOpposite()))
+                parts.add("west");
+        }
+        return new QBarOBJState(parts, false);
+    }
 
     public void updateState()
     {
@@ -397,28 +441,9 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
             this.sync();
             return;
         }
-        this.state.parts.clear();
-
-        if (this.isWorking())
-            this.state.parts.add("static");
-        else
-            this.state.parts.add("animated");
-
-        if (this.getFacing().getAxis().isVertical())
-        {
-            this.state.parts.add("east");
-            this.state.parts.add("west");
-        }
-        else
-        {
-            if (!this.isConnected(this.getFacing().rotateY()))
-                this.state.parts.add("east");
-            if (!this.isConnected(this.getFacing().rotateY().getOpposite()))
-                this.state.parts.add("west");
-        }
 
         ClientTickHandler.scheduledRender
-                .add(Pair.of(this.getWorld().getChunkFromBlockCoords(this.getPos()), this.getPos().getY() - (this.getPos().getY() % 16)));
+                .add(Pair.of(this.getWorld().getChunkFromBlockCoords(this.getPos()), this.getPos().getY()));
     }
 
     public boolean isConnected(final EnumFacing facing)

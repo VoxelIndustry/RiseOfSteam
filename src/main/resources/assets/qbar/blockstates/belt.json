@@ -1,38 +1,44 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-        },
-        "transform": "forge:default-block",
-        "custom": { "flip-v": true },
-        "model": "qbar:belt.obj"
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
     },
-    "variants": {
-        "facing": {
-            "north": {},
-            "south": {
-                "y": 180
-            },
-            "east": {
-                "y": 90
-            },
-            "west": {
-                "y": 270
-            },
-            "up": {},
-            "down": {}
-        },
-        "slope": {
-            "down": {
-                "model": "qbar:belt_slope.obj"
-            },
-            "normal": {},
-            "up": {
-                "model": "qbar:belt_slope2.obj"
-            }
-        },
-        "inventory": {
-            "model": "qbar:belt.obj"
-        }
+    "transform": "forge:default-block",
+    "custom": { "flip-v": true },
+    "model": "qbar:belt.mwm"
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      },
+      "up": {},
+      "down": {}
+    },
+    "slope": {
+      "down": {
+        "model": "qbar:belt_slope.mwm"
+      },
+      "normal": {},
+      "up": {
+        "model": "qbar:belt_slope2.mwm"
+      }
+    },
+    "animated": {
+      "true": {
+        "model": "qbar:_belt_animated.mwm"
+      },
+      "false": {}
+    },
+    "inventory": {
+      "model": "qbar:belt.mwm"
     }
+  }
 }

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -19,15 +19,26 @@ public enum QBarOBJLoader implements ICustomModelLoader
 {
     INSTANCE;
 
-    private IResourceManager                          manager;
-    private final Set<String>                         enabledDomains = new HashSet<>();
-    private final Map<ResourceLocation, QBarOBJModel> cache          = new HashMap<>();
-    private final Map<ResourceLocation, Exception>    errors         = new HashMap<>();
+    private IResourceManager                       manager;
+    private final Set<String>                      enabledDomains = new HashSet<>();
+    private final Map<ResourceLocation, IModel>    cache          = new HashMap<>();
+    private final Map<ResourceLocation, Exception> errors         = new HashMap<>();
+
+    private final Map<String, RetextureData>          reTexturedMap  = new HashMap<>();
 
     public void addDomain(String domain)
     {
         enabledDomains.add(domain.toLowerCase());
         QBar.logger.info("Domain registered for QBarOBJLoader: " + domain.toLowerCase());
+    }
+
+    public void addRetexturedModel(String modelName, ResourceLocation sourceModel, String[] matKeys, String[] textures)
+    {
+        HashMap<String, String> map = new HashMap<>();
+        for (int i = 0; i < matKeys.length; i++)
+            map.put(matKeys[i].startsWith("#") ? matKeys[i] : "#" + matKeys[i], textures[i]);
+
+        this.reTexturedMap.put(modelName, new RetextureData(sourceModel, ImmutableMap.copyOf(map)));
     }
 
     @Override
@@ -44,14 +55,24 @@ public enum QBarOBJLoader implements ICustomModelLoader
                 modelLocation.getResourcePath());
         if (!cache.containsKey(file))
         {
-            IModel model = OBJLoader.INSTANCE.loadModel(modelLocation);
-            if (model instanceof OBJModel)
+            String fileName = file.getResourcePath().substring(file.getResourcePath().lastIndexOf("/") + 1,
+                    file.getResourcePath().length());
+            if (fileName.startsWith("_") && this.reTexturedMap.containsKey(fileName))
             {
-                QBarOBJModel obj = new QBarOBJModel(((OBJModel) model).getMatLib(), file);
-                cache.put(modelLocation, obj);
+                cache.put(modelLocation, new RetexturedOBJModel(this.reTexturedMap.get(fileName).getOriginalModel(),
+                        this.reTexturedMap.get(fileName).getReplacedTextures()));
+            }
+            else
+            {
+                IModel model = OBJLoader.INSTANCE.loadModel(modelLocation);
+                if (model instanceof OBJModel)
+                {
+                    QBarOBJModel obj = new QBarOBJModel(((OBJModel) model).getMatLib(), file);
+                    cache.put(modelLocation, obj);
+                }
             }
         }
-        QBarOBJModel model = cache.get(file);
+        IModel model = cache.get(file);
         if (model == null)
             return ModelLoaderRegistry.getMissingModel();
         return model;
