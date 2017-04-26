@@ -6,15 +6,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.qbar.client.ClientTickHandler;
 import net.qbar.client.render.model.obj.QBarOBJState;
-import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.ITileCable;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -311,8 +308,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
             return;
         }
 
-        ClientTickHandler.scheduledRender
-                .add(Pair.of(this.getWorld().getChunkFromBlockCoords(this.getPos()), this.getPos().getY()));
+        this.world.markBlockRangeForRenderUpdate(this.getPos(), this.getPos());
     }
 
     public boolean isStraight()

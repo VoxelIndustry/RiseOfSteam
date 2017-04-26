@@ -1,15 +1,12 @@
 package net.qbar.client.render.model.obj;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
+
+import java.util.List;
 
 public class QBarOBJState implements IModelState
 {
@@ -28,16 +25,6 @@ public class QBarOBJState implements IModelState
 
         this.visibilityList = Lists.newArrayList(visibleGroups);
         this.whitelist = visibility;
-    }
-
-    @Nullable
-    public IModelState getParent(IModelState parent)
-    {
-        if (parent == null)
-            return null;
-        else if (parent instanceof QBarOBJState)
-            return ((QBarOBJState) parent).parent;
-        return parent;
     }
 
     public Optional<TRSRTransformation> apply(Optional<? extends IModelPart> part)

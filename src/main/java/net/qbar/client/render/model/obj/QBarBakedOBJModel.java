@@ -1,29 +1,17 @@
 package net.qbar.client.render.model.obj;
 
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -31,9 +19,13 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.Models;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.qbar.client.render.model.ModelTransformer;
 
-import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
 {
@@ -64,7 +56,7 @@ public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
                     @Override
                     public ImmutableList<BakedQuad> load(final QBarOBJState key)
                     {
-                        return QBarBakedOBJModel.this.buildQuads(key);
+                        return QBarBakedOBJModel.this.buildQuads(new CompositeModelState(state, key));
                     }
                 });
     }
@@ -103,6 +95,7 @@ public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
         Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
         Set<OBJModel.Face> faces = Collections.synchronizedSet(new LinkedHashSet<OBJModel.Face>());
         Optional<TRSRTransformation> transform = Optional.absent();
+
         for (OBJModel.Group g : this.model.getMatLib().getGroups().values())
         {
             if (modelState.apply(Optional.of(Models.getHiddenModelPart(ImmutableList.of(g.getName())))).isPresent())
@@ -120,9 +113,21 @@ public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
                 else if(!state.isWhitelist() && !state.getVisibilityList().contains(g.getName()))
                     faces.addAll(g.applyTransform(transform));
             }
+            else if(modelState instanceof CompositeModelState)
+            {
+                System.out.println("TTEEEADA");
+                QBarOBJState state = (QBarOBJState) ((CompositeModelState) modelState).getSecond();
+                transform = modelState.apply(Optional.absent());
+
+                if (state.isWhitelist() && state.getVisibilityList().contains(g.getName()))
+                    faces.addAll(g.applyTransform(transform));
+                else if(!state.isWhitelist() && !state.getVisibilityList().contains(g.getName()))
+                    faces.addAll(g.applyTransform(transform));
+            }
             else
             {
                 transform = state.apply(Optional.absent());
+
                 faces.addAll(g.applyTransform(transform));
             }
         }

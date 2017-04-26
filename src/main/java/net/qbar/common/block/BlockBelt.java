@@ -26,7 +26,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.Properties;
 import net.qbar.client.render.model.obj.QBarStateProperties;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.grid.GridManager;
@@ -270,6 +269,8 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     @Override
     public boolean rotateBlock(final World world, final BlockPos pos, final EnumFacing facing)
     {
+        if (facing == null || !EnumFacing.Plane.HORIZONTAL.apply(facing))
+            return false;
         NBTTagCompound tag = null;
         if (!world.isRemote)
         {
@@ -277,7 +278,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
             GridManager.getInstance().disconnectCable((TileBelt) world.getTileEntity(pos));
         }
 
-        super.rotateBlock(world, pos, facing);
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.FACING, EBeltDirection.fromFacing(facing)));
 
         if (!world.isRemote)
         {

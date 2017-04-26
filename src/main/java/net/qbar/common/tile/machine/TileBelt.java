@@ -7,9 +7,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.qbar.client.ClientTickHandler;
 import net.qbar.client.render.model.obj.QBarOBJState;
-import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.*;
@@ -18,7 +16,6 @@ import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Vector2f;
 import java.util.ArrayList;
@@ -442,8 +439,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
             return;
         }
 
-        ClientTickHandler.scheduledRender
-                .add(Pair.of(this.getWorld().getChunkFromBlockCoords(this.getPos()), this.getPos().getY()));
+        this.world.markBlockRangeForRenderUpdate(this.getPos(), this.getPos());
     }
 
     public boolean isConnected(final EnumFacing facing)
