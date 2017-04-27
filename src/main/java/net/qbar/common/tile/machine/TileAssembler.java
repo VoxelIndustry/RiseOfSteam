@@ -31,6 +31,8 @@ import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
@@ -44,15 +46,15 @@ import java.util.List;
 public class TileAssembler extends TileInventoryBase
         implements IContainerProvider, ITickable, ITileMultiblockCore, ISidedInventory
 {
-    private final CraftingMachineDescriptor descriptor = QBarMachines.ASSEMBLER;
-    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
+    private final CraftingMachineDescriptor descriptor       = QBarMachines.ASSEMBLER;
+    private final IItemHandler              inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
     private final BaseProperty<Float>       currentProgress;
     private float                           maxProgress;
 
     private final SteamTank                 steamTank;
 
     private CraftCard                       craft;
-    private ItemStack                       cached     = ItemStack.EMPTY;
+    private ItemStack                       cached           = ItemStack.EMPTY;
 
     private ItemStack                       resultTemp;
     private NonNullList<ItemStack>          remainingsTemp;
@@ -167,7 +169,7 @@ public class TileAssembler extends TileInventoryBase
                 {
                     if (this.canInsert(this.getStackInSlot(i + 11), orientation))
                     {
-                        this.insert(this.decrStackSize(i+11,1), orientation);
+                        this.insert(this.decrStackSize(i + 11, 1), orientation);
                         this.sync();
                     }
                     break;
@@ -314,8 +316,14 @@ public class TileAssembler extends TileInventoryBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 0)
-            return true;
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        {
+            MultiblockSide side = Multiblocks.ASSEMBLER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+            if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 0 && side.getPos().getY() == 0
+                    && side.getPos().getZ() == 1)
+                return true;
+        }
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
             return true;
         return super.hasCapability(capability, facing);
@@ -324,8 +332,14 @@ public class TileAssembler extends TileInventoryBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 0)
-            return (T) this.steamTank;
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        {
+            MultiblockSide side = Multiblocks.ASSEMBLER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                    this.getFacing());
+            if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 0 && side.getPos().getY() == 0
+                    && side.getPos().getZ() == 1)
+                return (T) this.steamTank;
+        }
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
             return (T) this.inventoryHandler;
         return super.getCapability(capability, facing);

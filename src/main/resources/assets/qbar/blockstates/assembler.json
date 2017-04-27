@@ -1,20 +1,51 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-            "all": "qbar:blocks/assembler"
-        },
-        "uvlock": true
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
     },
-    "variants": {
-        "normal": {
-            "model": "cube_all"
-        },
-        "multiblockgag": {
-            "true": {}, "false": {}
-        },
-        "inventory": {
-            "model": "cube_all"
-        }
+    "model": "qbar:assembler.obj",
+    "custom": {
+      "flip-v": true
     }
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 270
+      },
+      "south": {
+        "y": 90
+      },
+      "east": {},
+      "west": {
+        "y": 180
+      }
+    },
+    "multiblockgag": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": {
+      "model": "qbar:assembler.obj",
+      "transform": {
+        "scale": 0.23,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.3,
+          0
+        ]
+      }
+    }
+  }
 }
