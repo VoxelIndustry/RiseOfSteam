@@ -18,10 +18,7 @@ import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.network.ContainerUpdatePacket;
-import net.qbar.common.network.FilteredMachinePacket;
-import net.qbar.common.network.KeypunchPacket;
-import net.qbar.common.network.TileSyncRequestPacket;
+import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 
@@ -34,6 +31,7 @@ public class CommonProxy
         QBar.network.register(TileSyncRequestPacket.class);
         QBar.network.register(KeypunchPacket.class);
         QBar.network.register(FilteredMachinePacket.class);
+        QBar.network.register(PipeUpdatePacket.class);
 
         CapabilitySteamHandler.register();
 

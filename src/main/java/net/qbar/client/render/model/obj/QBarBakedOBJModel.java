@@ -115,7 +115,6 @@ public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
             }
             else if(modelState instanceof CompositeModelState)
             {
-                System.out.println("TTEEEADA");
                 QBarOBJState state = (QBarOBJState) ((CompositeModelState) modelState).getSecond();
                 transform = modelState.apply(Optional.absent());
 

@@ -57,10 +57,8 @@ public interface ITileCable<T extends CableGrid>
             {
                 this.connect(facing, (ITileCable<T>) adjacent);
                 ((ITileCable<T>) adjacent).connect(facing.getOpposite(), this);
-                ((ITileCable<T>) adjacent).updateState();
             }
         }
-        this.updateState();
     }
 
     default BlockPos getAdjacentPos(final EnumFacing facing)
