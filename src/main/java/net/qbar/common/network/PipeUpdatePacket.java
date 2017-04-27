@@ -64,7 +64,8 @@ public class PipeUpdatePacket extends Message
         int i = 0;
         for (BlockPos posAdjacent : this.adjacentsPos)
         {
-            ((TilePipeBase) w.getTileEntity(posAdjacent)).readRenderConnections(this.adjacentsTag.get(i));
+            if (w.getTileEntity(posAdjacent) != null)
+                ((TilePipeBase) w.getTileEntity(posAdjacent)).readRenderConnections(this.adjacentsTag.get(i));
             i++;
         }
 

@@ -4,38 +4,137 @@
     "textures": {
     },
     "transform": "forge:default-block",
-    "custom": { "flip-v": true },
+    "custom": {
+      "flip-v": true
+    },
     "model": "qbar:belt.mwm"
   },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {
-        "y": 180
-      },
-      "east": {
-        "y": 90
-      },
-      "west": {
-        "y": 270
-      },
-      "up": {},
-      "down": {}
+    "animated=false,facing=north,slope=down": {
+      "model": "qbar:belt_slope.mwm"
     },
-    "slope": {
-      "down": {
-        "model": "qbar:belt_slope.mwm"
-      },
-      "normal": {},
-      "up": {
-        "model": "qbar:belt_slope2.mwm"
-      }
+    "animated=false,facing=north,slope=normal": {
+      "model": "qbar:belt.mwm"
     },
-    "animated": {
-      "true": {
-        "model": "qbar:_belt_animated.mwm"
-      },
-      "false": {}
+    "animated=false,facing=north,slope=up": {
+      "model": "qbar:belt_slope2.mwm"
+    },
+    "animated=true,facing=north,slope=down": {
+      "model": "qbar:_belt_slope_animated.mwm"
+    },
+    "animated=true,facing=north,slope=up": {
+      "model": "qbar:_belt_slope2_animated.mwm"
+    },
+    "animated=true,facing=north,slope=normal": {
+      "model": "qbar:_belt_animated.mwm"
+    },
+    "animated=false,facing=south,slope=down": {
+      "model": "qbar:belt_slope.mwm",
+      "y": 180
+    },
+    "animated=false,facing=south,slope=normal": {
+      "model": "qbar:belt.mwm",
+      "y": 180
+    },
+    "animated=false,facing=south,slope=up": {
+      "model": "qbar:belt_slope2.mwm",
+      "y": 180
+    },
+    "animated=true,facing=south,slope=down": {
+      "model": "qbar:_belt_slope_animated.mwm",
+      "y": 180
+    },
+    "animated=true,facing=south,slope=up": {
+      "model": "qbar:_belt_slope2_animated.mwm",
+      "y": 180
+    },
+    "animated=true,facing=south,slope=normal": {
+      "model": "qbar:_belt_animated.mwm",
+      "y": 180
+    },
+    "animated=false,facing=west,slope=down": {
+      "model": "qbar:belt_slope.mwm",
+      "y": 270
+    },
+    "animated=false,facing=west,slope=normal": {
+      "model": "qbar:belt.mwm",
+      "y": 270
+    },
+    "animated=false,facing=west,slope=up": {
+      "model": "qbar:belt_slope2.mwm",
+      "y": 270
+    },
+    "animated=true,facing=west,slope=down": {
+      "model": "qbar:_belt_slope_animated.mwm",
+      "y": 270
+    },
+    "animated=true,facing=west,slope=up": {
+      "model": "qbar:_belt_slope2_animated.mwm",
+      "y": 270
+    },
+    "animated=true,facing=west,slope=normal": {
+      "model": "qbar:_belt_animated.mwm",
+      "y": 270
+    },
+    "animated=false,facing=east,slope=down": {
+      "model": "qbar:belt_slope.mwm",
+      "y": 90
+    },
+    "animated=false,facing=east,slope=normal": {
+      "model": "qbar:belt.mwm",
+      "y": 90
+    },
+    "animated=false,facing=east,slope=up": {
+      "model": "qbar:belt_slope2.mwm",
+      "y": 90
+    },
+    "animated=true,facing=east,slope=down": {
+      "model": "qbar:_belt_slope_animated.mwm",
+      "y": 90
+    },
+    "animated=true,facing=east,slope=up": {
+      "model": "qbar:_belt_slope2_animated.mwm",
+      "y": 90
+    },
+    "animated=true,facing=east,slope=normal": {
+      "model": "qbar:_belt_animated.mwm",
+      "y": 90
+    },
+    "animated=false,facing=up,slope=down": {
+      "model": "qbar:belt_slope.mwm"
+    },
+    "animated=false,facing=up,slope=normal": {
+      "model": "qbar:belt.mwm"
+    },
+    "animated=false,facing=up,slope=up": {
+      "model": "qbar:belt_slope2.mwm"
+    },
+    "animated=true,facing=up,slope=down": {
+      "model": "qbar:_belt_slope_animated.mwm"
+    },
+    "animated=true,facing=up,slope=up": {
+      "model": "qbar:_belt_slope2_animated.mwm"
+    },
+    "animated=true,facing=up,slope=normal": {
+      "model": "qbar:_belt_animated.mwm"
+    },
+    "animated=false,facing=down,slope=down": {
+      "model": "qbar:belt_slope.mwm"
+    },
+    "animated=false,facing=down,slope=normal": {
+      "model": "qbar:belt.mwm"
+    },
+    "animated=false,facing=down,slope=up": {
+      "model": "qbar:belt_slope2.mwm"
+    },
+    "animated=true,facing=down,slope=down": {
+      "model": "qbar:_belt_slope_animated.mwm"
+    },
+    "animated=true,facing=down,slope=up": {
+      "model": "qbar:_belt_slope2_animated.mwm"
+    },
+    "animated=true,facing=down,slope=normal": {
+      "model": "qbar:_belt_animated.mwm"
     },
     "inventory": {
       "model": "qbar:belt.mwm"

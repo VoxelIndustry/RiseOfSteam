@@ -23,7 +23,6 @@ import net.qbar.client.render.tile.RenderBelt;
 import net.qbar.client.render.tile.RenderRollingMill;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
-import net.qbar.common.event.TickHandler;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileStructure;
@@ -56,6 +55,13 @@ public class ClientProxy extends CommonProxy
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
                 new ResourceLocation(QBar.MODID + ":block/belt.mwm"), new String[] { "Top" },
                 new String[] { "qbar:blocks/belt_top_anim" });
+        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_animated.mwm",
+                new ResourceLocation(QBar.MODID + ":block/belt_slope.mwm"), new String[] { "None" },
+                new String[] { "qbar:blocks/belt_slope_anim" });
+        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope2_animated.mwm",
+            new ResourceLocation(QBar.MODID + ":block/belt_slope2.mwm"), new String[] { "None" },
+            new String[] { "qbar:blocks/belt_slope_anim" });
+
 
         ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());

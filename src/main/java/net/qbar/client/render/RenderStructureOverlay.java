@@ -58,7 +58,7 @@ public class RenderStructureOverlay
 
                 final BlueprintState blueprintState = structure.getBlueprintState();
 
-                if (!player.isSneaking())
+                if (player.isSneaking())
                     RenderStructureOverlay.renderStepDetail(blueprintState);
                 else
                 {
