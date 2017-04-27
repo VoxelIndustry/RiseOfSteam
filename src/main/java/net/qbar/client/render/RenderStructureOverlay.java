@@ -1,7 +1,5 @@
 package net.qbar.client.render;
 
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,9 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.qbar.common.multiblock.TileMultiblockGag;
-import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.BlueprintState;
 import net.qbar.common.tile.TileStructure;
+
+import java.util.List;
 
 public class RenderStructureOverlay
 {
@@ -53,24 +52,83 @@ public class RenderStructureOverlay
                         -Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) / 2, 0, 16777215);
 
                 GlStateManager.popMatrix();
-                GlStateManager.translate(-0.3, -0.8, -.51);
+                GlStateManager.translate(-0.3, -0.8, -.56);
 
                 GlStateManager.scale(0.25, 0.25, 0.25);
 
-                final int currentStep = structure.getBlueprintState().getCurrentStep();
-                final Blueprint blueprint = structure.getBlueprint();
                 final BlueprintState blueprintState = structure.getBlueprintState();
 
-                int step = 0;
-                for (final List<ItemStack> stackList : structure.getBlueprint().getSteps())
+                if (!player.isSneaking())
+                    RenderStructureOverlay.renderStepDetail(blueprintState);
+                else
                 {
-                    RenderStructureOverlay.renderStep(step, stackList, blueprintState);
-                    step++;
+                    int step = 0;
+                    for (final List<ItemStack> stackList : structure.getBlueprint().getSteps())
+                    {
+                        RenderStructureOverlay.renderStep(step, stackList, blueprintState);
+                        step++;
+                    }
                 }
                 GlStateManager.popMatrix();
                 GlStateManager.enableLighting();
             }
         }
+    }
+
+    private static void renderStepDetail(BlueprintState state)
+    {
+        GlStateManager.pushMatrix();
+
+        float timeRatio = (float) state.getCurrentTime() / state.getStepTime();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-0.4, -0.1, 0);
+        GlStateManager.scale(0.625f / 24, 0.625f / 24, 0.625f / 24);
+
+        Minecraft.getMinecraft().fontRendererObj.drawString(
+                "Step " + (state.getCurrentStep() + 1) + " / " + state.getBlueprint().getSteps().size(), 0, 0,
+                16777215);
+        GlStateManager.popMatrix();
+
+        GlStateManager.translate(0, 0.5, 0.1);
+        GlStateManager.disableLighting();
+        GlStateManager.resetColor();
+        RenderUtil.renderRect(-0.5, 0.35, -0.5 + 3.3 * timeRatio, -0.3, 0, 0.5f, 0, 0.6f);
+        GlStateManager.translate(0, 0, -0.1);
+
+        for (int stack = 0; stack < state.getStepStacks().size(); stack++)
+        {
+            if (stack != 0)
+                GlStateManager.translate(0, 0.75, 0);
+
+            RenderUtil.handleRenderItem(state.getStepStacks().get(stack), false);
+            GlStateManager.disableLighting();
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.2, 0.15, -.02);
+            GlStateManager.scale(0.625f / 48, 0.625f / 48, 0.625f / 48);
+
+            String count = state.getCurrentStacks().get(stack).getCount() - 1 + "/"
+                    + state.getStepStacks().get(stack).getCount();
+            int color;
+            if (state.getCurrentStacks().get(stack).getCount() - 1 == state.getStepStacks().get(stack).getCount())
+                color = 61440;
+            else if (state.getCurrentStacks().get(stack).getCount() - 1 == 0)
+                color = 15728640;
+            else
+                color = 15767040;
+
+            Minecraft.getMinecraft().fontRendererObj.drawString(count,
+                    -Minecraft.getMinecraft().fontRendererObj.getStringWidth(count) / 2, 0, color);
+
+            GlStateManager.scale(2.5, 2.5, 2.5);
+            GlStateManager.translate(8, -9, 0);
+
+            String stackName = state.getStepStacks().get(stack).getDisplayName();
+            Minecraft.getMinecraft().fontRendererObj.drawString(stackName, 0, 0, color);
+            GlStateManager.popMatrix();
+        }
+        GlStateManager.popMatrix();
     }
 
     private static void renderStep(final int step, final List<ItemStack> stackList, final BlueprintState state)
@@ -79,7 +137,7 @@ public class RenderStructureOverlay
             GlStateManager.translate(0, 1, 0);
         GlStateManager.pushMatrix();
 
-        float timeRatio = 0;
+        float timeRatio;
 
         if (state.getCurrentStep() == step)
             timeRatio = (float) state.getCurrentTime() / state.getStepTime();
@@ -99,12 +157,13 @@ public class RenderStructureOverlay
                 GlStateManager.translate(1, 0, 0);
 
             RenderUtil.handleRenderItem(stackList.get(stack), false);
+            GlStateManager.disableLighting();
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.2, 0.15, -.02);
             GlStateManager.scale(0.625f / 48, 0.625f / 48, 0.625f / 48);
 
-            String count = "";
+            String count;
             if (step == state.getCurrentStep())
                 count = state.getCurrentStacks().get(stack).getCount() - 1 + "/" + stackList.get(stack).getCount();
             else if (step < state.getCurrentStep())
@@ -112,8 +171,18 @@ public class RenderStructureOverlay
             else
                 count = "0/" + stackList.get(stack).getCount();
 
+            int color = 15728640;
+            if(step == state.getCurrentStep()) {
+                if (state.getCurrentStacks().get(stack).getCount() - 1 == state.getStepStacks().get(stack).getCount())
+                    color = 61440;
+                else if (state.getCurrentStacks().get(stack).getCount() - 1 == 0)
+                    color = 15728640;
+            }
+            else if(step < state.getCurrentStep())
+                color = 61440;
+
             Minecraft.getMinecraft().fontRendererObj.drawString(count,
-                    -Minecraft.getMinecraft().fontRendererObj.getStringWidth(count) / 2, 0, 16777215);
+                    -Minecraft.getMinecraft().fontRendererObj.getStringWidth(count) / 2, 0, color);
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
