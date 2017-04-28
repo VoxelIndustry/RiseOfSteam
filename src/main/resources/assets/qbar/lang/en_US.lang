@@ -9,7 +9,7 @@ tile.keypunch.name=KeyPunch
 tile.fluidtank_small.name=Small Fluid Tank
 tile.fluidtank_medium.name=Medium Fluid Tank
 tile.fluidtank_big.name=Big Fluid Tank
-tile.boiler.name=Solid Boiler
+tile.solid_boiler.name=Solid Boiler
 tile.fluidpipe.name=Fluid Pipe
 tile.fluidpipe.valve.name=Fluid Pipe Valve
 tile.steampipe.name=Steam Pipe
@@ -41,6 +41,10 @@ item.ironrod.name=Iron Rod
 item.metalplate.iron.name=Iron Plate
 item.metalplate.gold.name=Gold Plate
 
+item.solarreflector.name=Solar Reflector
+item.mineralsludge.name=Mineral Sludge
+
+
 #Fluids
 fluid.steam=Steam
 tile.blockfluidsteam.name=Steam Source
@@ -57,3 +61,12 @@ gui.solar_boiler.name=Solar Boiler
 gui.fluidtank_small.name=Small Fluid Tank
 gui.fluidtank_medium.name=Medium Fluid Tank
 gui.fluidtank_big.name=Big Fluid Tank
+
+#Ores
+ore.iron=Iron
+ore.gold=Gold
+ore.redstone=Redstone
+ore.tin=Tin
+ore.copper=Copper
+ore.nickel=Nickel
+ore.zinc=Zinc

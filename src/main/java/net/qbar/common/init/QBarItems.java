@@ -1,16 +1,12 @@
 package net.qbar.common.init;
 
+import net.qbar.common.item.*;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
-import net.qbar.common.item.ItemBase;
-import net.qbar.common.item.ItemBlueprint;
-import net.qbar.common.item.ItemPlate;
-import net.qbar.common.item.ItemPunchedCard;
-import net.qbar.common.item.ItemWrench;
 import net.qbar.common.recipe.QBarRecipeHandler;
 
 @ObjectHolder(QBar.MODID)
@@ -31,6 +27,9 @@ public class QBarItems
     @ObjectHolder("solarreflector")
     public static final ItemBase SOLAR_REFLECTOR = null;
 
+    @ObjectHolder("mineralsludge")
+    public static final ItemBase MINERAL_SLUDGE = null;
+
     public static final void registerItems()
     {
         QBarItems.registerMetal("iron");
@@ -43,6 +42,8 @@ public class QBarItems
         QBarItems.registerItem(new ItemBase("ironrod"));
         QBarItems.registerItem(new ItemPlate());
         QBarItems.registerItem(new ItemBase("solarreflector"));
+
+        QBarItems.registerItem(new ItemSludge());
     }
 
     private static final void registerItem(final ItemBase item)
