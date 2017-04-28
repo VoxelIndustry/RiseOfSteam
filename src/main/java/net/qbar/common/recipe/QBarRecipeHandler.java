@@ -6,6 +6,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
@@ -35,6 +36,8 @@ public class QBarRecipeHandler
         });
 
         QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
+
+        GameRegistry.addRecipe(new SludgeRecipe());
     }
 
     @SuppressWarnings("unchecked")

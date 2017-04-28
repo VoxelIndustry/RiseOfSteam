@@ -13,14 +13,22 @@ import net.qbar.common.ore.QBarOre;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.ore.SludgeData;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
 public class ItemSludge extends ItemBase
 {
-    public ItemSludge()
+    private static NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+
+    static
     {
-        super("mineralsludge");
+        percentFormatter.setMinimumFractionDigits(1);
+    }
+
+    public ItemSludge(String name)
+    {
+        super(name);
 
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
@@ -34,19 +42,19 @@ public class ItemSludge extends ItemBase
             SludgeData data = SludgeData.fromNBT(stack.getTagCompound().getCompoundTag("sludgeData"));
 
             for (Map.Entry<QBarOre, Float> ore : data.getOres().entrySet())
-                tooltip.add(
-                        ore.getKey().getRarity().rarityColor + I18n.translateToLocal(ore.getKey().getName()) + " " + ore.getValue() + " %");
+                tooltip.add(ore.getKey().getRarity().rarityColor + I18n.translateToLocal(ore.getKey().getName()) + " "
+                        + percentFormatter.format(ore.getValue()));
         }
     }
 
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        for(QBarOre ore : QBarOres.ORES)
+        for (QBarOre ore : QBarOres.ORES)
         {
             ItemStack stack = new ItemStack(item);
 
-            NBTTagCompound data = new SludgeData().addOre(ore, 100).writeToNBT(new NBTTagCompound());
+            NBTTagCompound data = new SludgeData().addOre(ore, 1).writeToNBT(new NBTTagCompound());
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setTag("sludgeData", data);
             subItems.add(stack);

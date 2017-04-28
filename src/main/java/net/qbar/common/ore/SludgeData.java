@@ -16,7 +16,10 @@ public class SludgeData
 
     public SludgeData addOre(QBarOre ore, float proportion)
     {
-        this.ores.put(ore, proportion);
+        if (this.ores.containsKey(ore))
+            this.ores.put(ore, this.ores.get(ore) + proportion);
+        else
+            this.ores.put(ore, proportion);
         return this;
     }
 

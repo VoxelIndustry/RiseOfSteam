@@ -29,6 +29,8 @@ public class QBarItems
 
     @ObjectHolder("mineralsludge")
     public static final ItemBase MINERAL_SLUDGE = null;
+    @ObjectHolder("compressedmineralsludge")
+    public static final ItemBase COMPRESSED_MINERAL_SLUDGE = null;
 
     public static final void registerItems()
     {
@@ -43,7 +45,8 @@ public class QBarItems
         QBarItems.registerItem(new ItemPlate());
         QBarItems.registerItem(new ItemBase("solarreflector"));
 
-        QBarItems.registerItem(new ItemSludge());
+        QBarItems.registerItem(new ItemSludge("mineralsludge"));
+        QBarItems.registerItem(new ItemSludge("compressedmineralsludge"));
     }
 
     private static final void registerItem(final ItemBase item)
