@@ -1,10 +1,5 @@
 package net.qbar.common.tile;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,6 +15,10 @@ import net.qbar.common.recipe.ingredient.RecipeIngredient;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.ItemUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.List;
+import java.util.Optional;
 
 public abstract class TileCraftingMachineBase extends TileInventoryBase
         implements ITileMultiblockCore, ITickable, ISidedInventory, IContainerProvider
@@ -189,7 +188,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         lines.add("Steam " + this.steamTank.getSteam() + " / " + this.steamTank.getCapacity());
         lines.add("Pressure " + SteamUtil.pressureFormat.format(this.steamTank.getPressure()) + " / "
                 + SteamUtil.pressureFormat.format(this.steamTank.getMaxPressure()));
-        lines.add("Efficiency " + this.getCurrentCraftingSpeed());
+        lines.add("Crafting Speed " + this.getCurrentCraftingSpeed());
+        lines.add("Efficiency "+this.getEfficiency());
     }
 
     @Override

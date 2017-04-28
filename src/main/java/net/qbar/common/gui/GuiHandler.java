@@ -57,6 +57,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiLiquidBoiler(player, (TileLiquidBoiler) tile);
             case SOLARBOILER:
                 return new GuiSolarBoiler(player, (TileSolarBoiler) tile);
+            case STEAMFURNACEMK2:
+                return new GuiSteamFurnaceMK2(player, (TileSteamFurnaceMK2) tile);
             default:
                 break;
         }

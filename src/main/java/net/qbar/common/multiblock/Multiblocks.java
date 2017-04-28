@@ -29,7 +29,7 @@ public class Multiblocks
         SOLAR_BOILER = new MultiblockDescriptorBase("SOLAR_BOILER", 3, 6, 3, 1, 0, 1);
         LIQUID_FUEL_BOILER = new MultiblockDescriptorBase("LIQUID_FUEL_BOILER", 2, 3, 2, 0, 0, 0);
         STEAM_FURNACE_MK1 = new MultiblockDescriptorBase("STEAM_FURNACE_MK1", 1, 1, 3, 0, 0, 1);
-        STEAM_FURNACE_MK2 = new MultiblockDescriptorBase("STEAM_FURNACE_MK2", 1, 1, 1, 0, 0, 0);
+        STEAM_FURNACE_MK2 = new MultiblockDescriptorBase("STEAM_FURNACE_MK2", 2, 2, 3, 0, 0, 1);
         SOLAR_MIRROR = new MultiblockDescriptorBase("SOLAR_MIRROR", 3, 2, 2, 1, 0, 0);
     }
 }

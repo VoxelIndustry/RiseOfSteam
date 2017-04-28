@@ -23,7 +23,7 @@ public class QBarMachines
                 2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true);
         FURNACE_MK1 = new CraftingMachineDescriptor("furnacemk1", QBarRecipeHandler.FURNACE_UID, 3, 1, 1, 1f, 2000, 10,
                 SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true);
-        FURNACE_MK2 = new CraftingMachineDescriptor("furnacemk2", QBarRecipeHandler.FURNACE_UID, 3, 1, 1, 1f, 2000, 0,
+        FURNACE_MK2 = new CraftingMachineDescriptor("furnacemk2", QBarRecipeHandler.FURNACE_UID, 3, 1, 1, 3f, 2000, 10,
                 SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true);
         ASSEMBLER = new CraftingMachineDescriptor("assembler", QBarRecipeHandler.CRAFT_UID, 3, 1, 1, 1f, 2000, 10,
                 SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true);

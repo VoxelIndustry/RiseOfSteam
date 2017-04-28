@@ -62,6 +62,8 @@ public class QBarBlocks
     public static final BlockMachineBase SOLAR_BOILER       = null;
     @ObjectHolder("liquidfuel_boiler")
     public static final BlockMachineBase LIQUID_FUEL_BOILER = null;
+    @ObjectHolder("steamfurnacemk2")
+    public static final BlockMachineBase STEAM_FURNACE_MK2  = null;
 
     public static final void registerBlocks()
     {
@@ -90,6 +92,7 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockSolarMirror());
         QBarBlocks.registerBlock(new BlockRollingMill());
         QBarBlocks.registerBlock(new BlockLiquidBoiler());
+        QBarBlocks.registerBlock(new BlockSteamFurnaceMK2());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -110,11 +113,12 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileSolarMirror.class, "solarmirror");
         QBarBlocks.registerTile(TileRollingMill.class, "rollingmill");
         QBarBlocks.registerTile(TileLiquidBoiler.class, "liquidfuelboiler");
+        QBarBlocks.registerTile(TileSteamFurnaceMK2.class, "steamfurnacemk2");
     }
 
     public static final void registerBlock(final Block block, final String name)
     {
-        if(block instanceof BlockMultiblockBase)
+        if (block instanceof BlockMultiblockBase)
             QBarBlocks.registerBlock(block, ItemBlockMultiblockBase::new, name);
         else
             QBarBlocks.registerBlock(block, ItemBlock::new, name);
