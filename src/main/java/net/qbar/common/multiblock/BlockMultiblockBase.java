@@ -10,6 +10,8 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -41,6 +43,12 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, false)
                 .withProperty(BlockMultiblockBase.FACING, EnumFacing.NORTH));
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
@@ -157,7 +165,17 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     {
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
         if (tile != null)
+        {
+            if(tile.isCore())
+            {
+                if (tile instanceof IInventory)
+                {
+                    InventoryHelper.dropInventoryItems(w, pos, (IInventory) tile);
+                    w.updateComparatorOutputLevel(pos, this);
+                }
+            }
             tile.breakCore();
+        }
         super.breakBlock(w, pos, state);
     }
 

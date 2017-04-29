@@ -1,6 +1,7 @@
 package net.qbar.common.init;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
@@ -76,7 +77,8 @@ public class QBarBlocks
 
     public static final void registerBlocks()
     {
-        QBarBlocks.registerBlock(new BlockKeypunch());
+        QBarBlocks.registerBlock(
+                new BlockMultiblockMachine("keypunch", Material.IRON, Multiblocks.KEYPUNCH, TileKeypunch::new));
         QBarBlocks.registerBlock(
                 new BlockTank("fluidtank_small", Multiblocks.SMALL_FLUID_TANK, Fluid.BUCKET_VOLUME * 48, 0));
         QBarBlocks.registerBlock(
@@ -88,7 +90,8 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockSteamPipe(), block -> new ItemBlockMetadata(block, "valve"));
         QBarBlocks.registerBlock(new BlockFluidPump());
         QBarBlocks.registerBlock(new BlockOffshorePump());
-        QBarBlocks.registerBlock(new BlockAssembler());
+        QBarBlocks.registerBlock(
+                new BlockMultiblockMachine("assembler", Material.IRON, Multiblocks.ASSEMBLER, TileAssembler::new));
         QBarBlocks.registerBlock(new BlockBelt());
         QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         QBarBlocks.registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
@@ -96,18 +99,24 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockCreativeSteamGenerator());
 
         QBarBlocks.registerBlock(new BlockStructure());
-        QBarBlocks.registerBlock(new BlockSteamFurnace());
+        QBarBlocks.registerBlock(new BlockMultiblockMachine("steamfurnacemk1", Material.IRON,
+                Multiblocks.STEAM_FURNACE_MK1, TileSteamFurnace::new));
         QBarBlocks.registerBlock(new BlockSolarBoiler());
         QBarBlocks.registerBlock(new BlockSolarMirror());
-        QBarBlocks.registerBlock(new BlockRollingMill());
+        QBarBlocks.registerBlock(new BlockMultiblockMachine("rollingmill", Material.IRON, Multiblocks.ROLLING_MILL,
+                TileRollingMill::new));
         QBarBlocks.registerBlock(new BlockLiquidBoiler());
-        QBarBlocks.registerBlock(new BlockSteamFurnaceMK2());
+        QBarBlocks.registerBlock(new BlockMultiblockMachine("steamfurnacemk2", Material.IRON,
+                Multiblocks.STEAM_FURNACE_MK2, TileSteamFurnaceMK2::new));
 
-        QBarBlocks.registerBlock(new BlockOreWasher());
-        QBarBlocks.registerBlock(new BlockSortingMachine());
-        QBarBlocks.registerBlock(new BlockSmallMiningDrill());
-        QBarBlocks.registerBlock(new BlockTinyMiningDrill());
-
+        QBarBlocks.registerBlock(
+                new BlockMultiblockMachine("orewasher", Material.IRON, Multiblocks.ORE_WASHER, TileOreWasher::new));
+        QBarBlocks.registerBlock(new BlockMultiblockMachine("sortingmachine", Material.IRON,
+                Multiblocks.SORTING_MACHINE, TileSortingMachine::new));
+        QBarBlocks.registerBlock(new BlockMultiblockMachine("smallminingdrill", Material.IRON,
+                Multiblocks.SMALL_MINING_DRILL, TileSmallMiningDrill::new));
+        QBarBlocks.registerBlock(new BlockMultiblockMachine("tinyminingdrill", Material.IRON,
+                Multiblocks.TINY_MINING_DRILL, TileTinyMiningDrill::new));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
