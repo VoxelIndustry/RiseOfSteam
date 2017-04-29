@@ -1,10 +1,9 @@
 package net.qbar.common.recipe;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
+import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 
@@ -16,7 +15,6 @@ public class QBarRecipeHandler
 {
     public static final String                              ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
     public static final String                              FURNACE_UID         = QBar.MODID + ".furnace";
-    public static final String                              CRAFT_UID           = QBar.MODID + ".craft";
     public static final String                              LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
     public static final String                              ORE_WASHER_UID      = QBar.MODID + ".orewasher";
     public static final String                              SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
@@ -30,6 +28,7 @@ public class QBarRecipeHandler
         QBarRecipeHandler.RECIPES.put(ROLLINGMILL_UID, new QBarRecipeCategory(ROLLINGMILL_UID));
         QBarRecipeHandler.RECIPES.put(LIQUIDBOILER_UID, new QBarRecipeCategory(LIQUIDBOILER_UID));
         QBarRecipeHandler.RECIPES.put(ORE_WASHER_UID, new OreWasherRecipeCategory(ORE_WASHER_UID));
+        QBarRecipeHandler.RECIPES.put(FURNACE_UID, new FurnaceRecipeCategory(FURNACE_UID));
 
         QBarRecipeHandler.metals.forEach(metalName ->
         {
@@ -45,8 +44,6 @@ public class QBarRecipeHandler
     @SuppressWarnings("unchecked")
     public static <T> boolean inputMatchWithoutCount(final String recipeID, final int recipeSlot, final T ingredient)
     {
-        if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
-            return !FurnaceRecipes.instance().getSmeltingResult((ItemStack) ingredient).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
             return QBarRecipeHandler.RECIPES.get(recipeID).inputMatchWithoutCount(recipeSlot, ingredient);
         return false;
@@ -55,8 +52,6 @@ public class QBarRecipeHandler
     @SuppressWarnings("unchecked")
     public static <T> boolean inputMatchWithCount(final String recipeID, final int recipeSlot, final T ingredient)
     {
-        if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
-            return !FurnaceRecipes.instance().getSmeltingResult((ItemStack) ingredient).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
             return QBarRecipeHandler.RECIPES.get(recipeID).inputMatchWithCount(recipeSlot, ingredient);
         return false;
@@ -65,14 +60,6 @@ public class QBarRecipeHandler
     @SuppressWarnings("unchecked")
     public static Optional<QBarRecipe> getRecipe(final String recipeID, final Object... inputs)
     {
-        if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
-        {
-            final ItemStack result = FurnaceRecipes.instance().getSmeltingResult((ItemStack) inputs[0]);
-            if (!result.isEmpty())
-                return Optional.of(new FurnaceRecipeWrapper(((ItemStack) inputs[0]).copy(), result));
-            else
-                return Optional.empty();
-        }
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
             return QBarRecipeHandler.RECIPES.get(recipeID).getRecipe(inputs);
         return Optional.empty();
