@@ -18,14 +18,16 @@ import java.util.Optional;
 
 public class QBarRecipeHandler
 {
-    public static final String                                ROLLINGMILL_UID  = QBar.MODID + ".rollingmill";
-    public static final String                                FURNACE_UID      = QBar.MODID + ".furnace";
-    public static final String                                CRAFT_UID        = QBar.MODID + ".craft";
-    public static final String                                LIQUIDBOILER_UID = QBar.MODID + ".liquidboiler";
+    public static final String                                ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
+    public static final String                                FURNACE_UID         = QBar.MODID + ".furnace";
+    public static final String                                CRAFT_UID           = QBar.MODID + ".craft";
+    public static final String                                LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
+    public static final String                                ORE_WASHER_UID      = QBar.MODID + ".orewasher";
+    public static final String                                SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
 
-    public static final ArrayListMultimap<String, QBarRecipe> RECIPES          = ArrayListMultimap.create();
+    public static final ArrayListMultimap<String, QBarRecipe> RECIPES             = ArrayListMultimap.create();
 
-    public static final ArrayList<String>                     metals           = new ArrayList<>();
+    public static final ArrayList<String>                     metals              = new ArrayList<>();
 
     public static void registerRecipes()
     {

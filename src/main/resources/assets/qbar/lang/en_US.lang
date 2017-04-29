@@ -32,6 +32,11 @@ tile.solar_boiler.name=Solar Boiler
 tile.rollingmill.name=Rolling Mill
 tile.liquidfuel_boiler.name=Liquid Fuel Boiler
 
+tile.orewasher.name=Ore Washer
+tile.sortingmachine.name=Sorting Machine
+tile.smallminingdrill.name=Small Mining Drill
+tile.tinyminingdrill.name=Tiny Mining Drill
+
 #Items
 item.punched_card.name=Punched Card
 item.wrench.name=Wrench
@@ -44,7 +49,6 @@ item.metalplate.gold.name=Gold Plate
 item.solarreflector.name=Solar Reflector
 item.mineralsludge.name=Mineral Sludge
 item.compressedmineralsludge.name=Compressed Mineral Sludge
-
 
 #Fluids
 fluid.steam=Steam

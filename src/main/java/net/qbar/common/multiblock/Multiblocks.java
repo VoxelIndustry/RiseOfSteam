@@ -16,6 +16,11 @@ public class Multiblocks
     public static final IMultiblockDescriptor STEAM_FURNACE_MK2;
     public static final IMultiblockDescriptor SOLAR_MIRROR;
 
+    public static final IMultiblockDescriptor SMALL_MINING_DRILL;
+    public static final IMultiblockDescriptor TINY_MINING_DRILL;
+    public static final IMultiblockDescriptor ORE_WASHER;
+    public static final IMultiblockDescriptor SORTING_MACHINE;
+
     static
     {
         SMALL_FLUID_TANK = new MultiblockDescriptorBase("SMALL_FLUID_TANK", 1, 4, 1, 0, 0, 0);
@@ -31,5 +36,10 @@ public class Multiblocks
         STEAM_FURNACE_MK1 = new MultiblockDescriptorBase("STEAM_FURNACE_MK1", 1, 1, 3, 0, 0, 1);
         STEAM_FURNACE_MK2 = new MultiblockDescriptorBase("STEAM_FURNACE_MK2", 2, 2, 3, 0, 0, 1);
         SOLAR_MIRROR = new MultiblockDescriptorBase("SOLAR_MIRROR", 3, 2, 2, 1, 0, 0);
+
+        SMALL_MINING_DRILL = new MultiblockDescriptorBase("SMALL_MINING_DRILL", 3, 3, 3, 1, 0, 1);
+        TINY_MINING_DRILL = new MultiblockDescriptorBase("TINY_MINING_DRILL", 1, 2, 1, 0, 0, 0);
+        ORE_WASHER = new MultiblockDescriptorBase("ORE_WASHER", 3, 2, 3, 1, 0, 1);
+        SORTING_MACHINE = new MultiblockDescriptorBase("SORTING_MACHINE", 1, 2, 2, 0, 0, 0);
     }
 }

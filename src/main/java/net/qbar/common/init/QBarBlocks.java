@@ -65,6 +65,15 @@ public class QBarBlocks
     @ObjectHolder("steamfurnacemk2")
     public static final BlockMachineBase STEAM_FURNACE_MK2  = null;
 
+    @ObjectHolder("orewasher")
+    public static final BlockMachineBase ORE_WASHER         = null;
+    @ObjectHolder("sortingmachine")
+    public static final BlockMachineBase SORTING_MACHINE    = null;
+    @ObjectHolder("smallminingdrill")
+    public static final BlockMachineBase SMALL_MINING_DRILL = null;
+    @ObjectHolder("tinyminingdrill")
+    public static final BlockMachineBase TINY_MINING_DRILL  = null;
+
     public static final void registerBlocks()
     {
         QBarBlocks.registerBlock(new BlockKeypunch());
@@ -94,6 +103,12 @@ public class QBarBlocks
         QBarBlocks.registerBlock(new BlockLiquidBoiler());
         QBarBlocks.registerBlock(new BlockSteamFurnaceMK2());
 
+        QBarBlocks.registerBlock(new BlockOreWasher());
+        QBarBlocks.registerBlock(new BlockSortingMachine());
+        QBarBlocks.registerBlock(new BlockSmallMiningDrill());
+        QBarBlocks.registerBlock(new BlockTinyMiningDrill());
+
+
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
         QBarBlocks.registerTile(TileBoiler.class, "boiler");
@@ -114,6 +129,10 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileRollingMill.class, "rollingmill");
         QBarBlocks.registerTile(TileLiquidBoiler.class, "liquidfuelboiler");
         QBarBlocks.registerTile(TileSteamFurnaceMK2.class, "steamfurnacemk2");
+        QBarBlocks.registerTile(TileOreWasher.class, "orewasher");
+        QBarBlocks.registerTile(TileSortingMachine.class, "sortingmachine");
+        QBarBlocks.registerTile(TileSmallMiningDrill.class, "smallminingdrill");
+        QBarBlocks.registerTile(TileTinyMiningDrill.class, "tinyminingdrill");
     }
 
     public static final void registerBlock(final Block block, final String name)
