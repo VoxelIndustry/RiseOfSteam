@@ -19,6 +19,21 @@ public class TileOreWasher extends TileCraftingMachineBase
     }
 
     @Override
+    public void update()
+    {
+        super.update();
+
+        if(this.isClient())
+            return;
+    }
+
+    @Override
+    public Object[] getCustomData()
+    {
+        return new Object[] { 0 };
+    }
+
+    @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return null;

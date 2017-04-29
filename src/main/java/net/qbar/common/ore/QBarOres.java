@@ -1,6 +1,9 @@
 package net.qbar.common.ore;
 
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.qbar.common.init.QBarItems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,5 +40,14 @@ public class QBarOres
     public static Optional<QBarOre> getOreFromName(String name)
     {
         return ORES.stream().filter(ore -> ore.getName().equalsIgnoreCase(name)).findAny();
+    }
+
+    public static ItemStack getRawOre(QBarOre ore)
+    {
+        ItemStack rawOre = new ItemStack(QBarItems.RAW_ORE);
+        rawOre.setTagCompound(new NBTTagCompound());
+
+        rawOre.getTagCompound().setString("ore", ore.getName());
+        return rawOre;
     }
 }

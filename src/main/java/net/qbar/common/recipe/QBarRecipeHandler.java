@@ -1,43 +1,43 @@
 package net.qbar.common.recipe;
 
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
-import net.qbar.common.init.QBarItems;
-import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
-import net.qbar.common.recipe.ingredient.RecipeIngredient;
-import org.apache.commons.lang3.StringUtils;
+import net.qbar.common.recipe.category.OreWasherRecipeCategory;
+import net.qbar.common.recipe.category.QBarRecipeCategory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class QBarRecipeHandler
 {
-    public static final String                                ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
-    public static final String                                FURNACE_UID         = QBar.MODID + ".furnace";
-    public static final String                                CRAFT_UID           = QBar.MODID + ".craft";
-    public static final String                                LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
-    public static final String                                ORE_WASHER_UID      = QBar.MODID + ".orewasher";
-    public static final String                                SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
+    public static final String                              ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
+    public static final String                              FURNACE_UID         = QBar.MODID + ".furnace";
+    public static final String                              CRAFT_UID           = QBar.MODID + ".craft";
+    public static final String                              LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
+    public static final String                              ORE_WASHER_UID      = QBar.MODID + ".orewasher";
+    public static final String                              SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
 
-    public static final ArrayListMultimap<String, QBarRecipe> RECIPES             = ArrayListMultimap.create();
+    public static final HashMap<String, QBarRecipeCategory> RECIPES             = new HashMap<>();
 
-    public static final ArrayList<String>                     metals              = new ArrayList<>();
+    public static final ArrayList<String>                   metals              = new ArrayList<>();
 
     public static void registerRecipes()
     {
+        QBarRecipeHandler.RECIPES.put(ROLLINGMILL_UID, new QBarRecipeCategory(ROLLINGMILL_UID));
+        QBarRecipeHandler.RECIPES.put(LIQUIDBOILER_UID, new QBarRecipeCategory(LIQUIDBOILER_UID));
+        QBarRecipeHandler.RECIPES.put(ORE_WASHER_UID, new OreWasherRecipeCategory(ORE_WASHER_UID));
+
         QBarRecipeHandler.metals.forEach(metalName ->
         {
-            QBarRecipeHandler.addIngotToPlateRecipe(metalName);
-            QBarRecipeHandler.addBlockToPlateRecipe(metalName);
+            QBarRecipeHelper.addIngotToPlateRecipe(metalName);
+            QBarRecipeHelper.addBlockToPlateRecipe(metalName);
         });
 
-        QBarRecipeHandler.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
+        QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
 
         GameRegistry.addRecipe(new SludgeRecipe());
     }
@@ -48,16 +48,7 @@ public class QBarRecipeHandler
         if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
             return !FurnaceRecipes.instance().getSmeltingResult((ItemStack) ingredient).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
-        {
-            return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
-            {
-                if (!recipe.hasInputType(ingredient.getClass())
-                        || recipe.getRecipeInputs(ingredient.getClass()).size() < recipeSlot)
-                    return false;
-                return ((RecipeIngredient<T>) recipe.getRecipeInputs(ingredient.getClass()).get(recipeSlot))
-                        .match(ingredient);
-            });
-        }
+            return QBarRecipeHandler.RECIPES.get(recipeID).inputMatchWithoutCount(recipeSlot, ingredient);
         return false;
     }
 
@@ -67,16 +58,7 @@ public class QBarRecipeHandler
         if (recipeID.equals(QBarRecipeHandler.FURNACE_UID))
             return !FurnaceRecipes.instance().getSmeltingResult((ItemStack) ingredient).isEmpty();
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
-        {
-            return QBarRecipeHandler.RECIPES.get(recipeID).stream().anyMatch(recipe ->
-            {
-                if (!recipe.hasInputType(ingredient.getClass())
-                        || recipe.getRecipeInputs(ingredient.getClass()).size() < recipeSlot)
-                    return false;
-                return ((RecipeIngredient<T>) recipe.getRecipeInputs(ingredient.getClass()).get(recipeSlot))
-                        .matchWithQuantity(ingredient);
-            });
-        }
+            return QBarRecipeHandler.RECIPES.get(recipeID).inputMatchWithCount(recipeSlot, ingredient);
         return false;
     }
 
@@ -92,53 +74,7 @@ public class QBarRecipeHandler
                 return Optional.empty();
         }
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
-        {
-            return QBarRecipeHandler.RECIPES.get(recipeID).stream().filter(recipe ->
-            {
-                int i = 0;
-                for (final Object ingredient : inputs)
-                {
-                    if (!recipe.hasInputType(ingredient.getClass())
-                            || i >= recipe.getRecipeInputs(ingredient.getClass()).size())
-                        break;
-                    if (!((RecipeIngredient<Object>) recipe.getRecipeInputs(ingredient.getClass()).get(i))
-                            .matchWithQuantity(ingredient))
-                        return false;
-                    i++;
-                }
-                return true;
-            }).findFirst();
-        }
+            return QBarRecipeHandler.RECIPES.get(recipeID).getRecipe(inputs);
         return Optional.empty();
-    }
-
-    private static void addBlockToPlateRecipe(final String metalName)
-    {
-        final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 9);
-        final NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("metal", metalName);
-        plate.setTagCompound(tag);
-
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID,
-                new RollingMillRecipe(new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metalName), 1),
-                        new ItemStackRecipeIngredient(plate)));
-    }
-
-    private static void addIngotToPlateRecipe(final String metalName)
-    {
-        final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 1);
-        final NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("metal", metalName);
-        plate.setTagCompound(tag);
-
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID,
-                new RollingMillRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
-                        new ItemStackRecipeIngredient(plate)));
-    }
-
-    private static void addLiquidBoilerRecipe(Fluid fuel, int heatPerMb, int timePerBucket)
-    {
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.LIQUIDBOILER_UID,
-                new LiquidBoilerRecipe(fuel, heatPerMb, timePerBucket));
     }
 }

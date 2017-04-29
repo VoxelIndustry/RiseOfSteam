@@ -31,6 +31,10 @@ public class QBarItems
     public static final ItemBase MINERAL_SLUDGE = null;
     @ObjectHolder("compressedmineralsludge")
     public static final ItemBase COMPRESSED_MINERAL_SLUDGE = null;
+    @ObjectHolder("mixedrawore")
+    public static final ItemBase MIXED_RAW_ORE = null;
+    @ObjectHolder("rawore")
+    public static final ItemBase RAW_ORE = null;
 
     public static final void registerItems()
     {
@@ -47,6 +51,8 @@ public class QBarItems
 
         QBarItems.registerItem(new ItemSludge("mineralsludge"));
         QBarItems.registerItem(new ItemSludge("compressedmineralsludge"));
+        QBarItems.registerItem(new ItemRawOre());
+        QBarItems.registerItem(new ItemMixedRawOre());
     }
 
     private static final void registerItem(final ItemBase item)

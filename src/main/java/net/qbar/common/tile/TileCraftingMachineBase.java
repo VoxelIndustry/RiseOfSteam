@@ -61,7 +61,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                         stacks[i] = this.getStackInSlot(this.descriptor.getInputs()[i]);
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
-                            stacks);
+                            stacks, this.getCustomData());
                     if (recipe.isPresent())
                     {
                         this.currentRecipe = recipe.get();
@@ -88,7 +88,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                         stacks[i] = this.getStackInSlot(this.descriptor.getBuffers()[i]);
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
-                            stacks);
+                            stacks, this.getCustomData());
                     if (recipe.isPresent())
                     {
                         this.currentRecipe = recipe.get();
@@ -139,6 +139,11 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                 this.sync();
             }
         }
+    }
+
+    public Object[] getCustomData()
+    {
+        return new Object[0];
     }
 
     public float getCurrentCraftingSpeed()
