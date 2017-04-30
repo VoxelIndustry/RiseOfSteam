@@ -1,12 +1,12 @@
 package net.qbar.common.recipe;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class QBarRecipe
 {
@@ -26,13 +26,17 @@ public abstract class QBarRecipe
     @SuppressWarnings("unchecked")
     public <T> NonNullList<RecipeIngredient<T>> getRecipeInputs(final Class<T> clazz)
     {
-        return (NonNullList<RecipeIngredient<T>>) (Object) this.inputs.get(clazz);
+        if (this.hasInputType(clazz))
+            return (NonNullList<RecipeIngredient<T>>) (Object) this.inputs.get(clazz);
+        return NonNullList.create();
     }
 
     @SuppressWarnings("unchecked")
     public <T> NonNullList<RecipeIngredient<T>> getRecipeOutputs(final Class<T> clazz)
     {
-        return (NonNullList<RecipeIngredient<T>>) (Object) this.outputs.get(clazz);
+        if (this.hasOutputType(clazz))
+            return (NonNullList<RecipeIngredient<T>>) (Object) this.outputs.get(clazz);
+        return NonNullList.create();
     }
 
     public Optional<NonNullList<ItemStack>> getRemainingItems()

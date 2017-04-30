@@ -49,6 +49,10 @@ item.metalplate.gold.name=Gold Plate
 item.solarreflector.name=Solar Reflector
 item.mineralsludge.name=Mineral Sludge
 item.compressedmineralsludge.name=Compressed Mineral Sludge
+item.rawore.poor.name=Poor Raw Ore
+item.rawore.normal.name=Raw Ore
+item.rawore.rich.name=Rich Raw Ore
+item.mixedrawore.name=Mixed Raw Ore
 
 #Fluids
 fluid.steam=Steam

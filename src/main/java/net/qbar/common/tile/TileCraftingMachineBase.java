@@ -7,7 +7,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -33,6 +36,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
     private ItemStack                       cachedStack;
 
+    private final FluidTank[]               inputTanks, outputTanks, bufferTanks;
+
     public TileCraftingMachineBase(final CraftingMachineDescriptor descriptor)
     {
         super(descriptor.getName(), descriptor.getInventorySize());
@@ -42,6 +47,41 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.steamTank = new SteamTank(0, descriptor.getSteamCapacity(), descriptor.getMaxPressureCapacity());
 
         this.cachedStack = ItemStack.EMPTY;
+
+        if (descriptor.getInputTanks().length > 0)
+        {
+            this.inputTanks = new FluidTank[descriptor.getInputTanks().length];
+            this.bufferTanks = new FluidTank[descriptor.getInputTanks().length];
+
+            int i = 0;
+            for (int size : descriptor.getInputTanks())
+            {
+                int index = i;
+                this.inputTanks[i] = new FilteredFluidTank(size, fluidStack -> QBarRecipeHandler
+                        .inputMatchWithoutCount(descriptor.getRecipeCategory(), index, fluidStack));
+                this.bufferTanks[i] = new FluidTank(size);
+                i++;
+            }
+        }
+        else
+        {
+            this.inputTanks = new FluidTank[0];
+            this.bufferTanks = new FluidTank[0];
+        }
+
+        if (descriptor.getOutputTanks().length > 0)
+        {
+            this.outputTanks = new FluidTank[descriptor.getOutputTanks().length];
+
+            int i = 0;
+            for (int size : descriptor.getOutputTanks())
+            {
+                this.outputTanks[i] = new FluidTank(size);
+                i++;
+            }
+        }
+        else
+            this.outputTanks = new FluidTank[0];
     }
 
     @Override
@@ -56,12 +96,19 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
             {
                 if (this.isBufferEmpty())
                 {
-                    final ItemStack[] stacks = new ItemStack[this.descriptor.getInputs().length];
+                    final Object[] ingredients = new Object[this.descriptor.getBuffers().length
+                            + this.descriptor.getBufferTanks().length + this.getCustomData().length];
+
                     for (int i = 0; i < this.descriptor.getInputs().length; i++)
-                        stacks[i] = this.getStackInSlot(this.descriptor.getInputs()[i]);
+                        ingredients[i] = this.getStackInSlot(this.descriptor.getInputs()[i]);
+                    for (int i = 0; i < this.descriptor.getInputTanks().length; i++)
+                        ingredients[this.descriptor.getInputTanks().length + i] = this.getInputFluidStack(i);
+                    for (int i = 0; i < this.getCustomData().length; i++)
+                        ingredients[this.descriptor.getInputs().length + this.descriptor.getInputTanks().length
+                                + i] = this.getCustomData()[i];
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
-                            stacks, this.getCustomData());
+                            ingredients);
                     if (recipe.isPresent())
                     {
                         this.currentRecipe = recipe.get();
@@ -76,19 +123,36 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                                     stack.getRawIngredient().copy());
                             i++;
                         }
+                        i = 0;
+                        for (final RecipeIngredient<FluidStack> stack : this.currentRecipe
+                                .getRecipeInputs(FluidStack.class))
+                        {
+                            this.inputTanks[i].drainInternal(stack.getQuantity(), true);
+                            this.bufferTanks[i].fillInternal(stack.getRawIngredient().copy(), true);
+                            i++;
+                        }
                         this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0)
                                 .getRawIngredient();
+                        // TODO : Allow any kind of ingredient to be cached (it
+                        // will break with fluid-only crafting machines)
                         this.sync();
                     }
                 }
                 else
                 {
-                    final ItemStack[] stacks = new ItemStack[this.descriptor.getBuffers().length];
+                    final Object[] ingredients = new Object[this.descriptor.getBuffers().length
+                            + this.descriptor.getBufferTanks().length + this.getCustomData().length];
+
                     for (int i = 0; i < this.descriptor.getBuffers().length; i++)
-                        stacks[i] = this.getStackInSlot(this.descriptor.getBuffers()[i]);
+                        ingredients[i] = this.getStackInSlot(this.descriptor.getBuffers()[i]);
+                    for (int i = 0; i < this.descriptor.getBufferTanks().length; i++)
+                        ingredients[this.descriptor.getBufferTanks().length + i] = this.getBufferFluidStack(i);
+                    for (int i = 0; i < this.getCustomData().length; i++)
+                        ingredients[this.descriptor.getBuffers().length + this.descriptor.getBufferTanks().length
+                                + i] = this.getCustomData()[i];
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
-                            stacks, this.getCustomData());
+                            ingredients);
                     if (recipe.isPresent())
                     {
                         this.currentRecipe = recipe.get();
@@ -97,6 +161,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
                         this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0)
                                 .getRawIngredient();
+                        // TODO : Allow any kind of ingredient to be cached (it
+                        // will break with fluid-only crafting machines)
                         this.sync();
                     }
                 }
@@ -123,8 +189,19 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                         return;
                     i++;
                 }
+                i = 0;
+                for (final RecipeIngredient<FluidStack> stack : this.currentRecipe.getRecipeOutputs(FluidStack.class))
+                {
+                    if (this.outputTanks[i].fill(stack.getRawIngredient(), false) == 0)
+                        return;
+                    i++;
+                }
+
                 for (final int buffer : this.descriptor.getBuffers())
                     this.setInventorySlotContents(buffer, ItemStack.EMPTY);
+                for (int j = 0; j < this.descriptor.getBufferTanks().length; j++)
+                    this.setBufferFluidStack(j, null);
+
                 i = 0;
                 for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeOutputs(ItemStack.class))
                 {
@@ -132,6 +209,12 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                         this.getStackInSlot(this.descriptor.getOutputs()[i]).grow(stack.getRawIngredient().getCount());
                     else
                         this.setInventorySlotContents(this.descriptor.getOutputs()[i], stack.getRawIngredient().copy());
+                    i++;
+                }
+                i = 0;
+                for (final RecipeIngredient<FluidStack> stack : this.currentRecipe.getRecipeOutputs(FluidStack.class))
+                {
+                    this.outputTanks[i].fillInternal(stack.getRawIngredient(), true);
                     i++;
                 }
                 this.currentRecipe = null;
@@ -172,6 +255,17 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.steamTank.writeToNBT(tag);
 
         tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
+
+        int i;
+        for (i = 0; i < this.inputTanks.length; i++)
+            tag.setTag("inputTank" + i, this.inputTanks[i].writeToNBT(new NBTTagCompound()));
+        tag.setInteger("inputTankCount", i);
+        for (i = 0; i < this.bufferTanks.length; i++)
+            tag.setTag("bufferTank" + i, this.bufferTanks[i].writeToNBT(new NBTTagCompound()));
+        tag.setInteger("bufferTankCount", i);
+        for (i = 0; i < this.outputTanks.length; i++)
+            tag.setTag("outputTank" + i, this.outputTanks[i].writeToNBT(new NBTTagCompound()));
+        tag.setInteger("outputTankCount", i);
         return tag;
     }
 
@@ -185,6 +279,13 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
         this.steamTank.readFromNBT(tag);
         this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
+
+        for (int i = 0; i < tag.getInteger("inputTankCount"); i++)
+            this.inputTanks[i].readFromNBT(tag.getCompoundTag("inputTank" + i));
+        for (int i = 0; i < tag.getInteger("bufferTankCount"); i++)
+            this.bufferTanks[i].readFromNBT(tag.getCompoundTag("bufferTank" + i));
+        for (int i = 0; i < tag.getInteger("outputTankCount"); i++)
+            this.outputTanks[i].readFromNBT(tag.getCompoundTag("outputTank" + i));
     }
 
     @Override
@@ -194,7 +295,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         lines.add("Pressure " + SteamUtil.pressureFormat.format(this.steamTank.getPressure()) + " / "
                 + SteamUtil.pressureFormat.format(this.steamTank.getMaxPressure()));
         lines.add("Crafting Speed " + this.getCurrentCraftingSpeed());
-        lines.add("Efficiency "+this.getEfficiency());
+        lines.add("Efficiency " + this.getEfficiency());
     }
 
     @Override
@@ -334,5 +435,50 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     {
         if (this.isClient())
             this.forceSync();
+    }
+
+    public FluidStack getInputFluidStack(int index)
+    {
+        return this.inputTanks[index].getFluid();
+    }
+
+    public FluidStack getBufferFluidStack(int index)
+    {
+        return this.bufferTanks[index].getFluid();
+    }
+
+    public FluidStack getOutputFluidStack(int index)
+    {
+        return this.outputTanks[index].getFluid();
+    }
+
+    public void setInputFluidStack(int index, FluidStack fluid)
+    {
+        this.inputTanks[index].setFluid(fluid);
+    }
+
+    public void setBufferFluidStack(int index, FluidStack fluid)
+    {
+        this.bufferTanks[index].setFluid(fluid);
+    }
+
+    public void setOutputFluidStack(int index, FluidStack fluid)
+    {
+        this.outputTanks[index].setFluid(fluid);
+    }
+
+    public FluidTank[] getInputTanks()
+    {
+        return inputTanks;
+    }
+
+    public FluidTank[] getOutputTanks()
+    {
+        return outputTanks;
+    }
+
+    public FluidTank[] getBufferTanks()
+    {
+        return bufferTanks;
     }
 }
