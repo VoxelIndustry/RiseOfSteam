@@ -23,7 +23,8 @@
       MirrorStruct13
       MirrorStruct14
       MirrorStruct15
-      Struct
+      Struct0
+      Struct1
       Boiler
       Boiler1
       Boiler2
@@ -39,28 +40,28 @@
       Boiler12
       Boiler13
       Boiler14
-      WaterTank1
-      WaterTank2
-      WaterTank3
-      WaterTank4
-      WaterTank5
-      WaterTank6
-      WaterTank7
-      WaterTank8
-      WaterTank9
-      WaterTank10
-      WaterTank11
-      WaterTank12
-      WaterTank13
-      WaterTank14
-      WaterTank15
-      WaterTank16
+      Water Tank1
+      Water Tank2
+      Water Tank3
+      Water Tank4
+      Water Tank5
+      Water Tank6
+      Water Tank7
+      Water Tank8
+      Water Tank9
+      Water Tank10
+      Water Tank11
+      Water Tank12
+      Water Tank13
+      Water Tank14
+      Water Tank15
+      Water Tank16
     ]
   }
   {
     parts:
     [
-      WaterTank
+      Water Tank
       StorageToStorage
       StorageToStorage1
       StorageToStorage2
