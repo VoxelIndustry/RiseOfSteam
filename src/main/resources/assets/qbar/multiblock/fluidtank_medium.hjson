@@ -1,0 +1,136 @@
+[
+  {
+    parts:
+    [
+    ]
+  }
+  {
+    parts:
+    [
+	  Base
+      Base1
+	  Base2
+	  Base3
+	  Tank
+	  Tank1
+	  Tank2
+	  Tank3
+	  Tank4
+	  Tank5
+	  Tank6
+	  Tank7
+	  Tank8
+	  Tank9
+	  Input4 A
+	  Input4 B
+	  Input4 C
+	  Input4 D
+    ]
+  }
+  {
+    parts:
+    [
+      Input1 A
+      Input2 A
+      Input5 A
+      Boulon A
+      Boulon1 A
+      Boulon2 A
+      Boulon3 A
+      Boulon4 A
+      Boulon5 A
+      Boulon6 A
+      Boulon7 
+      Input1 B
+      Input2 B
+      Input5 B
+      Boulon B
+      Boulon1 B
+      Boulon2 B
+      Boulon3 B
+      Boulon4 B
+      Boulon5 B
+      Boulon6 B
+      Boulon7 B
+      Input1 C
+      Input2 C
+      Input5 C
+      Boulon C
+      Boulon1 C
+      Boulon2 C
+      Boulon3 C
+      Boulon4 C
+      Boulon5 C
+      Boulon6 C
+      Input1 D
+      Input2 D
+      Input5 D
+      Boulon D
+      Boulon1 D
+      Boulon2 D
+      Boulon3 D
+      Boulon4 D
+      Boulon5 D
+      Boulon6 D
+      OutputA N
+      Output1A N
+      OutputB N
+      Output1B N
+      OutputA S
+      Output1A S
+      OutputB S
+      Output1B S
+      OutputA O
+      Output1A O
+      OutputB O
+      Output1B O
+      OutputA E
+      Output1A E
+      OutputB E
+      Output1B E
+    ]
+  }
+  {
+    parts:
+    [
+      Jauge
+      Jauge1
+      Jauge2
+      Jauge3
+      Jauge4
+      Jauge5
+      Jauge6
+      Jauge7
+      Jauge8
+      Jauge9
+      Jauge10
+      Jauge11
+      Jauge12
+      BoulonTank1
+      BoulonTank2
+      BoulonTank3
+      BoulonTank4
+      BoulonTank5
+      BoulonTank6
+      BoulonTank7
+      BoulonTank8
+      BoulonTank9
+      BoulonTank10
+      BoulonTank11
+      BoulonTank12
+      BoulonTank13
+      BoulonTank14
+      BoulonTank15
+      BoulonTank16
+      BoulonTank17
+      BoulonTank18
+      BoulonTank19
+      Tank13
+      Tank14
+      Tank15
+      Tank16
+      Tank17
+      Tank18
+    ]
+  }
+]

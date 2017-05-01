@@ -1,0 +1,89 @@
+[
+  {
+    parts:
+    [
+    ]
+  }
+  {
+    parts:
+    [
+      Base
+      Base1
+      Base2
+      Base3
+      Tank
+      Tank1
+      Tank2
+      Tank3
+      Tank4
+      Tank5
+      Tank6
+      Tank7
+      Tank8
+      Tank9
+      Input NE 2
+      Input NE 3
+      Input SO 2
+      Input SO 3
+      Input SE 2
+      Input SE 3
+      Input NO 2
+      Input NO 3
+      Input N 2
+      Input S 2
+      Input E 2
+      Input O 2
+      Output2S C
+      Output2N C
+      Output2E C
+      Output2O C
+    ]
+  }
+  {
+    parts:
+    [
+      InputNO
+      InputNO 1
+      InputNE
+      InputNE 1
+      InputNO
+      InputNO 1
+      InputSO
+      InputSO 1
+      InputSE
+      InputSE 1
+      InputO
+      InputO 1
+      InputE
+      InputE 1
+      InputS
+      InputS 1
+      InputN
+      InputN 1
+      OutputN A
+      Output1N A
+      OutputS A
+      Output1S A
+      OutputE A
+      Output1E A
+      OutputO A
+      Output1O A
+      OutputN B
+      Output1N B
+      OutputS B
+      Output1S B
+      OutputE B
+      Output1E B
+      OutputO B
+      Output1O B
+      OutputN C
+      Output1N C
+      OutputS C
+      Output1S C
+      OutputE C
+      Output1E C
+      OutputO C
+      Output1O C
+    ]
+  }
+]
