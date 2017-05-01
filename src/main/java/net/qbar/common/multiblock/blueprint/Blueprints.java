@@ -70,7 +70,7 @@ public class Blueprints
         this.registerBlueprint("steamfurnacemk2", Multiblocks.STEAM_FURNACE_MK2)
                 .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4))
                 .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4));
-        this.registerBlueprint("solarmirror", Multiblocks.SOLAR_MIRROR).addStep(10,
+        this.registerBlueprint("solar_mirror", Multiblocks.SOLAR_MIRROR).addStep(10,
                 new ItemStack(Blocks.IRON_BLOCK, 4));
 
         for (Map.Entry<String, Blueprint> blueprint : this.blueprints.entrySet())
