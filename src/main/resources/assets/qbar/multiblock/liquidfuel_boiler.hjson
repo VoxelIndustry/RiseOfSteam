@@ -1,0 +1,40 @@
+[
+  {
+    parts:
+    [
+
+    ]
+  }
+  {
+    parts:
+    [
+      BodyCorner1
+      BodyCorner2
+      BodyCorner3
+      BodyCorner4
+      BodyA
+      BodyB
+      BodyC
+      BodyD
+      Body
+      Body1
+      Body2
+      Body3
+      Body4
+      Body5
+      Body6
+      Body7
+    ]
+  }
+  {
+    parts:
+    [
+      Burner
+      Burner1
+      Burner2
+      Burner3
+      InputBase
+      WaterDuct
+    ]
+  }
+]

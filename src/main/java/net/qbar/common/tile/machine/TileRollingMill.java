@@ -17,6 +17,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
@@ -166,6 +167,8 @@ public class TileRollingMill extends TileCraftingMachineBase
             final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
+            return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.ROLLINGMILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),

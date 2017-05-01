@@ -111,6 +111,8 @@ public class TileSolarMirror extends QBarTileBase implements ITileMultiblockCore
     {
         if (player.isSneaking())
             return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+            return false;
 
         if (this.isServer() && player.inventory.getCurrentItem().getItem() == QBarItems.SOLAR_REFLECTOR
                 && this.mirrorCount < 6)

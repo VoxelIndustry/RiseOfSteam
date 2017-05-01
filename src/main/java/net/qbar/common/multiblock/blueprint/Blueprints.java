@@ -1,16 +1,7 @@
 package net.qbar.common.multiblock.blueprint;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.apache.commons.io.IOUtils;
-import org.hjson.JsonValue;
-
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -18,6 +9,15 @@ import net.qbar.QBar;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.IMultiblockDescriptor;
 import net.qbar.common.multiblock.Multiblocks;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.hjson.JsonValue;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Blueprints
 {
@@ -46,21 +46,35 @@ public class Blueprints
                 .addStep(60, new ItemStack(Blocks.DIRT, 40), new ItemStack(Blocks.IRON_BLOCK, 10))
                 .addStep(20, new ItemStack(Items.BLAZE_ROD, 8));
 
-        this.registerBlueprint("fluidtank_medium", Multiblocks.MEDIUM_FLUID_TANK);
-        this.registerBlueprint("fluidtank_big", Multiblocks.BIG_FLUID_TANK);
+        this.registerBlueprint("fluidtank_medium", Multiblocks.MEDIUM_FLUID_TANK)
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4));
+        this.registerBlueprint("fluidtank_big", Multiblocks.BIG_FLUID_TANK)
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4));
 
-        this.registerBlueprint("boiler", Multiblocks.SOLID_BOILER);
-        this.registerBlueprint("assembler", Multiblocks.ASSEMBLER);
-        this.registerBlueprint("solar_boiler", Multiblocks.SOLAR_BOILER);
-        this.registerBlueprint("keypunch", Multiblocks.KEYPUNCH);
-        this.registerBlueprint("liquidfuel_boiler", Multiblocks.LIQUID_FUEL_BOILER);
-        this.registerBlueprint("rollingmill", Multiblocks.ROLLING_MILL);
+        this.registerBlueprint("solid_boiler", Multiblocks.SOLID_BOILER)
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4));
+        this.registerBlueprint("assembler", Multiblocks.ASSEMBLER).addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4))
+                .addStep(10, new ItemStack(Items.IRON_DOOR, 4));
+        this.registerBlueprint("solar_boiler", Multiblocks.SOLAR_BOILER)
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4))
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4));
+        this.registerBlueprint("keypunch", Multiblocks.KEYPUNCH).addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4))
+                .addStep(10, new ItemStack(Items.IRON_DOOR, 4));
+        this.registerBlueprint("liquidfuel_boiler", Multiblocks.LIQUID_FUEL_BOILER)
+                .addStep(20, new ItemStack(Blocks.IRON_BLOCK, 9)).addStep(20, new ItemStack(Blocks.IRON_BLOCK, 4))
+                .addStep(10, new ItemStack(Items.CARROT, 16));
+        this.registerBlueprint("rollingmill", Multiblocks.ROLLING_MILL).addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4))
+                .addStep(10, new ItemStack(Items.IRON_DOOR, 4)).addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4));
         this.registerBlueprint("steamfurnacemk1", Multiblocks.STEAM_FURNACE_MK1)
                 .addStep(20, new ItemStack(Blocks.BRICK_BLOCK, 4)).addStep(10, new ItemStack(QBarItems.IRON_ROD, 8));
-        this.registerBlueprint("steamfurnacemk2", Multiblocks.STEAM_FURNACE_MK2);
-        this.registerBlueprint("solarmirror", Multiblocks.SOLAR_MIRROR);
+        this.registerBlueprint("steamfurnacemk2", Multiblocks.STEAM_FURNACE_MK2)
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4))
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4));
+        this.registerBlueprint("solarmirror", Multiblocks.SOLAR_MIRROR).addStep(10,
+                new ItemStack(Blocks.IRON_BLOCK, 4));
 
-        this.getBlueprint("steamfurnacemk1").setMultiblockSteps(this.loadBlueprintModel("steamfurnacemk1"));
+        for (Map.Entry<String, Blueprint> blueprint : this.blueprints.entrySet())
+            blueprint.getValue().setMultiblockSteps(this.loadBlueprintModel(blueprint.getKey()));
     }
 
     public Blueprint registerBlueprint(final String name, final IMultiblockDescriptor multiblock)
@@ -79,12 +93,20 @@ public class Blueprints
             steps = this.gson.fromJson(JsonValue.readHjson(IOUtils.toString(stream, StandardCharsets.UTF_8)).toString(),
                     MultiblockStep[].class);
             stream.close();
-            return Lists.newArrayList(steps);
+            ArrayList<MultiblockStep> rtn = Lists.newArrayList(steps);
+
+            for (MultiblockStep step : rtn)
+            {
+                if (rtn.indexOf(step) != 0)
+                    step.setParts(ArrayUtils.addAll(step.getParts(), rtn.get(rtn.indexOf(step) - 1).getParts()));
+            }
+
+            return rtn;
         } catch (final Exception e)
         {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public HashMap<String, Blueprint> getBlueprints()

@@ -1,0 +1,24 @@
+[
+  {
+    parts:
+    [
+
+    ]
+  }
+  {
+    parts:
+    [
+      Leg1
+      Leg2
+      Leg3
+      Leg4
+      Body
+      BodyTop
+      BodyBottom
+      PlateWest
+      PlateEast
+      PlateNorth
+      PlateSouth
+    ]
+  }
+]

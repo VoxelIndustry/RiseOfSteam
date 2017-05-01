@@ -13,6 +13,7 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblock;
 import net.qbar.common.multiblock.MultiblockSide;
@@ -152,6 +153,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
             final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
+            return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         if (FluidUtils.drainPlayerHand(this.getWaterTank(), player)

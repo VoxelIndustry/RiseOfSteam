@@ -17,6 +17,7 @@ import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
@@ -214,6 +215,8 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
             final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
+            return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         if (FluidUtils.drainPlayerHand(this.getTank(), player) || FluidUtils.fillPlayerHand(this.getTank(), player))

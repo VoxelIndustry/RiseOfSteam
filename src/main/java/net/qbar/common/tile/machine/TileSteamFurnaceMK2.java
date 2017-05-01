@@ -1,5 +1,7 @@
 package net.qbar.common.tile.machine;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,13 +17,13 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 {
@@ -170,6 +172,8 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
             final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
+            return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.STEAMFURNACEMK2.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
