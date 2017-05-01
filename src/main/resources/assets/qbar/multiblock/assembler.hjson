@@ -1,0 +1,34 @@
+[
+  {
+    parts:
+    [
+
+    ]
+  }
+  {
+    parts:
+    [
+      base n1
+      base n2
+      base n3
+      base n4
+      pied n1
+      pied n2
+      pied n3
+      pied n4
+      poutre
+      Socle
+      sous socle
+      toit
+      poutreUp
+      upbase n1
+      upbase n2
+      upbase n3
+      upbase n4
+      upbase n5
+      upbase n6
+      upbase n7
+      upbase n8
+    ]
+  }
+]

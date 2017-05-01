@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.*;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.*;
 
 public class GuiHandler implements IGuiHandler
@@ -33,6 +34,9 @@ public class GuiHandler implements IGuiHandler
             final int y, final int z)
     {
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+
+        if (tile instanceof TileStructure)
+            return null;
 
         final EGui gui = EGui.values()[ID];
         switch (gui)

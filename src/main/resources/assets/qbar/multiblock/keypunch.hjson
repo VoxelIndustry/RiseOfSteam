@@ -1,0 +1,30 @@
+[
+  {
+    parts:
+    [
+
+    ]
+  }
+  {
+    parts:
+    [
+      Desk
+      Desk2
+      Leg1
+      Leg2
+      Leg3
+      Leg4
+      DeskSideTop
+      DeskSideBack
+      DeskSideLeft
+      DeskSideRight
+      KeyboardPlate
+      Keyboard
+      DrawerRight1
+      DrawerRight2
+      DrawerLeft
+      DrawerLeft2
+      DrawerLeftButton
+    ]
+  }
+]

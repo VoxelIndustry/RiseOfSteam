@@ -283,6 +283,8 @@ public class TileAssembler extends TileInventoryBase
     {
         if (player.isSneaking())
             return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+            return false;
 
         player.openGui(QBar.instance, EGui.ASSEMBLER.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());

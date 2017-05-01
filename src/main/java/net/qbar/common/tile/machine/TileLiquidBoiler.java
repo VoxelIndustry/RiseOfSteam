@@ -18,6 +18,7 @@ import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
@@ -235,6 +236,8 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
             final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
+            return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         if (from.getY() == 0)

@@ -16,6 +16,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
@@ -118,6 +119,8 @@ public class TileSteamFurnace extends TileCraftingMachineBase
             final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
+            return false;
+        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.STEAMFURNACE.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
