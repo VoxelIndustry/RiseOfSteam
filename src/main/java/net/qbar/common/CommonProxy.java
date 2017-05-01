@@ -32,6 +32,7 @@ public class CommonProxy
         QBar.network.register(KeypunchPacket.class);
         QBar.network.register(FilteredMachinePacket.class);
         QBar.network.register(PipeUpdatePacket.class);
+        QBar.network.register(WrenchPacket.class);
 
         CapabilitySteamHandler.register();
 

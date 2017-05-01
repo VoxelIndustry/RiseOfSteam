@@ -14,6 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.block.BlockMachineBase;
+import net.qbar.common.network.WrenchPacket;
 import net.qbar.common.tile.TileStructure;
 
 public class BlockStructure extends BlockMachineBase implements IWrenchable
@@ -81,7 +82,10 @@ public class BlockStructure extends BlockMachineBase implements IWrenchable
     {
         final ITileMultiblock tile = (ITileMultiblock) world.getTileEntity(pos);
         if (tile != null)
+        {
             ((TileStructure) tile.getCore()).stepBuilding(player);
+            new WrenchPacket(pos, facing).sendToAllAround(world, pos, 10);
+        }
         return true;
     }
 

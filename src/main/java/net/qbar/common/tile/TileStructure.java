@@ -1,8 +1,5 @@
 package net.qbar.common.tile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -27,6 +24,9 @@ import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.BlueprintState;
 import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.util.ItemUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
@@ -100,7 +100,6 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
                 }
             }
             this.sync();
-
         }
     }
 
