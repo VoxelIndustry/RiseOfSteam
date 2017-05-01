@@ -57,7 +57,7 @@ public class Blueprints
                 .addStep(10, new ItemStack(Items.IRON_DOOR, 4));
         this.registerBlueprint("solar_boiler", Multiblocks.SOLAR_BOILER)
                 .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Items.IRON_DOOR, 4))
-                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4));
+                .addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4)).addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4));
         this.registerBlueprint("keypunch", Multiblocks.KEYPUNCH).addStep(10, new ItemStack(Blocks.IRON_BLOCK, 4))
                 .addStep(10, new ItemStack(Items.IRON_DOOR, 4));
         this.registerBlueprint("liquidfuel_boiler", Multiblocks.LIQUID_FUEL_BOILER)
