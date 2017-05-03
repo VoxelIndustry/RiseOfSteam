@@ -31,11 +31,14 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 
     private int                currentHeat, maxHeat;
 
+    private ItemStack          cachedStack;
+
     public TileSteamFurnaceMK2()
     {
         super(QBarMachines.FURNACE_MK2);
 
         this.maxHeat = 2000;
+        this.cachedStack = ItemStack.EMPTY;
     }
 
     @Override
@@ -66,6 +69,13 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     }
 
     @Override
+    public void onRecipeChange()
+    {
+        if (this.getCurrentRecipe() != null)
+            this.cachedStack = this.getCurrentRecipe().getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
+    }
+
+    @Override
     public float getEfficiency()
     {
         return (float) this.currentHeat / this.getMaxHeat();
@@ -77,6 +87,8 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
         super.writeToNBT(tag);
 
         tag.setInteger("heat", this.currentHeat);
+
+        tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
         return tag;
     }
 
@@ -86,6 +98,8 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
         super.readFromNBT(tag);
 
         this.currentHeat = tag.getInteger("heat");
+
+        this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
     }
 
     private void insert(final ItemStack stack, final EnumFacing facing)
@@ -173,7 +187,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.STEAMFURNACEMK2.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
@@ -219,5 +233,10 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     public void setMaxHeat(int maxHeat)
     {
         this.maxHeat = maxHeat;
+    }
+
+    public ItemStack getCachedStack()
+    {
+        return this.cachedStack;
     }
 }

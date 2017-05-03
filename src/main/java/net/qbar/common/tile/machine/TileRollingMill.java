@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,10 +29,13 @@ import net.qbar.common.tile.TileCraftingMachineBase;
 public class TileRollingMill extends TileCraftingMachineBase
 {
     private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
+    private ItemStack          cachedStack;
 
     public TileRollingMill()
     {
         super(QBarMachines.ROLLING_MILL);
+
+        this.cachedStack = ItemStack.EMPTY;
     }
 
     @Override
@@ -78,6 +82,13 @@ public class TileRollingMill extends TileCraftingMachineBase
         }
     }
 
+    @Override
+    public void onRecipeChange()
+    {
+        if (this.getCurrentRecipe() != null)
+            this.cachedStack = this.getCurrentRecipe().getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
+    }
+
     private void insert(final ItemStack stack, final BlockPos pos)
     {
         ((IBelt) this.world.getTileEntity(pos)).insert(stack, true);
@@ -95,6 +106,23 @@ public class TileRollingMill extends TileCraftingMachineBase
         final TileEntity tile = this.world.getTileEntity(pos);
 
         return tile != null && tile instanceof IBelt;
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
+    {
+        super.writeToNBT(tag);
+
+        tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
+        return tag;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
+    {
+        super.readFromNBT(tag);
+
+        this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
     }
 
     @Override
@@ -168,7 +196,7 @@ public class TileRollingMill extends TileCraftingMachineBase
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.ROLLINGMILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
@@ -195,5 +223,10 @@ public class TileRollingMill extends TileCraftingMachineBase
     public AxisAlignedBB getRenderBoundingBox()
     {
         return ((BlockMultiblockBase) this.getBlockType()).getDescriptor().getBox(this.getFacing()).offset(this.pos);
+    }
+
+    public ItemStack getCachedStack()
+    {
+        return this.cachedStack;
     }
 }

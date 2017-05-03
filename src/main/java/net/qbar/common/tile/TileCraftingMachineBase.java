@@ -34,8 +34,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
     private final SteamTank                 steamTank;
 
-    private ItemStack                       cachedStack;
-
     private final FluidTank[]               inputTanks, outputTanks, bufferTanks;
 
     public TileCraftingMachineBase(final CraftingMachineDescriptor descriptor)
@@ -45,8 +43,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.descriptor = descriptor;
 
         this.steamTank = new SteamTank(0, descriptor.getSteamCapacity(), descriptor.getMaxPressureCapacity());
-
-        this.cachedStack = ItemStack.EMPTY;
 
         if (descriptor.getInputTanks().length > 0)
         {
@@ -112,6 +108,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                     if (recipe.isPresent())
                     {
                         this.currentRecipe = recipe.get();
+                        this.onRecipeChange();
 
                         this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
                         int i = 0;
@@ -131,10 +128,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                             this.bufferTanks[i].fillInternal(stack.getRawIngredient().copy(), true);
                             i++;
                         }
-                        this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0)
-                                .getRawIngredient();
-                        // TODO : Allow any kind of ingredient to be cached (it
-                        // will break with fluid-only crafting machines)
                         this.sync();
                     }
                 }
@@ -156,13 +149,9 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                     if (recipe.isPresent())
                     {
                         this.currentRecipe = recipe.get();
-
+                        this.onRecipeChange();
                         this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
 
-                        this.cachedStack = this.currentRecipe.getRecipeOutputs(ItemStack.class).get(0)
-                                .getRawIngredient();
-                        // TODO : Allow any kind of ingredient to be cached (it
-                        // will break with fluid-only crafting machines)
                         this.sync();
                     }
                 }
@@ -218,10 +207,16 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                     i++;
                 }
                 this.currentRecipe = null;
+                this.onRecipeChange();
                 this.setCurrentProgress(0);
                 this.sync();
             }
         }
+    }
+
+    protected void onRecipeChange()
+    {
+
     }
 
     public Object[] getCustomData()
@@ -254,8 +249,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
         this.steamTank.writeToNBT(tag);
 
-        tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
-
         int i;
         for (i = 0; i < this.inputTanks.length; i++)
             tag.setTag("inputTank" + i, this.inputTanks[i].writeToNBT(new NBTTagCompound()));
@@ -278,7 +271,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.maxProgress = tag.getFloat("maxProgress");
 
         this.steamTank.readFromNBT(tag);
-        this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
 
         for (int i = 0; i < tag.getInteger("inputTankCount"); i++)
             this.inputTanks[i].readFromNBT(tag.getCompoundTag("inputTank" + i));
@@ -411,11 +403,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public SteamTank getSteamTank()
     {
         return this.steamTank;
-    }
-
-    public ItemStack getCachedStack()
-    {
-        return this.cachedStack;
     }
 
     @Override
