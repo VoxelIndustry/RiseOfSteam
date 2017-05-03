@@ -101,7 +101,9 @@ public class RenderStructureOverlay
             if (stack != 0)
                 GlStateManager.translate(0, 0.75, 0);
 
+            GlStateManager.rotate(180,1,0,0);
             RenderUtil.handleRenderItem(state.getStepStacks().get(stack), false);
+            GlStateManager.rotate(-180,1,0,0);
             GlStateManager.disableLighting();
 
             GlStateManager.pushMatrix();
@@ -156,7 +158,10 @@ public class RenderStructureOverlay
             if (stack != 0)
                 GlStateManager.translate(1, 0, 0);
 
+            GlStateManager.rotate(180,1,0,0);
             RenderUtil.handleRenderItem(stackList.get(stack), false);
+            GlStateManager.rotate(-180,1,0,0);
+            
             GlStateManager.disableLighting();
 
             GlStateManager.pushMatrix();
