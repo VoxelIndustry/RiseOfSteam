@@ -6,6 +6,7 @@ import net.qbar.QBar;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
+import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class QBarRecipeHandler
         QBarRecipeHandler.RECIPES.put(LIQUIDBOILER_UID, new QBarRecipeCategory(LIQUIDBOILER_UID));
         QBarRecipeHandler.RECIPES.put(ORE_WASHER_UID, new OreWasherRecipeCategory(ORE_WASHER_UID));
         QBarRecipeHandler.RECIPES.put(FURNACE_UID, new FurnaceRecipeCategory(FURNACE_UID));
+        QBarRecipeHandler.RECIPES.put(SORTING_MACHINE_UID, new SortingMachineRecipeCategory(SORTING_MACHINE_UID));
 
         QBarRecipeHandler.metals.forEach(metalName ->
         {

@@ -107,8 +107,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                             ingredients);
                     if (recipe.isPresent())
                     {
-                        this.currentRecipe = recipe.get();
-                        this.onRecipeChange();
+                        this.setCurrentRecipe(recipe.get());
 
                         this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
                         int i = 0;
@@ -148,8 +147,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                             ingredients);
                     if (recipe.isPresent())
                     {
-                        this.currentRecipe = recipe.get();
-                        this.onRecipeChange();
+                        this.setCurrentRecipe(recipe.get());
                         this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));
 
                         this.sync();
@@ -206,12 +204,17 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                     this.outputTanks[i].fillInternal(stack.getRawIngredient(), true);
                     i++;
                 }
-                this.currentRecipe = null;
-                this.onRecipeChange();
+                this.setCurrentRecipe(null);
                 this.setCurrentProgress(0);
                 this.sync();
             }
         }
+    }
+
+    protected void setCurrentRecipe(QBarRecipe recipe)
+    {
+        this.currentRecipe = recipe;
+        this.onRecipeChange();
     }
 
     protected void onRecipeChange()
