@@ -1,12 +1,11 @@
 package net.qbar.common.recipe.category;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.ore.OreStack;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
-import net.qbar.common.recipe.ingredient.OreStackRecipeIngredient;
 
 import java.util.Optional;
 import java.util.Random;
@@ -42,19 +41,35 @@ public class SortingMachineRecipeCategory extends QBarRecipeCategory
         {
             ItemStack mixedOre = (ItemStack) inputs[0];
 
+            SortingMachineRecipe recipe = new SortingMachineRecipe(mixedOre.copy());
+
+            if (mixedOre.hasTagCompound())
+            {
+                NBTTagCompound tag = mixedOre.getTagCompound();
+                for (int i = 0; i < tag.getInteger("oreCount"); i++)
+                {
+                    ItemStack ore = new ItemStack(QBarItems.RAW_ORE);
+                    ore.setTagCompound(new NBTTagCompound());
+                    ore.getTagCompound().setString("ore", tag.getString("ore" + i));
+                    ore.getTagCompound().setString("density", tag.getString("density" + i));
+
+                    recipe.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(ore));
+                }
+                return Optional.of(recipe);
+            }
         }
         return Optional.empty();
     }
 
-    private static final class SortingMachineRecipe extends QBarRecipe
+    public static final class SortingMachineRecipe extends QBarRecipe
     {
-        public SortingMachineRecipe(ItemStack inputMixedOre, OreStack... products)
+        public SortingMachineRecipe(ItemStack inputMixedOre, ItemStack... products)
         {
             this.inputs.put(ItemStack.class, NonNullList.withSize(1, new ItemStackRecipeIngredient(inputMixedOre)));
 
-            this.outputs.put(OreStack.class, NonNullList.create());
-            for (OreStack stack : products)
-                this.getRecipeOutputs(OreStack.class).add(new OreStackRecipeIngredient(stack));
+            this.outputs.put(ItemStack.class, NonNullList.create());
+            for (ItemStack stack : products)
+                this.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(stack));
         }
 
         @Override

@@ -43,7 +43,7 @@ public class QBarMachines
                 .steam(2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true).create();
 
         SORTING_MACHINE = new CraftingMachineDescriptor.Builder("sortingmachine")
-                .recipe(QBarRecipeHandler.SORTING_MACHINE_UID, 1f).inventory(3, 1, 1)
+                .recipe(QBarRecipeHandler.SORTING_MACHINE_UID, 1f).inventory(6, 1, 4)
                 .steam(2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true).create();
     }
 }

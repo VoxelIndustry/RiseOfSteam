@@ -105,7 +105,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.descriptor.getRecipeCategory(),
                             ingredients);
-                    if (recipe.isPresent())
+                    if (recipe.isPresent() && this.acceptRecipe(recipe.get()))
                     {
                         this.setCurrentRecipe(recipe.get());
 
@@ -209,6 +209,11 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                 this.sync();
             }
         }
+    }
+
+    protected boolean acceptRecipe(QBarRecipe recipe)
+    {
+        return true;
     }
 
     protected void setCurrentRecipe(QBarRecipe recipe)
