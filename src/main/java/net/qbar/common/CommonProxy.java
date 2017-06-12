@@ -4,12 +4,9 @@ import com.elytradev.concrete.NetworkContext;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
@@ -21,6 +18,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.world.QBarOreGenerator;
 
 public class CommonProxy
 {
@@ -49,6 +47,7 @@ public class CommonProxy
     public void init(final FMLInitializationEvent e)
     {
         QBarRecipeHandler.registerRecipes();
+        GameRegistry.registerWorldGenerator(new QBarOreGenerator(), 0);
 
         CompatManager.init(e);
     }
