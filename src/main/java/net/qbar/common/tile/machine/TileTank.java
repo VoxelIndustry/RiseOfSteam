@@ -231,7 +231,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
 
     public FluidStack getFluid()
     {
-        return this.tank.getInternalFluidHandler().getTankProperties()[0].getContents();
+        return this.tank.getInternalFluidHandler().getFluid();
     }
 
     public void setFluid(final FluidStack fluid)

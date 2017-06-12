@@ -1,9 +1,9 @@
 package net.qbar.common.container.sync;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class SyncableProperty<T extends Object>
 {
@@ -26,6 +26,7 @@ public abstract class SyncableProperty<T extends Object>
     public boolean needRefresh()
     {
         final T supplied = this.supplier.get();
+
         if (this.stored == null && supplied != null)
             return true;
         if (this.stored != null && supplied == null)
@@ -37,7 +38,7 @@ public abstract class SyncableProperty<T extends Object>
 
     public void updateInternal()
     {
-        this.stored = this.supplier.get();
+        this.stored = this.copy(this.supplier.get());
     }
 
     public void update()
@@ -67,5 +68,10 @@ public abstract class SyncableProperty<T extends Object>
     public void setStored(final T stored)
     {
         this.stored = stored;
+    }
+
+    public T copy(T original)
+    {
+        return original;
     }
 }

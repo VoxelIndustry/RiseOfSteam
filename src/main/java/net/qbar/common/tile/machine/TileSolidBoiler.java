@@ -21,14 +21,14 @@ import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.FluidUtils;
 
-public class TileBoiler extends TileBoilerBase
+public class TileSolidBoiler extends TileBoilerBase
 {
     private int currentBurnTime;
     private int maxBurnTime;
 
-    public TileBoiler()
+    public TileSolidBoiler()
     {
-        super("TileBoiler", 1, 3000, 4000, SteamUtil.AMBIANT_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
+        super("TileSolidBoiler", 1, 3000, 4000, SteamUtil.AMBIANT_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
     }
 
     @Override

@@ -1,22 +1,17 @@
 package net.qbar.common.container;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import org.apache.commons.lang3.Range;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.container.sync.SyncableProperty;
 import net.qbar.common.network.ContainerUpdatePacket;
+import org.apache.commons.lang3.Range;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class BuiltContainer extends Container
 {
@@ -102,25 +97,6 @@ public class BuiltContainer extends Container
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-
-        if (this.syncablesValues != null && !this.syncablesValues.isEmpty())
-        {
-            for (final SyncableProperty<?> syncable : this.syncablesValues)
-            {
-                if (syncable.needRefresh())
-                {
-                    syncable.updateInternal();
-                    new ContainerUpdatePacket(this.windowId, this.syncablesValues.indexOf(syncable),
-                            syncable.toNBT(new NBTTagCompound())).sendTo(this.player);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void addListener(final IContainerListener listener)
-    {
-        super.addListener(listener);
 
         if (this.syncablesValues != null && !this.syncablesValues.isEmpty())
         {

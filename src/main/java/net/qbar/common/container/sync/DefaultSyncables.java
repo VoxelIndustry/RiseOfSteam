@@ -106,6 +106,11 @@ public class DefaultSyncables
             return this.stored.equals(other) && this.stored.amount == other.amount;
         }
 
+        public FluidStack copy(FluidStack original)
+        {
+            return original.copy();
+        }
+
         @Override
         public NBTTagCompound toNBT(final NBTTagCompound tag)
         {
@@ -126,6 +131,11 @@ public class DefaultSyncables
         public SyncableItem(final Supplier<ItemStack> supplier, final Consumer<ItemStack> consumer)
         {
             super(supplier, consumer);
+        }
+
+        public ItemStack copy(ItemStack original)
+        {
+            return original.copy();
         }
 
         @Override

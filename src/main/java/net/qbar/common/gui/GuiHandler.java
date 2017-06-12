@@ -42,7 +42,7 @@ public class GuiHandler implements IGuiHandler
         switch (gui)
         {
             case BOILER:
-                return new GuiBoiler(player, (TileBoiler) tile);
+                return new GuiBoiler(player, (TileSolidBoiler) tile);
             case EXTRACTOR:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
             case KEYPUNCH:

@@ -6,15 +6,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
-import net.qbar.common.tile.machine.TileBoiler;
+import net.qbar.common.tile.machine.TileSolidBoiler;
 
 import java.util.Arrays;
 
-public class GuiBoiler extends GuiMachineBase<TileBoiler>
+public class GuiBoiler extends GuiMachineBase<TileSolidBoiler>
 {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(QBar.MODID, "textures/gui/boiler.png");
 
-    public GuiBoiler(final EntityPlayer player, final TileBoiler boiler)
+    public GuiBoiler(final EntityPlayer player, final TileSolidBoiler boiler)
     {
         super(player, boiler);
 

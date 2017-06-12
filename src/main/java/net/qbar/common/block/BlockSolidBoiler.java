@@ -10,11 +10,11 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
-import net.qbar.common.tile.machine.TileBoiler;
+import net.qbar.common.tile.machine.TileSolidBoiler;
 
-public class BlockBoiler extends BlockMultiblockBase
+public class BlockSolidBoiler extends BlockMultiblockBase
 {
-    public BlockBoiler()
+    public BlockSolidBoiler()
     {
         super("solid_boiler", Material.IRON, Multiblocks.SOLID_BOILER);
     }
@@ -44,6 +44,6 @@ public class BlockBoiler extends BlockMultiblockBase
     @Override
     public TileEntity getTile(final World w, final IBlockState state)
     {
-        return new TileBoiler();
+        return new TileSolidBoiler();
     }
 }

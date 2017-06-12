@@ -1,8 +1,5 @@
 package net.qbar.common.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -12,12 +9,15 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class FluidUtils
 {
     public static final boolean drainPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
     {
         final ItemStack input = player.getHeldItemMainhand();
-        ItemStack output = ItemStack.EMPTY;
+        ItemStack output;
 
         final IFluidHandlerItem inputFluidHandler = FluidUtils.getFluidHandler(input);
 
@@ -51,7 +51,7 @@ public class FluidUtils
     public static final boolean fillPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
     {
         final ItemStack input = player.getHeldItemMainhand();
-        ItemStack output = ItemStack.EMPTY;
+        ItemStack output;
 
         final IFluidHandlerItem inputFluidHandler = FluidUtils.getFluidHandler(input);
 
