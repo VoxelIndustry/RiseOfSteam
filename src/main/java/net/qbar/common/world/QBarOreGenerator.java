@@ -4,6 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkGenerator;
@@ -11,17 +12,30 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.qbar.common.util.PosUtils;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.stream.Stream;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
+    private HashMap<ChunkPos, GenLeftOver> leftOvers;
+
+    public QBarOreGenerator()
+    {
+        this.leftOvers = new HashMap<>();
+    }
+
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
         if (world.provider.getDimension() == 0)
         {
+            if (leftOvers.containsKey(new ChunkPos(chunkX, chunkZ)))
+            {
+                leftOvers.get(new ChunkPos(chunkX, chunkZ)).generate(world);
+                leftOvers.remove(new ChunkPos(chunkX, chunkZ));
+            }
             generateCopper(random, chunkX, chunkZ, world);
         }
     }
@@ -52,16 +66,18 @@ public class QBarOreGenerator implements IWorldGenerator
                 {
                     w.setBlockState(current, Blocks.DIAMOND_BLOCK.getDefaultState(), 2);
 
-                    if (rand.nextFloat() < 0.001f)
+                    if (rand.nextFloat() < 0.01f)
                     {
-                        this.generateSphere(w, current, Blocks.IRON_ORE.getDefaultState(), 10, 0.7f);
+                        this.generateSphere(w, new ChunkPos(chunkX, chunkZ), current, Blocks.IRON_ORE.getDefaultState(),
+                                10, 0.7f);
                     }
                 }
             }
         }
     }
 
-    private void generateSphere(World w, BlockPos center, IBlockState state, int radius, float density)
+    private void generateSphere(World w, ChunkPos originChunk, BlockPos center, IBlockState state, int radius,
+            float density)
     {
         int radiusSquared = radius * radius * radius;
 
@@ -73,11 +89,9 @@ public class QBarOreGenerator implements IWorldGenerator
                 {
                     BlockPos current = center.add(x, y, z);
 
-                    w.setBlockState(current, Blocks.GLASS.getDefaultState());
-
                     double distance = Math.abs(center.getDistance(current.getX(), current.getY(), current.getZ()));
                     if ((distance * distance * distance) < radiusSquared && w.rand.nextFloat() <= density)
-                        w.setBlockState(current, state);
+                        this.placeBlock(w, current, state, originChunk);
                 }
             }
         }
@@ -99,6 +113,22 @@ public class QBarOreGenerator implements IWorldGenerator
                         w.setBlockState(current, state);
                 }
             }
+        }
+    }
+
+    private void placeBlock(World w, BlockPos pos, IBlockState state, ChunkPos originChunk)
+    {
+        if (w.getChunkFromBlockCoords(pos).isLoaded() || w.getChunkFromBlockCoords(pos).getPos().equals(originChunk))
+            w.setBlockState(pos, state);
+        else
+        {
+            ChunkPos chunk = new ChunkPos(pos);
+            if (!this.leftOvers.containsKey(chunk))
+            {
+                GenLeftOver leftOver = new GenLeftOver(chunk);
+                this.leftOvers.put(chunk, leftOver);
+            }
+            this.leftOvers.get(chunk).getBlocks().put(pos, state);
         }
     }
 }
