@@ -2,7 +2,6 @@ package net.qbar.common.world;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -50,10 +49,7 @@ public class GenLeftOver
     public void generate(World w)
     {
         for (Map.Entry<BlockPos, IBlockState> block : this.blocks.entrySet())
-        {
-            System.out.println("Generated: " + block.getKey());
-            w.setBlockState(block.getKey(), Blocks.REDSTONE_BLOCK.getDefaultState(), 2);
-        }
+            w.setBlockState(block.getKey(), block.getValue(), 2);
     }
 
     public NBTTagCompound toNBT()

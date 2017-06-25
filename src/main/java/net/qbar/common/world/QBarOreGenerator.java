@@ -9,8 +9,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import net.qbar.common.util.PosUtils;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -20,9 +22,18 @@ public class QBarOreGenerator implements IWorldGenerator
 {
     private HashMap<ChunkPos, GenLeftOver> leftOvers;
 
-    public QBarOreGenerator()
+    private QBarOreGenerator()
     {
         this.leftOvers = new HashMap<>();
+    }
+
+    private static QBarOreGenerator INSTANCE;
+
+    public static final QBarOreGenerator instance()
+    {
+        if (INSTANCE == null)
+            INSTANCE = new QBarOreGenerator();
+        return INSTANCE;
     }
 
     @Override
@@ -57,28 +68,41 @@ public class QBarOreGenerator implements IWorldGenerator
 
     private void generateCopper(Random rand, int chunkX, int chunkZ, World w)
     {
-        for (int i = 0; i < 16; i++)
+        int y;
+        for (int x = 0; x < 16; x++)
         {
-            for (int j = 0; j < 16; j++)
+            for (int z = 0; z < 16; z++)
             {
-                BlockPos current = new BlockPos(chunkX * 16 + i, 64, chunkZ * 16 + j);
+                BlockPos current = new BlockPos(chunkX * 16 + x, 64, chunkZ * 16 + z);
                 if (w.getBiome(current) == Biomes.RIVER)
                 {
-                    w.setBlockState(current, Blocks.DIAMOND_BLOCK.getDefaultState(), 2);
-
-                    if (rand.nextFloat() < 0.01f)
+                    if (rand.nextFloat() < 0.005f)
                     {
-                        this.generateSphere(w, new ChunkPos(chunkX, chunkZ), current, Blocks.IRON_ORE.getDefaultState(),
-                                10, 0.7f);
+                        int count = 0;
+                        y = w.rand.nextInt(37) + 17;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            int xShift = rand.nextBoolean() ? Math.max(rand.nextInt(15), 10)
+                                    : Math.max(-rand.nextInt(15), -10);
+                            int yShift = rand.nextBoolean() ? Math.max(rand.nextInt(12), 3)
+                                    : Math.max(-rand.nextInt(9), -3);
+                            int zShift = rand.nextBoolean() ? Math.max(rand.nextInt(15), 10)
+                                    : Math.max(-rand.nextInt(15), -10);
+
+                            BlockPos veinLocation = new BlockPos(current.getX() + xShift, y + yShift,
+                                    current.getZ() + zShift);
+                            count += this.generatePlate(w, veinLocation, Blocks.IRON_BLOCK.getDefaultState(), 10, 5,
+                                    0.7f);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void generateSphere(World w, ChunkPos originChunk, BlockPos center, IBlockState state, int radius,
-            float density)
+    private int generateSphere(World w, BlockPos center, IBlockState state, int radius, float density)
     {
+        int count = 0;
         int radiusSquared = radius * radius * radius;
 
         for (int x = -radius; x < radius; x++)
@@ -91,34 +115,68 @@ public class QBarOreGenerator implements IWorldGenerator
 
                     double distance = Math.abs(center.getDistance(current.getX(), current.getY(), current.getZ()));
                     if ((distance * distance * distance) < radiusSquared && w.rand.nextFloat() <= density)
-                        this.placeBlock(w, current, state, originChunk);
+                    {
+                        this.placeBlock(w, current, state);
+                        count++;
+                    }
                 }
             }
         }
+        return count;
     }
 
-    private void generatePlate(World w, BlockPos center, IBlockState state, int radius, int thickness, float density)
+    private int generatePlate(World w, BlockPos center, IBlockState state, int radius, int thickness, float density)
     {
-        for (int y = -thickness / 2; y < thickness / 2; y++)
+        int count = 0;
+
+        if (thickness % 2 == 0)
+            thickness--;
+
+        for (int y = -thickness / 2; y <= thickness / 2; y++)
         {
             int currentRadius = radius - (Math.abs(y));
-            int radiusSquared = currentRadius * currentRadius;
-            for (int x = -currentRadius / 2; x < currentRadius / 2; x++)
-            {
-                for (int z = -currentRadius / 2; z < currentRadius / 2; z++)
-                {
-                    BlockPos current = center.add(x, center.getY() + thickness, z);
 
-                    if (PosUtils.posDotProd(center, current) < radiusSquared && w.rand.nextFloat() <= density)
-                        w.setBlockState(current, state);
+            int x = currentRadius;
+            int z = 0;
+            int err = 0;
+            while (x >= z)
+            {
+                count += this.drawXLine(w, center.add(-z, y, x), center.add(z, y, x), state, density);
+                count += this.drawXLine(w, center.add(-x, y, z), center.add(x, y, z), state, density);
+
+                count += this.drawXLine(w, center.add(-x, y, -z), center.add(x, y, -z), state, density);
+                count += this.drawXLine(w, center.add(-z, y, -x), center.add(z, y, -x), state, density);
+                z++;
+
+                if (err <= 0)
+                    err += 2 * z + 1;
+                else
+                {
+                    x--;
+                    err += 2 * (z - x) + 1;
                 }
             }
         }
+        return count;
     }
 
-    private void placeBlock(World w, BlockPos pos, IBlockState state, ChunkPos originChunk)
+    private int drawXLine(World w, BlockPos first, BlockPos second, IBlockState state, float density)
     {
-        if (w.getChunkFromBlockCoords(pos).isLoaded() || w.getChunkFromBlockCoords(pos).getPos().equals(originChunk))
+        int count = 0;
+        for (int i = 0; i < (second.getX() - first.getX()); i++)
+        {
+            if (w.rand.nextFloat() <= density)
+            {
+                this.placeBlock(w, first.add(i, 0, 0), state);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void placeBlock(World w, BlockPos pos, IBlockState state)
+    {
+        if (w.isChunkGeneratedAt(new ChunkPos(pos).chunkXPos, new ChunkPos(pos).chunkZPos))
             w.setBlockState(pos, state);
         else
         {
@@ -130,5 +188,14 @@ public class QBarOreGenerator implements IWorldGenerator
             }
             this.leftOvers.get(chunk).getBlocks().put(pos, state);
         }
+    }
+
+    @SubscribeEvent
+    public void onOreGen(OreGenEvent.GenerateMinable e)
+    {
+        if (e.getType().equals(OreGenEvent.GenerateMinable.EventType.IRON)
+                || e.getType().equals(OreGenEvent.GenerateMinable.EventType.GOLD)
+                || e.getType().equals(OreGenEvent.GenerateMinable.EventType.REDSTONE))
+            e.setResult(Event.Result.DENY);
     }
 }

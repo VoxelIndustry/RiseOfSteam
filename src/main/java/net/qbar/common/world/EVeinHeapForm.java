@@ -1,6 +1,6 @@
 package net.qbar.common.world;
 
-public enum EVeinForm
+public enum EVeinHeapForm
 {
     SPHERES, PLATES, SHATTERED
 }

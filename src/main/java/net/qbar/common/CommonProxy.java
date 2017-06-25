@@ -39,6 +39,7 @@ public class CommonProxy
         QBarFluids.registerFluids();
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
+        MinecraftForge.ORE_GEN_BUS.register(QBarOreGenerator.instance());
         CompatManager.preInit(e);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(QBar.instance, new GuiHandler());
@@ -47,7 +48,7 @@ public class CommonProxy
     public void init(final FMLInitializationEvent e)
     {
         QBarRecipeHandler.registerRecipes();
-        GameRegistry.registerWorldGenerator(new QBarOreGenerator(), 0);
+        GameRegistry.registerWorldGenerator(QBarOreGenerator.instance(), 0);
 
         CompatManager.init(e);
     }
