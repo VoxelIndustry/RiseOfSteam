@@ -13,6 +13,7 @@ public class OreVeinDescriptor
     private int                         heapQty;
     private int                         heapSize;
     private EVeinHeapForm               heapForm;
+    private EVeinForm                   veinForm;
 
     private float                       rarity;
 
@@ -57,6 +58,12 @@ public class OreVeinDescriptor
         return this;
     }
 
+    public OreVeinDescriptor veinForm(EVeinForm form)
+    {
+        this.veinForm = form;
+        return this;
+    }
+
     public OreVeinDescriptor rarity(float rarity)
     {
         this.rarity = rarity;
@@ -91,6 +98,11 @@ public class OreVeinDescriptor
     public EVeinHeapForm getHeapForm()
     {
         return heapForm;
+    }
+
+    public EVeinForm getVeinForm()
+    {
+        return veinForm;
     }
 
     public float getRarity()
