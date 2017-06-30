@@ -4,7 +4,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
@@ -27,10 +27,10 @@ compileJava {
 }
 
 minecraft {
-    version = "1.11.2-13.20.0.2233"
+    version = "1.12-14.21.1.2387"
     runDir = "run"
 
-    mappings = "snapshot_20161220"
+    mappings = "snapshot_20170624"
 }
 
 repositories {
@@ -55,6 +55,10 @@ repositories {
     	name = 'yggard'
     	url = 'http://maven.ferenyr.info/artifactory/yggard'
 	}
+    maven { // RedstoneFlux
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
 }
 
 jar {
@@ -83,14 +87,21 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'mcjty.theoneprobe:TheOneProbe:1.11-1.3.4-47'
-	deobfCompile 'mezz.jei:jei_1.11.2:4.2.8.243'
+	deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5'
+	deobfCompile 'mezz.jei:jei_1.12:4.7.1.69'
     compile 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
 	shadow 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
-    compile 'com.elytradev:concrete:0.1.0'
-    shadow 'com.elytradev:concrete:0.1.0'
     compile 'org.hjson:hjson:1.0.0'
     shadow 'org.hjson:hjson:1.0.0'
+
+    deobfCompile 'com.elytradev:concrete:0.3.1:common'
+    shadow 'com.elytradev:concrete:0.3.1:common'
+
+    deobfCompile 'com.elytradev:concrete:0.3.1:reflect'
+    shadow 'com.elytradev:concrete:0.3.1:reflect'
+
+    deobfCompile 'com.elytradev:concrete:0.3.1:network'
+    shadow 'com.elytradev:concrete:0.3.1:network'
 }
 
 processResources
