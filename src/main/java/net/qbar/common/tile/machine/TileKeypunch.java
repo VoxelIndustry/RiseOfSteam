@@ -171,7 +171,7 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
     {
         for (int i = 0; i < 9; i++)
             this.fakeInv.setInventorySlotContents(i, this.getCraftStacks().get(i));
-        return CraftingManager.getInstance().findMatchingRecipe(this.fakeInv, this.getWorld());
+        return CraftingManager.findMatchingRecipe(this.fakeInv, this.getWorld()).getRecipeOutput();
     }
 
     @Override

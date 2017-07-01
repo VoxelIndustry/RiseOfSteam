@@ -1,12 +1,12 @@
 package net.qbar.client.render.model.obj;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.List;
+import java.util.Optional;
 
 public class QBarOBJState implements IModelState
 {
@@ -31,7 +31,7 @@ public class QBarOBJState implements IModelState
     {
         if (parent != null)
             return parent.apply(part);
-        return Optional.absent();
+        return Optional.empty();
     }
 
     public List<String> getVisibilityList()

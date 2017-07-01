@@ -48,8 +48,8 @@ public class RenderStructureOverlay
                 final String name = I18n.translateToLocal(
                         Block.getBlockFromName("qbar:" + structure.getBlueprint().getName()).getUnlocalizedName()
                                 + ".name");
-                Minecraft.getMinecraft().fontRendererObj.drawString(name,
-                        -Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) / 2, 0, 16777215);
+                Minecraft.getMinecraft().fontRenderer.drawString(name,
+                        -Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2, 0, 16777215);
 
                 GlStateManager.popMatrix();
                 GlStateManager.translate(-0.3, -0.8, -.56);
@@ -85,7 +85,7 @@ public class RenderStructureOverlay
         GlStateManager.translate(-0.4, -0.1, 0);
         GlStateManager.scale(0.625f / 24, 0.625f / 24, 0.625f / 24);
 
-        Minecraft.getMinecraft().fontRendererObj.drawString(
+        Minecraft.getMinecraft().fontRenderer.drawString(
                 "Step " + (state.getCurrentStep() + 1) + " / " + state.getBlueprint().getSteps().size(), 0, 0,
                 16777215);
         GlStateManager.popMatrix();
@@ -120,14 +120,14 @@ public class RenderStructureOverlay
             else
                 color = 15767040;
 
-            Minecraft.getMinecraft().fontRendererObj.drawString(count,
-                    -Minecraft.getMinecraft().fontRendererObj.getStringWidth(count) / 2, 0, color);
+            Minecraft.getMinecraft().fontRenderer.drawString(count,
+                    -Minecraft.getMinecraft().fontRenderer.getStringWidth(count) / 2, 0, color);
 
             GlStateManager.scale(2.5, 2.5, 2.5);
             GlStateManager.translate(8, -9, 0);
 
             String stackName = state.getStepStacks().get(stack).getDisplayName();
-            Minecraft.getMinecraft().fontRendererObj.drawString(stackName, 0, 0, color);
+            Minecraft.getMinecraft().fontRenderer.drawString(stackName, 0, 0, color);
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
@@ -186,8 +186,8 @@ public class RenderStructureOverlay
             else if(step < state.getCurrentStep())
                 color = 61440;
 
-            Minecraft.getMinecraft().fontRendererObj.drawString(count,
-                    -Minecraft.getMinecraft().fontRendererObj.getStringWidth(count) / 2, 0, color);
+            Minecraft.getMinecraft().fontRenderer.drawString(count,
+                    -Minecraft.getMinecraft().fontRenderer.getStringWidth(count) / 2, 0, color);
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();

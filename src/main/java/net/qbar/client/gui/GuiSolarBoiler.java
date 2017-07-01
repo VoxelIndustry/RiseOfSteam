@@ -46,7 +46,7 @@ public class GuiSolarBoiler extends GuiMachineBase<TileSolarBoiler>
             GuiUtils.drawHoveringText(
                     Arrays.asList(TextFormatting.GOLD + "" + heatFormat.format(this.getMachine().getHeat() / 10) + " / "
                             + this.getMachine().getMaxHeat() / 10 + " °C"),
-                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
     }

@@ -27,10 +27,13 @@ public abstract class BlockPipeBase extends BlockMachineBase
     }
 
     @Override
-    public void getSubBlocks(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> stacks)
+    public void getSubBlocks(final CreativeTabs tab, final NonNullList<ItemStack> stacks)
     {
-        stacks.add(new ItemStack(item, 1, 0));
-        stacks.add(new ItemStack(item, 1, 1));
+        if (tab == this.getCreativeTabToDisplayOn())
+        {
+            stacks.add(new ItemStack(this, 1, 0));
+            stacks.add(new ItemStack(this, 1, 1));
+        }
     }
 
     @Override
@@ -57,7 +60,8 @@ public abstract class BlockPipeBase extends BlockMachineBase
         if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TilePipeBase)
         {
             final TilePipeBase<?, ?> tile = (TilePipeBase<?, ?>) world.getTileEntity(pos);
-            return ((IExtendedBlockState) state).withProperty(QBarStateProperties.VISIBILITY_PROPERTY, tile.getVisibilityState());
+            return ((IExtendedBlockState) state).withProperty(QBarStateProperties.VISIBILITY_PROPERTY,
+                    tile.getVisibilityState());
         }
         return state;
     }
@@ -65,7 +69,8 @@ public abstract class BlockPipeBase extends BlockMachineBase
     @Override
     public BlockStateContainer createBlockState()
     {
-        return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[] {QBarStateProperties.VISIBILITY_PROPERTY});
+        return new ExtendedBlockState(this, new IProperty[0],
+                new IUnlistedProperty[] { QBarStateProperties.VISIBILITY_PROPERTY });
     }
 
     @Override

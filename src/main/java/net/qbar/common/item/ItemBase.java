@@ -10,6 +10,7 @@ public class ItemBase extends Item
 	public ItemBase(String name)
 	{
 		this.name = name;
+		this.setRegistryName(QBar.MODID, name);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(QBar.TAB_ALL);
 	}

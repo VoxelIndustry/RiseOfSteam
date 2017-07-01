@@ -1,5 +1,9 @@
 package net.qbar.common.world;
 
+import java.util.HashMap;
+import java.util.Random;
+import java.util.stream.Stream;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
@@ -7,16 +11,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.HashMap;
-import java.util.Random;
-import java.util.stream.Stream;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
@@ -176,7 +176,7 @@ public class QBarOreGenerator implements IWorldGenerator
 
     private void placeBlock(World w, BlockPos pos, IBlockState state)
     {
-        if (w.isChunkGeneratedAt(new ChunkPos(pos).chunkXPos, new ChunkPos(pos).chunkZPos))
+        if (w.isChunkGeneratedAt(new ChunkPos(pos).x, new ChunkPos(pos).z))
             w.setBlockState(pos, state);
         else
         {

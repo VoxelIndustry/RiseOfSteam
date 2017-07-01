@@ -40,7 +40,7 @@ public class QBarRecipeHandler
 
         QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
 
-        GameRegistry.addRecipe(new SludgeRecipe());
+     //   GameRegistry.addRecipe(new SludgeRecipe());
     }
 
     @SuppressWarnings("unchecked")

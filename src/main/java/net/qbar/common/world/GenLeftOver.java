@@ -56,8 +56,8 @@ public class GenLeftOver
     {
         NBTTagCompound tag = new NBTTagCompound();
 
-        tag.setInteger("posX", pos.chunkXPos);
-        tag.setInteger("posZ", pos.chunkZPos);
+        tag.setInteger("posX", pos.x);
+        tag.setInteger("posZ", pos.z);
 
         int i = 0;
         for (Map.Entry<BlockPos, IBlockState> block : this.blocks.entrySet())

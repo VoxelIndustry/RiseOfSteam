@@ -8,8 +8,7 @@ import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
 public class RenderSteamFurnaceMK2 extends TileEntitySpecialRenderer<TileSteamFurnaceMK2>
 {
     @Override
-    public void renderTileEntityAt(TileSteamFurnaceMK2 tile, double x, double y, double z, float partialTicks,
-            int destroyStage)
+    public void render(TileSteamFurnaceMK2 tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + .42, y + 1.2, z + .8);

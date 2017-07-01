@@ -89,18 +89,20 @@ artifacts {
 dependencies {
 	deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5'
 	deobfCompile 'mezz.jei:jei_1.12:4.7.1.69'
-    compile 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
-	shadow 'org.yggard:brokkgui-binding-mc1.11.2:0.2.+'
+
+    compile 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
+	shadow 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
+
     compile 'org.hjson:hjson:1.0.0'
     shadow 'org.hjson:hjson:1.0.0'
 
-    deobfCompile 'com.elytradev:concrete:0.3.1:common'
+    compile 'com.elytradev:concrete:0.3.1:common'
     shadow 'com.elytradev:concrete:0.3.1:common'
 
-    deobfCompile 'com.elytradev:concrete:0.3.1:reflect'
+    compile 'com.elytradev:concrete:0.3.1:reflect'
     shadow 'com.elytradev:concrete:0.3.1:reflect'
 
-    deobfCompile 'com.elytradev:concrete:0.3.1:network'
+    compile 'com.elytradev:concrete:0.3.1:network'
     shadow 'com.elytradev:concrete:0.3.1:network'
 }
 

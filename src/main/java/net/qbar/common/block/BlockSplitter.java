@@ -37,10 +37,13 @@ public class BlockSplitter extends BlockOrientableMachine
     }
 
     @Override
-    public void getSubBlocks(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> stacks)
+    public void getSubBlocks(final CreativeTabs tab, final NonNullList<ItemStack> stacks)
     {
-        stacks.add(new ItemStack(item, 1, 0));
-        stacks.add(new ItemStack(item, 1, 1));
+        if (tab == this.getCreativeTabToDisplayOn())
+        {
+            stacks.add(new ItemStack(this, 1, 0));
+            stacks.add(new ItemStack(this, 1, 1));
+        }
     }
 
     @Override

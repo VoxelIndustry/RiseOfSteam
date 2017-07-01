@@ -70,7 +70,7 @@ public class ClientEventManager
                                 RenderGlobal.drawSelectionBoundingBox(
                                         blueprint.getMultiblock()
                                                 .getBox(e.getPlayer().getHorizontalFacing().getOpposite()).offset(pos)
-                                                .expandXyz(0.0020000000949949026D).offset(-x, -y, -z),
+                                                .grow(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);
 
                                 GlStateManager.depthMask(true);
@@ -89,9 +89,9 @@ public class ClientEventManager
                                 GlStateManager.scale(0.625f / 32, 0.625f / 32, 0.625f / 32);
                                 GlStateManager.disableLighting();
 
-                                Minecraft.getMinecraft().fontRendererObj.drawString(
+                                Minecraft.getMinecraft().fontRenderer.drawString(
                                         String.valueOf(blueprint.getRodAmount()),
-                                        -Minecraft.getMinecraft().fontRendererObj
+                                        -Minecraft.getMinecraft().fontRenderer
                                                 .getStringWidth(String.valueOf(blueprint.getRodAmount())) / 2,
                                         0,
                                         e.getPlayer().capabilities.isCreativeMode || ItemUtils.hasPlayerEnough(

@@ -123,8 +123,8 @@ public class TileAssembler extends TileInventoryBase
                 InventoryCrafting craftInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
                 for (int i = 0; i < 9; i++)
                     craftInv.setInventorySlotContents(i, this.getStackInSlot(i + 21));
-                ItemStack result = CraftingManager.getInstance().findMatchingRecipe(craftInv, this.getWorld());
-                this.remainingsTemp = CraftingManager.getInstance().getRemainingItems(craftInv, this.getWorld());
+                ItemStack result = CraftingManager.findMatchingRecipe(craftInv, this.getWorld()).getRecipeOutput();
+                this.remainingsTemp = CraftingManager.getRemainingItems(craftInv, this.getWorld());
 
                 if (!result.isEmpty() && canOutput(result))
                 {
@@ -283,7 +283,7 @@ public class TileAssembler extends TileInventoryBase
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.ASSEMBLER.ordinal(), this.world, this.pos.getX(), this.pos.getY(),

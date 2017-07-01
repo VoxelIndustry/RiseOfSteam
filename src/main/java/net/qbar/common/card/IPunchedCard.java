@@ -2,6 +2,7 @@ package net.qbar.common.card;
 
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +13,7 @@ public interface IPunchedCard
 
     void writeToNBT(NBTTagCompound tag);
 
-    void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced);
+    void addInformation(ItemStack stack, List<String> tooltip, ITooltipFlag flag);
 
     boolean isValid(NBTTagCompound tag);
 

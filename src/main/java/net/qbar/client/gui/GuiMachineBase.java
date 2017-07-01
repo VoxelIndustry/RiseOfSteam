@@ -66,7 +66,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                     lines.add(TextFormatting.GOLD + "" + fluidTank.getKey().getFluidAmount() + " / "
                             + fluidTank.getKey().getCapacity() + " mB");
                 }
-                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
         for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
@@ -88,7 +88,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                             (this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
                                     + "Overload!");
                 }
-                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);

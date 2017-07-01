@@ -116,17 +116,20 @@ public class ItemBlueprint extends ItemBase
     }
 
     @Override
-    public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list)
+    public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list)
     {
-        Blueprints.getInstance().getBlueprints().forEach((name, blueprint) ->
+        if (tab == this.getCreativeTab())
         {
-            final ItemStack stack = new ItemStack(this);
-            final NBTTagCompound tag = new NBTTagCompound();
-            stack.setTagCompound(tag);
+            Blueprints.getInstance().getBlueprints().forEach((name, blueprint) ->
+            {
+                final ItemStack stack = new ItemStack(this);
+                final NBTTagCompound tag = new NBTTagCompound();
+                stack.setTagCompound(tag);
 
-            tag.setString("blueprint", name);
-            list.add(stack);
-        });
+                tag.setString("blueprint", name);
+                list.add(stack);
+            });
+        }
     }
 
     @SuppressWarnings("deprecation")

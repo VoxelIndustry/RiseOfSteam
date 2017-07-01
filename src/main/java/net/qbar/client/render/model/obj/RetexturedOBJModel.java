@@ -3,8 +3,8 @@ package net.qbar.client.render.model.obj;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
 public class RetexturedOBJModel implements IModel
@@ -44,7 +43,7 @@ public class RetexturedOBJModel implements IModel
                 ret.add(new ResourceLocation(tex));
             return ret;
         } catch (Exception e)
-            {
+        {
             throw new RuntimeException(e);
         }
     }

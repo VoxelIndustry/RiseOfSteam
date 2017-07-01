@@ -2,10 +2,10 @@ package net.qbar.client.render.tile;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.animation.FastTESR;
@@ -18,7 +18,7 @@ public class RenderBelt extends FastTESR<TileBelt>
 {
     @Override
     public void renderTileEntityFast(final TileBelt belt, final double x, final double y, final double z,
-            final float partialTicks, final int destroyStage, final VertexBuffer renderer)
+            final float partialTicks, final int destroyStage, final float partial, final BufferBuilder renderer)
     {
         final BlockPos pos = belt.getBlockPos();
 

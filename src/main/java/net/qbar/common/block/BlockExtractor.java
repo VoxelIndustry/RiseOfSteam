@@ -78,10 +78,10 @@ public class BlockExtractor extends BlockMachineBase
     }
 
     @Override
-    public void getSubBlocks(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> stacks)
+    public void getSubBlocks(final CreativeTabs tab, final NonNullList<ItemStack> stacks)
     {
-        stacks.add(new ItemStack(item, 1, 0));
-        stacks.add(new ItemStack(item, 1, 1));
+        stacks.add(new ItemStack(this, 1, 0));
+        stacks.add(new ItemStack(this, 1, 1));
     }
 
     @Override
@@ -102,12 +102,6 @@ public class BlockExtractor extends BlockMachineBase
             default:
                 return BlockExtractor.AABB_BOTTOM_HALF;
         }
-    }
-
-    @Override
-    public boolean isFullyOpaque(final IBlockState state)
-    {
-        return false;
     }
 
     @Override

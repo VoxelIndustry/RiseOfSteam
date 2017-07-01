@@ -22,6 +22,6 @@ public class QBarFluids
         FluidRegistry.addBucketForFluid(QBarFluids.fluidSteam);
 
         QBarFluids.blockFluidSteam = new BlockQBarFluid(QBarFluids.fluidSteam, Material.WATER, "blockfluidsteam");
-        QBarBlocks.registerBlock(QBarFluids.blockFluidSteam, "blockfluidsteam");
+        QBarBlocks.registerBlock(QBarFluids.blockFluidSteam);
     }
 }
