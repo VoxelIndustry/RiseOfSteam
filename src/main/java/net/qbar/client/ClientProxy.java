@@ -24,6 +24,7 @@ import net.qbar.client.render.tile.RenderRollingMill;
 import net.qbar.client.render.tile.RenderSteamFurnaceMK2;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
+import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileStructure;
@@ -43,17 +44,6 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(this);
         super.preInit(e);
 
-        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
-                new ModelResourceLocation(QBar.MODID + ":fluidpipe", "inventoryvalve"));
-        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:steampipe"), 1,
-                new ModelResourceLocation(QBar.MODID + ":steampipe", "inventoryvalve"));
-        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
-                new ModelResourceLocation(QBar.MODID + ":itemextractor", "facing=down,filter=true"));
-        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemsplitter"), 1,
-                new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
-
-        this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
-
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
                 new ResourceLocation(QBar.MODID + ":block/belt.mwm"), new String[] { "Top" },
                 new String[] { "qbar:blocks/belt_top_anim" });
@@ -61,9 +51,8 @@ public class ClientProxy extends CommonProxy
                 new ResourceLocation(QBar.MODID + ":block/belt_slope.mwm"), new String[] { "None" },
                 new String[] { "qbar:blocks/belt_slope_anim" });
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope2_animated.mwm",
-            new ResourceLocation(QBar.MODID + ":block/belt_slope2.mwm"), new String[] { "None" },
-            new String[] { "qbar:blocks/belt_slope_anim" });
-
+                new ResourceLocation(QBar.MODID + ":block/belt_slope2.mwm"), new String[] { "None" },
+                new String[] { "qbar:blocks/belt_slope_anim" });
 
         ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
@@ -113,5 +102,19 @@ public class ClientProxy extends CommonProxy
                 "inventory");
         final IBakedModel originalModel = evt.getModelRegistry().getObject(key);
         evt.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
+
+        QBarItems.ITEMS
+                .forEach(item -> QBar.proxy.registerItemRenderer(item, 0, item.getUnlocalizedName().substring(5)));
+
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
+                new ModelResourceLocation(QBar.MODID + ":fluidpipe", "inventoryvalve"));
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:steampipe"), 1,
+                new ModelResourceLocation(QBar.MODID + ":steampipe", "inventoryvalve"));
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
+                new ModelResourceLocation(QBar.MODID + ":itemextractor", "facing=down,filter=true"));
+        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemsplitter"), 1,
+                new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
+
+        this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
     }
 }

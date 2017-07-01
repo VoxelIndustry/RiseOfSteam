@@ -35,7 +35,7 @@ public class GuiSteamFurnaceMK2 extends GuiMachineBase<TileSteamFurnaceMK2>
             GuiUtils.drawHoveringText(
                     Arrays.asList(TextFormatting.GOLD + "" + this.getMachine().getCurrentHeat() + " / "
                             + this.getMachine().getMaxHeat() + " °C"),
-                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
     }

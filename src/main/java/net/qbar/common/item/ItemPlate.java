@@ -16,17 +16,20 @@ public class ItemPlate extends ItemBase
     }
 
     @Override
-    public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list)
+    public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list)
     {
-        QBarRecipeHandler.metals.forEach(metal ->
+        if (tab == this.getCreativeTab())
         {
-            final ItemStack stack = new ItemStack(this);
-            final NBTTagCompound tag = new NBTTagCompound();
-            stack.setTagCompound(tag);
+            QBarRecipeHandler.metals.forEach(metal ->
+            {
+                final ItemStack stack = new ItemStack(this);
+                final NBTTagCompound tag = new NBTTagCompound();
+                stack.setTagCompound(tag);
 
-            tag.setString("metal", metal);
-            list.add(stack);
-        });
+                tag.setString("metal", metal);
+                list.add(stack);
+            });
+        }
     }
 
     @Override

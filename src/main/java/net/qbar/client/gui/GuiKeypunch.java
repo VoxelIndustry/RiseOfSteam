@@ -190,7 +190,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         for (int i = 0; i < 9; i++)
             fakeInv.setInventorySlotContents(i, this.keypunch.getCraftStacks().get(i));
         final ItemStackView resultView = new ItemStackView(
-                CraftingManager.getInstance().findMatchingRecipe(fakeInv, this.keypunch.getWorld()));
+                CraftingManager.findMatchingRecipe(fakeInv, this.keypunch.getWorld()).getRecipeOutput());
         resultView.setWidth(22);
         resultView.setHeight(22);
         ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));

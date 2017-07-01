@@ -1,6 +1,6 @@
 package net.qbar.common;
 
-import com.elytradev.concrete.NetworkContext;
+import com.elytradev.concrete.network.NetworkContext;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -34,9 +34,12 @@ public class CommonProxy
 
         CapabilitySteamHandler.register();
 
-        QBarBlocks.registerBlocks();
-        QBarItems.registerItems();
+        QBarBlocks.init();
         QBarFluids.registerFluids();
+        QBarItems.init();
+
+        MinecraftForge.EVENT_BUS.register(new QBarBlocks());
+        MinecraftForge.EVENT_BUS.register(new QBarItems());
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         MinecraftForge.ORE_GEN_BUS.register(QBarOreGenerator.instance());

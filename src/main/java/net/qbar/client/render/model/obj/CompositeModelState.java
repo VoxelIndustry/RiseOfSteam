@@ -1,11 +1,12 @@
 package net.qbar.client.render.model.obj;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
+
+import java.util.Optional;
 
 public class CompositeModelState implements IModelState
 {
@@ -23,7 +24,7 @@ public class CompositeModelState implements IModelState
         Optional<TRSRTransformation> f = first.apply(part), s = second.apply(part);
         if (f.isPresent() && s.isPresent())
             return Optional.of(f.get().compose(s.get()));
-        return f.or(s);
+        return f.isPresent() ? f : s;
     }
 
     public IModelState getFirst()

@@ -50,14 +50,17 @@ public class ItemSludge extends ItemBase
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        for (QBarOre ore : QBarOres.ORES)
+        if (tab == this.getCreativeTab())
         {
-            ItemStack stack = new ItemStack(item);
+            for (QBarOre ore : QBarOres.ORES)
+            {
+                ItemStack stack = new ItemStack(item);
 
-            NBTTagCompound data = new SludgeData().addOre(ore, 1).writeToNBT(new NBTTagCompound());
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setTag("sludgeData", data);
-            subItems.add(stack);
+                NBTTagCompound data = new SludgeData().addOre(ore, 1).writeToNBT(new NBTTagCompound());
+                stack.setTagCompound(new NBTTagCompound());
+                stack.getTagCompound().setTag("sludgeData", data);
+                subItems.add(stack);
+            }
         }
     }
 }

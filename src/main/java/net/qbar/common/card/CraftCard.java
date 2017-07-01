@@ -1,5 +1,6 @@
 package net.qbar.common.card;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,8 +51,7 @@ public class CraftCard implements IPunchedCard
     }
 
     @Override
-    public void addInformation(final ItemStack stack, final EntityPlayer player, final List<String> tooltip,
-            final boolean advanced)
+    public void addInformation(final ItemStack stack, final List<String> tooltip, final ITooltipFlag flag)
     {
         tooltip.add("Recipe: ");
         for (final ItemStack element : this.recipe)

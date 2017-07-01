@@ -32,13 +32,13 @@ public class NetworkHandler
                 return;
 
             final Chunk chunk = tile.getWorld().getChunkFromBlockCoords(tile.getPos());
-            if (((WorldServer) tile.getWorld()).getPlayerChunkMap().contains(chunk.xPosition, chunk.zPosition))
+            if (((WorldServer) tile.getWorld()).getPlayerChunkMap().contains(chunk.x, chunk.z))
             {
                 for (final EntityPlayerMP player : tile.getWorld().getPlayers(EntityPlayerMP.class,
                         Predicates.alwaysTrue()))
                 {
-                    if (((WorldServer) tile.getWorld()).getPlayerChunkMap().isPlayerWatchingChunk(player,
-                            chunk.xPosition, chunk.zPosition))
+                    if (((WorldServer) tile.getWorld()).getPlayerChunkMap().isPlayerWatchingChunk(player, chunk.x,
+                            chunk.z))
                         player.connection.sendPacket(packet);
                 }
             }

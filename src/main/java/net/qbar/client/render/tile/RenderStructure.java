@@ -20,8 +20,7 @@ public class RenderStructure extends TileEntitySpecialRenderer<TileStructure>
     }
 
     @Override
-    public void renderTileEntityAt(final TileStructure structure, final double x, final double y, final double z,
-            final float partialTicks, final int destroyStage)
+    public void render(final TileStructure structure, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         if (RenderStructure.blockRender == null)
             RenderStructure.blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();

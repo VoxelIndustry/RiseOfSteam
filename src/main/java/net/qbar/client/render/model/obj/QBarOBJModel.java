@@ -1,8 +1,8 @@
 package net.qbar.client.render.model.obj;
 
 import java.lang.reflect.Field;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;

@@ -8,6 +8,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
+import net.qbar.QBar;
 import net.qbar.client.gui.GuiRollingMill;
 import net.qbar.common.recipe.QBarRecipeHandler;
 
@@ -32,6 +33,11 @@ public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRe
     public String getTitle()
     {
         return this.title;
+    }
+
+    @Override
+    public String getModName() {
+        return QBar.MODNAME;
     }
 
     @Override

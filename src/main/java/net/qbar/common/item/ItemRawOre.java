@@ -1,9 +1,10 @@
 package net.qbar.common.item;
 
+import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -12,8 +13,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.ore.QBarOre;
 import net.qbar.common.ore.QBarOres;
-
-import java.util.List;
 
 public class ItemRawOre extends ItemBase
 {
@@ -48,17 +47,19 @@ public class ItemRawOre extends ItemBase
         return EnumRarity.COMMON;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        for (QBarOre ore : QBarOres.ORES)
+        if (tab == this.getCreativeTab())
         {
-            ItemStack stack = new ItemStack(item);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("ore", ore.getName());
-            stack.getTagCompound().setString("density", "normal");
-            subItems.add(stack);
+            for (QBarOre ore : QBarOres.ORES)
+            {
+                ItemStack stack = new ItemStack(this);
+                stack.setTagCompound(new NBTTagCompound());
+                stack.getTagCompound().setString("ore", ore.getName());
+                stack.getTagCompound().setString("density", "normal");
+                subItems.add(stack);
+            }
         }
     }
 }

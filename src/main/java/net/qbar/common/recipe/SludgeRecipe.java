@@ -5,11 +5,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.ore.QBarOre;
 import net.qbar.common.ore.SludgeData;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class SludgeRecipe implements IRecipe
@@ -47,9 +49,8 @@ public class SludgeRecipe implements IRecipe
     }
 
     @Override
-    public int getRecipeSize()
-    {
-        return 3;
+    public boolean canFit(int width, int height) {
+        return width == 3 && height == 3;
     }
 
     @Override
@@ -62,5 +63,21 @@ public class SludgeRecipe implements IRecipe
     public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    }
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return null;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return null;
     }
 }

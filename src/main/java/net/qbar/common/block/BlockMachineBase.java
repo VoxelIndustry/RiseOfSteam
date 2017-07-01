@@ -6,7 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumBlockRenderType;
 import net.qbar.QBar;
 
-public abstract class BlockMachineBase extends BlockContainer
+public abstract class BlockMachineBase extends BlockContainer implements INamedBlock
 {
     public String name;
 
@@ -15,6 +15,7 @@ public abstract class BlockMachineBase extends BlockContainer
         super(material);
 
         this.name = name;
+        this.setRegistryName(QBar.MODID, name);
         this.setUnlocalizedName(name);
         this.setCreativeTab(QBar.TAB_ALL);
     }
@@ -23,5 +24,11 @@ public abstract class BlockMachineBase extends BlockContainer
     public EnumBlockRenderType getRenderType(final IBlockState state)
     {
         return EnumBlockRenderType.MODEL;
+    }
+
+    @Override
+    public String getName()
+    {
+        return this.name;
     }
 }

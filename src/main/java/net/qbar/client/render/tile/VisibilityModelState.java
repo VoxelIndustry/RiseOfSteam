@@ -2,8 +2,8 @@ package net.qbar.client.render.tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.UnmodifiableIterator;
 
 import net.minecraftforge.common.model.IModelPart;
@@ -31,6 +31,6 @@ public class VisibilityModelState implements IModelState
                     return this.value;
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 }
