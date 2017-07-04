@@ -17,22 +17,23 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.IWrenchable;
+import net.qbar.common.tile.QBarTileBase;
 
 import javax.annotation.Nullable;
 
-public abstract class BlockOrientableMachine extends BlockMachineBase implements IWrenchable
+public abstract class BlockOrientableMachine<T extends QBarTileBase> extends BlockMachineBase<T> implements IWrenchable
 {
-    public static final PropertyDirection FACING     = BlockDirectional.FACING;
+    public static final PropertyDirection FACING = BlockDirectional.FACING;
 
-    public static final int               NEEDED_BIT = 3;
+    public static final int NEEDED_BIT = 3;
 
-    private final boolean                 horizontal;
-    private final boolean                 vertical;
+    private final boolean horizontal;
+    private final boolean vertical;
 
     public BlockOrientableMachine(final String name, final Material material, final boolean horizontal,
-            final boolean vertical)
+                                  final boolean vertical, Class<T> tileClass)
     {
-        super(name, material);
+        super(name, material, tileClass);
 
         this.horizontal = horizontal;
         this.vertical = vertical;
@@ -95,7 +96,7 @@ public abstract class BlockOrientableMachine extends BlockMachineBase implements
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state, ItemStack wrench)
+                            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         this.rotateBlock(world, pos, this.getFacing(state).rotateAround(Axis.Y));
         return true;
@@ -122,7 +123,7 @@ public abstract class BlockOrientableMachine extends BlockMachineBase implements
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
         if (this.horizontal && this.vertical)
             return this.getDefaultState().withProperty(BlockOrientableMachine.FACING,
@@ -165,7 +166,7 @@ public abstract class BlockOrientableMachine extends BlockMachineBase implements
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         if (this.horizontal && this.vertical)
             w.setBlockState(pos, state.withProperty(BlockOrientableMachine.FACING,

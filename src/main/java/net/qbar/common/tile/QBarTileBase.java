@@ -1,7 +1,5 @@
 package net.qbar.common.tile;
 
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -9,6 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.qbar.common.network.NetworkHandler;
 import net.qbar.common.network.TileSyncRequestPacket;
+
+import java.util.List;
 
 public class QBarTileBase extends TileEntity implements ITileInfoProvider
 {

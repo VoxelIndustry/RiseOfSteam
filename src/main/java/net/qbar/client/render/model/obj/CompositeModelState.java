@@ -1,7 +1,6 @@
 package net.qbar.client.render.model.obj;
 
 import com.google.common.base.Objects;
-
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;

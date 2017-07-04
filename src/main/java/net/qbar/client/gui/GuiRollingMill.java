@@ -13,7 +13,7 @@ public class GuiRollingMill extends GuiMachineBase<TileRollingMill>
     {
         super(player, rollingmill);
 
-        this.addSteamTank(rollingmill.getSteamTank(), 151,7,18,73);
+        this.addSteamTank(rollingmill.getSteamTank(), 151, 7, 18, 73);
     }
 
     @Override

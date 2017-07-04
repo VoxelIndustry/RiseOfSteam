@@ -1,8 +1,16 @@
 package net.qbar.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.qbar.QBar;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.IPunchedCard;
+import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.slot.ListenerSlot;
+import net.qbar.common.network.FilteredMachinePacket;
+import net.qbar.common.tile.machine.TileSplitter;
 import org.yggard.brokkgui.data.EAlignment;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.element.GuiLabel;
@@ -17,32 +25,23 @@ import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.qbar.QBar;
-import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
-import net.qbar.common.container.BuiltContainer;
-import net.qbar.common.container.slot.ListenerSlot;
-import net.qbar.common.network.FilteredMachinePacket;
-import net.qbar.common.tile.machine.TileSplitter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int            xSize      = 176, ySize = 206;
+    private static final int xSize = 176, ySize = 206;
 
-    private static final Texture        BACKGROUND = new Texture(QBar.MODID + ":textures/gui/splitter.png", 0, 0,
+    private static final Texture BACKGROUND = new Texture(QBar.MODID + ":textures/gui/splitter.png", 0, 0,
             GuiSplitter.xSize / 256.0f, GuiSplitter.ySize / 256.0f);
-    private static final Texture        SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
+    private static final Texture SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
 
-    private final TileSplitter          splitter;
+    private final TileSplitter splitter;
 
     private final List<GuiAbsolutePane> filterPane;
     private final List<GuiButton>       whitelist;
 
-    private final GuiPaint              whitelistBackground, whitelistHoveredBackground, blacklistBackground,
+    private final GuiPaint whitelistBackground, whitelistHoveredBackground, blacklistBackground,
             blacklistHoveredBackground;
 
     public GuiSplitter(final EntityPlayer player, final TileSplitter splitter)

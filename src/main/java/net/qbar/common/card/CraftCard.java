@@ -1,7 +1,6 @@
 package net.qbar.common.card;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
@@ -11,10 +10,10 @@ import java.util.List;
 
 public class CraftCard implements IPunchedCard
 {
-    private final int   ID;
-    public ItemStack[]  recipe = new ItemStack[9];
+    private final int ID;
+    public ItemStack[] recipe = new ItemStack[9];
     private ItemStack[] cachedCombine;
-    public ItemStack    result = ItemStack.EMPTY;
+    public ItemStack result = ItemStack.EMPTY;
 
     public CraftCard(final int ID)
     {

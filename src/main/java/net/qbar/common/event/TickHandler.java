@@ -1,13 +1,12 @@
 package net.qbar.common.event;
 
-import java.util.Queue;
-
 import com.google.common.collect.Queues;
-
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.tile.ILoadable;
+
+import java.util.Queue;
 
 public class TickHandler
 {

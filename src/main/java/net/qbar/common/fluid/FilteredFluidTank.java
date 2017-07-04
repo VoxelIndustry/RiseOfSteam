@@ -1,9 +1,9 @@
 package net.qbar.common.fluid;
 
-import java.util.function.Predicate;
-
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+
+import java.util.function.Predicate;
 
 public class FilteredFluidTank extends FluidTank
 {

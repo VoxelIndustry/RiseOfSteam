@@ -1,24 +1,19 @@
 package net.qbar.common.container;
 
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import org.apache.commons.lang3.Range;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.qbar.common.container.slot.FilteredSlot;
-import net.qbar.common.container.slot.ListenerSlot;
-import net.qbar.common.container.slot.SlotDisplay;
-import net.qbar.common.container.slot.SlotFuel;
-import net.qbar.common.container.slot.SlotOutput;
+import net.qbar.common.container.slot.*;
 import net.qbar.common.container.sync.DefaultSyncables;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import org.apache.commons.lang3.Range;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ContainerTileInventoryBuilder
 {
@@ -47,7 +42,7 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
-            final int x, final int y)
+                                                    final int x, final int y)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
                 .setFilter(stack -> QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
@@ -55,7 +50,7 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
-            final int x, final int y, final Predicate<Integer> predicate)
+                                                    final int x, final int y, final Predicate<Integer> predicate)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(stack -> predicate.test(index)
                 && QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
@@ -63,7 +58,7 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder filterSlot(final int index, final int x, final int y,
-            final Predicate<ItemStack> filter)
+                                                    final Predicate<ItemStack> filter)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(filter));
         return this;
@@ -90,14 +85,14 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder syncBooleanValue(final Supplier<Boolean> supplier,
-            final Consumer<Boolean> setter)
+                                                          final Consumer<Boolean> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableBoolean(supplier, setter));
         return this;
     }
 
     public ContainerTileInventoryBuilder syncIntegerValue(final Supplier<Integer> supplier,
-            final Consumer<Integer> setter)
+                                                          final Consumer<Integer> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableInteger(supplier, setter));
         return this;
@@ -116,14 +111,14 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder syncFluidValue(final Supplier<FluidStack> supplier,
-            final Consumer<FluidStack> setter)
+                                                        final Consumer<FluidStack> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableFluid(supplier, setter));
         return this;
     }
 
     public ContainerTileInventoryBuilder syncItemValue(final Supplier<ItemStack> supplier,
-            final Consumer<ItemStack> setter)
+                                                       final Consumer<ItemStack> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableItem(supplier, setter));
         return this;

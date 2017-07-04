@@ -1,7 +1,6 @@
 package net.qbar.common.recipe;
 
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
@@ -14,15 +13,15 @@ import java.util.Optional;
 
 public class QBarRecipeHandler
 {
-    public static final String                              ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
-    public static final String                              FURNACE_UID         = QBar.MODID + ".furnace";
-    public static final String                              LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
-    public static final String                              ORE_WASHER_UID      = QBar.MODID + ".orewasher";
-    public static final String                              SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
+    public static final String ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
+    public static final String FURNACE_UID         = QBar.MODID + ".furnace";
+    public static final String LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
+    public static final String ORE_WASHER_UID      = QBar.MODID + ".orewasher";
+    public static final String SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
 
-    public static final HashMap<String, QBarRecipeCategory> RECIPES             = new HashMap<>();
+    public static final HashMap<String, QBarRecipeCategory> RECIPES = new HashMap<>();
 
-    public static final ArrayList<String>                   metals              = new ArrayList<>();
+    public static final ArrayList<String> metals = new ArrayList<>();
 
     public static void registerRecipes()
     {
@@ -40,7 +39,7 @@ public class QBarRecipeHandler
 
         QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
 
-     //   GameRegistry.addRecipe(new SludgeRecipe());
+        //   GameRegistry.addRecipe(new SludgeRecipe());
     }
 
     @SuppressWarnings("unchecked")

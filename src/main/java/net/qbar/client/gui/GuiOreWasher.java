@@ -13,7 +13,7 @@ public class GuiOreWasher extends GuiMachineBase<TileOreWasher>
     {
         super(player, orewasher);
 
-        this.addSteamTank(orewasher.getSteamTank(), 151,7,18,73);
+        this.addSteamTank(orewasher.getSteamTank(), 151, 7, 18, 73);
         this.addFluidTank(orewasher.getInputTanks()[0], 7, 7, 18, 73);
     }
 

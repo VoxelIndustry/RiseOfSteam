@@ -23,7 +23,7 @@ public class ItemBlockMultiblockBase extends ItemBlock
 
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing,
-            float hitX, float hitY, float hitZ)
+                                      float hitX, float hitY, float hitZ)
     {
         IBlockState iblockstate = world.getBlockState(pos);
         Block block = iblockstate.getBlock();

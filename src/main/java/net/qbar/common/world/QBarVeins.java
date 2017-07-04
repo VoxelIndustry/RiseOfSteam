@@ -10,12 +10,12 @@ public class QBarVeins
 {
     public static List<OreVeinDescriptor> VEINS;
 
-    public static OreVeinDescriptor       IRON_NICKEL;
-    public static OreVeinDescriptor       IRON_COPPER;
-    public static OreVeinDescriptor       TIN;
-    public static OreVeinDescriptor       IRON_ZINC;
-    public static OreVeinDescriptor       GOLD;
-    public static OreVeinDescriptor       REDSTONE;
+    public static OreVeinDescriptor IRON_NICKEL;
+    public static OreVeinDescriptor IRON_COPPER;
+    public static OreVeinDescriptor TIN;
+    public static OreVeinDescriptor IRON_ZINC;
+    public static OreVeinDescriptor GOLD;
+    public static OreVeinDescriptor REDSTONE;
 
     public static final void initVeins()
     {

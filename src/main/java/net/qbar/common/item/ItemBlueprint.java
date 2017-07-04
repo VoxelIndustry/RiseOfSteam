@@ -6,15 +6,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
@@ -38,7 +33,7 @@ public class ItemBlueprint extends ItemBase
 
     @Override
     public EnumActionResult onItemUse(final EntityPlayer player, final World world, BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
+                                      final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
     {
         final IBlockState iblockstate = world.getBlockState(pos);
         final Block block = iblockstate.getBlock();
@@ -82,7 +77,7 @@ public class ItemBlueprint extends ItemBase
     }
 
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
-            final IBlockState newState, final IMultiblockDescriptor descriptor)
+                                final IBlockState newState, final IMultiblockDescriptor descriptor)
     {
         if (!world.setBlockState(pos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
@@ -138,8 +133,8 @@ public class ItemBlueprint extends ItemBase
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("blueprint"))
             return I18n
-                    .translateToLocalFormatted("item.blueprint.name", new Object[] {
-                            I18n.translateToLocal("tile." + stack.getTagCompound().getString("blueprint") + ".name") })
+                    .translateToLocalFormatted("item.blueprint.name", new Object[]{
+                            I18n.translateToLocal("tile." + stack.getTagCompound().getString("blueprint") + ".name")})
                     .trim();
         return this.name;
     }

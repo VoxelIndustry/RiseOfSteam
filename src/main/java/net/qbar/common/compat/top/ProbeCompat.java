@@ -1,9 +1,9 @@
 package net.qbar.common.compat.top;
 
-import java.util.logging.Level;
-
 import mcjty.theoneprobe.TheOneProbe;
 import net.qbar.QBar;
+
+import java.util.logging.Level;
 
 public class ProbeCompat
 {

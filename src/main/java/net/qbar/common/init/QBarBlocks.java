@@ -1,8 +1,5 @@
 package net.qbar.common.init;
 
-import java.util.IdentityHashMap;
-import java.util.function.Function;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
@@ -23,60 +20,63 @@ import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
 import net.qbar.common.tile.machine.*;
 
+import java.util.IdentityHashMap;
+import java.util.function.Function;
+
 @ObjectHolder(QBar.MODID)
 public class QBarBlocks
 {
     @ObjectHolder("keypunch")
-    public static final BlockMachineBase            PUNCHING_MACHINE   = null;
+    public static final BlockMachineBase PUNCHING_MACHINE = null;
     @ObjectHolder("fluidtank")
-    public static final BlockMachineBase            FLUID_TANK         = null;
+    public static final BlockMachineBase FLUID_TANK       = null;
     @ObjectHolder("solid_boiler")
-    public static final BlockMachineBase            SOLID_BOILER       = null;
+    public static final BlockMachineBase SOLID_BOILER     = null;
     @ObjectHolder("fluidpipe")
-    public static final BlockMachineBase            FLUID_PIPE         = null;
+    public static final BlockMachineBase FLUID_PIPE       = null;
     @ObjectHolder("steampipe")
-    public static final BlockMachineBase            STEAM_PIPE         = null;
+    public static final BlockMachineBase STEAM_PIPE       = null;
     @ObjectHolder("fluidpump")
-    public static final BlockMachineBase            FLUID_PUMP         = null;
+    public static final BlockMachineBase FLUID_PUMP       = null;
     @ObjectHolder("offshorepump")
-    public static final BlockMachineBase            OFFSHORE_PUMP      = null;
+    public static final BlockMachineBase OFFSHORE_PUMP    = null;
     @ObjectHolder("assembler")
-    public static final BlockMachineBase            ASSEMBLER          = null;
+    public static final BlockMachineBase ASSEMBLER        = null;
 
     // Creative
     @ObjectHolder("creative_steam_generator")
-    public static final BlockMachineBase            CREATIVE_BOILER    = null;
+    public static final BlockMachineBase CREATIVE_BOILER = null;
 
     @ObjectHolder("belt")
-    public static final BlockMachineBase            BELT               = null;
+    public static final BlockMachineBase BELT           = null;
     @ObjectHolder("itemextractor")
-    public static final BlockMachineBase            ITEM_EXTRACTOR     = null;
+    public static final BlockMachineBase ITEM_EXTRACTOR = null;
     @ObjectHolder("itemsplitter")
-    public static final BlockMachineBase            ITEM_SPLITTER      = null;
+    public static final BlockMachineBase ITEM_SPLITTER  = null;
 
     @ObjectHolder("structure")
-    public static final BlockMachineBase            STRUCTURE          = null;
+    public static final BlockMachineBase STRUCTURE          = null;
     @ObjectHolder("steamfurnace")
-    public static final BlockMachineBase            STEAM_FURNACE      = null;
+    public static final BlockMachineBase STEAM_FURNACE      = null;
     @ObjectHolder("rollingmill")
-    public static final BlockMachineBase            ROLLING_MILL       = null;
+    public static final BlockMachineBase ROLLING_MILL       = null;
     @ObjectHolder("solar_mirror")
-    public static final BlockMachineBase            SOLAR_MIRROR       = null;
+    public static final BlockMachineBase SOLAR_MIRROR       = null;
     @ObjectHolder("solar_boiler")
-    public static final BlockMachineBase            SOLAR_BOILER       = null;
+    public static final BlockMachineBase SOLAR_BOILER       = null;
     @ObjectHolder("liquidfuel_boiler")
-    public static final BlockMachineBase            LIQUID_FUEL_BOILER = null;
+    public static final BlockMachineBase LIQUID_FUEL_BOILER = null;
     @ObjectHolder("steamfurnacemk2")
-    public static final BlockMachineBase            STEAM_FURNACE_MK2  = null;
+    public static final BlockMachineBase STEAM_FURNACE_MK2  = null;
 
     @ObjectHolder("orewasher")
-    public static final BlockMachineBase            ORE_WASHER         = null;
+    public static final BlockMachineBase ORE_WASHER         = null;
     @ObjectHolder("sortingmachine")
-    public static final BlockMachineBase            SORTING_MACHINE    = null;
+    public static final BlockMachineBase SORTING_MACHINE    = null;
     @ObjectHolder("smallminingdrill")
-    public static final BlockMachineBase            SMALL_MINING_DRILL = null;
+    public static final BlockMachineBase SMALL_MINING_DRILL = null;
     @ObjectHolder("tinyminingdrill")
-    public static final BlockMachineBase            TINY_MINING_DRILL  = null;
+    public static final BlockMachineBase TINY_MINING_DRILL  = null;
 
     public static IdentityHashMap<Block, ItemBlock> BLOCKS;
 
@@ -84,7 +84,7 @@ public class QBarBlocks
     {
         BLOCKS = new IdentityHashMap<>();
 
-        registerBlock(new BlockMultiblockMachine("keypunch", Material.IRON, Multiblocks.KEYPUNCH, TileKeypunch::new));
+        registerBlock(new BlockMultiblockMachine("keypunch", Material.IRON, Multiblocks.KEYPUNCH, TileKeypunch::new, TileKeypunch.class));
         registerBlock(new BlockTank("fluidtank_small", Multiblocks.SMALL_FLUID_TANK, Fluid.BUCKET_VOLUME * 48, 0));
         registerBlock(new BlockTank("fluidtank_medium", Multiblocks.MEDIUM_FLUID_TANK, Fluid.BUCKET_VOLUME * 128, 1));
         registerBlock(new BlockTank("fluidtank_big", Multiblocks.BIG_FLUID_TANK, Fluid.BUCKET_VOLUME * 432, 2));
@@ -94,29 +94,29 @@ public class QBarBlocks
         registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
         registerBlock(
-                new BlockMultiblockMachine("assembler", Material.IRON, Multiblocks.ASSEMBLER, TileAssembler::new));
+                new BlockMultiblockMachine("assembler", Material.IRON, Multiblocks.ASSEMBLER, TileAssembler::new, TileAssembler.class));
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
         registerBlock(new BlockCreativeSteamGenerator());
         registerBlock(new BlockStructure());
         registerBlock(new BlockMultiblockMachine("steamfurnacemk1", Material.IRON, Multiblocks.STEAM_FURNACE_MK1,
-                TileSteamFurnace::new));
+                TileSteamFurnace::new, TileSteamFurnace.class));
         registerBlock(new BlockSolarBoiler());
         registerBlock(new BlockSolarMirror());
         registerBlock(new BlockMultiblockMachine("rollingmill", Material.IRON, Multiblocks.ROLLING_MILL,
-                TileRollingMill::new));
+                TileRollingMill::new, TileRollingMill.class));
         registerBlock(new BlockLiquidBoiler());
         registerBlock(new BlockMultiblockMachine("steamfurnacemk2", Material.IRON, Multiblocks.STEAM_FURNACE_MK2,
-                TileSteamFurnaceMK2::new));
+                TileSteamFurnaceMK2::new, TileSteamFurnaceMK2.class));
         registerBlock(
-                new BlockMultiblockMachine("orewasher", Material.IRON, Multiblocks.ORE_WASHER, TileOreWasher::new));
+                new BlockMultiblockMachine("orewasher", Material.IRON, Multiblocks.ORE_WASHER, TileOreWasher::new, TileOreWasher.class));
         registerBlock(new BlockMultiblockMachine("sortingmachine", Material.IRON, Multiblocks.SORTING_MACHINE,
-                TileSortingMachine::new));
+                TileSortingMachine::new, TileSortingMachine.class));
         registerBlock(new BlockMultiblockMachine("smallminingdrill", Material.IRON, Multiblocks.SMALL_MINING_DRILL,
-                TileSmallMiningDrill::new));
+                TileSmallMiningDrill::new, TileSmallMiningDrill.class));
         registerBlock(new BlockMultiblockMachine("tinyminingdrill", Material.IRON, Multiblocks.TINY_MINING_DRILL,
-                TileTinyMiningDrill::new));
+                TileTinyMiningDrill::new, TileTinyMiningDrill.class));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");

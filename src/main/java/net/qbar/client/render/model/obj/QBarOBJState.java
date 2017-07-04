@@ -12,7 +12,7 @@ public class QBarOBJState implements IModelState
 {
     protected List<String> visibilityList;
     protected boolean      whitelist;
-    public IModelState     parent;
+    public    IModelState  parent;
 
     public QBarOBJState(List<String> visibleGroups, boolean visibility)
     {

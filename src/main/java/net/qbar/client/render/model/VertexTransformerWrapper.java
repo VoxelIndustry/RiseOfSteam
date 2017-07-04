@@ -15,7 +15,7 @@ final class VertexTransformerWrapper implements IVertexConsumer
     private final IVertexTransformer transformer;
 
     public VertexTransformerWrapper(final IVertexConsumer parent, final BakedQuad parentQuad,
-            final IVertexTransformer transformer)
+                                    final IVertexTransformer transformer)
     {
         this.parent = parent;
         this.parentQuad = parentQuad;

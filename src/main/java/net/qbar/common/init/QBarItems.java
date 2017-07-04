@@ -1,11 +1,5 @@
 package net.qbar.common.init;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.qbar.common.block.INamedBlock;
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -14,24 +8,28 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
 import net.qbar.common.item.*;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ObjectHolder(QBar.MODID)
 public class QBarItems
 {
     @ObjectHolder("punched_card")
-    public static final ItemBase PUNCHED_CARD              = null;
+    public static final ItemBase PUNCHED_CARD = null;
 
     @ObjectHolder("wrench")
-    public static final ItemBase WRENCH                    = null;
+    public static final ItemBase WRENCH = null;
 
     @ObjectHolder("blueprint")
-    public static final ItemBase BLUEPRINT                 = null;
+    public static final ItemBase BLUEPRINT       = null;
     @ObjectHolder("ironrod")
-    public static final ItemBase IRON_ROD                  = null;
+    public static final ItemBase IRON_ROD        = null;
     @ObjectHolder("metalplate")
-    public static final ItemBase METALPLATE                = null;
+    public static final ItemBase METALPLATE      = null;
     @ObjectHolder("solarreflector")
-    public static final ItemBase SOLAR_REFLECTOR           = null;
+    public static final ItemBase SOLAR_REFLECTOR = null;
 
     @ObjectHolder("mineralsludge")
     public static final ItemBase MINERAL_SLUDGE            = null;
@@ -42,7 +40,7 @@ public class QBarItems
     @ObjectHolder("rawore")
     public static final ItemBase RAW_ORE                   = null;
 
-    public static List<Item>    ITEMS;
+    public static List<Item> ITEMS;
 
     public static final void init()
     {

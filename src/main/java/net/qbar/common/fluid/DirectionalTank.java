@@ -1,11 +1,6 @@
 package net.qbar.common.fluid;
 
-import java.util.HashSet;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
@@ -13,16 +8,19 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nullable;
+import java.util.HashSet;
+
 public class DirectionalTank
 {
-    private final HashSet<EnumFacing>    outputs, inputs;
-    private final FluidTank              internalTank;
-    private final String                 name;
+    private final HashSet<EnumFacing> outputs, inputs;
+    private final FluidTank internalTank;
+    private final String    name;
 
     private final InternalRestrictedTank outputOnly, inputOnly, both;
 
     public DirectionalTank(final String name, final FluidTank tank, final EnumFacing[] outputs,
-            final EnumFacing[] inputs)
+                           final EnumFacing[] inputs)
     {
         this.outputs = Sets.newHashSet(outputs);
         this.inputs = Sets.newHashSet(inputs);

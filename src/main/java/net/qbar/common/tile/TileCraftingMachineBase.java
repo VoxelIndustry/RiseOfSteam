@@ -28,13 +28,13 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 {
     private final CraftingMachineDescriptor descriptor;
 
-    private float                           currentProgress;
-    private float                           maxProgress;
-    private QBarRecipe                      currentRecipe;
+    private float      currentProgress;
+    private float      maxProgress;
+    private QBarRecipe currentRecipe;
 
-    private final SteamTank                 steamTank;
+    private final SteamTank steamTank;
 
-    private final FluidTank[]               inputTanks, outputTanks, bufferTanks;
+    private final FluidTank[] inputTanks, outputTanks, bufferTanks;
 
     public TileCraftingMachineBase(final CraftingMachineDescriptor descriptor)
     {

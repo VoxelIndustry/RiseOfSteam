@@ -7,15 +7,15 @@ public class CraftingMachineDescriptor extends MachineDescriptor
     public static class Builder
     {
         private final String name;
-        private String       recipeCategory;
-        private int          inventorySize, inputSize, outputSize;
-        private int[]        inputTanks, outputTanks;
-        private float        craftingSpeed;
+        private       String recipeCategory;
+        private       int    inventorySize, inputSize, outputSize;
+        private int[] inputTanks, outputTanks;
+        private float craftingSpeed;
 
-        private int          steamCapacity;
-        private float        workingPressure, maxPressureCapacity;
-        private int          steamConsumption;
-        private boolean      allowOvercharge;
+        private int   steamCapacity;
+        private float workingPressure, maxPressureCapacity;
+        private int     steamConsumption;
+        private boolean allowOvercharge;
 
         public Builder(String name)
         {
@@ -50,7 +50,7 @@ public class CraftingMachineDescriptor extends MachineDescriptor
         }
 
         public Builder steam(int steamCapacity, int steamConsumption, float workingPressure, float maxPressureCapacity,
-                boolean allowOvercharge)
+                             boolean allowOvercharge)
         {
             this.steamCapacity = steamCapacity;
             this.steamConsumption = steamConsumption;
@@ -71,18 +71,18 @@ public class CraftingMachineDescriptor extends MachineDescriptor
 
     private final String recipeCategory;
 
-    private final int    inventorySize;
-    private final int[]  inputs, outputs, buffers;
-    private int[]        iounion;
+    private final int   inventorySize;
+    private final int[] inputs, outputs, buffers;
+    private int[] iounion;
 
-    private final float  craftingSpeed;
+    private final float craftingSpeed;
 
-    private final int[]  inputTanks, outputTanks, bufferTanks;
+    private final int[] inputTanks, outputTanks, bufferTanks;
 
     private CraftingMachineDescriptor(final String name, final String recipeCategory, final int inventorySize,
-            final int[] inputs, final int[] outputs, final int[] buffers, final float craftingSpeed,
-            final int steamCapacity, final int steamConsumption, final float pressureCapacity,
-            final float maxPressureCapacity, final boolean allowOvercharge, int[] inputTanks, int[] outputTanks)
+                                      final int[] inputs, final int[] outputs, final int[] buffers, final float craftingSpeed,
+                                      final int steamCapacity, final int steamConsumption, final float pressureCapacity,
+                                      final float maxPressureCapacity, final boolean allowOvercharge, int[] inputTanks, int[] outputTanks)
     {
         super(name, steamCapacity, steamConsumption, pressureCapacity, maxPressureCapacity, allowOvercharge);
 
@@ -101,9 +101,9 @@ public class CraftingMachineDescriptor extends MachineDescriptor
     }
 
     private CraftingMachineDescriptor(final String name, final String recipeCategory, final int inventorySize,
-            final int inputSize, final int outputSize, final float craftingSpeed, final int steamCapacity,
-            final int steamConsumption, final float pressureCapacity, final float maxPressureCapacity,
-            final boolean allowOvercharge, int[] inputTanks, int[] outputTanks)
+                                      final int inputSize, final int outputSize, final float craftingSpeed, final int steamCapacity,
+                                      final int steamConsumption, final float pressureCapacity, final float maxPressureCapacity,
+                                      final boolean allowOvercharge, int[] inputTanks, int[] outputTanks)
     {
         this(name, recipeCategory, inventorySize, new int[inputSize], new int[outputSize], new int[inputSize],
                 craftingSpeed, steamCapacity, steamConsumption, pressureCapacity, maxPressureCapacity, allowOvercharge,

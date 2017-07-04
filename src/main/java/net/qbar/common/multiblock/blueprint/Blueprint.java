@@ -1,24 +1,23 @@
 package net.qbar.common.multiblock.blueprint;
 
-import java.util.ArrayList;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.item.ItemStack;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.IMultiblockDescriptor;
 
+import java.util.ArrayList;
+
 public class Blueprint
 {
-    private final String                          name;
-    private final IMultiblockDescriptor           multiblock;
-    private final int                             rodAmount;
-    private final ItemStack                       rodStack;
+    private final String                name;
+    private final IMultiblockDescriptor multiblock;
+    private final int                   rodAmount;
+    private final ItemStack             rodStack;
 
     private final ArrayList<ArrayList<ItemStack>> steps;
     private final ArrayList<Integer>              stepsTime;
 
-    private ArrayList<MultiblockStep>             multiblockSteps;
+    private ArrayList<MultiblockStep> multiblockSteps;
 
     public Blueprint(final String name, final IMultiblockDescriptor multiblock, final int rodAmount)
     {

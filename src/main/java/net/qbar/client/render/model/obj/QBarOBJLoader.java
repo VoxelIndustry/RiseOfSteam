@@ -1,10 +1,5 @@
 package net.qbar.client.render.model.obj;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -15,16 +10,21 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.qbar.QBar;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public enum QBarOBJLoader implements ICustomModelLoader
 {
     INSTANCE;
 
-    private IResourceManager                       manager;
+    private IResourceManager manager;
     private final Set<String>                      enabledDomains = new HashSet<>();
     private final Map<ResourceLocation, IModel>    cache          = new HashMap<>();
     private final Map<ResourceLocation, Exception> errors         = new HashMap<>();
 
-    private final Map<String, RetextureData>          reTexturedMap  = new HashMap<>();
+    private final Map<String, RetextureData> reTexturedMap = new HashMap<>();
 
     public void addDomain(String domain)
     {

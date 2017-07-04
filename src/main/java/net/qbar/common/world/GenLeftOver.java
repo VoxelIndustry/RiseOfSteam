@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class GenLeftOver
 {
-    private ChunkPos                       pos;
+    private ChunkPos pos;
 
     private HashMap<BlockPos, IBlockState> blocks;
 

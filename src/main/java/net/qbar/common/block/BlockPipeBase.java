@@ -6,7 +6,6 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -15,15 +14,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.Properties;
 import net.qbar.client.render.model.obj.QBarStateProperties;
 import net.qbar.common.tile.TilePipeBase;
 
-public abstract class BlockPipeBase extends BlockMachineBase
+public abstract class BlockPipeBase extends BlockMachineBase<TilePipeBase>
 {
     public BlockPipeBase(final String name)
     {
-        super(name, Material.IRON);
+        super(name, Material.IRON, TilePipeBase.class);
     }
 
     @Override
@@ -57,11 +55,10 @@ public abstract class BlockPipeBase extends BlockMachineBase
     @Override
     public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos)
     {
-        if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TilePipeBase)
+        if (this.checkWorldTile(world, pos))
         {
-            final TilePipeBase<?, ?> tile = (TilePipeBase<?, ?>) world.getTileEntity(pos);
             return ((IExtendedBlockState) state).withProperty(QBarStateProperties.VISIBILITY_PROPERTY,
-                    tile.getVisibilityState());
+                    this.getWorldTile(world, pos).getVisibilityState());
         }
         return state;
     }
@@ -70,12 +67,12 @@ public abstract class BlockPipeBase extends BlockMachineBase
     public BlockStateContainer createBlockState()
     {
         return new ExtendedBlockState(this, new IProperty[0],
-                new IUnlistedProperty[] { QBarStateProperties.VISIBILITY_PROPERTY });
+                new IUnlistedProperty[]{QBarStateProperties.VISIBILITY_PROPERTY});
     }
 
     @Override
     public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
-            final BlockPos posNeighbor)
+                                final BlockPos posNeighbor)
     {
         if (!w.isRemote)
             ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandlers(posNeighbor);

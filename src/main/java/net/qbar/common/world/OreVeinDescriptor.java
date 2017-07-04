@@ -9,13 +9,13 @@ public class OreVeinDescriptor
     private HashMap<IBlockState, Float> contents;
     private BiomeMatcher.BiomePredicate biomeMatcher;
 
-    private float                       heapDensity;
-    private int                         heapQty;
-    private int                         heapSize;
-    private EVeinHeapForm               heapForm;
-    private EVeinForm                   veinForm;
+    private float         heapDensity;
+    private int           heapQty;
+    private int           heapSize;
+    private EVeinHeapForm heapForm;
+    private EVeinForm     veinForm;
 
-    private float                       rarity;
+    private float rarity;
 
     public OreVeinDescriptor()
     {

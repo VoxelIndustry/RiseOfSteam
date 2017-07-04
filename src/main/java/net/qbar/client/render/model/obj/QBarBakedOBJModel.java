@@ -25,19 +25,19 @@ import java.util.concurrent.TimeUnit;
 
 public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
 {
-    private ImmutableList<BakedQuad>                             quads;
+    private ImmutableList<BakedQuad> quads;
 
-    private final QBarOBJModel                                   model;
-    private IModelState                                          state;
-    private final VertexFormat                                   format;
+    private final QBarOBJModel model;
+    private       IModelState  state;
+    private final VertexFormat format;
 
-    private ImmutableMap<String, TextureAtlasSprite>             textures;
-    private TextureAtlasSprite                                   sprite = ModelLoader.White.INSTANCE;
+    private ImmutableMap<String, TextureAtlasSprite> textures;
+    private TextureAtlasSprite sprite = ModelLoader.White.INSTANCE;
 
     private LoadingCache<QBarOBJState, ImmutableList<BakedQuad>> cachedVariants;
 
     public QBarBakedOBJModel(final QBarOBJModel model, final IModelState state, final VertexFormat format,
-            final ImmutableMap<String, TextureAtlasSprite> textures)
+                             final ImmutableMap<String, TextureAtlasSprite> textures)
     {
         model.super(model, state, format, textures);
 
@@ -106,17 +106,17 @@ public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
 
                 if (state.isWhitelist() && state.getVisibilityList().contains(g.getName()))
                     faces.addAll(g.applyTransform(transform));
-                else if(!state.isWhitelist() && !state.getVisibilityList().contains(g.getName()))
+                else if (!state.isWhitelist() && !state.getVisibilityList().contains(g.getName()))
                     faces.addAll(g.applyTransform(transform));
             }
-            else if(modelState instanceof CompositeModelState)
+            else if (modelState instanceof CompositeModelState)
             {
                 QBarOBJState state = (QBarOBJState) ((CompositeModelState) modelState).getSecond();
                 transform = modelState.apply(Optional.empty());
 
                 if (state.isWhitelist() && state.getVisibilityList().contains(g.getName()))
                     faces.addAll(g.applyTransform(transform));
-                else if(!state.isWhitelist() && !state.getVisibilityList().contains(g.getName()))
+                else if (!state.isWhitelist() && !state.getVisibilityList().contains(g.getName()))
                     faces.addAll(g.applyTransform(transform));
             }
             else
@@ -159,7 +159,7 @@ public class QBarBakedOBJModel extends OBJModel.OBJBakedModel
     }
 
     private final void putVertexData(UnpackedBakedQuad.Builder builder, OBJModel.Vertex v, OBJModel.Normal faceNormal,
-            OBJModel.TextureCoordinate defUV, TextureAtlasSprite sprite)
+                                     OBJModel.TextureCoordinate defUV, TextureAtlasSprite sprite)
     {
         for (int e = 0; e < format.getElementCount(); e++)
         {

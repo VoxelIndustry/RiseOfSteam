@@ -1,19 +1,7 @@
 package net.qbar.client.render;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -35,6 +23,15 @@ import net.minecraftforge.client.model.pipeline.VertexTransformer;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.qbar.common.multiblock.IMultiblockDescriptor;
 import net.qbar.common.multiblock.blueprint.Blueprints;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BlueprintRender implements IBakedModel
 {
@@ -50,7 +47,7 @@ public class BlueprintRender implements IBakedModel
         @Nonnull
         @Override
         public IBakedModel handleItemState(final IBakedModel model, final ItemStack stack, final World world,
-                final EntityLivingBase entity)
+                                           final EntityLivingBase entity)
         {
             final IBakedModel multiblock = BlueprintRender.this.getModel(stack);
             if (Blueprints.getInstance().getBlueprints().containsKey(stack.getTagCompound().getString("blueprint")))
@@ -169,12 +166,12 @@ public class BlueprintRender implements IBakedModel
     private static class CompositeBakedModel implements IBakedModel
     {
 
-        private final IBakedModel                      blueprint;
-        private final List<BakedQuad>                  genQuads;
+        private final IBakedModel     blueprint;
+        private final List<BakedQuad> genQuads;
         private final Map<EnumFacing, List<BakedQuad>> faceQuads = new EnumMap<>(EnumFacing.class);
 
         CompositeBakedModel(final IBakedModel multiblock, final IBakedModel blueprint,
-                final IMultiblockDescriptor descriptor)
+                            final IMultiblockDescriptor descriptor)
         {
             this.blueprint = blueprint;
 

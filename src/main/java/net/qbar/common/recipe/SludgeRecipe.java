@@ -49,7 +49,8 @@ public class SludgeRecipe implements IRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canFit(int width, int height)
+    {
         return width == 3 && height == 3;
     }
 
@@ -66,18 +67,21 @@ public class SludgeRecipe implements IRecipe
     }
 
     @Override
-    public IRecipe setRegistryName(ResourceLocation name) {
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
         return null;
     }
 
     @Nullable
     @Override
-    public ResourceLocation getRegistryName() {
+    public ResourceLocation getRegistryName()
+    {
         return null;
     }
 
     @Override
-    public Class<IRecipe> getRegistryType() {
+    public Class<IRecipe> getRegistryType()
+    {
         return null;
     }
 }

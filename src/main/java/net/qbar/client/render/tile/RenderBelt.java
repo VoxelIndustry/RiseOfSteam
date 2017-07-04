@@ -1,7 +1,5 @@
 package net.qbar.client.render.tile;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -13,12 +11,13 @@ import net.qbar.client.render.RenderUtil;
 import net.qbar.common.block.BlockBelt.EBeltSlope;
 import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.machine.TileBelt;
+import org.lwjgl.opengl.GL11;
 
 public class RenderBelt extends FastTESR<TileBelt>
 {
     @Override
     public void renderTileEntityFast(final TileBelt belt, final double x, final double y, final double z,
-            final float partialTicks, final int destroyStage, final float partial, final BufferBuilder renderer)
+                                     final float partialTicks, final int destroyStage, final float partial, final BufferBuilder renderer)
     {
         final BlockPos pos = belt.getBlockPos();
 

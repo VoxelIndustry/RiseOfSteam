@@ -14,13 +14,13 @@ public class QBarOres
 {
     public static final List<QBarOre> ORES;
 
-    public static final QBarOre       IRON;
-    public static final QBarOre       GOLD;
-    public static final QBarOre       REDSTONE;
-    public static final QBarOre       ZINC;
-    public static final QBarOre       COPPER;
-    public static final QBarOre       TIN;
-    public static final QBarOre       NICKEL;
+    public static final QBarOre IRON;
+    public static final QBarOre GOLD;
+    public static final QBarOre REDSTONE;
+    public static final QBarOre ZINC;
+    public static final QBarOre COPPER;
+    public static final QBarOre TIN;
+    public static final QBarOre NICKEL;
 
     static
     {

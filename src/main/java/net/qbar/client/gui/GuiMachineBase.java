@@ -20,7 +20,7 @@ import java.util.List;
 
 public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerProvider> extends GuiContainer
 {
-    private T                                      machine;
+    private T machine;
 
     private final List<Pair<IFluidTank, GuiSpace>> fluidtanks;
     private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
@@ -119,7 +119,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     }
 
     protected void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
-            final int maxCapacity)
+                             final int maxCapacity)
     {
         this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         final ResourceLocation still = fluid.getFluid().getStill(fluid);

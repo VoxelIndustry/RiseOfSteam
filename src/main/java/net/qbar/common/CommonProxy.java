@@ -1,7 +1,6 @@
 package net.qbar.common;
 
 import com.elytradev.concrete.network.NetworkContext;
-
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;

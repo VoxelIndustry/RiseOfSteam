@@ -36,7 +36,8 @@ public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRe
     }
 
     @Override
-    public String getModName() {
+    public String getModName()
+    {
         return QBar.MODNAME;
     }
 
@@ -48,7 +49,7 @@ public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRe
 
     @Override
     public void setRecipe(final IRecipeLayout recipeLayout, final RollingMillRecipeWrapper recipeWrapper,
-            final IIngredients ingredients)
+                          final IIngredients ingredients)
     {
         final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         guiItemStacks.init(0, true, 0, 19);

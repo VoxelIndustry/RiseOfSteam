@@ -4,7 +4,7 @@ import java.text.NumberFormat;
 
 public class SteamUtil
 {
-    public static final int          AMBIANT_PRESSURE = 1;
+    public static final int AMBIANT_PRESSURE = 1;
 
     public static final NumberFormat pressureFormat;
 

@@ -1,21 +1,21 @@
 package net.qbar.common.multiblock.blueprint;
 
-import java.util.List;
-
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.List;
+
 public class BlueprintState
 {
     private final Blueprint              blueprint;
     private final NonNullList<ItemStack> currentStacks;
-    private int                          currentStep;
-    private int                          currentTime;
+    private       int                    currentStep;
+    private       int                    currentTime;
 
-    private boolean                      isStepStackComplete;
+    private boolean isStepStackComplete;
 
     public BlueprintState(final Blueprint blueprint)
     {

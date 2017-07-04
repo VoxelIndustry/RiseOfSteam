@@ -11,7 +11,7 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 public final class ModelTransformer
 {
     public static IBakedModel transform(final IBakedModel model, final IBlockState state, final long rand,
-            final IVertexTransformer transformer)
+                                        final IVertexTransformer transformer)
     {
         final MutableBakedModel out = new MutableBakedModel(model);
 

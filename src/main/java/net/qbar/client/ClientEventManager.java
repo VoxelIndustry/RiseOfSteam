@@ -3,9 +3,9 @@ package net.qbar.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -18,9 +18,7 @@ import net.qbar.common.item.ItemBlueprint;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.Blueprints;
-import net.qbar.common.tile.machine.TileSolarMirror;
 import net.qbar.common.util.ItemUtils;
-import org.lwjgl.opengl.GL11;
 
 public class ClientEventManager
 {
@@ -96,7 +94,7 @@ public class ClientEventManager
                                         0,
                                         e.getPlayer().capabilities.isCreativeMode || ItemUtils.hasPlayerEnough(
                                                 e.getPlayer().inventory, blueprint.getRodStack(), false) ? 38400
-                                                        : 9830400);
+                                                : 9830400);
 
                                 GlStateManager.enableLighting();
                                 GlStateManager.popMatrix();

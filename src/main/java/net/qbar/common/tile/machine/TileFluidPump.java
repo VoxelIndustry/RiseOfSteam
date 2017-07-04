@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -14,13 +12,15 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.tile.QBarTileBase;
 
+import java.util.List;
+
 public class TileFluidPump extends QBarTileBase implements ITickable
 {
-    private int               transferCapacity;
-    private IFluidHandler     top;
-    private IFluidHandler     bottom;
+    private int           transferCapacity;
+    private IFluidHandler top;
+    private IFluidHandler bottom;
 
-    private EnumFacing        facing;
+    private EnumFacing facing;
 
     private final LimitedTank tank;
 

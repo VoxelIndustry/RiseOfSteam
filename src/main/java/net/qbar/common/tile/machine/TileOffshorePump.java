@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -20,17 +18,19 @@ import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.QBarTileBase;
 
+import java.util.List;
+
 public class TileOffshorePump extends QBarTileBase implements ITickable
 {
-    private int               transferCapacity;
-    private IFluidHandler     top;
-    private boolean           water = false;
+    private int           transferCapacity;
+    private IFluidHandler top;
+    private boolean water = false;
 
     private final LimitedTank tank;
 
-    private final SteamTank   steamTank;
+    private final SteamTank steamTank;
 
-    private EnumFacing        facing;
+    private EnumFacing facing;
 
     public TileOffshorePump(final int transferCapacity)
     {

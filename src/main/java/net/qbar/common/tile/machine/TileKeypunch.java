@@ -25,15 +25,15 @@ import net.qbar.common.tile.TileInventoryBase;
 
 public class TileKeypunch extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileMultiblockCore
 {
-    private final int[]                       INPUT   = new int[] { 0 };
-    private final int[]                       OUTPUT  = new int[] { 1 };
+    private final int[] INPUT  = new int[]{0};
+    private final int[] OUTPUT = new int[]{1};
 
     private final BaseListProperty<ItemStack> craftStacks;
     private final BaseListProperty<ItemStack> filterStacks;
 
-    private final BaseProperty<Boolean>       isCraftTabProperty, canPrintProperty;
+    private final BaseProperty<Boolean> isCraftTabProperty, canPrintProperty;
 
-    private final InventoryCrafting           fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
+    private final InventoryCrafting fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
 
     public TileKeypunch()
     {
@@ -200,7 +200,7 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

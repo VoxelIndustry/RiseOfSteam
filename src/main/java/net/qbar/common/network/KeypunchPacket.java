@@ -4,7 +4,6 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,18 +23,18 @@ public class KeypunchPacket extends Message
     private EKeypunchPacketType type;
 
     @MarshalledAs("u8")
-    private int                 currentTab;
+    private int currentTab;
 
     @MarshalledAs("u8")
-    private int                 slot;
+    private int slot;
 
     @MarshalledAs("stack")
-    private ItemStack           stack;
+    private ItemStack stack;
 
     @MarshalledAs("blockpos")
-    private BlockPos            pos;
+    private BlockPos pos;
     @MarshalledAs("i32")
-    private int                 dimensionID;
+    private int      dimensionID;
 
     public KeypunchPacket(final NetworkContext ctx)
     {

@@ -1,9 +1,5 @@
 package net.qbar.common.world;
 
-import java.util.HashMap;
-import java.util.Random;
-import java.util.stream.Stream;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
@@ -17,6 +13,10 @@ import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.HashMap;
+import java.util.Random;
+import java.util.stream.Stream;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
@@ -38,7 +38,7 @@ public class QBarOreGenerator implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-            IChunkProvider chunkProvider)
+                         IChunkProvider chunkProvider)
     {
         if (world.provider.getDimension() == 0)
         {

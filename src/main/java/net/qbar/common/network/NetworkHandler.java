@@ -1,7 +1,6 @@
 package net.qbar.common.network;
 
 import com.google.common.base.Predicates;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.world.WorldServer;

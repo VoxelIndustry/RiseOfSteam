@@ -8,7 +8,7 @@ import net.qbar.common.tile.MachineDescriptor;
 
 public class QBarMachines
 {
-    public static final MachineDescriptor         OFFSHORE_PUMP;
+    public static final MachineDescriptor OFFSHORE_PUMP;
 
     public static final CraftingMachineDescriptor ROLLING_MILL;
     public static final CraftingMachineDescriptor FURNACE_MK1;
@@ -39,7 +39,7 @@ public class QBarMachines
                 .steam(2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true).create();
 
         ORE_WASHER = new CraftingMachineDescriptor.Builder("orewasher").recipe(QBarRecipeHandler.ORE_WASHER_UID, 1f)
-                .inventory(4, 1, 2).inputTanks(new int[] { Fluid.BUCKET_VOLUME * 8 })
+                .inventory(4, 1, 2).inputTanks(new int[]{Fluid.BUCKET_VOLUME * 8})
                 .steam(2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true).create();
 
         SORTING_MACHINE = new CraftingMachineDescriptor.Builder("sortingmachine")

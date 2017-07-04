@@ -1,18 +1,17 @@
 package net.qbar.common.grid;
 
-import java.util.HashSet;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import net.minecraftforge.fluids.Fluid;
 import net.qbar.common.fluid.LimitedTank;
+
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class PipeGrid extends CableGrid
 {
 
-    private final LimitedTank         tank;
-    private final int                 transferCapacity;
+    private final LimitedTank tank;
+    private final int         transferCapacity;
 
     private final HashSet<IFluidPipe> outputs;
 

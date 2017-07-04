@@ -39,7 +39,7 @@ public class TileOreWasher extends TileCraftingMachineBase
     @Override
     public Object[] getCustomData()
     {
-        return new Object[] { 0 };
+        return new Object[]{0};
     }
 
     @Override
@@ -70,11 +70,11 @@ public class TileOreWasher extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         if (FluidUtils.drainPlayerHand(this.getInputTanks()[0], player)

@@ -4,7 +4,7 @@ import net.qbar.client.render.tile.VisibilityModelState;
 
 public class MultiblockStep
 {
-    private String[]             parts;
+    private String[] parts;
 
     private VisibilityModelState opaqueState, alphaState;
 

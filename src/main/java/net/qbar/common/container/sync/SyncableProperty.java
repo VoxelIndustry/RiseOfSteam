@@ -9,7 +9,7 @@ public abstract class SyncableProperty<T extends Object>
 {
     private final Supplier<T> supplier;
     private final Consumer<T> consumer;
-    protected T               stored;
+    protected     T           stored;
 
     public SyncableProperty(final Supplier<T> supplier, final Consumer<T> consumer)
     {

@@ -1,7 +1,5 @@
 package net.qbar.common.compat.jei;
 
-import java.util.stream.Collectors;
-
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.gui.IDrawableAnimated;
@@ -12,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.qbar.client.gui.GuiRollingMill;
 import net.qbar.common.recipe.RollingMillRecipe;
+
+import java.util.stream.Collectors;
 
 public class RollingMillRecipeWrapper extends BlankRecipeWrapper
 {
@@ -30,7 +30,7 @@ public class RollingMillRecipeWrapper extends BlankRecipeWrapper
 
     @Override
     public void drawInfo(final Minecraft minecraft, final int recipeWidth, final int recipeHeight, final int mouseX,
-            final int mouseY)
+                         final int mouseY)
     {
         super.drawInfo(minecraft, recipeWidth, recipeHeight, mouseX, mouseY);
         this.arrow.draw(minecraft, 33, 19);

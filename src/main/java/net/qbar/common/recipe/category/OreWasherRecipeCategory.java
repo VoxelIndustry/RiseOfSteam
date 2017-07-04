@@ -30,7 +30,7 @@ public class OreWasherRecipeCategory extends QBarRecipeCategory
     {
         if (recipeSlot == 0 && ingredient instanceof ItemStack
                 && (((ItemStack) ingredient).getItem() == QBarItems.MINERAL_SLUDGE
-                        || ((ItemStack) ingredient).getItem() == QBarItems.COMPRESSED_MINERAL_SLUDGE))
+                || ((ItemStack) ingredient).getItem() == QBarItems.COMPRESSED_MINERAL_SLUDGE))
             return true;
         if (recipeSlot == 0 && ingredient instanceof FluidStack
                 && ((FluidStack) ingredient).getFluid() == FluidRegistry.WATER)
@@ -42,7 +42,7 @@ public class OreWasherRecipeCategory extends QBarRecipeCategory
     {
         if (recipeSlot == 0 && ingredient instanceof ItemStack
                 && (((ItemStack) ingredient).getItem() == QBarItems.MINERAL_SLUDGE
-                        || ((ItemStack) ingredient).getItem() == QBarItems.COMPRESSED_MINERAL_SLUDGE))
+                || ((ItemStack) ingredient).getItem() == QBarItems.COMPRESSED_MINERAL_SLUDGE))
             return true;
         if (recipeSlot == 0 && ingredient instanceof FluidStack
                 && ((FluidStack) ingredient).getFluid() == FluidRegistry.WATER

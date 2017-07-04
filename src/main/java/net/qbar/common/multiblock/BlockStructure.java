@@ -17,13 +17,13 @@ import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.network.WrenchPacket;
 import net.qbar.common.tile.TileStructure;
 
-public class BlockStructure extends BlockMachineBase implements IWrenchable
+public class BlockStructure extends BlockMachineBase<TileStructure> implements IWrenchable
 {
     public static final PropertyBool MULTIBLOCK_GAG = PropertyBool.create("multiblockgag");
 
     public BlockStructure()
     {
-        super("structure", Material.IRON);
+        super("structure", Material.IRON, TileStructure.class);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockStructure.MULTIBLOCK_GAG, false));
     }
@@ -78,7 +78,7 @@ public class BlockStructure extends BlockMachineBase implements IWrenchable
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state, ItemStack wrench)
+                            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         final ITileMultiblock tile = (ITileMultiblock) world.getTileEntity(pos);
         if (tile != null)

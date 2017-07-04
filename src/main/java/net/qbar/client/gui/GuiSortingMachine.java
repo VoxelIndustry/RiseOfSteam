@@ -13,7 +13,7 @@ public class GuiSortingMachine extends GuiMachineBase<TileSortingMachine>
     {
         super(player, sortingMachine);
 
-        this.addSteamTank(sortingMachine.getSteamTank(), 151,7,18,73);
+        this.addSteamTank(sortingMachine.getSteamTank(), 151, 7, 18, 73);
     }
 
     @Override

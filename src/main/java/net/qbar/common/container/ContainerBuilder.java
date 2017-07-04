@@ -1,35 +1,34 @@
 package net.qbar.common.container;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import org.apache.commons.lang3.Range;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.container.sync.SyncableProperty;
+import org.apache.commons.lang3.Range;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class ContainerBuilder
 {
 
-    private final String                    name;
+    private final String name;
 
-    private final EntityPlayer              player;
-    private Predicate<EntityPlayer>         canInteract = player -> true;
+    private final EntityPlayer player;
+    private Predicate<EntityPlayer> canInteract = player -> true;
 
-    final List<ListenerSlot>                slots;
-    final List<Range<Integer>>              playerInventoryRanges, tileInventoryRanges;
+    final List<ListenerSlot>   slots;
+    final List<Range<Integer>> playerInventoryRanges, tileInventoryRanges;
 
-    List<SyncableProperty<?>>               syncables;
+    List<SyncableProperty<?>> syncables;
 
     final List<Consumer<InventoryCrafting>> craftEvents;
 
-    List<IInventory>                        inventories;
+    List<IInventory> inventories;
 
     public ContainerBuilder(final String name, final EntityPlayer player)
     {

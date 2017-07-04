@@ -13,7 +13,7 @@ public class GuiFluidTank extends GuiMachineBase<TileTank>
     {
         super(player, fluidtank);
 
-        this.addFluidTank(fluidtank.getTank(), 78,7,18,73);
+        this.addFluidTank(fluidtank.getTank(), 78, 7, 18, 73);
     }
 
     @Override

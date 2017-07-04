@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,11 +23,12 @@ import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class TileRollingMill extends TileCraftingMachineBase
 {
     private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-    private ItemStack          cachedStack;
+    private ItemStack cachedStack;
 
     public TileRollingMill()
     {
@@ -192,7 +191,7 @@ public class TileRollingMill extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

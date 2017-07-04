@@ -34,7 +34,7 @@ public interface ITileMultiblockCore extends ITileMultiblock
     <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing);
 
     default boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                 final float hitZ, BlockPos from)
     {
         return false;
     }

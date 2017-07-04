@@ -34,36 +34,36 @@ import net.qbar.common.tile.machine.TileBelt;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockBelt extends BlockMachineBase implements IWrenchable
+public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
 {
-    protected static final AxisAlignedBB             AABB_OCT_TOP_NW  = new AxisAlignedBB(0.0D, 0.5D, 0.0D, 0.5D, 1.0D,
+    protected static final AxisAlignedBB AABB_OCT_TOP_NW = new AxisAlignedBB(0.0D, 0.5D, 0.0D, 0.5D, 1.0D,
             0.5D);
-    protected static final AxisAlignedBB             AABB_OCT_TOP_NE  = new AxisAlignedBB(0.5D, 0.5D, 0.0D, 1.0D, 1.0D,
+    protected static final AxisAlignedBB AABB_OCT_TOP_NE = new AxisAlignedBB(0.5D, 0.5D, 0.0D, 1.0D, 1.0D,
             0.5D);
-    protected static final AxisAlignedBB             AABB_OCT_TOP_SW  = new AxisAlignedBB(0.0D, 0.5D, 0.5D, 0.5D, 1.0D,
+    protected static final AxisAlignedBB AABB_OCT_TOP_SW = new AxisAlignedBB(0.0D, 0.5D, 0.5D, 0.5D, 1.0D,
             1.0D);
-    protected static final AxisAlignedBB             AABB_OCT_TOP_SE  = new AxisAlignedBB(0.5D, 0.5D, 0.5D, 1.0D, 1.0D,
+    protected static final AxisAlignedBB AABB_OCT_TOP_SE = new AxisAlignedBB(0.5D, 0.5D, 0.5D, 1.0D, 1.0D,
             1.0D);
 
-    protected static final AxisAlignedBB             AABB_SLAB_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D,
+    protected static final AxisAlignedBB AABB_SLAB_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D,
             1.0D);
 
-    public static final PropertyEnum<EBeltDirection> FACING           = PropertyEnum.create("facing",
+    public static final PropertyEnum<EBeltDirection> FACING   = PropertyEnum.create("facing",
             EBeltDirection.class);
-    public static final PropertyEnum<EBeltSlope>     SLOP             = PropertyEnum.create("slope", EBeltSlope.class);
-    public static final PropertyBool                 ANIMATED         = PropertyBool.create("animated");
+    public static final PropertyEnum<EBeltSlope>     SLOP     = PropertyEnum.create("slope", EBeltSlope.class);
+    public static final PropertyBool                 ANIMATED = PropertyBool.create("animated");
 
     public BlockBelt()
     {
-        super("belt", Material.IRON);
+        super("belt", Material.IRON, TileBelt.class);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockBelt.FACING, EBeltDirection.NORTH)
                 .withProperty(BlockBelt.SLOP, EBeltSlope.NORMAL).withProperty(BlockBelt.ANIMATED, false));
     }
 
     @Deprecated
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        TileBelt belt = (TileBelt) worldIn.getTileEntity(pos);
+        TileBelt belt = this.getWorldTile(world, pos);
 
         if (belt != null)
             state = state.withProperty(BlockBelt.ANIMATED, belt.isWorking());
@@ -72,10 +72,10 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
 
     @Override
     public void addCollisionBoxToList(final IBlockState state, final World w, final BlockPos pos,
-            final AxisAlignedBB entityBox, final List<AxisAlignedBB> collidingBoxes, @Nullable final Entity entityIn,
-            final boolean p_185477_7_)
+                                      final AxisAlignedBB entityBox, final List<AxisAlignedBB> collidingBoxes, @Nullable final Entity entityIn,
+                                      final boolean p_185477_7_)
     {
-        if (((TileBelt) w.getTileEntity(pos)).isSlope())
+        if (this.getWorldTile(w, pos).isSlope())
         {
             for (final AxisAlignedBB axisalignedbb : BlockBelt.getCollisionBoxList(state))
                 Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, axisalignedbb);
@@ -86,7 +86,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
 
     private static List<AxisAlignedBB> getCollisionBoxList(final IBlockState bstate)
     {
-        final List<AxisAlignedBB> list = Lists.<AxisAlignedBB> newArrayList();
+        final List<AxisAlignedBB> list = Lists.<AxisAlignedBB>newArrayList();
         list.add(BlockBelt.AABB_SLAB_BOTTOM);
         list.add(BlockBelt.getCollEighthBlock(bstate));
         return list;
@@ -131,7 +131,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     @Override
     public void onEntityWalk(final World w, final BlockPos pos, final Entity e)
     {
-        if (((TileBelt) w.getTileEntity(pos)).isWorking())
+        if (this.getWorldTile(w, pos).isWorking())
         {
             final double speed = ((TileBelt) w.getTileEntity(pos)).getBeltSpeed();
             final EBeltDirection facing = (EBeltDirection) w.getBlockState(pos).getProperties().get(BlockBelt.FACING);
@@ -163,14 +163,14 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
         this.setDefaultFacing(worldIn, pos, state);
     }
 
-    private void setDefaultFacing(final World worldIn, final BlockPos pos, final IBlockState state)
+    private void setDefaultFacing(final World world, final BlockPos pos, final IBlockState state)
     {
-        if (!worldIn.isRemote)
+        if (!world.isRemote)
         {
-            final IBlockState iblockstate = worldIn.getBlockState(pos.north());
-            final IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
-            final IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
-            final IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
+            final IBlockState iblockstate = world.getBlockState(pos.north());
+            final IBlockState iblockstate1 = world.getBlockState(pos.south());
+            final IBlockState iblockstate2 = world.getBlockState(pos.west());
+            final IBlockState iblockstate3 = world.getBlockState(pos.east());
             EBeltDirection direction = state.getValue(BlockBelt.FACING);
 
             if (direction == EBeltDirection.NORTH && iblockstate.isFullBlock() && !iblockstate1.isFullBlock())
@@ -190,7 +190,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
                 direction = EBeltDirection.WEST;
             }
 
-            worldIn.setBlockState(pos, state.withProperty(BlockBelt.FACING, direction), 2);
+            world.setBlockState(pos, state.withProperty(BlockBelt.FACING, direction), 2);
         }
     }
 
@@ -201,7 +201,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(BlockBelt.FACING,
                 EBeltDirection.fromFacing(placer.getHorizontalFacing().getOpposite()));
@@ -209,7 +209,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         w.setBlockState(pos, state.withProperty(BlockBelt.FACING,
                 EBeltDirection.fromFacing(placer.getHorizontalFacing().getOpposite())), 2);
@@ -229,16 +229,15 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        final int meta = state.getValue(BlockBelt.FACING).ordinal() + state.getValue(BlockBelt.SLOP).ordinal() * 4;
-        return meta;
+        return state.getValue(BlockBelt.FACING).ordinal() + state.getValue(BlockBelt.SLOP).ordinal() * 4;
     }
 
     @Override
     public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos)
     {
-        if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileBelt)
+        if (this.checkWorldTile(world, pos))
         {
-            final TileBelt tile = (TileBelt) world.getTileEntity(pos);
+            final TileBelt tile = this.getWorldTile(world, pos);
             return ((IExtendedBlockState) state).withProperty(QBarStateProperties.VISIBILITY_PROPERTY,
                     tile.getVisibilityState());
         }
@@ -248,8 +247,8 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new ExtendedBlockState(this, new IProperty[] { BlockBelt.FACING, BlockBelt.SLOP, BlockBelt.ANIMATED },
-                new IUnlistedProperty[] { QBarStateProperties.VISIBILITY_PROPERTY });
+        return new ExtendedBlockState(this, new IProperty[]{BlockBelt.FACING, BlockBelt.SLOP, BlockBelt.ANIMATED},
+                new IUnlistedProperty[]{QBarStateProperties.VISIBILITY_PROPERTY});
     }
 
     public EBeltSlope getSlopState(final IBlockState state)
@@ -296,7 +295,7 @@ public class BlockBelt extends BlockMachineBase implements IWrenchable
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state, ItemStack wrench)
+                            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         if (player.isSneaking())
             this.setSlopState(world, pos, this.getSlopState(state).cycle());

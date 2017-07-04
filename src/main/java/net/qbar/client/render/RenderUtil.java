@@ -1,9 +1,5 @@
 package net.qbar.client.render;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -20,6 +16,9 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.qbar.client.render.model.FlattenedModelCache;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class RenderUtil
 {
@@ -72,7 +71,7 @@ public class RenderUtil
     }
 
     public static final void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
-            final BlockRendererDispatcher blockRender)
+                                              final BlockRendererDispatcher blockRender)
     {
         final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -97,8 +96,8 @@ public class RenderUtil
     }
 
     public static final void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
-            final BlockRendererDispatcher blockRender, final List<BakedQuad> alphaQuads,
-            final VisibilityModelState opaqueState)
+                                              final BlockRendererDispatcher blockRender, final List<BakedQuad> alphaQuads,
+                                              final VisibilityModelState opaqueState)
     {
         final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -141,7 +140,7 @@ public class RenderUtil
     }
 
     public static final void renderRect(final double left, final double top, final double right, final double bottom,
-            final float r, final float g, final float b, final float a)
+                                        final float r, final float g, final float b, final float a)
     {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder vertexbuffer = tessellator.getBuffer();

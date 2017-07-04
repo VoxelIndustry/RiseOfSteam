@@ -16,8 +16,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "0.1.0" + "-" + System.env.TRAVIS_BRANCH +"-r" + System.env.TRAVIS_BUILD_NUMBER
-group= "net.qbar" 
+version = "0.1.0" + "-" + System.env.TRAVIS_BRANCH + "-r" + System.env.TRAVIS_BUILD_NUMBER
+group = "net.qbar"
 archivesBaseName = "qbar"
 
 compileJava.options.encoding = 'UTF-8'
@@ -27,7 +27,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.12-14.21.1.2395"
     runDir = "run"
 
     mappings = "snapshot_20170624"
@@ -40,21 +40,21 @@ repositories {
     }
 
     maven { // JEI
-	   name = 'progwml6 maven'
+        name = 'progwml6 maven'
         url = "http://dvs1.progwml6.com/files/maven"
-	}
-	maven { // Concrete
-		name = 'elytradev'
+    }
+    maven { // Concrete
+        name = 'elytradev'
         url = "http://repo.elytradev.com"
     }
     maven { // TeaBeans
-    	name = 'ourten'
-    	url = 'http://maven.ferenyr.info/artifactory/ourten'
+        name = 'ourten'
+        url = 'http://maven.ferenyr.info/artifactory/ourten'
     }
     maven { // BrokkGUI
-    	name = 'yggard'
-    	url = 'http://maven.ferenyr.info/artifactory/yggard'
-	}
+        name = 'yggard'
+        url = 'http://maven.ferenyr.info/artifactory/yggard'
+    }
     maven { // RedstoneFlux
         name = "CoFH Maven"
         url = "http://maven.covers1624.net"
@@ -70,10 +70,10 @@ shadowJar {
     relocate 'com.elytradev.concrete', 'net.qbar.com.elytradev.concrete'
     configurations = [project.configurations.shadow]
     dependencies {
-       exclude(dependency {
-            it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' || it.moduleGroup == "com.google.code.findbugs" 
-       })
-   }
+        exclude(dependency {
+            it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' || it.moduleGroup == "com.google.code.findbugs"
+        })
+    }
 }
 
 reobf {
@@ -87,11 +87,11 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5'
-	deobfCompile 'mezz.jei:jei_1.12:4.7.1.69'
+    deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5'
+    deobfCompile 'mezz.jei:jei_1.12:4.7.1.69'
 
     compile 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
-	shadow 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
+    shadow 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
 
     compile 'org.hjson:hjson:1.0.0'
     shadow 'org.hjson:hjson:1.0.0'
@@ -107,37 +107,37 @@ dependencies {
 }
 
 processResources
-{
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+        {
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
+                expand 'version': project.version, 'mcversion': project.minecraft.version
+            }
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+        }
 
 apply plugin: 'org.hidetake.ssh'
 
 remotes {
-  prodServer {
-    retryCount = 3
-    retryWaitSec = 10
-    knownHosts = allowAnyHosts
-    host = System.env.BUILD_SSH_HOST
-    user = System.env.BUILD_SSH_USER
-    port = (System.env.BUILD_SSH_PORT ?: "0") as Integer
-    password = System.env.BUILD_SSH_PASSWD
-  }
+    prodServer {
+        retryCount = 3
+        retryWaitSec = 10
+        knownHosts = allowAnyHosts
+        host = System.env.BUILD_SSH_HOST
+        user = System.env.BUILD_SSH_USER
+        port = (System.env.BUILD_SSH_PORT ?: "0") as Integer
+        password = System.env.BUILD_SSH_PASSWD
+    }
 }
 
 task deploy(dependsOn: "build") << {
-  ssh.run {
-    session(remotes.prodServer) {
-        put from: file('build/libs/'), into: '/home/games/minecraft/dev/'
+    ssh.run {
+        session(remotes.prodServer) {
+            put from: file('build/libs/'), into: '/home/games/minecraft/dev/'
+        }
     }
-  }
 }

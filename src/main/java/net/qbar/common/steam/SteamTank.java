@@ -7,10 +7,10 @@ import net.qbar.common.init.QBarFluids;
 public class SteamTank implements ISteamTank
 {
     private final FluidStack fluidStack;
-    private int              steam;
+    private       int        steam;
 
-    private int              capacity;
-    private float            maxPressure;
+    private int   capacity;
+    private float maxPressure;
 
     public SteamTank(final int steamAmount, final int capacity, final float maxPressure)
     {

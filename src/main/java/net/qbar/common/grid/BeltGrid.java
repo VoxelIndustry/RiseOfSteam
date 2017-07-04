@@ -17,13 +17,13 @@ public class BeltGrid extends CableGrid
 {
     private final SteamTank tank;
 
-    private final float     beltSpeed;
+    private final float beltSpeed;
 
-    private final float     BELT_MIDDLE      = 10 / 32F;
+    private final float BELT_MIDDLE = 10 / 32F;
 
-    private int             movedCount       = 0;
+    private int movedCount = 0;
 
-    private boolean         lastWorkingState = false;
+    private boolean lastWorkingState = false;
 
     public BeltGrid(final int identifier, final float beltSpeed)
     {
@@ -155,7 +155,7 @@ public class BeltGrid extends CableGrid
 
                                     if (tile != null
                                             && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                                    belt.getFacing().getOpposite()))
+                                            belt.getFacing().getOpposite()))
                                     {
                                         if (ItemHandlerHelper
                                                 .insertItem(tile.getCapability(
@@ -184,7 +184,7 @@ public class BeltGrid extends CableGrid
 
                                     if (tile != null
                                             && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                                    belt.getFacing().getOpposite()))
+                                            belt.getFacing().getOpposite()))
                                     {
                                         if (ItemHandlerHelper
                                                 .insertItem(tile.getCapability(

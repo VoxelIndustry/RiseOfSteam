@@ -30,18 +30,18 @@ import java.util.List;
 
 public class TileTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider, IConnectionAware
 {
-    private BlockPos                        inputPos;
+    private BlockPos inputPos;
 
-    private final DirectionalTank           tank;
-    private int                             tier;
+    private final DirectionalTank tank;
+    private       int             tier;
 
     private final ArrayList<MultiblockSide> connections;
 
     public TileTank(final int capacity, int tier)
     {
         super("fluidtank", 0);
-        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[] { EnumFacing.DOWN },
-                new EnumFacing[] { EnumFacing.UP });
+        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[]{EnumFacing.DOWN},
+                new EnumFacing[]{EnumFacing.UP});
         this.tier = tier;
         this.connections = new ArrayList<>();
     }
@@ -212,11 +212,11 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         if (FluidUtils.drainPlayerHand(this.getTank(), player) || FluidUtils.fillPlayerHand(this.getTank(), player))
@@ -287,7 +287,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
         }
         this.state.parts.clear();
 
-        if(this.getTier() == 1)
+        if (this.getTier() == 1)
         {
             if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 0, 1), EnumFacing.SOUTH)))
             {

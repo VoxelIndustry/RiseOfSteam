@@ -16,7 +16,7 @@ public class QBarFluids
     {
         QBarFluids.fluidSteam = new Fluid("steam", new ResourceLocation(QBar.MODID + ":blocks/fluid/steam_still"),
                 new ResourceLocation(QBar.MODID + ":blocks/fluid/steam_flow")).setDensity(-1000).setViscosity(500)
-                        .setGaseous(true);
+                .setGaseous(true);
         if (!FluidRegistry.registerFluid(QBarFluids.fluidSteam))
             QBarFluids.fluidSteam = FluidRegistry.getFluid("steam");
         FluidRegistry.addBucketForFluid(QBarFluids.fluidSteam);

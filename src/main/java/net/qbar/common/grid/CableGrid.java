@@ -1,13 +1,12 @@
 package net.qbar.common.grid;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.annotation.Nonnull;
-
 public abstract class CableGrid
 {
-    private final int                    identifier;
+    private final int identifier;
 
     private final HashSet<ITileCable<?>> cables;
 
@@ -35,8 +34,7 @@ public abstract class CableGrid
     /**
      * Called on the destination grid after the merging has occurred.
      *
-     * @param the
-     *            source grid
+     * @param the source grid
      */
     void onMerge(final CableGrid grid)
     {
@@ -47,8 +45,7 @@ public abstract class CableGrid
      * Called after a grid splitting has occurred, each new fragment will
      * receive this event.
      *
-     * @param the
-     *            grid source grid before splitting.
+     * @param the grid source grid before splitting.
      */
     void onSplit(final CableGrid grid)
     {

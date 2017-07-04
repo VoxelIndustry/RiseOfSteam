@@ -8,12 +8,12 @@ import net.qbar.common.tile.machine.TileSteamFurnace;
 public class GuiSteamFurnace extends GuiMachineBase<TileSteamFurnace>
 {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(QBar.MODID, "textures/gui/steamfurnace.png");
-    
+
     public GuiSteamFurnace(final EntityPlayer player, final TileSteamFurnace steamfurnace)
     {
         super(player, steamfurnace);
 
-        this.addSteamTank(steamfurnace.getSteamTank(), 151,7,18,73);
+        this.addSteamTank(steamfurnace.getSteamTank(), 151, 7, 18, 73);
     }
 
     @Override

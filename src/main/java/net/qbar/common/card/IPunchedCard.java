@@ -1,11 +1,10 @@
 package net.qbar.common.card;
 
-import java.util.List;
-
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
 
 public interface IPunchedCard
 {

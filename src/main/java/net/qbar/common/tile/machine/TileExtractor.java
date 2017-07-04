@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import fr.ourten.teabeans.value.BaseProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,15 +23,17 @@ import net.qbar.common.tile.IFilteredMachine;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.List;
+
 public class TileExtractor extends TileInventoryBase implements IContainerProvider, ITickable, IFilteredMachine
 {
-    private EnumFacing                  facing;
+    private EnumFacing facing;
 
-    private boolean                     hasFilter;
+    private       boolean               hasFilter;
     private final BaseProperty<Boolean> whitelistProperty;
 
-    private FilterCard                  filter;
-    private ItemStack                   cached = ItemStack.EMPTY;
+    private FilterCard filter;
+    private ItemStack cached = ItemStack.EMPTY;
 
     public TileExtractor(final boolean hasFilter)
     {
@@ -87,7 +87,7 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
 
             if (this.hasFilter() && this.filter != null
                     && (simulated.isEmpty() || (this.getWhitelistProperty().getValue() ? !this.filter.filter(simulated)
-                            : this.filter.filter(simulated))))
+                    : this.filter.filter(simulated))))
                 return;
 
             if (!simulated.isEmpty() && this.canInsert(simulated) && this.useSteam(1, false))

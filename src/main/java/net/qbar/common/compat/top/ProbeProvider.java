@@ -1,8 +1,5 @@
 package net.qbar.common.compat.top;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
@@ -14,6 +11,9 @@ import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.tile.ITileInfoProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProbeProvider implements IProbeInfoProvider
 {
     @Override
@@ -24,7 +24,7 @@ public class ProbeProvider implements IProbeInfoProvider
 
     @Override
     public void addProbeInfo(final ProbeMode mode, final IProbeInfo probeInfo, final EntityPlayer player,
-            final World world, final IBlockState blockState, final IProbeHitData data)
+                             final World world, final IBlockState blockState, final IProbeHitData data)
     {
         final TileEntity tile = world.getTileEntity(data.getPos());
         if (tile instanceof ITileInfoProvider)

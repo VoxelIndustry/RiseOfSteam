@@ -48,16 +48,16 @@ public class TileAssembler extends TileInventoryBase
 {
     private final CraftingMachineDescriptor descriptor       = QBarMachines.ASSEMBLER;
     private final IItemHandler              inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-    private final BaseProperty<Float>       currentProgress;
-    private float                           maxProgress;
+    private final BaseProperty<Float> currentProgress;
+    private       float               maxProgress;
 
-    private final SteamTank                 steamTank;
+    private final SteamTank steamTank;
 
-    private CraftCard                       craft;
-    private ItemStack                       cached           = ItemStack.EMPTY;
+    private CraftCard craft;
+    private ItemStack cached = ItemStack.EMPTY;
 
-    private ItemStack                       resultTemp;
-    private NonNullList<ItemStack>          remainingsTemp;
+    private ItemStack              resultTemp;
+    private NonNullList<ItemStack> remainingsTemp;
 
     // 0 : PunchedCard
     // 1 - 10 : Crafting Ingredients
@@ -279,7 +279,7 @@ public class TileAssembler extends TileInventoryBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -347,8 +347,8 @@ public class TileAssembler extends TileInventoryBase
         return super.getCapability(capability, facing);
     }
 
-    private final int[] inputSlots   = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    private final int[] outputsSlots = new int[] { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+    private final int[] inputSlots   = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    private final int[] outputsSlots = new int[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
     @Override
     public int[] getSlotsForFace(final EnumFacing side)

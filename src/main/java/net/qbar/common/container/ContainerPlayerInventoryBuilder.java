@@ -1,20 +1,19 @@
 package net.qbar.common.container;
 
-import org.apache.commons.lang3.Range;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.qbar.common.container.slot.FilteredSlot;
 import net.qbar.common.container.slot.ListenerSlot;
+import org.apache.commons.lang3.Range;
 
 public final class ContainerPlayerInventoryBuilder
 {
 
     private final InventoryPlayer  player;
     private final ContainerBuilder parent;
-    private Range<Integer>         main;
-    private Range<Integer>         hotbar;
-    private Range<Integer>         armor;
+    private       Range<Integer>   main;
+    private       Range<Integer>   hotbar;
+    private       Range<Integer>   armor;
 
     ContainerPlayerInventoryBuilder(final ContainerBuilder parent, final InventoryPlayer player)
     {
@@ -80,7 +79,7 @@ public final class ContainerPlayerInventoryBuilder
         }
 
         private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
-                final EntityEquipmentSlot slotType)
+                                                           final EntityEquipmentSlot slotType)
         {
 
             this.parent.parent.slots.add(new FilteredSlot(this.parent.player, index, xStart, yStart)

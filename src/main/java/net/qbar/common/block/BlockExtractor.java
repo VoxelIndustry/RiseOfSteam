@@ -1,7 +1,5 @@
 package net.qbar.common.block;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -13,7 +11,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,10 +29,12 @@ import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.machine.TileExtractor;
 
-public class BlockExtractor extends BlockMachineBase
+import javax.annotation.Nullable;
+
+public class BlockExtractor extends BlockMachineBase<TileExtractor>
 {
-    public static PropertyBool           FILTER           = PropertyBool.create("filter");
-    public static PropertyDirection      FACING           = PropertyDirection.create("facing", facing -> true);
+    public static PropertyBool      FILTER = PropertyBool.create("filter");
+    public static PropertyDirection FACING = PropertyDirection.create("facing", facing -> true);
 
     protected static final AxisAlignedBB AABB_BOTTOM_HALF = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
     protected static final AxisAlignedBB AABB_TOP_HALF    = new AxisAlignedBB(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -46,7 +45,7 @@ public class BlockExtractor extends BlockMachineBase
 
     public BlockExtractor()
     {
-        super("itemextractor", Material.IRON);
+        super("itemextractor", Material.IRON, TileExtractor.class);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP)
                 .withProperty(BlockExtractor.FILTER, false));
     }
@@ -54,16 +53,16 @@ public class BlockExtractor extends BlockMachineBase
     @Override
     public IBlockState getExtendedState(final IBlockState state, final IBlockAccess world, final BlockPos pos)
     {
-        if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileExtractor)
+        if (this.checkWorldTile(world, pos))
             return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty,
-                    ((TileExtractor) world.getTileEntity(pos)).state);
+                    this.getWorldTile(world, pos).state);
         return state;
     }
 
     @Override
-    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-            final float hitZ)
+    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player,
+                                    final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+                                    final float hitZ)
     {
         if (player.isSneaking())
             return false;
@@ -119,8 +118,8 @@ public class BlockExtractor extends BlockMachineBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new ExtendedBlockState(this, new IProperty[] { BlockExtractor.FACING, BlockExtractor.FILTER },
-                new IUnlistedProperty[] { Properties.AnimationProperty });
+        return new ExtendedBlockState(this, new IProperty[]{BlockExtractor.FACING, BlockExtractor.FILTER},
+                new IUnlistedProperty[]{Properties.AnimationProperty});
     }
 
     @Override
@@ -161,7 +160,7 @@ public class BlockExtractor extends BlockMachineBase
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
         return this.getStateFromMeta(meta).withProperty(BlockExtractor.FACING, facing)
                 .withProperty(BlockExtractor.FILTER, meta == 1);
@@ -182,7 +181,7 @@ public class BlockExtractor extends BlockMachineBase
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         super.onBlockPlacedBy(w, pos, state, placer, stack);
 

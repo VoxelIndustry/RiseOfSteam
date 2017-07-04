@@ -26,20 +26,20 @@ import java.util.Map.Entry;
 
 public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnectionAware
 {
-    private int                                             gridID;
+    private       int                                       gridID;
     private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connections;
-    private float                                           beltSpeed;
+    private       float                                     beltSpeed;
 
-    private EnumFacing                                      facing;
+    private EnumFacing facing;
 
-    private final List<ItemBelt>                            items;
+    private final List<ItemBelt> items;
 
-    private boolean                                         hasChanged = false;
-    private boolean                                         isWorking  = false;
+    private boolean hasChanged = false;
+    private boolean isWorking  = false;
 
-    private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
+    private final EnumMap<EnumFacing, ISteamHandler> steamConnections;
 
-    private EBeltSlope                                      slopeState;
+    private EBeltSlope slopeState;
 
     public TileBelt(final float beltSpeed)
     {

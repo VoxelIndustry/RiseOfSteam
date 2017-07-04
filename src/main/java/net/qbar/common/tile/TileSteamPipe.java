@@ -1,7 +1,5 @@
 package net.qbar.common.tile;
 
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -13,6 +11,8 @@ import net.qbar.common.grid.SteamGrid;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
+
+import java.util.List;
 
 public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implements ISteamPipe
 {

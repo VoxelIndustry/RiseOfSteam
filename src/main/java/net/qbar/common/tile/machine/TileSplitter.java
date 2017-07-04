@@ -1,11 +1,6 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
-
 import fr.ourten.teabeans.value.BaseListProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -31,16 +26,19 @@ import net.qbar.common.tile.IFilteredMachine;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class TileSplitter extends TileInventoryBase
         implements IContainerProvider, ITickable, IFilteredMachine, ISidedInventory
 {
-    private EnumFacing                      facing;
+    private EnumFacing facing;
 
-    private boolean                         hasFilter;
+    private       boolean                   hasFilter;
     private final BaseListProperty<Boolean> whitelistProperty;
 
-    private ItemStack                       cachedWest, cachedNorth, cachedEast;
-    private FilterCard                      filterWest, filterNorth, filterEast;
+    private ItemStack cachedWest, cachedNorth, cachedEast;
+    private FilterCard filterWest, filterNorth, filterEast;
 
     public TileSplitter(final boolean hasFilter)
     {
@@ -63,7 +61,7 @@ public class TileSplitter extends TileInventoryBase
     }
 
     private final List<EnumFacing> choices   = Lists.newArrayList();
-    private int                    lastSplit = 0;
+    private       int              lastSplit = 0;
 
     @Override
     public void update()
@@ -302,7 +300,7 @@ public class TileSplitter extends TileInventoryBase
         return null;
     }
 
-    private final int[] inputSlot = new int[] { 3 };
+    private final int[] inputSlot = new int[]{3};
 
     @Override
     public int[] getSlotsForFace(final EnumFacing side)

@@ -11,15 +11,15 @@ import java.util.EnumMap;
 
 public class MultiblockDescriptorBase implements IMultiblockDescriptor
 {
-    private final String                             name;
+    private final String name;
 
-    private final int                                width, height, length, offsetX, offsetY, offsetZ;
+    private final int width, height, length, offsetX, offsetY, offsetZ;
 
     private final EnumMap<EnumFacing, BlockPos>      CORE_OFFSET;
     private final EnumMap<EnumFacing, AxisAlignedBB> CACHED_AABB;
 
     MultiblockDescriptorBase(final String name, final int width, final int height, final int length, final int offsetX,
-            final int offsetY, final int offsetZ)
+                             final int offsetY, final int offsetZ)
     {
         this.name = name;
         this.width = width;

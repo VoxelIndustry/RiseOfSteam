@@ -1,7 +1,5 @@
 package net.qbar.common.gui;
 
-import org.yggard.brokkgui.wrapper.BrokkGuiManager;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +9,7 @@ import net.qbar.client.gui.*;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.*;
+import org.yggard.brokkgui.wrapper.BrokkGuiManager;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -18,7 +17,7 @@ public class GuiHandler implements IGuiHandler
 
     @Override
     public Object getServerGuiElement(final int ID, final EntityPlayer player, final World world, final int x,
-            final int y, final int z)
+                                      final int y, final int z)
     {
         final EGui gui = EGui.values()[ID];
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
@@ -31,7 +30,7 @@ public class GuiHandler implements IGuiHandler
 
     @Override
     public Object getClientGuiElement(final int ID, final EntityPlayer player, final World world, final int x,
-            final int y, final int z)
+                                      final int y, final int z)
     {
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 

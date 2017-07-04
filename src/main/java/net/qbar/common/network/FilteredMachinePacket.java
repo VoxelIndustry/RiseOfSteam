@@ -4,7 +4,6 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,9 +19,9 @@ public class FilteredMachinePacket extends Message
     private boolean    whitelist;
 
     @MarshalledAs("blockpos")
-    private BlockPos   pos;
+    private BlockPos pos;
     @MarshalledAs("i32")
-    private int        dimensionID;
+    private int      dimensionID;
 
     public FilteredMachinePacket(final NetworkContext ctx)
     {

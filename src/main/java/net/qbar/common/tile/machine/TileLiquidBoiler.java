@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 {
-    private final FluidTank                 fuelTank;
+    private final FluidTank fuelTank;
 
     private final ArrayList<MultiblockSide> connections;
 
@@ -51,7 +51,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     private Fluid              cachedFluid;
     private LiquidBoilerRecipe recipe;
-    private double             pendingFuel = 0;
+    private double pendingFuel = 0;
 
     @Override
     public void update()
@@ -233,11 +233,11 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         if (from.getY() == 0)
