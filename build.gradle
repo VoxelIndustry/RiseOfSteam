@@ -104,6 +104,10 @@ dependencies {
 
     compile 'com.elytradev:concrete:0.3.1:network'
     shadow 'com.elytradev:concrete:0.3.1:network'
+
+    testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.8.47'
 }
 
 processResources
