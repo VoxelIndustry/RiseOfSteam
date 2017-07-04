@@ -200,13 +200,12 @@ public class GridManagerTest
         ITileCable right = spy(ITileCableTestImpl.class);
         ITileCable rightDangling = spy(ITileCableTestImpl.class);
 
-        when(center.getConnections()).thenReturn(new EnumFacing[]{EnumFacing.WEST, EnumFacing.EAST});
-        when(center.getConnected(EnumFacing.WEST)).thenReturn(left);
-        when(center.getConnected(EnumFacing.EAST)).thenReturn(right);
+        center.connect(EnumFacing.WEST, left);
+        center.connect(EnumFacing.EAST, right);
 
-        when(right.getConnections()).thenReturn(new EnumFacing[]{EnumFacing.WEST, EnumFacing.UP});
-        when(right.getConnected(EnumFacing.WEST)).thenReturn(center);
-        when(right.getConnected(EnumFacing.UP)).thenReturn(rightDangling);
+        left.connect(EnumFacing.EAST, center);
+        right.connect(EnumFacing.WEST, center);
+        right.connect(EnumFacing.UP, rightDangling);
 
         CableGrid grid = new CableGridTestImpl(0);
 

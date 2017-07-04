@@ -4,9 +4,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.EnumMap;
+
 public class ITileCableTestImpl implements ITileCable
 {
-    private int grid = -1;
+    private int                             grid       = -1;
+
+    private EnumMap<EnumFacing, ITileCable> connecteds = new EnumMap<>(EnumFacing.class);
 
     @Override
     public BlockPos getBlockPos()
@@ -17,13 +21,13 @@ public class ITileCableTestImpl implements ITileCable
     @Override
     public EnumFacing[] getConnections()
     {
-        return new EnumFacing[0];
+        return this.connecteds.keySet().stream().toArray(EnumFacing[]::new);
     }
 
     @Override
     public ITileCable<?> getConnected(EnumFacing facing)
     {
-        return null;
+        return this.connecteds.get(facing);
     }
 
     @Override
@@ -47,13 +51,13 @@ public class ITileCableTestImpl implements ITileCable
     @Override
     public void connect(EnumFacing facing, ITileCable to)
     {
-
+        this.connecteds.put(facing, to);
     }
 
     @Override
     public void disconnect(EnumFacing facing)
     {
-
+        this.connecteds.remove(facing);
     }
 
     @Override
