@@ -56,7 +56,7 @@ public class PipeGrid extends CableGrid
     public void tick()
     {
         if (!this.getOutputs().isEmpty())
-            this.getOutputs().forEach(pipe -> pipe.fillNeighbors());
+            this.getOutputs().forEach(IFluidPipe::fillNeighbors);
     }
 
     @Override
@@ -108,6 +108,8 @@ public class PipeGrid extends CableGrid
 
     public int getCapacity()
     {
+        if (this.getCables().size() < 4)
+            return 4 * this.getTransferCapacity();
         return this.getCables().size() * this.getTransferCapacity();
     }
 

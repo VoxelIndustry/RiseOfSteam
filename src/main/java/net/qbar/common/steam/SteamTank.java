@@ -6,7 +6,7 @@ import net.qbar.common.init.QBarFluids;
 
 public class SteamTank implements ISteamTank
 {
-    private final FluidStack fluidStack;
+    private FluidStack fluidStack;
     private       int        steam;
 
     private int   capacity;
@@ -17,8 +17,6 @@ public class SteamTank implements ISteamTank
         this.steam = steamAmount;
         this.capacity = capacity;
         this.maxPressure = maxPressure;
-
-        this.fluidStack = new FluidStack(QBarFluids.fluidSteam, 0);
     }
 
     @Override
@@ -104,6 +102,8 @@ public class SteamTank implements ISteamTank
     @Override
     public FluidStack toFluidStack()
     {
+        if(this.fluidStack == null)
+            this.fluidStack = new FluidStack(QBarFluids.fluidSteam, 0);
         this.fluidStack.amount = this.getSteam();
         return this.fluidStack;
     }

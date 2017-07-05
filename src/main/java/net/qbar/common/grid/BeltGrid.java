@@ -244,6 +244,8 @@ public class BeltGrid extends CableGrid
 
     public int getSteamCapacity()
     {
+        if (this.getCables().size() < 4)
+            return 256;
         return this.getCables().size() * 64;
     }
 
