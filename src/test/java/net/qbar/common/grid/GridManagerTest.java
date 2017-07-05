@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -225,5 +227,55 @@ public class GridManagerTest
         assertThat(GridManager.getInstance().cableGrids).hasSize(2);
         assertThat(left.getGrid()).isNotEqualTo(right.getGrid());
         assertThat(right.getGrid()).isEqualTo(rightDangling.getGrid());
+    }
+
+    @Test
+    public void testLoopSplit()
+    {
+        ITileCable north = new ITileCableTestImpl();
+        ITileCable south = new ITileCableTestImpl();
+        ITileCable east = new ITileCableTestImpl();
+        ITileCable west = new ITileCableTestImpl();
+
+        ITileCable northeast = new ITileCableTestImpl();
+        ITileCable northwest = new ITileCableTestImpl();
+        ITileCable southeast = new ITileCableTestImpl();
+        ITileCable southwest = new ITileCableTestImpl();
+
+        north.connect(EnumFacing.EAST, northeast);
+        north.connect(EnumFacing.WEST, northwest);
+        northeast.connect(EnumFacing.WEST, north);
+        northwest.connect(EnumFacing.EAST, north);
+
+        south.connect(EnumFacing.EAST, southeast);
+        south.connect(EnumFacing.WEST, southwest);
+        southeast.connect(EnumFacing.WEST, south);
+        southwest.connect(EnumFacing.EAST, south);
+
+        east.connect(EnumFacing.NORTH, northeast);
+        east.connect(EnumFacing.SOUTH, southeast);
+        northeast.connect(EnumFacing.SOUTH, east);
+        southeast.connect(EnumFacing.NORTH, east);
+
+        west.connect(EnumFacing.NORTH, northwest);
+        west.connect(EnumFacing.SOUTH, southwest);
+        northwest.connect(EnumFacing.SOUTH, west);
+        southwest.connect(EnumFacing.NORTH, west);
+
+        CableGrid grid = new CableGridTestImpl(0);
+
+        GridManager.getInstance().addGrid(grid);
+        grid.addCables(Arrays.asList(north, south, east, west, northeast, northwest, southeast, southwest));
+        grid.getCables().forEach(cable -> cable.setGrid(grid.getIdentifier()));
+
+        GridManager.getInstance().disconnectCable(north);
+
+        assertThat(GridManager.getInstance().cableGrids).hasSize(1);
+        assertThat(grid.getCables()).hasSize(7);
+        assertThat(south.getGrid()).isEqualTo(east.getGrid());
+        assertThat(east.getGrid()).isEqualTo(west.getGrid());
+        assertThat(west.getGrid()).isEqualTo(northwest.getGrid());
+        assertThat(northwest.getGrid()).isEqualTo(southwest.getGrid());
+        assertThat(southwest.getGrid()).isEqualTo(southeast.getGrid());
     }
 }

@@ -145,3 +145,12 @@ task deploy(dependsOn: "build") << {
         }
     }
 }
+
+apply plugin: "jacoco"
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
