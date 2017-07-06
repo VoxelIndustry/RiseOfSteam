@@ -1,6 +1,7 @@
 package net.qbar.common.world;
 
 import net.minecraft.block.state.IBlockState;
+import org.apache.commons.lang3.Range;
 
 import java.util.HashMap;
 
@@ -9,11 +10,12 @@ public class OreVeinDescriptor
     private HashMap<IBlockState, Float> contents;
     private BiomeMatcher.BiomePredicate biomeMatcher;
 
-    private float         heapDensity;
-    private int           heapQty;
-    private int           heapSize;
-    private EVeinHeapForm heapForm;
-    private EVeinForm     veinForm;
+    private float          heapDensity;
+    private int            heapQty;
+    private int            heapSize;
+    private Range<Integer> yRange;
+    private EVeinHeapForm  heapForm;
+    private EVeinForm      veinForm;
 
     private float rarity;
 
@@ -70,6 +72,12 @@ public class OreVeinDescriptor
         return this;
     }
 
+    public OreVeinDescriptor heightRange(int minY, int maxY)
+    {
+        this.yRange = Range.between(minY, maxY);
+        return this;
+    }
+
     public HashMap<IBlockState, Float> getContents()
     {
         return contents;
@@ -108,5 +116,10 @@ public class OreVeinDescriptor
     public float getRarity()
     {
         return rarity;
+    }
+
+    public Range<Integer> getHeightRange()
+    {
+        return yRange;
     }
 }

@@ -1,15 +1,19 @@
 package net.qbar.common.world;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenMinable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class GenLeftOver
 {
@@ -49,7 +53,11 @@ public class GenLeftOver
     public void generate(World w)
     {
         for (Map.Entry<BlockPos, IBlockState> block : this.blocks.entrySet())
+        {
+            IBlockState state = w.getBlockState(block.getKey());
+            if(state.getBlock().isReplaceableOreGen(state, w, block.getKey(), QBarOreGenerator.instance().STONE_PREDICATE))
             w.setBlockState(block.getKey(), block.getValue(), 2);
+        }
     }
 
     public NBTTagCompound toNBT()

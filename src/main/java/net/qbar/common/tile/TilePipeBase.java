@@ -68,7 +68,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     @Override
     public EnumFacing[] getConnections()
     {
-        return this.connections.keySet().toArray(new EnumFacing[0]);
+        return this.connections.keySet().toArray(new EnumFacing[this.connections.size()]);
     }
 
     public Collection<H> getConnectedHandlers()
