@@ -12,6 +12,7 @@ import net.qbar.common.ore.QBarOre;
 import net.qbar.common.ore.SludgeData;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SludgeRecipe implements IRecipe
@@ -32,7 +33,7 @@ public class SludgeRecipe implements IRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        SludgeData data = new SludgeData();
+        SludgeData data = SludgeData.builder().build();
 
         for (int i = 0; i < 9; i++)
         {

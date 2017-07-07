@@ -15,11 +15,6 @@ public class SludgeData
     @Singular
     private final Map<QBarOre, Float> ores;
 
-    public SludgeData()
-    {
-        this.ores = new HashMap<>();
-    }
-
     public SludgeData addOre(QBarOre ore, float proportion)
     {
         if (this.ores.containsKey(ore))
@@ -44,7 +39,7 @@ public class SludgeData
 
     public static SludgeData fromNBT(NBTTagCompound tag)
     {
-        SludgeData sludge = new SludgeData();
+        SludgeData sludge = new SludgeData(new HashMap<>());
 
         for (int i = 0; i < tag.getInteger("oreQty"); i++)
             sludge.addOre(QBarOres.getOreFromName(tag.getString("ore" + i)).get(), tag.getFloat("proportion" + i));
