@@ -39,6 +39,11 @@ public class BlockVeinOre extends BlockBase
         }
     }
 
+    public IBlockState getStateFromOre(String oreName)
+    {
+        return this.getDefaultState().withProperty(VARIANTS, oreName);
+    }
+
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
