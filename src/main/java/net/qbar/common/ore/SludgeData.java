@@ -1,14 +1,18 @@
 package net.qbar.common.ore;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Singular;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Builder
 public class SludgeData
 {
     @Getter
+    @Singular
     private final Map<QBarOre, Float> ores;
 
     public SludgeData()

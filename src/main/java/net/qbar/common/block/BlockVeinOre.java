@@ -2,6 +2,7 @@ package net.qbar.common.block;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import lombok.Getter;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +14,7 @@ import net.qbar.common.ore.SludgeData;
 
 public class BlockVeinOre extends BlockBase
 {
+    @Getter
     private BiMap<String, SludgeData> contents;
 
     private PropertyString VARIANTS = new PropertyString("ORES");
@@ -55,7 +57,7 @@ public class BlockVeinOre extends BlockBase
         return new BlockStateContainer(this, VARIANTS);
     }
 
-    public class Builder
+    public static class Builder
     {
         private BiMap<String, SludgeData> contents = HashBiMap.create();
         private String name;

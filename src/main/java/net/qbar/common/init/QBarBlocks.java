@@ -13,7 +13,10 @@ import net.qbar.QBar;
 import net.qbar.common.block.*;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.item.ItemBlockMetadata;
+import net.qbar.common.block.item.ItemBlockVeinOre;
 import net.qbar.common.multiblock.*;
+import net.qbar.common.ore.QBarOres;
+import net.qbar.common.ore.SludgeData;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
@@ -78,6 +81,15 @@ public class QBarBlocks
     @ObjectHolder("tinyminingdrill")
     public static final BlockMachineBase TINY_MINING_DRILL  = null;
 
+    @ObjectHolder("ironnickelore")
+    public static final BlockVeinOre IRON_NICKEL_ORE = null;
+    @ObjectHolder("ironcopperore")
+    public static final BlockVeinOre IRON_COPPER_ORE = null;
+    @ObjectHolder("tinore")
+    public static final BlockVeinOre TIN_ORE         = null;
+    @ObjectHolder("ironzincore")
+    public static final BlockVeinOre IRON_ZINC_ORE   = null;
+
     public static IdentityHashMap<Block, ItemBlock> BLOCKS;
 
     public static void init()
@@ -117,6 +129,23 @@ public class QBarBlocks
                 TileSmallMiningDrill::new, TileSmallMiningDrill.class));
         registerBlock(new BlockMultiblockMachine("tinyminingdrill", Material.IRON, Multiblocks.TINY_MINING_DRILL,
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));
+
+        registerBlock(new BlockVeinOre.Builder("ironnickelore")
+                .addContent("pentlandite", SludgeData.builder().ore(QBarOres.IRON, 0.4f).ore(QBarOres.NICKEL, 0.4f).build())
+                .addContent("garnierite", SludgeData.builder().ore(QBarOres.IRON, 0.07f).ore(QBarOres.NICKEL, 0.75f).build())
+                .addContent("laterite", SludgeData.builder().ore(QBarOres.IRON, 0.2f).ore(QBarOres.NICKEL, 0.7f).build())
+                .create(), ItemBlockVeinOre::new);
+        registerBlock(new BlockVeinOre.Builder("ironcopperore")
+                .addContent("chalcopyrite", SludgeData.builder().ore(QBarOres.IRON, 0.3f).ore(QBarOres.COPPER, 0.45f).build())
+                .addContent("tetrahedrite", SludgeData.builder().ore(QBarOres.IRON, 0.1f).ore(QBarOres.COPPER, 0.7f).build())
+                .addContent("malachite", SludgeData.builder().ore(QBarOres.COPPER, 0.3f).build())
+                .create(), ItemBlockVeinOre::new);
+        registerBlock(new BlockVeinOre.Builder("tinore")
+                .addContent("cassiterite", SludgeData.builder().ore(QBarOres.TIN, 0.8f).build())
+                .create(), ItemBlockVeinOre::new);
+        registerBlock(new BlockVeinOre.Builder("ironzincore")
+                .addContent("sphalerite", SludgeData.builder().ore(QBarOres.IRON, 0.3f).ore(QBarOres.ZINC, 0.6f).build())
+                .create(), ItemBlockVeinOre::new);
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
