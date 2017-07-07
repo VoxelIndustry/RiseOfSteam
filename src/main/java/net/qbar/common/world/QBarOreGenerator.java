@@ -3,7 +3,6 @@ package net.qbar.common.world;
 import com.google.common.base.Predicate;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -29,6 +28,7 @@ public class QBarOreGenerator implements IWorldGenerator
         this.leftOvers = new HashMap<>();
         this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE &&
                 state.getValue(BlockStone.VARIANT).isNatural();
+        QBarVeins.initVeins();
     }
 
     private static QBarOreGenerator INSTANCE;
@@ -70,96 +70,66 @@ public class QBarOreGenerator implements IWorldGenerator
     private void generateVein(Random rand, BlockPos center, World world, OreVeinDescriptor vein)
     {
         int y;
-        if (vein.getBiomeMatcher().test(world.getBiome(center)))
+        if (vein.getBiomeMatcher().test(world.getBiome(center)) && rand.nextFloat() < vein.getRarity())
         {
-            if (rand.nextFloat() < vein.getRarity())
+            y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum()) +
+                    vein.getHeightRange().getMinimum();
+            for (int i = 0; i < vein.getHeapQty(); i++)
             {
-                y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum()) +
-                        vein.getHeightRange().getMinimum();
-                for (int i = 0; i < vein.getHeapQty(); i++)
+                int xShift = 0;
+                int yShift = 0;
+                int zShift = 0;
+
+                switch (vein.getVeinForm())
                 {
-                    int xShift = 0;
-                    int yShift = 0;
-                    int zShift = 0;
-
-                    switch (vein.getVeinForm())
-                    {
-                        case FLAT:
-                            xShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
-                                    : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
-                            yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
-                            zShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
-                                    : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
-                            break;
-                        case SCATTERED:
-                            xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
-                            yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
-                            zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
-                            break;
-                        case UPWARD:
-                            xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 3)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 3);
-                            yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 3)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 3);
-                            zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 3)
-                                    : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 3);
-                            break;
-                        case MERGED:
-                            break;
-                    }
-
-                    BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift,
-                            center.getZ() + zShift);
-                    switch (vein.getHeapForm())
-                    {
-                        case SPHERES:
-                            this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapDensity());
-                            break;
-                        case PLATES:
-                            this.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapSize() / 2,
-                                    vein.getHeapDensity());
-                            break;
-                        case SHATTERED:
-                            break;
-                    }
+                    case FLAT:
+                        xShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
+                                : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
+                        yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
+                                : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
+                        zShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
+                                : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
+                        break;
+                    case SCATTERED:
+                        xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
+                                : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
+                        yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
+                                : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
+                        zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
+                                : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
+                        break;
+                    case UPWARD:
+                        xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
+                                : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
+                        yShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
+                                : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
+                        zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
+                                : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
+                        break;
+                    case MERGED:
+                        xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 3)
+                                : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 3);
+                        yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 3)
+                                : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 3);
+                        zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 3)
+                                : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 3);
+                        break;
                 }
-            }
-        }
-    }
 
-    private void generateCopper(Random rand, int chunkX, int chunkZ, World w)
-    {
-        int y;
-        for (int x = 0; x < 16; x++)
-        {
-            for (int z = 0; z < 16; z++)
-            {
-                BlockPos current = new BlockPos(chunkX * 16 + x, 64, chunkZ * 16 + z);
-                if (w.getBiome(current) == Biomes.RIVER)
+                BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift,
+                        center.getZ() + zShift);
+                switch (vein.getHeapForm())
                 {
-                    if (rand.nextFloat() < 0.005f)
-                    {
-                        int count = 0;
-                        y = w.rand.nextInt(37) + 17;
-                        for (int i = 0; i < 5; i++)
-                        {
-                            int xShift = rand.nextBoolean() ? Math.max(rand.nextInt(15), 10)
-                                    : Math.max(-rand.nextInt(15), -10);
-                            int yShift = rand.nextBoolean() ? Math.max(rand.nextInt(12), 3)
-                                    : Math.max(-rand.nextInt(9), -3);
-                            int zShift = rand.nextBoolean() ? Math.max(rand.nextInt(15), 10)
-                                    : Math.max(-rand.nextInt(15), -10);
-
-                            BlockPos veinLocation = new BlockPos(current.getX() + xShift, y + yShift,
-                                    current.getZ() + zShift);
-                            count += this.generatePlate(w, veinLocation, null, 10, 5,
-                                    0.7f);
-                        }
-                    }
+                    case SPHERES:
+                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapDensity());
+                        break;
+                    case PLATES:
+                        this.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapSize() / 2,
+                                vein.getHeapDensity());
+                        break;
+                    case SHATTERED:
+                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapDensity());
+                        break;
                 }
             }
         }

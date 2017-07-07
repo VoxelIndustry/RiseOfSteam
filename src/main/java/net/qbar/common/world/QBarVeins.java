@@ -44,7 +44,7 @@ public class QBarVeins
                         Biomes.BIRCH_FOREST_HILLS, Biomes.PLAINS, Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.FROZEN_OCEAN,
                         Biomes.EXTREME_HILLS, Biomes.EXTREME_HILLS_WITH_TREES, Biomes.EXTREME_HILLS_EDGE));
 
-        GOLD = new OreVeinDescriptor().veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SHATTERED).heapQty(1).heapDensity(0.5f).heapSize(20)
+        GOLD = new OreVeinDescriptor().veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SHATTERED).heapQty(1).heapDensity(0.1f).heapSize(20)
                 .rarity(0.0001f).content(Blocks.GOLD_ORE.getDefaultState(), 1).biomes(BiomeMatcher.WILDCARD);
 
         REDSTONE = new OreVeinDescriptor().veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SPHERES).heapQty(5).heapDensity(0.3f).heapSize(25)
