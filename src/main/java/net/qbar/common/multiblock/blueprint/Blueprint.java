@@ -1,12 +1,14 @@
 package net.qbar.common.multiblock.blueprint;
 
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.IMultiblockDescriptor;
 
 import java.util.ArrayList;
 
+@Getter
 public class Blueprint
 {
     private final String                name;
@@ -37,41 +39,6 @@ public class Blueprint
         this.stepsTime.add(time);
         this.steps.add(Lists.newArrayList(stacks));
         return this;
-    }
-
-    public String getName()
-    {
-        return this.name;
-    }
-
-    public IMultiblockDescriptor getMultiblock()
-    {
-        return this.multiblock;
-    }
-
-    public int getRodAmount()
-    {
-        return this.rodAmount;
-    }
-
-    public ItemStack getRodStack()
-    {
-        return this.rodStack;
-    }
-
-    public ArrayList<ArrayList<ItemStack>> getSteps()
-    {
-        return this.steps;
-    }
-
-    public ArrayList<Integer> getStepsTime()
-    {
-        return this.stepsTime;
-    }
-
-    public ArrayList<MultiblockStep> getMultiblockSteps()
-    {
-        return this.multiblockSteps;
     }
 
     public void setMultiblockSteps(final ArrayList<MultiblockStep> multiblockSteps)

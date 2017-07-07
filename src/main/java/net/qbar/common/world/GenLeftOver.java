@@ -1,5 +1,6 @@
 package net.qbar.common.world;
 
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
@@ -17,8 +18,10 @@ import java.util.function.Predicate;
 
 public class GenLeftOver
 {
+    @Getter
     private ChunkPos pos;
 
+    @Getter
     private HashMap<BlockPos, IBlockState> blocks;
 
     public GenLeftOver(ChunkPos pos)
@@ -38,16 +41,6 @@ public class GenLeftOver
                     Block.REGISTRY.getObject(new ResourceLocation(tag.getString("block" + i)))
                             .getStateFromMeta(tag.getInteger("metaBlock" + i)));
         }
-    }
-
-    public ChunkPos getPos()
-    {
-        return pos;
-    }
-
-    public HashMap<BlockPos, IBlockState> getBlocks()
-    {
-        return blocks;
     }
 
     public void generate(World w)

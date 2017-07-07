@@ -1,5 +1,7 @@
 package net.qbar.common.container.sync;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.function.Consumer;
@@ -7,8 +9,12 @@ import java.util.function.Supplier;
 
 public abstract class SyncableProperty<T extends Object>
 {
+    @Getter
     private final Supplier<T> supplier;
+    @Getter
     private final Consumer<T> consumer;
+    @Getter
+    @Setter
     protected     T           stored;
 
     public SyncableProperty(final Supplier<T> supplier, final Consumer<T> consumer)
@@ -27,13 +33,8 @@ public abstract class SyncableProperty<T extends Object>
     {
         final T supplied = this.supplier.get();
 
-        if (this.stored == null && supplied != null)
-            return true;
-        if (this.stored != null && supplied == null)
-            return true;
-        if (this.stored == null && supplied == null)
-            return false;
-        return !this.areEquals(supplied);
+        return this.stored == null && supplied != null || this.stored != null && supplied == null ||
+                this.stored != null && !this.areEquals(supplied);
     }
 
     public void updateInternal()
@@ -49,26 +50,6 @@ public abstract class SyncableProperty<T extends Object>
     public abstract NBTTagCompound toNBT(final NBTTagCompound tag);
 
     public abstract void fromNBT(NBTTagCompound tag);
-
-    public Supplier<T> getSupplier()
-    {
-        return this.supplier;
-    }
-
-    public Consumer<T> getConsumer()
-    {
-        return this.consumer;
-    }
-
-    public T getStored()
-    {
-        return this.stored;
-    }
-
-    public void setStored(final T stored)
-    {
-        this.stored = stored;
-    }
 
     public T copy(T original)
     {

@@ -1,9 +1,14 @@
 package net.qbar.common.grid;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashSet;
 
+@EqualsAndHashCode
+@ToString
 public abstract class CableGrid
 {
     private final int identifier;
@@ -91,43 +96,5 @@ public abstract class CableGrid
     public HashSet<ITileCable<?>> getCables()
     {
         return this.cables;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "CableGrid [identifier=" + this.identifier + ", cables=" + this.cables + "]";
-    }
-
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.cables == null ? 0 : this.cables.hashCode());
-        result = prime * result + this.identifier;
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (this.getClass() != obj.getClass())
-            return false;
-        final CableGrid other = (CableGrid) obj;
-        if (this.cables == null)
-        {
-            if (other.cables != null)
-                return false;
-        }
-        else if (!this.cables.equals(other.cables))
-            return false;
-        if (this.identifier != other.identifier)
-            return false;
-        return true;
     }
 }

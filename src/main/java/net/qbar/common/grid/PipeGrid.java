@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class PipeGrid extends CableGrid
 {
-
     private final LimitedTank tank;
     private final int         transferCapacity;
 

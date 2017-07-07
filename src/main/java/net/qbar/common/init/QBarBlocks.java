@@ -147,10 +147,10 @@ public class QBarBlocks
     @SubscribeEvent
     public void onBlockRegister(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(BLOCKS.keySet().stream().toArray(Block[]::new));
+        event.getRegistry().registerAll(BLOCKS.keySet().toArray(new Block[BLOCKS.size()]));
     }
 
-    public static final <T extends Block & INamedBlock> void registerBlock(final T block)
+    static <T extends Block & INamedBlock> void registerBlock(final T block)
     {
         if (block instanceof BlockMultiblockBase)
             QBarBlocks.registerBlock(block, ItemBlockMultiblockBase::new);
@@ -158,8 +158,8 @@ public class QBarBlocks
             QBarBlocks.registerBlock(block, ItemBlock::new);
     }
 
-    public static final <T extends Block & INamedBlock> void registerBlock(final T block,
-                                                                           final Function<T, ItemBlock> supplier)
+    private static <T extends Block & INamedBlock> void registerBlock(final T block,
+                                                                      final Function<T, ItemBlock> supplier)
     {
         final ItemBlock supplied = supplier.apply(block);
         supplied.setRegistryName(block.getRegistryName());
@@ -167,7 +167,7 @@ public class QBarBlocks
         BLOCKS.put(block, supplied);
     }
 
-    public static final void registerTile(final Class<? extends TileEntity> c, final String name)
+    private static void registerTile(final Class<? extends TileEntity> c, final String name)
     {
         GameRegistry.registerTileEntity(c, QBar.MODID + ":" + name);
     }

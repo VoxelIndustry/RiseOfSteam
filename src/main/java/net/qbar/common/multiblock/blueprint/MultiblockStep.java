@@ -1,9 +1,13 @@
 package net.qbar.common.multiblock.blueprint;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.qbar.client.render.tile.VisibilityModelState;
 
+@Getter
 public class MultiblockStep
 {
+    @Setter
     private String[] parts;
 
     private VisibilityModelState opaqueState, alphaState;
@@ -11,26 +15,6 @@ public class MultiblockStep
     public MultiblockStep()
     {
 
-    }
-
-    public String[] getParts()
-    {
-        return this.parts;
-    }
-
-    public void setParts(final String[] parts)
-    {
-        this.parts = parts;
-    }
-
-    public VisibilityModelState getOpaqueState()
-    {
-        return this.opaqueState;
-    }
-
-    public VisibilityModelState getAlphaState()
-    {
-        return this.alphaState;
     }
 
     void reloadStates()

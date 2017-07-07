@@ -1,5 +1,6 @@
 package net.qbar.client.render.model;
 
+import lombok.Getter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -11,7 +12,8 @@ final class VertexTransformerWrapper implements IVertexConsumer
 {
     private final IVertexConsumer    parent;
     private final BakedQuad          parentQuad;
-    private final VertexFormat       format;
+    @Getter
+    private final VertexFormat       vertexFormat;
     private final IVertexTransformer transformer;
 
     public VertexTransformerWrapper(final IVertexConsumer parent, final BakedQuad parentQuad,
@@ -19,14 +21,8 @@ final class VertexTransformerWrapper implements IVertexConsumer
     {
         this.parent = parent;
         this.parentQuad = parentQuad;
-        this.format = parent.getVertexFormat();
+        this.vertexFormat = parent.getVertexFormat();
         this.transformer = transformer;
-    }
-
-    @Override
-    public VertexFormat getVertexFormat()
-    {
-        return this.format;
     }
 
     @Override
@@ -56,7 +52,7 @@ final class VertexTransformerWrapper implements IVertexConsumer
     @Override
     public void put(final int elementId, final float... data)
     {
-        final VertexFormatElement element = this.format.getElement(elementId);
+        final VertexFormatElement element = this.vertexFormat.getElement(elementId);
         this.parent.put(elementId, this.transformer.transform(this.parentQuad, element, data));
     }
 }

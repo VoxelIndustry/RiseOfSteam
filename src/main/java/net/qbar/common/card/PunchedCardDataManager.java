@@ -35,7 +35,7 @@ public class PunchedCardDataManager
         data.writeToNBT(tag);
     }
 
-    public static enum ECardType
+    public enum ECardType
     {
         CRAFT(0, new CraftCard(0)), FILTER(1, new FilterCard(1));
 

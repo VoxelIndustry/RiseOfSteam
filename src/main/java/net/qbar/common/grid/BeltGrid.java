@@ -1,5 +1,6 @@
 package net.qbar.common.grid;
 
+import lombok.Getter;
 import net.minecraft.block.material.Material;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -17,6 +18,7 @@ public class BeltGrid extends CableGrid
 {
     private final SteamTank tank;
 
+    @Getter
     private final float beltSpeed;
 
     private final float BELT_MIDDLE = 10 / 32F;
@@ -336,11 +338,6 @@ public class BeltGrid extends CableGrid
             }
         }
         return false;
-    }
-
-    public float getBeltSpeed()
-    {
-        return this.beltSpeed;
     }
 
     public boolean getLastWorkingState()

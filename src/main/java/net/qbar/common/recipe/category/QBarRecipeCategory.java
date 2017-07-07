@@ -1,5 +1,6 @@
 package net.qbar.common.recipe.category;
 
+import lombok.Getter;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 public class QBarRecipeCategory
 {
     private String           name;
@@ -60,16 +62,6 @@ public class QBarRecipeCategory
             }
             return true;
         }).findFirst();
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public List<QBarRecipe> getRecipes()
-    {
-        return recipes;
     }
 
     public void add(QBarRecipe recipe)

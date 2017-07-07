@@ -1,10 +1,12 @@
 package net.qbar.common.world;
 
+import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import org.apache.commons.lang3.Range;
 
 import java.util.HashMap;
 
+@Getter
 public class OreVeinDescriptor
 {
     private HashMap<IBlockState, Float> contents;
@@ -13,7 +15,7 @@ public class OreVeinDescriptor
     private float          heapDensity;
     private int            heapQty;
     private int            heapSize;
-    private Range<Integer> yRange;
+    private Range<Integer> heightRange;
     private EVeinHeapForm  heapForm;
     private EVeinForm      veinForm;
 
@@ -74,52 +76,7 @@ public class OreVeinDescriptor
 
     public OreVeinDescriptor heightRange(int minY, int maxY)
     {
-        this.yRange = Range.between(minY, maxY);
+        this.heightRange = Range.between(minY, maxY);
         return this;
-    }
-
-    public HashMap<IBlockState, Float> getContents()
-    {
-        return contents;
-    }
-
-    public BiomeMatcher.BiomePredicate getBiomeMatcher()
-    {
-        return biomeMatcher;
-    }
-
-    public float getHeapDensity()
-    {
-        return heapDensity;
-    }
-
-    public int getHeapQty()
-    {
-        return heapQty;
-    }
-
-    public int getHeapSize()
-    {
-        return heapSize;
-    }
-
-    public EVeinHeapForm getHeapForm()
-    {
-        return heapForm;
-    }
-
-    public EVeinForm getVeinForm()
-    {
-        return veinForm;
-    }
-
-    public float getRarity()
-    {
-        return rarity;
-    }
-
-    public Range<Integer> getHeightRange()
-    {
-        return yRange;
     }
 }

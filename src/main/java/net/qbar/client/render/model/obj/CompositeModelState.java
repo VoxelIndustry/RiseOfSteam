@@ -1,12 +1,17 @@
 package net.qbar.client.render.model.obj;
 
-import com.google.common.base.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.Optional;
 
+@Getter
+@EqualsAndHashCode
+@ToString
 public class CompositeModelState implements IModelState
 {
     private final IModelState first;
@@ -24,36 +29,5 @@ public class CompositeModelState implements IModelState
         if (f.isPresent() && s.isPresent())
             return Optional.of(f.get().compose(s.get()));
         return f.isPresent() ? f : s;
-    }
-
-    public IModelState getFirst()
-    {
-        return first;
-    }
-
-    public IModelState getSecond()
-    {
-        return second;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        CompositeModelState that = (CompositeModelState) o;
-        return Objects.equal(first, that.first) && Objects.equal(second, that.second);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hashCode(first, second);
     }
 }

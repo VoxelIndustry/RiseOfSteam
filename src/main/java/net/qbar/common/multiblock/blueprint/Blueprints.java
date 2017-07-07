@@ -2,6 +2,7 @@ package net.qbar.common.multiblock.blueprint;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import lombok.Getter;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,7 @@ public class Blueprints
         return Blueprints.instance;
     }
 
+    @Getter
     private final HashMap<String, Blueprint> blueprints;
     private final Gson                       gson;
 
@@ -107,11 +109,6 @@ public class Blueprints
             e.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    public HashMap<String, Blueprint> getBlueprints()
-    {
-        return this.blueprints;
     }
 
     public Blueprint getBlueprint(final String name)

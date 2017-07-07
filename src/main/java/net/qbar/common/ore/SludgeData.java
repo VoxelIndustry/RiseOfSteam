@@ -1,5 +1,6 @@
 package net.qbar.common.ore;
 
+import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
@@ -7,7 +8,8 @@ import java.util.Map;
 
 public class SludgeData
 {
-    private final HashMap<QBarOre, Float> ores;
+    @Getter
+    private final Map<QBarOre, Float> ores;
 
     public SludgeData()
     {
@@ -21,11 +23,6 @@ public class SludgeData
         else
             this.ores.put(ore, proportion);
         return this;
-    }
-
-    public HashMap<QBarOre, Float> getOres()
-    {
-        return ores;
     }
 
     public NBTTagCompound writeToNBT(NBTTagCompound tag)

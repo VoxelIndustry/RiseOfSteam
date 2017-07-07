@@ -1,5 +1,6 @@
 package net.qbar.common.container;
 
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -18,7 +19,7 @@ import java.util.function.Predicate;
 
 public class BuiltContainer extends Container
 {
-
+    @Getter
     private final String name;
 
     private final EntityPlayer player;
@@ -233,11 +234,6 @@ public class BuiltContainer extends Container
             if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
                 return true;
         return false;
-    }
-
-    public String getName()
-    {
-        return this.name;
     }
 
     @Override
