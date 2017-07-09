@@ -31,7 +31,7 @@ public class OreVeinDescriptor
 
     public OreVeinDescriptor content(IBlockState state, float proportion)
     {
-        this.contents.put(state, (float) (proportion + this.contents.values().stream().mapToDouble(i -> i).sum()));
+        this.contents.put(state, proportion + this.contents.values().stream().max(Float::compareTo).orElse(0f));
         return this;
     }
 

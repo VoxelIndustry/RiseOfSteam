@@ -30,7 +30,7 @@ public class QBarVeins
 
         IRON_COPPER = new OreVeinDescriptor("iron-copper").veinForm(EVeinForm.FLAT).heapForm(EVeinHeapForm.PLATES).heapQty(5)
                 .heapDensity(0.7f).heapSize(10).rarity(0.002f).heightRange(4, 64)
-                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromMeta(0), 0.3f)
+                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre("chalcopyrite"), 0.3f)
                 .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre("tetrahedrite"), 0.3f)
                 .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre("malachite"), 0.4f)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.RIVER, Biomes.FROZEN_RIVER, Biomes.SWAMPLAND,
