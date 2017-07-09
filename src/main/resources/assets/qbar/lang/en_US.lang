@@ -79,3 +79,16 @@ ore.tin=Tin
 ore.copper=Copper
 ore.nickel=Nickel
 ore.zinc=Zinc
+
+tile.ironcopperore.chalcopyrite.name=Chalcopyrite Ore
+tile.ironcopperore.tetrahedrite.name=Tetrahedrite Ore
+tile.ironcopperore.malachite.name=Malachite Ore
+
+tile.ironnickelore.pentlandite.name=Pentlandite Ore
+tile.ironnickelore.garnierite.name=Garnierite Ore
+tile.ironnickelore.laterite.name=Laterite Ore
+
+tile.ironzincore.sphalerite.name=Sphalerite Ore
+
+tile.tinore.cassiterite.name=Cassiterite Ore
+

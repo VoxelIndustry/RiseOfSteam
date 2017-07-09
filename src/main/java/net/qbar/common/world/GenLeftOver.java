@@ -2,33 +2,29 @@ package net.qbar.common.world;
 
 import lombok.Getter;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenMinable;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GenLeftOver
 {
     @Getter
-    private ChunkPos pos;
+    private ChunkPos                       pos;
 
     @Getter
-    private HashMap<BlockPos, IBlockState> blocks;
+    private ConcurrentHashMap<BlockPos, IBlockState> blocks;
 
     public GenLeftOver(ChunkPos pos)
     {
         this.pos = pos;
 
-        this.blocks = new HashMap<>();
+        this.blocks = new ConcurrentHashMap<>();
     }
 
     public GenLeftOver(NBTTagCompound tag)
@@ -48,8 +44,9 @@ public class GenLeftOver
         for (Map.Entry<BlockPos, IBlockState> block : this.blocks.entrySet())
         {
             IBlockState state = w.getBlockState(block.getKey());
-            if(state.getBlock().isReplaceableOreGen(state, w, block.getKey(), QBarOreGenerator.instance().STONE_PREDICATE))
-            w.setBlockState(block.getKey(), block.getValue(), 2);
+            if (state.getBlock().isReplaceableOreGen(state, w, block.getKey(),
+                    QBarOreGenerator.instance().STONE_PREDICATE))
+               w.setBlockState(block.getKey(), block.getValue(), 2);
         }
     }
 

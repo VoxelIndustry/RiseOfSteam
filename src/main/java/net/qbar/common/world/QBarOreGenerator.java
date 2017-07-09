@@ -10,24 +10,28 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.event.terraingen.OreGenEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.qbar.QBar;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.logging.Level;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
-    private      HashMap<ChunkPos, GenLeftOver> leftOvers;
-    public final Predicate<IBlockState>         STONE_PREDICATE;
+    private HashMap<ChunkPos, GenLeftOver> leftOvers;
+    private List<ChunkPos>                 generateds;
+    public final Predicate<IBlockState>    STONE_PREDICATE;
 
     private QBarOreGenerator()
     {
         this.leftOvers = new HashMap<>();
-        this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE &&
-                state.getValue(BlockStone.VARIANT).isNatural();
+        this.generateds = new ArrayList<>();
+
+        this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE
+                && state.getValue(BlockStone.VARIANT).isNatural();
         QBarVeins.initVeins();
     }
 
@@ -42,15 +46,19 @@ public class QBarOreGenerator implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-                         IChunkProvider chunkProvider)
+            IChunkProvider chunkProvider)
     {
+        ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+
+        generateds.add(chunkPos);
         if (world.provider.getDimension() == 0)
         {
-            if (leftOvers.containsKey(new ChunkPos(chunkX, chunkZ)))
+            if (leftOvers.containsKey(chunkPos))
             {
-                leftOvers.get(new ChunkPos(chunkX, chunkZ)).generate(world);
-                leftOvers.remove(new ChunkPos(chunkX, chunkZ));
+                leftOvers.get(chunkPos).generate(world);
+                leftOvers.remove(chunkPos);
             }
+
             generateVeins(random, chunkX, chunkZ, world);
         }
     }
@@ -61,7 +69,7 @@ public class QBarOreGenerator implements IWorldGenerator
         {
             for (int z = 0; z < 16; z++)
             {
-                BlockPos center = new BlockPos(x * chunkX, 64, z * chunkZ);
+                BlockPos center = new BlockPos(x + (chunkX * 16), 64, z + (chunkZ * 16));
                 QBarVeins.VEINS.forEach(vein -> generateVein(rand, center, world, vein));
             }
         }
@@ -72,8 +80,8 @@ public class QBarOreGenerator implements IWorldGenerator
         int y;
         if (vein.getBiomeMatcher().test(world.getBiome(center)) && rand.nextFloat() < vein.getRarity())
         {
-            y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum()) +
-                    vein.getHeightRange().getMinimum();
+            y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum())
+                    + vein.getHeightRange().getMinimum();
             for (int i = 0; i < vein.getHeapQty(); i++)
             {
                 int xShift = 0;
@@ -83,25 +91,31 @@ public class QBarOreGenerator implements IWorldGenerator
                 switch (vein.getVeinForm())
                 {
                     case FLAT:
-                        xShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
+                        xShift = rand.nextBoolean()
+                                ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
                                 : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
                         yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
                                 : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
-                        zShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
+                        zShift = rand.nextBoolean()
+                                ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
                                 : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
                         break;
                     case SCATTERED:
-                        xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
+                        xShift = rand.nextBoolean()
+                                ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
                                 : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
-                        yShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
+                        yShift = rand.nextBoolean()
+                                ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
                                 : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
-                        zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
+                        zShift = rand.nextBoolean()
+                                ? Math.max(rand.nextInt(vein.getHeapSize() * 4), vein.getHeapSize() * 2)
                                 : Math.max(-rand.nextInt(vein.getHeapSize() * 4), -vein.getHeapSize() * 2);
                         break;
                     case UPWARD:
                         xShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
                                 : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
-                        yShift = rand.nextBoolean() ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
+                        yShift = rand.nextBoolean()
+                                ? Math.max(rand.nextInt((int) (vein.getHeapSize() * 1.5f)), vein.getHeapSize())
                                 : Math.max(-rand.nextInt((int) (vein.getHeapSize() * 1.5f)), -vein.getHeapSize());
                         zShift = rand.nextBoolean() ? Math.max(rand.nextInt(vein.getHeapSize()), vein.getHeapSize() / 4)
                                 : Math.max(-rand.nextInt(vein.getHeapSize()), -vein.getHeapSize() / 4);
@@ -116,26 +130,28 @@ public class QBarOreGenerator implements IWorldGenerator
                         break;
                 }
 
-                BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift,
-                        center.getZ() + zShift);
+                BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift, center.getZ() + zShift);
                 switch (vein.getHeapForm())
                 {
                     case SPHERES:
-                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapDensity());
-                        break;
-                    case PLATES:
-                        this.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapSize() / 2,
+                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
                                 vein.getHeapDensity());
                         break;
+                    case PLATES:
+                        this.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                                vein.getHeapSize() / 2, vein.getHeapDensity());
+                        break;
                     case SHATTERED:
-                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(), vein.getHeapDensity());
+                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                                vein.getHeapDensity());
                         break;
                 }
             }
         }
     }
 
-    private int generateSphere(World w, BlockPos center, HashMap<IBlockState, Float> contents, int radius, float density)
+    private int generateSphere(World w, BlockPos center, HashMap<IBlockState, Float> contents, int radius,
+            float density)
     {
         int count = 0;
         int radiusSquared = radius * radius * radius;
@@ -160,7 +176,8 @@ public class QBarOreGenerator implements IWorldGenerator
         return count;
     }
 
-    private int generatePlate(World w, BlockPos center, HashMap<IBlockState, Float> contents, int radius, int thickness, float density)
+    private int generatePlate(World w, BlockPos center, HashMap<IBlockState, Float> contents, int radius, int thickness,
+            float density)
     {
         int count = 0;
 
@@ -211,15 +228,26 @@ public class QBarOreGenerator implements IWorldGenerator
 
     private void placeBlock(World w, BlockPos pos, IBlockState state)
     {
-        if (w.isChunkGeneratedAt(new ChunkPos(pos).x, new ChunkPos(pos).z))
+        ChunkPos chunk = new ChunkPos(pos);
+
+        if (canPlaceBlock(w, pos, chunk))
         {
             IBlockState existingState = w.getBlockState(pos);
-            if (existingState.getBlock().isReplaceableOreGen(existingState, w, pos, QBarOreGenerator.instance().STONE_PREDICATE))
-                w.setBlockState(pos, state);
+            if (existingState.getBlock().isReplaceableOreGen(existingState, w, pos,
+                    QBarOreGenerator.instance().STONE_PREDICATE))
+                w.setBlockState(pos, state, 2);
         }
         else
         {
-            ChunkPos chunk = new ChunkPos(pos);
+            if (chunk.getXStart() == pos.getX())
+                chunk = new ChunkPos(chunk.x - 1, chunk.z);
+            else if (chunk.getXEnd() == pos.getX())
+                chunk = new ChunkPos(chunk.x + 1, chunk.z);
+            else if (chunk.getZStart() == pos.getZ())
+                chunk = new ChunkPos(chunk.x, chunk.z + 1);
+            else if (chunk.getZEnd() == pos.getZ())
+                chunk = new ChunkPos(chunk.x, chunk.z - 1);
+
             if (!this.leftOvers.containsKey(chunk))
             {
                 GenLeftOver leftOver = new GenLeftOver(chunk);
@@ -227,6 +255,23 @@ public class QBarOreGenerator implements IWorldGenerator
             }
             this.leftOvers.get(chunk).getBlocks().put(pos, state);
         }
+    }
+
+    private boolean canPlaceBlock(World w, BlockPos pos, ChunkPos chunk)
+    {
+        return w.isChunkGeneratedAt(chunk.x, chunk.z)
+                && !(chunk.getXStart() == pos.getX() && chunk.getZStart() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z - 1))
+                && !(chunk.getXStart() == pos.getX() && chunk.getZEnd() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z + 1))
+                && !(chunk.getXEnd() == pos.getX() && chunk.getZEnd() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z + 1))
+                && !(chunk.getXEnd() == pos.getX() && chunk.getZStart() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z - 1))
+                && !(chunk.getXStart() == pos.getX() && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z))
+                && !(chunk.getXEnd() == pos.getX() && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z))
+                && !(chunk.getZStart() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z - 1))
+                && !(chunk.getZEnd() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z + 1));
     }
 
     private IBlockState randomState(Random rand, HashMap<IBlockState, Float> choices)
@@ -248,5 +293,18 @@ public class QBarOreGenerator implements IWorldGenerator
                 || e.getType().equals(OreGenEvent.GenerateMinable.EventType.GOLD)
                 || e.getType().equals(OreGenEvent.GenerateMinable.EventType.REDSTONE))
             e.setResult(Event.Result.DENY);
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load e)
+    {
+
+        QBar.logger.log(Level.INFO, "=========\n~~" + QBar.MODNAME
+                + "~~ Warning:\nGood morning player,\nDuring the generation of this world you will see a lot of lines about cascading worldgen lag."
+                + "\nThe actual lag should not destroy your servers tps."
+                + "\nDue to the nature of the ores veins of this mod and the unreliable minecraft data this cannot be avoided."
+                + "\nDays were spent trying to solve this. If you are a developer and care about this issue we invite you to work with us on a solution."
+                + "\nNote that the +8 offset is irrelevant when you are generating veins of 20+ radius!"
+                + "\n===========================");
     }
 }

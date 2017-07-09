@@ -17,14 +17,15 @@ public class BlockVeinOre extends BlockBase
     @Getter
     private BiMap<String, SludgeData> contents;
 
-    private PropertyString VARIANTS = new PropertyString("ORES");
+    private static PropertyString     FAKE_VARIANTS;
+    private final PropertyString      VARIANTS;
 
-    public BlockVeinOre(String name, String defaultValue, BiMap<String, SludgeData> contents)
+    public BlockVeinOre(String name, String defaultValue, BiMap<String, SludgeData> contents, PropertyString variants)
     {
         super(name, Material.ROCK);
 
+        this.VARIANTS = variants;
         this.contents = contents;
-        this.VARIANTS.addValues(contents.keySet().toArray(new String[contents.size()]));
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, defaultValue));
     }
@@ -32,9 +33,9 @@ public class BlockVeinOre extends BlockBase
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        if(tab == this.getCreativeTabToDisplayOn())
+        if (tab == this.getCreativeTabToDisplayOn())
         {
-            for(int i = 0; i < contents.size(); i++)
+            for (int i = 0; i < contents.size(); i++)
                 items.add(new ItemStack(this, 1, i));
         }
     }
@@ -59,14 +60,14 @@ public class BlockVeinOre extends BlockBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, VARIANTS);
+        return new BlockStateContainer(this, FAKE_VARIANTS);
     }
 
     public static class Builder
     {
         private BiMap<String, SludgeData> contents = HashBiMap.create();
-        private String name;
-        private String defaultValue;
+        private String                    name;
+        private String                    defaultValue;
 
         public Builder(String name)
         {
@@ -83,7 +84,11 @@ public class BlockVeinOre extends BlockBase
 
         public BlockVeinOre create()
         {
-            return new BlockVeinOre(name, defaultValue, contents);
+            PropertyString variants = new PropertyString("ores");
+            variants.addValues(contents.keySet().toArray(new String[contents.size()]));
+            FAKE_VARIANTS = variants;
+
+            return new BlockVeinOre(name, defaultValue, contents, variants);
         }
     }
 }

@@ -12,6 +12,7 @@ public class BlockBase extends Block implements INamedBlock
     {
         super(material);
         this.name = name;
+        this.setRegistryName(QBar.MODID, name);
         this.setUnlocalizedName(name);
         this.setCreativeTab(QBar.TAB_ALL);
     }

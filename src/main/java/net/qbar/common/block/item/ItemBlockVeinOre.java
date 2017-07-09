@@ -7,5 +7,7 @@ public class ItemBlockVeinOre extends ItemBlockMetadata
     public ItemBlockVeinOre(BlockVeinOre veinOre)
     {
         super(veinOre, veinOre.getContents().keySet().toArray(new String[veinOre.getContents().size()]));
+
+        this.setFirstVariation(true);
     }
 }

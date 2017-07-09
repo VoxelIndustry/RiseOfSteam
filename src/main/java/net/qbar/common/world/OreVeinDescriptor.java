@@ -12,23 +12,26 @@ public class OreVeinDescriptor
     private HashMap<IBlockState, Float> contents;
     private BiomeMatcher.BiomePredicate biomeMatcher;
 
-    private float          heapDensity;
-    private int            heapQty;
-    private int            heapSize;
-    private Range<Integer> heightRange;
-    private EVeinHeapForm  heapForm;
-    private EVeinForm      veinForm;
+    private float                       heapDensity;
+    private int                         heapQty;
+    private int                         heapSize;
+    private Range<Integer>              heightRange;
+    private EVeinHeapForm               heapForm;
+    private EVeinForm                   veinForm;
 
-    private float rarity;
+    private float                       rarity;
 
-    public OreVeinDescriptor()
+    private String                      name;
+
+    public OreVeinDescriptor(String name)
     {
         this.contents = new HashMap<>();
+        this.name = name;
     }
 
     public OreVeinDescriptor content(IBlockState state, float proportion)
     {
-        this.contents.put(state, proportion);
+        this.contents.put(state, (float) (proportion + this.contents.values().stream().mapToDouble(i -> i).sum()));
         return this;
     }
 
@@ -78,5 +81,11 @@ public class OreVeinDescriptor
     {
         this.heightRange = Range.between(minY, maxY);
         return this;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "OreVeinDescriptor{" + "name='" + name + '\'' + '}';
     }
 }

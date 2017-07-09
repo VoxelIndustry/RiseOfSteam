@@ -1,6 +1,7 @@
 package net.qbar.common.block.property;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import net.minecraft.block.properties.PropertyHelper;
 
@@ -17,7 +18,7 @@ public class PropertyString extends PropertyHelper<String>
     {
         super(name, String.class);
 
-        this.allowedValues = Arrays.asList(values);
+        this.allowedValues = Lists.newArrayList(values);
     }
 
     public String getByIndex(int index)
