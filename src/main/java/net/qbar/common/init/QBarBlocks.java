@@ -146,6 +146,8 @@ public class QBarBlocks
         registerBlock(new BlockVeinOre.Builder("ironzincore")
                 .addContent("sphalerite", SludgeData.builder().ore(QBarOres.IRON, 0.3f).ore(QBarOres.ZINC, 0.6f).build())
                 .create(), ItemBlockVeinOre::new);
+        registerBlock(new BlockOreSand("oresand"), block -> new ItemBlockMetadata(block, "copper_sand", "tin_sand"));
+        registerBlock(new BlockOreDirt("oredirt"), block -> new ItemBlockMetadata(block, "iron_dirt"));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");

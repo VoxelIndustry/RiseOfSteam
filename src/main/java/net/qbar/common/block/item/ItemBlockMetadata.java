@@ -17,9 +17,10 @@ public class ItemBlockMetadata extends ItemBlock
         this.variants = variants;
     }
 
-    public void setFirstVariation(boolean firstVariation)
+    public ItemBlockMetadata setFirstVariation(boolean firstVariation)
     {
         this.firstVariation = firstVariation;
+        return this;
     }
 
     @Override

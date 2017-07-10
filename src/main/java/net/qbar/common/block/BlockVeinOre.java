@@ -31,6 +31,12 @@ public class BlockVeinOre extends BlockBase
     }
 
     @Override
+    public int damageDropped(IBlockState state)
+    {
+        return this.getMetaFromState(state);
+    }
+
+    @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
         if (tab == this.getCreativeTabToDisplayOn())
