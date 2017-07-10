@@ -7,27 +7,30 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.event.terraingen.OreGenEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.qbar.QBar;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.text.NumberFormat;
 import java.util.*;
-import java.util.logging.Level;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
-    private HashMap<ChunkPos, GenLeftOver> leftOvers;
-    private List<ChunkPos>                 generateds;
-    public final Predicate<IBlockState>    STONE_PREDICATE;
+    private      ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
+    private      List<ChunkPos>                           generateds;
+    public final Predicate<IBlockState>                   STONE_PREDICATE;
 
     private QBarOreGenerator()
     {
-        this.leftOvers = new HashMap<>();
+        this.leftOvers = new ConcurrentHashMap<>();
         this.generateds = new ArrayList<>();
 
         this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE
@@ -46,21 +49,13 @@ public class QBarOreGenerator implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-            IChunkProvider chunkProvider)
+                         IChunkProvider chunkProvider)
     {
         ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
 
         generateds.add(chunkPos);
         if (world.provider.getDimension() == 0)
-        {
-            if (leftOvers.containsKey(chunkPos))
-            {
-                leftOvers.get(chunkPos).generate(world);
-                leftOvers.remove(chunkPos);
-            }
-
             generateVeins(random, chunkX, chunkZ, world);
-        }
     }
 
     private void generateVeins(Random rand, int chunkX, int chunkZ, World world)
@@ -150,8 +145,8 @@ public class QBarOreGenerator implements IWorldGenerator
         }
     }
 
-    private int generateSphere(World w, BlockPos center, HashMap<IBlockState, Float> contents, int radius,
-            float density)
+    private int generateSphere(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
+                               float density)
     {
         int count = 0;
         int radiusSquared = radius * radius * radius;
@@ -176,8 +171,8 @@ public class QBarOreGenerator implements IWorldGenerator
         return count;
     }
 
-    private int generatePlate(World w, BlockPos center, HashMap<IBlockState, Float> contents, int radius, int thickness,
-            float density)
+    private int generatePlate(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius, int thickness,
+                              float density)
     {
         int count = 0;
 
@@ -212,7 +207,7 @@ public class QBarOreGenerator implements IWorldGenerator
         return count;
     }
 
-    private int drawXLine(World w, BlockPos first, BlockPos second, HashMap<IBlockState, Float> contents, float density)
+    private int drawXLine(World w, BlockPos first, BlockPos second, List<Pair<IBlockState, Float>> contents, float density)
     {
         int count = 0;
         for (int i = 0; i < (second.getX() - first.getX()); i++)
@@ -230,60 +225,35 @@ public class QBarOreGenerator implements IWorldGenerator
     {
         ChunkPos chunk = new ChunkPos(pos);
 
-        if (canPlaceBlock(w, pos, chunk))
-        {
-            IBlockState existingState = w.getBlockState(pos);
-            if (existingState.getBlock().isReplaceableOreGen(existingState, w, pos,
-                    QBarOreGenerator.instance().STONE_PREDICATE))
-                w.setBlockState(pos, state, 2);
-        }
-        else
-        {
-            if (chunk.getXStart() == pos.getX())
-                chunk = new ChunkPos(chunk.x - 1, chunk.z);
-            else if (chunk.getXEnd() == pos.getX())
-                chunk = new ChunkPos(chunk.x + 1, chunk.z);
-            else if (chunk.getZStart() == pos.getZ())
-                chunk = new ChunkPos(chunk.x, chunk.z + 1);
-            else if (chunk.getZEnd() == pos.getZ())
-                chunk = new ChunkPos(chunk.x, chunk.z - 1);
+        if (chunk.getXStart() == pos.getX())
+            chunk = new ChunkPos(chunk.x - 1, chunk.z);
+        else if (chunk.getXEnd() == pos.getX())
+            chunk = new ChunkPos(chunk.x + 1, chunk.z);
+        else if (chunk.getZStart() == pos.getZ())
+            chunk = new ChunkPos(chunk.x, chunk.z - 1);
+        else if (chunk.getZEnd() == pos.getZ())
+            chunk = new ChunkPos(chunk.x, chunk.z + 1);
 
-            if (!this.leftOvers.containsKey(chunk))
-            {
-                GenLeftOver leftOver = new GenLeftOver(chunk);
-                this.leftOvers.put(chunk, leftOver);
-            }
-            this.leftOvers.get(chunk).getBlocks().put(pos, state);
+        if (!this.leftOvers.containsKey(chunk))
+        {
+            GenLeftOver leftOver = new GenLeftOver(chunk);
+            this.leftOvers.put(chunk, leftOver);
         }
+        this.leftOvers.get(chunk).getBlocks().put(pos, state);
     }
 
-    private boolean canPlaceBlock(World w, BlockPos pos, ChunkPos chunk)
+    private IBlockState randomState(Random rand, List<Pair<IBlockState, Float>> choices)
     {
-        return w.isChunkGeneratedAt(chunk.x, chunk.z)
-                && !(chunk.getXStart() == pos.getX() && chunk.getZStart() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z - 1))
-                && !(chunk.getXStart() == pos.getX() && chunk.getZEnd() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z + 1))
-                && !(chunk.getXEnd() == pos.getX() && chunk.getZEnd() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z + 1))
-                && !(chunk.getXEnd() == pos.getX() && chunk.getZStart() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z - 1))
-                && !(chunk.getXStart() == pos.getX() && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z))
-                && !(chunk.getXEnd() == pos.getX() && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z))
-                && !(chunk.getZStart() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z - 1))
-                && !(chunk.getZEnd() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z + 1));
-    }
+        float p = choices.get(0).getRight();
+        float x = rand.nextFloat();
 
-    private IBlockState randomState(Random rand, HashMap<IBlockState, Float> choices)
-    {
-        float result = rand.nextFloat();
-
-        for (Map.Entry<IBlockState, Float> choice : choices.entrySet())
+        int i = 0;
+        while (x > p)
         {
-            if (result <= choice.getValue())
-                return choice.getKey();
+            i++;
+            p += choices.get(i).getRight();
         }
-        return null;
+        return choices.get(i).getLeft();
     }
 
     @SubscribeEvent
@@ -295,16 +265,32 @@ public class QBarOreGenerator implements IWorldGenerator
             e.setResult(Event.Result.DENY);
     }
 
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load e)
-    {
+    private static final int BLOCKS_PER_TICK = 1000;
 
-        QBar.logger.log(Level.INFO, "=========\n~~" + QBar.MODNAME
-                + "~~ Warning:\nGood morning player,\nDuring the generation of this world you will see a lot of lines about cascading worldgen lag."
-                + "\nThe actual lag should not destroy your servers tps."
-                + "\nDue to the nature of the ores veins of this mod and the unreliable minecraft data this cannot be avoided."
-                + "\nDays were spent trying to solve this. If you are a developer and care about this issue we invite you to work with us on a solution."
-                + "\nNote that the +8 offset is irrelevant when you are generating veins of 20+ radius!"
-                + "\n===========================");
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent e)
+    {
+        if (!(e.world instanceof WorldServer))
+            return;
+        if (e.phase.equals(TickEvent.Phase.END) && !this.leftOvers.isEmpty())
+        {
+            int generated = 0;
+
+            Iterator<Map.Entry<ChunkPos, GenLeftOver>> iterator = this.leftOvers.entrySet().iterator();
+            while (iterator.hasNext())
+            {
+                Map.Entry<ChunkPos, GenLeftOver> leftOver = iterator.next();
+                if (e.world.isChunkGeneratedAt(leftOver.getKey().x, leftOver.getKey().z))
+                    generated += leftOver.getValue().generate(e.world, BLOCKS_PER_TICK - generated);
+                if (leftOver.getValue().getBlocks().isEmpty())
+                    iterator.remove();
+                if (generated >= BLOCKS_PER_TICK)
+                    break;
+            }
+            if (generated > 0)
+                QBar.logger.info("{} blocks generated. {} left or unreachable.", NumberFormat.getIntegerInstance().format(generated),
+                        NumberFormat.getIntegerInstance().format(this.leftOvers.values().stream().mapToInt(leftOver ->
+                                leftOver.getBlocks().size()).sum()));
+        }
     }
 }

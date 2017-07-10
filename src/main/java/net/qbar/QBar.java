@@ -10,8 +10,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.CustomCreativeTab;
-
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = QBar.MODID, version = QBar.VERSION, name = QBar.MODNAME)
 public class QBar
@@ -31,7 +30,7 @@ public class QBar
     @Instance(QBar.MODID)
     public static QBar instance;
 
-    public static final Logger logger = Logger.getLogger(QBar.MODNAME);
+    public static Logger logger;
 
     public static final CreativeTabs TAB_ALL = new CustomCreativeTab("QBar");
 
@@ -40,6 +39,7 @@ public class QBar
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event)
     {
+        logger = event.getModLog();
         QBar.proxy.preInit(event);
     }
 

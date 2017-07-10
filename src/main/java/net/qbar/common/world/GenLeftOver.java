@@ -9,13 +9,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GenLeftOver
 {
     @Getter
-    private ChunkPos                       pos;
+    private ChunkPos pos;
 
     @Getter
     private ConcurrentHashMap<BlockPos, IBlockState> blocks;
@@ -39,15 +40,27 @@ public class GenLeftOver
         }
     }
 
-    public void generate(World w)
+    public int generate(World w, int maxBlocks)
     {
-        for (Map.Entry<BlockPos, IBlockState> block : this.blocks.entrySet())
+        int count = 0;
+        Iterator<Map.Entry<BlockPos, IBlockState>> iterator = this.blocks.entrySet().iterator();
+
+        while (iterator.hasNext())
         {
+            Map.Entry<BlockPos, IBlockState> block = iterator.next();
+
             IBlockState state = w.getBlockState(block.getKey());
             if (state.getBlock().isReplaceableOreGen(state, w, block.getKey(),
                     QBarOreGenerator.instance().STONE_PREDICATE))
-               w.setBlockState(block.getKey(), block.getValue(), 2);
+            {
+                w.setBlockState(block.getKey(), block.getValue(), 2);
+                count++;
+            }
+            iterator.remove();
+            if (count >= maxBlocks)
+                break;
         }
+        return count;
     }
 
     public NBTTagCompound toNBT()

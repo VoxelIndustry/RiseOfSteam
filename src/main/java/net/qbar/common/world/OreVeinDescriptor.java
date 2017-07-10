@@ -3,35 +3,40 @@ package net.qbar.common.world;
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Getter
 public class OreVeinDescriptor
 {
-    private HashMap<IBlockState, Float> contents;
-    private BiomeMatcher.BiomePredicate biomeMatcher;
+    private List<Pair<IBlockState, Float>> contents;
+    private BiomeMatcher.BiomePredicate    biomeMatcher;
 
-    private float                       heapDensity;
-    private int                         heapQty;
-    private int                         heapSize;
-    private Range<Integer>              heightRange;
-    private EVeinHeapForm               heapForm;
-    private EVeinForm                   veinForm;
+    private float          heapDensity;
+    private int            heapQty;
+    private int            heapSize;
+    private Range<Integer> heightRange;
+    private EVeinHeapForm  heapForm;
+    private EVeinForm      veinForm;
 
-    private float                       rarity;
+    private float rarity;
 
-    private String                      name;
+    private String name;
 
     public OreVeinDescriptor(String name)
     {
-        this.contents = new HashMap<>();
+        this.contents = new ArrayList<>();
         this.name = name;
     }
 
     public OreVeinDescriptor content(IBlockState state, float proportion)
     {
-        this.contents.put(state, proportion + this.contents.values().stream().max(Float::compareTo).orElse(0f));
+        this.contents.add(Pair.of(state,
+                proportion + this.contents.stream().max(Comparator.comparing(Pair::getRight))
+                        .orElse(Pair.of(null, 0F)).getRight()));
         return this;
     }
 

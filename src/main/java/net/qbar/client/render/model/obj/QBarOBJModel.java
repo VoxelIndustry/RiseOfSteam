@@ -44,7 +44,7 @@ public class QBarOBJModel extends OBJModel
             if (this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getResourcePath()
                     .startsWith("#"))
             {
-                QBar.logger.severe("QBarOBJLoader: Unresolved texture '%s' for obj model '%s' "
+                QBar.logger.error("QBarOBJLoader: Unresolved texture '%s' for obj model '%s' "
                         + this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getResourcePath()
                         + " " + this.modelLocation);
                 builder.put(materialKey, missing);
