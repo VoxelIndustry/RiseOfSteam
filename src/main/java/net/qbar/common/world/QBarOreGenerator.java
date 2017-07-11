@@ -265,7 +265,7 @@ public class QBarOreGenerator implements IWorldGenerator
             e.setResult(Event.Result.DENY);
     }
 
-    private static final int BLOCKS_PER_TICK = 1000;
+    private static final int BLOCKS_PER_TICK = 10_000;
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent e)

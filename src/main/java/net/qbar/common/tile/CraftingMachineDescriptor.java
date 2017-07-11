@@ -81,10 +81,10 @@ public class CraftingMachineDescriptor extends MachineDescriptor
 
     private CraftingMachineDescriptor(final String name, final String recipeCategory, final int inventorySize,
                                       final int[] inputs, final int[] outputs, final int[] buffers, final float craftingSpeed,
-                                      final int steamCapacity, final int steamConsumption, final float pressureCapacity,
+                                      final int steamCapacity, final int steamConsumption, final float workingPressure,
                                       final float maxPressureCapacity, final boolean allowOvercharge, int[] inputTanks, int[] outputTanks)
     {
-        super(name, steamCapacity, steamConsumption, pressureCapacity, maxPressureCapacity, allowOvercharge);
+        super(name, steamCapacity, workingPressure, maxPressureCapacity,steamConsumption, allowOvercharge);
 
         this.recipeCategory = recipeCategory;
 

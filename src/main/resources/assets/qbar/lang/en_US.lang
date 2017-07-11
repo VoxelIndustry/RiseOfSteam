@@ -92,3 +92,8 @@ tile.ironzincore.sphalerite.name=Sphalerite Ore
 
 tile.tinore.cassiterite.name=Cassiterite Ore
 
+tile.oredirt.iron_dirt.name=Ferrous Dirt
+tile.oreclay.tin_clay.name=Tin Clay
+tile.oresand.copper_sand.name=Copper Sand
+tile.oresand.tin_sand.name=Tin Sand
+
