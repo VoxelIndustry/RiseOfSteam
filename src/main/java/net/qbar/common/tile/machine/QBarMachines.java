@@ -20,8 +20,10 @@ public class QBarMachines
 
     static
     {
-        OFFSHORE_PUMP = new MachineDescriptor("offshorepump", 2000, 5, SteamUtil.AMBIANT_PRESSURE,
-                1.5f * SteamUtil.AMBIANT_PRESSURE, true);
+        OFFSHORE_PUMP = MachineDescriptor.builder().name("offshorepump")
+                .steamCapacity(2000).steamConsumption(5)
+                .workingPressure(SteamUtil.AMBIANT_PRESSURE).maxPressureCapacity(1.5f * SteamUtil.AMBIANT_PRESSURE)
+                .allowOvercharge(true).build();
 
         ROLLING_MILL = new CraftingMachineDescriptor.Builder("rollingmill")
                 .recipe(QBarRecipeHandler.ROLLINGMILL_UID, 1f).inventory(3, 1, 1)

@@ -27,6 +27,11 @@ public class SteamTank implements ISteamTank
         this.maxPressure = maxPressure;
     }
 
+    public SteamTank(NBTTagCompound tag)
+    {
+        this(tag.getInteger("steam"), tag.getInteger("capacity"), tag.getInteger("maxPressure"));
+    }
+
     @Override
     public int drainSteam(final int amount, final boolean doDrain)
     {

@@ -18,6 +18,7 @@ public class BlockVeinOre extends BlockBase
     private BiMap<String, SludgeData> contents;
 
     private static PropertyString     FAKE_VARIANTS;
+    @Getter
     private final PropertyString      VARIANTS;
 
     public BlockVeinOre(String name, String defaultValue, BiMap<String, SludgeData> contents, PropertyString variants)
