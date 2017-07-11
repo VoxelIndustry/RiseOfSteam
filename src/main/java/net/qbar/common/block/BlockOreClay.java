@@ -1,7 +1,6 @@
 package net.qbar.common.block;
 
 import lombok.Getter;
-import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -15,38 +14,22 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.QBar;
 
-public class BlockOreSand extends BlockFalling implements INamedBlock
+public class BlockOreClay extends BlockBase
 {
-    private static final PropertyEnum<BlockOreSand.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreSand.EnumType.class);
+    private static final PropertyEnum<BlockOreClay.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreClay.EnumType.class);
 
-    @Getter
-    public String name;
-
-    public BlockOreSand(String name)
+    public BlockOreClay(String name)
     {
-        super(Material.SAND);
+        super(name, Material.CLAY);
 
-        this.name = name;
-        this.setRegistryName(QBar.MODID, name);
-        this.setUnlocalizedName(name);
-        this.setCreativeTab(QBar.TAB_ALL);
-
-        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.COPPER_SAND));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.TIN_CLAY));
     }
 
     @Override
     public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         return state.getValue(VARIANTS).getMapColor();
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getDustColor(IBlockState state)
-    {
-        return state.getValue(VARIANTS).getDustColor();
     }
 
     @Override
@@ -60,7 +43,7 @@ public class BlockOreSand extends BlockFalling implements INamedBlock
     {
         if (tab == this.getCreativeTabToDisplayOn())
         {
-            for (int i = 0; i < EnumType.values().length; i++)
+            for (int i = 0; i < BlockOreClay.EnumType.values().length; i++)
                 items.add(new ItemStack(this, 1, i));
         }
     }
@@ -68,7 +51,7 @@ public class BlockOreSand extends BlockFalling implements INamedBlock
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(VARIANTS, EnumType.byMetadata(meta));
+        return this.getDefaultState().withProperty(VARIANTS, BlockOreClay.EnumType.byMetadata(meta));
     }
 
     @Override
@@ -86,24 +69,15 @@ public class BlockOreSand extends BlockFalling implements INamedBlock
     @Getter
     public enum EnumType implements IStringSerializable
     {
-        COPPER_SAND("copper_sand", MapColor.ORANGE_STAINED_HARDENED_CLAY, -2370656),
-        TIN_SAND("tin_sand", MapColor.IRON, -5679071);
+        TIN_CLAY("tin_clay", MapColor.IRON);
 
         private final String   name;
         private final MapColor mapColor;
-        private final int      dustColor;
 
-        EnumType(String name, MapColor mapColor, int dustColor)
+        EnumType(String name, MapColor mapColor)
         {
             this.name = name;
             this.mapColor = mapColor;
-            this.dustColor = dustColor;
-        }
-
-        @SideOnly(Side.CLIENT)
-        public int getDustColor()
-        {
-            return this.dustColor;
         }
 
         public String toString()
@@ -111,7 +85,7 @@ public class BlockOreSand extends BlockFalling implements INamedBlock
             return this.name;
         }
 
-        public static EnumType byMetadata(int meta)
+        public static BlockOreClay.EnumType byMetadata(int meta)
         {
             if (meta < values().length)
                 return values()[meta];

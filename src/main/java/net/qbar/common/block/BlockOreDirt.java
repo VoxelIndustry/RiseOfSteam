@@ -1,22 +1,33 @@
 package net.qbar.common.block;
 
+import lombok.Getter;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
-import net.qbar.common.block.property.PropertyString;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 public class BlockOreDirt extends BlockBase
 {
-    private static PropertyString VARIANTS = new PropertyString("type", "iron_dirt");
+    private static final PropertyEnum<BlockOreDirt.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreDirt.EnumType.class);
 
     public BlockOreDirt(String name)
     {
         super(name, Material.GROUND);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, "iron_dirt"));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.IRON_DIRT));
+    }
+
+    @Override
+    public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        return state.getValue(VARIANTS).getMapColor();
     }
 
     @Override
@@ -30,7 +41,7 @@ public class BlockOreDirt extends BlockBase
     {
         if (tab == this.getCreativeTabToDisplayOn())
         {
-            for (int i = 0; i < VARIANTS.getAllowedValues().size(); i++)
+            for (int i = 0; i < BlockOreClay.EnumType.values().length; i++)
                 items.add(new ItemStack(this, 1, i));
         }
     }
@@ -38,18 +49,45 @@ public class BlockOreDirt extends BlockBase
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(VARIANTS, VARIANTS.getByIndex(meta));
+        return this.getDefaultState().withProperty(VARIANTS, BlockOreDirt.EnumType.byMetadata(meta));
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return VARIANTS.indexOf(state.getValue(VARIANTS));
+        return state.getValue(VARIANTS).ordinal();
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, VARIANTS);
+    }
+
+    @Getter
+    public enum EnumType implements IStringSerializable
+    {
+        IRON_DIRT("iron_dirt", MapColor.RED);
+
+        private final String   name;
+        private final MapColor mapColor;
+
+        EnumType(String name, MapColor mapColor)
+        {
+            this.name = name;
+            this.mapColor = mapColor;
+        }
+
+        public String toString()
+        {
+            return this.name;
+        }
+
+        public static BlockOreDirt.EnumType byMetadata(int meta)
+        {
+            if (meta < values().length)
+                return values()[meta];
+            return null;
+        }
     }
 }

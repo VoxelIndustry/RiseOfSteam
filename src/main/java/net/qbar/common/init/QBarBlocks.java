@@ -24,6 +24,7 @@ import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
 import net.qbar.common.tile.machine.*;
 
 import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @ObjectHolder(QBar.MODID)
@@ -89,8 +90,14 @@ public class QBarBlocks
     public static final BlockVeinOre TIN_ORE         = null;
     @ObjectHolder("ironzincore")
     public static final BlockVeinOre IRON_ZINC_ORE   = null;
+    @ObjectHolder("oredirt")
+    public static final BlockOreDirt ORE_DIRT        = null;
+    @ObjectHolder("oreclay")
+    public static final BlockOreClay ORE_CLAY        = null;
+    @ObjectHolder("oresand")
+    public static final BlockOreSand ORE_SAND        = null;
 
-    public static IdentityHashMap<Block, ItemBlock> BLOCKS;
+    public static Map<Block, ItemBlock> BLOCKS;
 
     public static void init()
     {
@@ -148,6 +155,7 @@ public class QBarBlocks
                 .create(), ItemBlockVeinOre::new);
         registerBlock(new BlockOreSand("oresand"), block -> new ItemBlockMetadata(block, "copper_sand", "tin_sand"));
         registerBlock(new BlockOreDirt("oredirt"), block -> new ItemBlockMetadata(block, "iron_dirt"));
+        registerBlock(new BlockOreClay("oreclay"), block -> new ItemBlockMetadata(block, "tin_clay"));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
