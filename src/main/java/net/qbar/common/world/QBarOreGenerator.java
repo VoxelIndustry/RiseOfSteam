@@ -24,9 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
-    private      ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
-    private      List<ChunkPos>                           generateds;
-    public final Predicate<IBlockState>                   STONE_PREDICATE;
+    private ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
+    private List<ChunkPos>                           generateds;
+    public final Predicate<IBlockState>              STONE_PREDICATE;
 
     private QBarOreGenerator()
     {
@@ -49,7 +49,7 @@ public class QBarOreGenerator implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-                         IChunkProvider chunkProvider)
+            IChunkProvider chunkProvider)
     {
         ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
 
@@ -146,7 +146,7 @@ public class QBarOreGenerator implements IWorldGenerator
     }
 
     private int generateSphere(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
-                               float density)
+            float density)
     {
         int count = 0;
         int radiusSquared = radius * radius * radius;
@@ -171,8 +171,8 @@ public class QBarOreGenerator implements IWorldGenerator
         return count;
     }
 
-    private int generatePlate(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius, int thickness,
-                              float density)
+    private int generatePlate(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
+            int thickness, float density)
     {
         int count = 0;
 
@@ -207,7 +207,8 @@ public class QBarOreGenerator implements IWorldGenerator
         return count;
     }
 
-    private int drawXLine(World w, BlockPos first, BlockPos second, List<Pair<IBlockState, Float>> contents, float density)
+    private int drawXLine(World w, BlockPos first, BlockPos second, List<Pair<IBlockState, Float>> contents,
+            float density)
     {
         int count = 0;
         for (int i = 0; i < (second.getX() - first.getX()); i++)
@@ -224,15 +225,6 @@ public class QBarOreGenerator implements IWorldGenerator
     private void placeBlock(World w, BlockPos pos, IBlockState state)
     {
         ChunkPos chunk = new ChunkPos(pos);
-
-        if (chunk.getXStart() == pos.getX())
-            chunk = new ChunkPos(chunk.x - 1, chunk.z);
-        else if (chunk.getXEnd() == pos.getX())
-            chunk = new ChunkPos(chunk.x + 1, chunk.z);
-        else if (chunk.getZStart() == pos.getZ())
-            chunk = new ChunkPos(chunk.x, chunk.z - 1);
-        else if (chunk.getZEnd() == pos.getZ())
-            chunk = new ChunkPos(chunk.x, chunk.z + 1);
 
         if (!this.leftOvers.containsKey(chunk))
         {
@@ -267,12 +259,19 @@ public class QBarOreGenerator implements IWorldGenerator
 
     private static final int BLOCKS_PER_TICK = 10_000;
 
+    private long             lastTime        = 0;
+    private boolean          paused          = false;
+
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent e)
     {
         if (!(e.world instanceof WorldServer))
             return;
-        if (e.phase.equals(TickEvent.Phase.END) && !this.leftOvers.isEmpty())
+
+        e.world.profiler.startSection("QBar delayed gen");
+        if (paused && System.currentTimeMillis() - lastTime > 5_000)
+            paused = false;
+        if (!paused && e.phase.equals(TickEvent.Phase.END) && !this.leftOvers.isEmpty())
         {
             int generated = 0;
 
@@ -288,9 +287,16 @@ public class QBarOreGenerator implements IWorldGenerator
                     break;
             }
             if (generated > 0)
-                QBar.logger.info("{} blocks generated. {} left or unreachable.", NumberFormat.getIntegerInstance().format(generated),
-                        NumberFormat.getIntegerInstance().format(this.leftOvers.values().stream().mapToInt(leftOver ->
-                                leftOver.getBlocks().size()).sum()));
+                QBar.logger.info("{} blocks generated. {} left or unreachable.",
+                        NumberFormat.getIntegerInstance().format(generated),
+                        NumberFormat.getIntegerInstance().format(this.leftOvers.values().stream()
+                                .mapToInt(leftOver -> leftOver.getBlocks().size()).sum()));
+            if (generated == 0)
+            {
+                lastTime = System.currentTimeMillis();
+                paused = false;
+            }
         }
+        e.world.profiler.endSection();
     }
 }

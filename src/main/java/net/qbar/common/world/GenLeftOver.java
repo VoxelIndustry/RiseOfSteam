@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GenLeftOver
 {
     @Getter
-    private ChunkPos pos;
+    private ChunkPos                                 pos;
 
     @Getter
     private ConcurrentHashMap<BlockPos, IBlockState> blocks;
@@ -49,18 +49,39 @@ public class GenLeftOver
         {
             Map.Entry<BlockPos, IBlockState> block = iterator.next();
 
-            IBlockState state = w.getBlockState(block.getKey());
-            if (state.getBlock().isReplaceableOreGen(state, w, block.getKey(),
-                    QBarOreGenerator.instance().STONE_PREDICATE))
+            if (this.canPlaceBlock(w, block.getKey(), new ChunkPos(block.getKey())))
             {
-                w.getChunkFromBlockCoords(block.getKey()).setBlockState(block.getKey(), block.getValue());
-                count++;
+                IBlockState state = w.getBlockState(block.getKey());
+                if (state.getBlock().isReplaceableOreGen(state, w, block.getKey(),
+                        QBarOreGenerator.instance().STONE_PREDICATE))
+                {
+                    w.setBlockState(block.getKey(), block.getValue(), 2);
+                    count++;
+                }
+                iterator.remove();
             }
-            iterator.remove();
             if (count >= maxBlocks)
                 break;
         }
         return count;
+    }
+
+    private boolean canPlaceBlock(World w, BlockPos pos, ChunkPos chunk)
+    {
+        return w.isAreaLoaded(pos, 1, false);
+        /*return w.isChunkGeneratedAt(chunk.x, chunk.z)
+                && !(chunk.getXStart() == pos.getX() && chunk.getZStart() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z - 1))
+                && !(chunk.getXStart() == pos.getX() && chunk.getZEnd() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z + 1))
+                && !(chunk.getXEnd() == pos.getX() && chunk.getZEnd() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z + 1))
+                && !(chunk.getXEnd() == pos.getX() && chunk.getZStart() == pos.getZ()
+                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z - 1))
+                && !(chunk.getXStart() == pos.getX() && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z))
+                && !(chunk.getXEnd() == pos.getX() && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z))
+                && !(chunk.getZStart() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z - 1))
+                && !(chunk.getZEnd() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z + 1));*/
     }
 
     public NBTTagCompound toNBT()
