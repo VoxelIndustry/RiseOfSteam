@@ -53,7 +53,7 @@ public class GenLeftOver
             if (state.getBlock().isReplaceableOreGen(state, w, block.getKey(),
                     QBarOreGenerator.instance().STONE_PREDICATE))
             {
-                w.setBlockState(block.getKey(), block.getValue(), 0);
+                w.getChunkFromBlockCoords(block.getKey()).setBlockState(block.getKey(), block.getValue());
                 count++;
             }
             iterator.remove();

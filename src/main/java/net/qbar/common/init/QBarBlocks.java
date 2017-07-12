@@ -23,7 +23,7 @@ import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
 import net.qbar.common.tile.machine.*;
 
-import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -105,7 +105,7 @@ public class QBarBlocks
 
     public static void init()
     {
-        BLOCKS = new IdentityHashMap<>();
+        BLOCKS = new LinkedHashMap<>();
 
         registerBlock(new BlockMultiblockMachine<>("keypunch", Material.IRON, Multiblocks.KEYPUNCH, TileKeypunch::new, TileKeypunch.class));
         registerBlock(new BlockTank("fluidtank_small", Multiblocks.SMALL_FLUID_TANK, Fluid.BUCKET_VOLUME * 48, 0));
@@ -161,7 +161,8 @@ public class QBarBlocks
         registerBlock(new BlockOreDirt("oredirt"), block -> new ItemBlockMetadata(block, "iron_dirt").setFirstVariation(true));
         registerBlock(new BlockOreClay("oreclay"), block -> new ItemBlockMetadata(block, "tin_clay").setFirstVariation(true));
         registerBlock(new BlockOreStone("orestone"), block -> new ItemBlockMetadata(block, "gold_rock").setFirstVariation(true));
-        registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"));
+        registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"),
+                block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
