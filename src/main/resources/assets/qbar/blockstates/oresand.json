@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {},
+    "transform": "forge:default-block",
+    "model": "cube_all"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant": {
+      "copper_sand": {
+        "textures": {
+          "all": "qbar:blocks/copper_sand"
+        }
+      },
+      "tin_sand": {
+        "textures": {
+          "all": "qbar:blocks/tin_sand"
+        }
+      }
+    }
+  }
+}

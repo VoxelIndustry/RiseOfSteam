@@ -15,15 +15,15 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOreClay extends BlockBase implements IModelProvider
+public class BlockOreStone extends BlockBase implements IModelProvider
 {
-    private static final PropertyEnum<BlockOreClay.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreClay.EnumType.class);
+    private static final PropertyEnum<BlockOreStone.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreStone.EnumType.class);
 
-    public BlockOreClay(String name)
+    public BlockOreStone(String name)
     {
-        super(name, Material.CLAY);
+        super(name, Material.ROCK);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.TIN_CLAY));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.GOLD_STONE));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class BlockOreClay extends BlockBase implements IModelProvider
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(VARIANTS, BlockOreClay.EnumType.byMetadata(meta));
+        return this.getDefaultState().withProperty(VARIANTS, BlockOreStone.EnumType.byMetadata(meta));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class BlockOreClay extends BlockBase implements IModelProvider
     @Getter
     public enum EnumType implements IStringSerializable
     {
-        TIN_CLAY("tin_clay", MapColor.IRON);
+        GOLD_STONE("gold_stone", MapColor.GOLD);
 
         private final String   name;
         private final MapColor mapColor;
@@ -99,7 +99,7 @@ public class BlockOreClay extends BlockBase implements IModelProvider
             return this.name;
         }
 
-        public static BlockOreClay.EnumType byMetadata(int meta)
+        public static BlockOreStone.EnumType byMetadata(int meta)
         {
             if (meta < values().length)
                 return values()[meta];

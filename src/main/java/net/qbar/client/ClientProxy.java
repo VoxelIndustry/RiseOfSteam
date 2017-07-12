@@ -24,6 +24,9 @@ import net.qbar.client.render.tile.RenderRollingMill;
 import net.qbar.client.render.tile.RenderSteamFurnaceMK2;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
+import net.qbar.common.block.IModelProvider;
+import net.qbar.common.block.INamedBlock;
+import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileStructure;
@@ -113,6 +116,16 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(QBar.MODID + ":itemextractor", "facing=down,filter=true"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemsplitter"), 1,
                 new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
+
+        QBarBlocks.BLOCKS.keySet().stream().filter(IModelProvider.class::isInstance).forEach(block ->
+        {
+            IModelProvider modelProvider = (IModelProvider) block;
+
+            for (int i = 0; i < modelProvider.getItemModelCount(); i++)
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i,
+                        new ModelResourceLocation(QBar.MODID + ":" + ((INamedBlock) block).getName(),
+                                modelProvider.getItemModelFromMeta(i)));
+        });
 
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
     }

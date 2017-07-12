@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.QBar;
 
-public class BlockOreSand extends BlockFalling implements INamedBlock
+public class BlockOreSand extends BlockFalling implements INamedBlock, IModelProvider
 {
     private static final PropertyEnum<BlockOreSand.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreSand.EnumType.class);
 
@@ -34,6 +34,20 @@ public class BlockOreSand extends BlockFalling implements INamedBlock
         this.setCreativeTab(QBar.TAB_ALL);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.COPPER_SAND));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getItemModelCount()
+    {
+        return VARIANTS.getAllowedValues().size();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getItemModelFromMeta(int itemMeta)
+    {
+        return "variant=" + this.getStateFromMeta(itemMeta).getValue(VARIANTS);
     }
 
     @Override

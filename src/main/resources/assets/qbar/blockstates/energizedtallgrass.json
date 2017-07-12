@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {},
+    "transform": "forge:default-block",
+    "model": "tall_grass"
+  },
+  "variants": {
+    "inventory": [
+      {
+        "model": "tall_grass"
+      }
+    ],
+    "default": {
+      "textures": {
+        "cross": "qbar:blocks/energized_tallgrass"
+      }
+    }
+  }
+}

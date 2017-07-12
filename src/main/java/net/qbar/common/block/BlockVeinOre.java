@@ -9,17 +9,19 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.block.property.PropertyString;
 import net.qbar.common.ore.SludgeData;
 
-public class BlockVeinOre extends BlockBase
+public class BlockVeinOre extends BlockBase implements IModelProvider
 {
     @Getter
     private BiMap<String, SludgeData> contents;
 
-    private static PropertyString     FAKE_VARIANTS;
+    private static PropertyString FAKE_VARIANTS;
     @Getter
-    private final PropertyString      VARIANTS;
+    private final  PropertyString VARIANTS;
 
     public BlockVeinOre(String name, String defaultValue, BiMap<String, SludgeData> contents, PropertyString variants)
     {
@@ -70,11 +72,25 @@ public class BlockVeinOre extends BlockBase
         return new BlockStateContainer(this, FAKE_VARIANTS);
     }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getItemModelCount()
+    {
+        return this.getVARIANTS().getAllowedValues().size();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getItemModelFromMeta(int itemMeta)
+    {
+        return "ores=" + this.getStateFromMeta(itemMeta).getValue(VARIANTS);
+    }
+
     public static class Builder
     {
         private BiMap<String, SludgeData> contents = HashBiMap.create();
-        private String                    name;
-        private String                    defaultValue;
+        private String name;
+        private String defaultValue;
 
         public Builder(String name)
         {

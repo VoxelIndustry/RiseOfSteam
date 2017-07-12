@@ -12,8 +12,10 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOreDirt extends BlockBase
+public class BlockOreDirt extends BlockBase implements IModelProvider
 {
     private static final PropertyEnum<BlockOreDirt.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreDirt.EnumType.class);
 
@@ -22,6 +24,20 @@ public class BlockOreDirt extends BlockBase
         super(name, Material.GROUND);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.IRON_DIRT));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getItemModelCount()
+    {
+        return VARIANTS.getAllowedValues().size();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getItemModelFromMeta(int itemMeta)
+    {
+        return "variant=" + this.getStateFromMeta(itemMeta).getValue(VARIANTS);
     }
 
     @Override

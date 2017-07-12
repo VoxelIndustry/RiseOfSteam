@@ -83,19 +83,23 @@ public class QBarBlocks
     public static final BlockMachineBase TINY_MINING_DRILL  = null;
 
     @ObjectHolder("ironnickelore")
-    public static final BlockVeinOre IRON_NICKEL_ORE = null;
+    public static final BlockVeinOre            IRON_NICKEL_ORE      = null;
     @ObjectHolder("ironcopperore")
-    public static final BlockVeinOre IRON_COPPER_ORE = null;
+    public static final BlockVeinOre            IRON_COPPER_ORE      = null;
     @ObjectHolder("tinore")
-    public static final BlockVeinOre TIN_ORE         = null;
+    public static final BlockVeinOre            TIN_ORE              = null;
     @ObjectHolder("ironzincore")
-    public static final BlockVeinOre IRON_ZINC_ORE   = null;
+    public static final BlockVeinOre            IRON_ZINC_ORE        = null;
     @ObjectHolder("oredirt")
-    public static final BlockOreDirt ORE_DIRT        = null;
+    public static final BlockOreDirt            ORE_DIRT             = null;
     @ObjectHolder("oreclay")
-    public static final BlockOreClay ORE_CLAY        = null;
+    public static final BlockOreClay            ORE_CLAY             = null;
     @ObjectHolder("oresand")
-    public static final BlockOreSand ORE_SAND        = null;
+    public static final BlockOreSand            ORE_SAND             = null;
+    @ObjectHolder("orestone")
+    public static final BlockOreStone           ORE_STONE            = null;
+    @ObjectHolder("energizedtallgrass")
+    public static final BlockEnergizedTallGrass ENERGIZED_TALL_GRASS = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 
@@ -103,7 +107,7 @@ public class QBarBlocks
     {
         BLOCKS = new IdentityHashMap<>();
 
-        registerBlock(new BlockMultiblockMachine("keypunch", Material.IRON, Multiblocks.KEYPUNCH, TileKeypunch::new, TileKeypunch.class));
+        registerBlock(new BlockMultiblockMachine<>("keypunch", Material.IRON, Multiblocks.KEYPUNCH, TileKeypunch::new, TileKeypunch.class));
         registerBlock(new BlockTank("fluidtank_small", Multiblocks.SMALL_FLUID_TANK, Fluid.BUCKET_VOLUME * 48, 0));
         registerBlock(new BlockTank("fluidtank_medium", Multiblocks.MEDIUM_FLUID_TANK, Fluid.BUCKET_VOLUME * 128, 1));
         registerBlock(new BlockTank("fluidtank_big", Multiblocks.BIG_FLUID_TANK, Fluid.BUCKET_VOLUME * 432, 2));
@@ -113,28 +117,28 @@ public class QBarBlocks
         registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
         registerBlock(
-                new BlockMultiblockMachine("assembler", Material.IRON, Multiblocks.ASSEMBLER, TileAssembler::new, TileAssembler.class));
+                new BlockMultiblockMachine<>("assembler", Material.IRON, Multiblocks.ASSEMBLER, TileAssembler::new, TileAssembler.class));
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
         registerBlock(new BlockCreativeSteamGenerator());
         registerBlock(new BlockStructure());
-        registerBlock(new BlockMultiblockMachine("steamfurnacemk1", Material.IRON, Multiblocks.STEAM_FURNACE_MK1,
+        registerBlock(new BlockMultiblockMachine<>("steamfurnacemk1", Material.IRON, Multiblocks.STEAM_FURNACE_MK1,
                 TileSteamFurnace::new, TileSteamFurnace.class));
         registerBlock(new BlockSolarBoiler());
         registerBlock(new BlockSolarMirror());
-        registerBlock(new BlockMultiblockMachine("rollingmill", Material.IRON, Multiblocks.ROLLING_MILL,
+        registerBlock(new BlockMultiblockMachine<>("rollingmill", Material.IRON, Multiblocks.ROLLING_MILL,
                 TileRollingMill::new, TileRollingMill.class));
         registerBlock(new BlockLiquidBoiler());
-        registerBlock(new BlockMultiblockMachine("steamfurnacemk2", Material.IRON, Multiblocks.STEAM_FURNACE_MK2,
+        registerBlock(new BlockMultiblockMachine<>("steamfurnacemk2", Material.IRON, Multiblocks.STEAM_FURNACE_MK2,
                 TileSteamFurnaceMK2::new, TileSteamFurnaceMK2.class));
         registerBlock(
-                new BlockMultiblockMachine("orewasher", Material.IRON, Multiblocks.ORE_WASHER, TileOreWasher::new, TileOreWasher.class));
-        registerBlock(new BlockMultiblockMachine("sortingmachine", Material.IRON, Multiblocks.SORTING_MACHINE,
+                new BlockMultiblockMachine<>("orewasher", Material.IRON, Multiblocks.ORE_WASHER, TileOreWasher::new, TileOreWasher.class));
+        registerBlock(new BlockMultiblockMachine<>("sortingmachine", Material.IRON, Multiblocks.SORTING_MACHINE,
                 TileSortingMachine::new, TileSortingMachine.class));
-        registerBlock(new BlockMultiblockMachine("smallminingdrill", Material.IRON, Multiblocks.SMALL_MINING_DRILL,
+        registerBlock(new BlockMultiblockMachine<>("smallminingdrill", Material.IRON, Multiblocks.SMALL_MINING_DRILL,
                 TileSmallMiningDrill::new, TileSmallMiningDrill.class));
-        registerBlock(new BlockMultiblockMachine("tinyminingdrill", Material.IRON, Multiblocks.TINY_MINING_DRILL,
+        registerBlock(new BlockMultiblockMachine<>("tinyminingdrill", Material.IRON, Multiblocks.TINY_MINING_DRILL,
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));
 
         registerBlock(new BlockVeinOre.Builder("ironnickelore")
@@ -156,6 +160,8 @@ public class QBarBlocks
         registerBlock(new BlockOreSand("oresand"), block -> new ItemBlockMetadata(block, "copper_sand", "tin_sand").setFirstVariation(true));
         registerBlock(new BlockOreDirt("oredirt"), block -> new ItemBlockMetadata(block, "iron_dirt").setFirstVariation(true));
         registerBlock(new BlockOreClay("oreclay"), block -> new ItemBlockMetadata(block, "tin_clay").setFirstVariation(true));
+        registerBlock(new BlockOreStone("orestone"), block -> new ItemBlockMetadata(block, "gold_rock").setFirstVariation(true));
+        registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");

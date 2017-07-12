@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {},
+    "transform": "forge:default-block",
+    "model": "cube_all"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant": {
+      "tin_clay": {
+        "textures": {
+          "all": "qbar:blocks/tin_clay"
+        }
+      }
+    }
+  }
+}

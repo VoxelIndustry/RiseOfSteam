@@ -7,16 +7,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.block.BlockVeinOre;
+import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.ore.QBarOre;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileInventoryBase;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileTinyMiningDrill extends TileInventoryBase implements ITickable
+public class TileTinyMiningDrill extends TileInventoryBase implements ITickable, ITileMultiblockCore
 {
     @Getter
     @Setter
@@ -117,5 +120,30 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable
             return this.getStackInSlot(1)
                     .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).drainSteam(quantity, doDrain);
         return 0;
+    }
+
+    @Override
+    public void breakCore()
+    {
+        this.world.destroyBlock(this.getPos(), true);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
+    {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
+    {
+        return null;
     }
 }
