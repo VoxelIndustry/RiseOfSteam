@@ -7,19 +7,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.qbar.QBar;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class QBarOreGenerator implements IWorldGenerator
@@ -226,12 +224,21 @@ public class QBarOreGenerator implements IWorldGenerator
     {
         ChunkPos chunk = new ChunkPos(pos);
 
-        if (!this.leftOvers.containsKey(chunk))
+        if (w.isChunkGeneratedAt(chunk.x, chunk.z))
         {
-            GenLeftOver leftOver = new GenLeftOver(chunk);
-            this.leftOvers.put(chunk, leftOver);
+            IBlockState previousState = w.getBlockState(pos);
+
+            if (previousState.getBlock().isReplaceableOreGen(previousState, w, pos,
+                    QBarOreGenerator.instance().STONE_PREDICATE)
+                    && (!isBorder(chunk, pos) || w.isAreaLoaded(pos, 1, false)))
+                w.setBlockState(pos, state, 2);
         }
-        this.leftOvers.get(chunk).getBlocks().put(pos, state);
+    }
+
+    private boolean isBorder(ChunkPos chunk, BlockPos pos)
+    {
+        return chunk.getXStart() == pos.getX() || chunk.getXEnd() == pos.getX() || chunk.getZStart() == pos.getZ()
+                || chunk.getZEnd() == pos.getZ();
     }
 
     private IBlockState randomState(Random rand, List<Pair<IBlockState, Float>> choices)
@@ -255,48 +262,5 @@ public class QBarOreGenerator implements IWorldGenerator
                 || e.getType().equals(OreGenEvent.GenerateMinable.EventType.GOLD)
                 || e.getType().equals(OreGenEvent.GenerateMinable.EventType.REDSTONE))
             e.setResult(Event.Result.DENY);
-    }
-
-    private static final int BLOCKS_PER_TICK = 10_000;
-
-    private long             lastTime        = 0;
-    private boolean          paused          = false;
-
-    @SubscribeEvent
-    public void onWorldTick(TickEvent.WorldTickEvent e)
-    {
-        if (!(e.world instanceof WorldServer))
-            return;
-
-        e.world.profiler.startSection("QBar delayed gen");
-        if (paused && System.currentTimeMillis() - lastTime > 5_000)
-            paused = false;
-        if (!paused && e.phase.equals(TickEvent.Phase.END) && !this.leftOvers.isEmpty())
-        {
-            int generated = 0;
-
-            Iterator<Map.Entry<ChunkPos, GenLeftOver>> iterator = this.leftOvers.entrySet().iterator();
-            while (iterator.hasNext())
-            {
-                Map.Entry<ChunkPos, GenLeftOver> leftOver = iterator.next();
-                if (e.world.isChunkGeneratedAt(leftOver.getKey().x, leftOver.getKey().z))
-                    generated += leftOver.getValue().generate(e.world, BLOCKS_PER_TICK - generated);
-                if (leftOver.getValue().getBlocks().isEmpty())
-                    iterator.remove();
-                if (generated >= BLOCKS_PER_TICK)
-                    break;
-            }
-            if (generated > 0)
-                QBar.logger.info("{} blocks generated. {} left or unreachable.",
-                        NumberFormat.getIntegerInstance().format(generated),
-                        NumberFormat.getIntegerInstance().format(this.leftOvers.values().stream()
-                                .mapToInt(leftOver -> leftOver.getBlocks().size()).sum()));
-            if (generated == 0)
-            {
-                lastTime = System.currentTimeMillis();
-                paused = false;
-            }
-        }
-        e.world.profiler.endSection();
     }
 }
