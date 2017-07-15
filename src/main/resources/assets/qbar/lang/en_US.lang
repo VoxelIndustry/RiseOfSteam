@@ -96,4 +96,5 @@ tile.oredirt.iron_dirt.name=Ferrous Dirt
 tile.oreclay.tin_clay.name=Tin Clay
 tile.oresand.copper_sand.name=Copper Sand
 tile.oresand.tin_sand.name=Tin Sand
+tile.orestone.gold_rock.name=Gold Bearing Rock
 

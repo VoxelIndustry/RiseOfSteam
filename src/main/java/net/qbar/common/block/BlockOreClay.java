@@ -1,6 +1,7 @@
 package net.qbar.common.block;
 
 import lombok.Getter;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -22,6 +23,7 @@ public class BlockOreClay extends BlockBase implements IModelProvider
     public BlockOreClay(String name)
     {
         super(name, Material.CLAY);
+        this.setSoundType(SoundType.GROUND);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.TIN_CLAY));
     }

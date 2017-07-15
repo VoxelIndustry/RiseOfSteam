@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,13 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class QBarOreGenerator implements IWorldGenerator
 {
     private ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
-    private List<ChunkPos>                           generateds;
     public final Predicate<IBlockState>              STONE_PREDICATE;
 
     private QBarOreGenerator()
     {
         this.leftOvers = new ConcurrentHashMap<>();
-        this.generateds = new ArrayList<>();
 
         this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE
                 && state.getValue(BlockStone.VARIANT).isNatural();
@@ -49,9 +46,6 @@ public class QBarOreGenerator implements IWorldGenerator
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
-        ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
-
-        generateds.add(chunkPos);
         if (world.provider.getDimension() == 0)
             generateVeins(random, chunkX, chunkZ, world);
     }

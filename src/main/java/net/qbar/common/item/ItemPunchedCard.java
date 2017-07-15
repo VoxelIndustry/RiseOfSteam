@@ -18,13 +18,13 @@ public class ItemPunchedCard extends ItemBase
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
         if (stack.hasTagCompound())
         {
             final IPunchedCard card = PunchedCardDataManager.getInstance().readFromNBT(stack.getTagCompound());
             if (card.isValid(stack.getTagCompound()))
-                card.addInformation(stack, tooltip, flagIn);
+                card.addInformation(stack, tooltip, flag);
             else
                 tooltip.add("Card Invalid");
         }

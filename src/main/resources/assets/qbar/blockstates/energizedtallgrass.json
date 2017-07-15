@@ -1,17 +1,26 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": {},
     "transform": "forge:default-block",
-    "model": "tall_grass"
+    "model": "tall_grass",
+    "textures": {
+      "cross": "qbar:blocks/energized_tallgrass"
+    }
   },
   "variants": {
-    "inventory": [
-      {
+    "type": {
+      "tall_grass": {
         "model": "tall_grass"
+      },
+      "fern": {
+        "model": "fern",
+        "textures": {
+          "cross": "qbar:blocks/energized_fern"
+        }
       }
-    ],
-    "default": {
+    },
+    "inventory": {
+      "model": "tall_grass",
       "textures": {
         "cross": "qbar:blocks/energized_tallgrass"
       }

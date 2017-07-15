@@ -12,9 +12,9 @@
       }
     ],
     "variant": {
-      "gold_rock": {
+      "gold_stone": {
         "textures": {
-          "all": "qbar:blocks/gold_rock"
+          "all": "qbar:blocks/gold_stone"
         }
       }
     }
