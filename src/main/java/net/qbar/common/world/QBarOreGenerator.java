@@ -1,6 +1,6 @@
 package net.qbar.common.world;
 
-import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -13,16 +13,18 @@ import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.qbar.common.init.QBarBlocks;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
     private ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
     public final Predicate<IBlockState>              STONE_PREDICATE;
+    public final Predicate<IBlockState>              DECORATION_PREDICATE;
 
     private QBarOreGenerator()
     {
@@ -30,6 +32,9 @@ public class QBarOreGenerator implements IWorldGenerator
 
         this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE
                 && state.getValue(BlockStone.VARIANT).isNatural();
+        this.DECORATION_PREDICATE = this.STONE_PREDICATE
+                .or(state -> state != null && (state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS
+                        || state.getBlock() == Blocks.SAND || state.getBlock() == Blocks.GRAVEL));
         QBarVeins.initVeins();
     }
 
@@ -69,6 +74,14 @@ public class QBarOreGenerator implements IWorldGenerator
         {
             y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum())
                     + vein.getHeightRange().getMinimum();
+
+            if (vein == QBarVeins.TIN)
+            {
+                BlockPos top = world.getTopSolidOrLiquidBlock(center);
+                System.out.println(top);
+                FeatureGenerator.generatePlate(world, top,
+                        Lists.newArrayList(Pair.of(QBarBlocks.ORE_CLAY.getStateFromMeta(0), 1f)), 6,3, 0.8f, DECORATION_PREDICATE);
+            }
             for (int i = 0; i < vein.getHeapQty(); i++)
             {
                 int xShift = 0;
@@ -121,132 +134,20 @@ public class QBarOreGenerator implements IWorldGenerator
                 switch (vein.getHeapForm())
                 {
                     case SPHERES:
-                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
-                                vein.getHeapDensity());
+                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                                vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                     case PLATES:
-                        this.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(),
-                                vein.getHeapSize() / 2, vein.getHeapDensity());
+                        FeatureGenerator.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                                vein.getHeapSize() / 2, vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                     case SHATTERED:
-                        this.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
-                                vein.getHeapDensity());
+                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                                vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                 }
             }
         }
-    }
-
-    private int generateSphere(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
-            float density)
-    {
-        int count = 0;
-        int radiusSquared = radius * radius * radius;
-
-        for (int x = -radius; x < radius; x++)
-        {
-            for (int y = -radius; y < radius; y++)
-            {
-                for (int z = -radius; z < radius; z++)
-                {
-                    BlockPos current = center.add(x, y, z);
-
-                    double distance = Math.abs(center.getDistance(current.getX(), current.getY(), current.getZ()));
-                    if ((distance * distance * distance) < radiusSquared && w.rand.nextFloat() <= density)
-                    {
-                        this.placeBlock(w, current, this.randomState(w.rand, contents));
-                        count++;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    private int generatePlate(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
-            int thickness, float density)
-    {
-        int count = 0;
-
-        if (thickness % 2 == 0)
-            thickness--;
-
-        for (int y = -thickness / 2; y <= thickness / 2; y++)
-        {
-            int currentRadius = radius - (Math.abs(y));
-
-            int x = currentRadius;
-            int z = 0;
-            int err = 0;
-            while (x >= z)
-            {
-                count += this.drawXLine(w, center.add(-z, y, x), center.add(z, y, x), contents, density);
-                count += this.drawXLine(w, center.add(-x, y, z), center.add(x, y, z), contents, density);
-
-                count += this.drawXLine(w, center.add(-x, y, -z), center.add(x, y, -z), contents, density);
-                count += this.drawXLine(w, center.add(-z, y, -x), center.add(z, y, -x), contents, density);
-                z++;
-
-                if (err <= 0)
-                    err += 2 * z + 1;
-                else
-                {
-                    x--;
-                    err += 2 * (z - x) + 1;
-                }
-            }
-        }
-        return count;
-    }
-
-    private int drawXLine(World w, BlockPos first, BlockPos second, List<Pair<IBlockState, Float>> contents,
-            float density)
-    {
-        int count = 0;
-        for (int i = 0; i < (second.getX() - first.getX()); i++)
-        {
-            if (w.rand.nextFloat() <= density)
-            {
-                this.placeBlock(w, first.add(i, 0, 0), this.randomState(w.rand, contents));
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private void placeBlock(World w, BlockPos pos, IBlockState state)
-    {
-        ChunkPos chunk = new ChunkPos(pos);
-
-        if (w.isChunkGeneratedAt(chunk.x, chunk.z))
-        {
-            IBlockState previousState = w.getBlockState(pos);
-
-            if (previousState.getBlock().isReplaceableOreGen(previousState, w, pos,
-                    QBarOreGenerator.instance().STONE_PREDICATE)
-                    && (!isBorder(chunk, pos) || w.isAreaLoaded(pos, 1, false)))
-                w.setBlockState(pos, state, 2);
-        }
-    }
-
-    private boolean isBorder(ChunkPos chunk, BlockPos pos)
-    {
-        return chunk.getXStart() == pos.getX() || chunk.getXEnd() == pos.getX() || chunk.getZStart() == pos.getZ()
-                || chunk.getZEnd() == pos.getZ();
-    }
-
-    private IBlockState randomState(Random rand, List<Pair<IBlockState, Float>> choices)
-    {
-        float p = choices.get(0).getRight();
-        float x = rand.nextFloat();
-
-        int i = 0;
-        while (x > p)
-        {
-            i++;
-            p += choices.get(i).getRight();
-        }
-        return choices.get(i).getLeft();
     }
 
     @SubscribeEvent

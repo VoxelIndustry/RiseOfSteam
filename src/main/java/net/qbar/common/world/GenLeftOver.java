@@ -53,7 +53,7 @@ public class GenLeftOver
             {
                 IBlockState state = w.getBlockState(block.getKey());
                 if (state.getBlock().isReplaceableOreGen(state, w, block.getKey(),
-                        QBarOreGenerator.instance().STONE_PREDICATE))
+                        QBarOreGenerator.instance().STONE_PREDICATE::test))
                 {
                     w.setBlockState(block.getKey(), block.getValue(), 2);
                     count++;
@@ -69,19 +69,6 @@ public class GenLeftOver
     private boolean canPlaceBlock(World w, BlockPos pos, ChunkPos chunk)
     {
         return w.isAreaLoaded(pos, 1, false);
-        /*return w.isChunkGeneratedAt(chunk.x, chunk.z)
-                && !(chunk.getXStart() == pos.getX() && chunk.getZStart() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z - 1))
-                && !(chunk.getXStart() == pos.getX() && chunk.getZEnd() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z + 1))
-                && !(chunk.getXEnd() == pos.getX() && chunk.getZEnd() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z + 1))
-                && !(chunk.getXEnd() == pos.getX() && chunk.getZStart() == pos.getZ()
-                        && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z - 1))
-                && !(chunk.getXStart() == pos.getX() && !w.isChunkGeneratedAt(chunk.x - 1, chunk.z))
-                && !(chunk.getXEnd() == pos.getX() && !w.isChunkGeneratedAt(chunk.x + 1, chunk.z))
-                && !(chunk.getZStart() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z - 1))
-                && !(chunk.getZEnd() == pos.getZ() && !w.isChunkGeneratedAt(chunk.x, chunk.z + 1));*/
     }
 
     public NBTTagCompound toNBT()

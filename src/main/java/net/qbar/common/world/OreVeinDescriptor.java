@@ -13,30 +13,37 @@ import java.util.List;
 public class OreVeinDescriptor
 {
     private List<Pair<IBlockState, Float>> contents;
+    private List<VeinMarker>               markers;
     private BiomeMatcher.BiomePredicate    biomeMatcher;
 
-    private float          heapDensity;
-    private int            heapQty;
-    private int            heapSize;
-    private Range<Integer> heightRange;
-    private EVeinHeapForm  heapForm;
-    private EVeinForm      veinForm;
+    private float                          heapDensity;
+    private int                            heapQty;
+    private int                            heapSize;
+    private Range<Integer>                 heightRange;
+    private EVeinHeapForm                  heapForm;
+    private EVeinForm                      veinForm;
 
-    private float rarity;
+    private float                          rarity;
 
-    private String name;
+    private String                         name;
 
     public OreVeinDescriptor(String name)
     {
         this.contents = new ArrayList<>();
+        this.markers = new ArrayList<>();
         this.name = name;
     }
 
     public OreVeinDescriptor content(IBlockState state, float proportion)
     {
-        this.contents.add(Pair.of(state,
-                proportion + this.contents.stream().max(Comparator.comparing(Pair::getRight))
-                        .orElse(Pair.of(null, 0F)).getRight()));
+        this.contents.add(Pair.of(state, proportion + this.contents.stream().max(Comparator.comparing(Pair::getRight))
+                .orElse(Pair.of(null, 0F)).getRight()));
+        return this;
+    }
+
+    public OreVeinDescriptor marker(VeinMarker marker)
+    {
+        this.markers.add(marker);
         return this;
     }
 
