@@ -1,13 +1,19 @@
 package net.qbar.common.ore;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.minecraft.item.EnumRarity;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
-@AllArgsConstructor
 public class QBarOre
 {
-    private final String     name;
-    private final EnumRarity rarity;
+    private String name;
+    private List<QBarMineral> minerals;
+
+    public QBarOre(String name, QBarMineral... minerals)
+    {
+        this.name = name;
+        this.minerals = Arrays.asList(minerals);
+    }
 }

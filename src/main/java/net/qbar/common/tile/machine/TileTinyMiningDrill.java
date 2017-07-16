@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileInventoryBase;
@@ -23,10 +23,10 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 {
     @Getter
     @Setter
-    private float progress;
+    private float                     progress;
 
-    private BlockPos              lastPos;
-    private Map<QBarOre, Integer> results;
+    private BlockPos                  lastPos;
+    private Map<QBarMineral, Integer> results;
 
     public TileTinyMiningDrill()
     {
@@ -39,20 +39,27 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     @Override
     public void update()
     {
+        if (this.isClient())
+            return;
+
         if (this.getProgress() < 1 && this.getSteam() >= 20)
         {
-            BlockPos toCheck = BlockPos.ORIGIN;
+            BlockPos toCheck = this.lastPos;
 
             for (int i = 0; i < 25; i++)
             {
-                if (lastPos == this.getPos())
+                if (lastPos.equals(BlockPos.ORIGIN))
                     toCheck = new BlockPos(this.getPos().getX() - 7, 0, this.getPos().getZ() - 7);
                 else
                 {
-                    if (toCheck.getY() == 64)
+                    if (toCheck.getY() == this.getPos().getY() - 1)
                     {
-                        if (toCheck.getX() == this.getPos().getZ() + 7)
+                        if (toCheck.getX() == this.getPos().getX() + 7)
+                        {
+                            if (toCheck.getZ() == this.getPos().getZ() + 7)
+                                this.progress = 1;
                             toCheck = new BlockPos(this.getPos().getX() - 7, 0, toCheck.getZ() + 1);
+                        }
                         else
                             toCheck = new BlockPos(toCheck.getX() + 1, 0, toCheck.getZ());
                     }
@@ -64,8 +71,9 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 
                 if (state.getBlock() instanceof BlockVeinOre)
                 {
-                    QBarOre ore = QBarOres.getOreFromName(
-                            state.getValue(((BlockVeinOre) state.getBlock()).getVARIANTS())).orElse(QBarOres.COPPER);
+                    QBarMineral ore = QBarOres
+                            .getMineralFromName(state.getValue(((BlockVeinOre) state.getBlock()).getVARIANTS()))
+                            .orElse(QBarOres.COPPER);
                     this.results.put(ore, this.results.getOrDefault(ore, 0) + 1);
                 }
 
@@ -82,7 +90,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         tag.setLong("lastPos", this.lastPos.toLong());
 
         int i = 0;
-        for (Map.Entry<QBarOre, Integer> ore : this.results.entrySet())
+        for (Map.Entry<QBarMineral, Integer> ore : this.results.entrySet())
         {
             tag.setString("oreType" + i, ore.getKey().getName());
             tag.setInteger("oreCount" + i, ore.getValue());
@@ -100,7 +108,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         this.lastPos = BlockPos.fromLong(tag.getLong("lastPos"));
 
         for (int i = 0; i < tag.getInteger("ores"); i++)
-            this.results.put(QBarOres.getOreFromName(tag.getString("oreType" + i)).orElse(null),
+            this.results.put(QBarOres.getMineralFromName(tag.getString("oreType" + i)).orElse(null),
                     tag.getInteger("oreCount" + i));
 
         super.readFromNBT(tag);
@@ -118,7 +126,8 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     {
         if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH))
             return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).drainSteam(quantity, doDrain);
+                    .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH)
+                    .drainSteam(quantity, doDrain);
         return 0;
     }
 

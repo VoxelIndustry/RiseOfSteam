@@ -13,9 +13,9 @@ public class SludgeData
 {
     @Getter
     @Singular
-    private final Map<QBarOre, Float> ores;
+    private final Map<QBarMineral, Float> ores;
 
-    public SludgeData addOre(QBarOre ore, float proportion)
+    public SludgeData addOre(QBarMineral ore, float proportion)
     {
         if (this.ores.containsKey(ore))
             this.ores.put(ore, this.ores.get(ore) + proportion);
@@ -27,7 +27,7 @@ public class SludgeData
     public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
         int i = 0;
-        for (Map.Entry<QBarOre, Float> ore : ores.entrySet())
+        for (Map.Entry<QBarMineral, Float> ore : ores.entrySet())
         {
             tag.setString("ore" + i, ore.getKey().getName());
             tag.setFloat("proportion" + i, ore.getValue());
@@ -42,7 +42,7 @@ public class SludgeData
         SludgeData sludge = new SludgeData(new HashMap<>());
 
         for (int i = 0; i < tag.getInteger("oreQty"); i++)
-            sludge.addOre(QBarOres.getOreFromName(tag.getString("ore" + i)).get(), tag.getFloat("proportion" + i));
+            sludge.addOre(QBarOres.getMineralFromName(tag.getString("ore" + i)).get(), tag.getFloat("proportion" + i));
         return sludge;
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.ore.SludgeData;
 
@@ -44,7 +44,7 @@ public class ItemSludge extends ItemBase
         {
             SludgeData data = SludgeData.fromNBT(stack.getTagCompound().getCompoundTag("sludgeData"));
 
-            for (Map.Entry<QBarOre, Float> ore : data.getOres().entrySet())
+            for (Map.Entry<QBarMineral, Float> ore : data.getOres().entrySet())
                 tooltip.add(ore.getKey().getRarity().rarityColor + I18n.translateToLocal(ore.getKey().getName()) + " "
                         + percentFormatter.format(ore.getValue()));
         }
@@ -56,7 +56,7 @@ public class ItemSludge extends ItemBase
     {
         if (tab == this.getCreativeTab())
         {
-            for (QBarOre ore : QBarOres.ORES)
+            for (QBarMineral ore : QBarOres.MINERALS)
             {
                 ItemStack stack = new ItemStack(this);
 

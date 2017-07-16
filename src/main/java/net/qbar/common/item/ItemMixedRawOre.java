@@ -37,7 +37,7 @@ public class ItemMixedRawOre extends ItemBase
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("oreCount"))
         {
             for (int i = 0; i < stack.getTagCompound().getInteger("oreCount"); i++)
-                tooltip.add(QBarOres.getOreFromName(stack.getTagCompound().getString("ore" + i)).get()
+                tooltip.add(QBarOres.getMineralFromName(stack.getTagCompound().getString("ore" + i)).get()
                         .getRarity().rarityColor
                         + StringUtils.capitalize(stack.getTagCompound().getString("density" + i)) + " "
                         + I18n.translateToLocal(stack.getTagCompound().getString("ore" + i)));

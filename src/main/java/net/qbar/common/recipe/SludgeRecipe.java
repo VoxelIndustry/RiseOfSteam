@@ -8,11 +8,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.SludgeData;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SludgeRecipe implements IRecipe
@@ -40,7 +39,7 @@ public class SludgeRecipe implements IRecipe
             SludgeData previous = SludgeData
                     .fromNBT(inv.getStackInSlot(i).getTagCompound().getCompoundTag("sludgeData"));
 
-            for (Map.Entry<QBarOre, Float> ore : previous.getOres().entrySet())
+            for (Map.Entry<QBarMineral, Float> ore : previous.getOres().entrySet())
                 data.addOre(ore.getKey(), ore.getValue() / 9);
         }
         ItemStack result = this.result.copy();

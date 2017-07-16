@@ -7,7 +7,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.SludgeData;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.ingredient.FluidStackRecipeIngredient;
@@ -69,7 +69,7 @@ public class OreWasherRecipeCategory extends QBarRecipeCategory
 
                 if (data.getOres().size() == 1)
                 {
-                    for (Map.Entry<QBarOre, Float> ore : data.getOres().entrySet())
+                    for (Map.Entry<QBarMineral, Float> ore : data.getOres().entrySet())
                     {
                         if (ore.getValue() + yield >= 0.25f)
                         {
@@ -89,7 +89,7 @@ public class OreWasherRecipeCategory extends QBarRecipeCategory
                     rawOre.setTagCompound(new NBTTagCompound());
 
                     int i = 0;
-                    for (Map.Entry<QBarOre, Float> ore : data.getOres().entrySet())
+                    for (Map.Entry<QBarMineral, Float> ore : data.getOres().entrySet())
                     {
                         if (ore.getValue() + yield >= 0.25f)
                         {

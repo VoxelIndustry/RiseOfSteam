@@ -10,7 +10,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public class ItemRawOre extends ItemBase
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ore"))
-            tooltip.add(QBarOres.getOreFromName(stack.getTagCompound().getString("ore")).get().getRarity().rarityColor
+            tooltip.add(QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).get().getRarity().rarityColor
                     + I18n.translateToLocal(stack.getTagCompound().getString("ore")));
     }
 
@@ -47,7 +47,7 @@ public class ItemRawOre extends ItemBase
     public EnumRarity getRarity(ItemStack stack)
     {
         if (stack.hasTagCompound())
-            return QBarOres.getOreFromName(stack.getTagCompound().getString("ore")).get().getRarity();
+            return QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).get().getRarity();
         return EnumRarity.COMMON;
     }
 
@@ -56,7 +56,7 @@ public class ItemRawOre extends ItemBase
     {
         if (tab == this.getCreativeTab())
         {
-            for (QBarOre ore : QBarOres.ORES)
+            for (QBarMineral ore : QBarOres.MINERALS)
             {
                 ItemStack stack = new ItemStack(this);
                 stack.setTagCompound(new NBTTagCompound());
