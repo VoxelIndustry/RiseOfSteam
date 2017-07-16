@@ -81,12 +81,12 @@ public class FeatureGenerator {
             for(int z = -radius; z < radius; z++)
             {
                 BlockPos current = center.add(x,0,z);
-                if(w.isBlockLoaded(center))
+                if(w.isBlockLoaded(current))
                 {
                     current = w.getTopSolidOrLiquidBlock(current);
 
-                    if(w.getBlockState(current).getMaterial() == Material.GRASS && w.rand.nextFloat() <= density)
-                        placeBlock(w, current.up(), randomState(w.rand, contents), state -> true);
+                    if(w.getBlockState(current.down()).getMaterial() == Material.GRASS && w.rand.nextFloat() <= density)
+                        placeBlock(w, current, randomState(w.rand, contents), state -> true);
                 }
             }
         }

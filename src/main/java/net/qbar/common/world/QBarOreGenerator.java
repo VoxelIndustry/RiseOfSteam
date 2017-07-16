@@ -1,6 +1,5 @@
 package net.qbar.common.world;
 
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -13,8 +12,6 @@ import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.qbar.common.init.QBarBlocks;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,13 +72,6 @@ public class QBarOreGenerator implements IWorldGenerator
             y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum())
                     + vein.getHeightRange().getMinimum();
 
-            if (vein == QBarVeins.TIN)
-            {
-                BlockPos top = world.getTopSolidOrLiquidBlock(center);
-                System.out.println(top);
-                FeatureGenerator.generatePlate(world, top,
-                        Lists.newArrayList(Pair.of(QBarBlocks.ORE_CLAY.getStateFromMeta(0), 1f)), 6,3, 0.8f, DECORATION_PREDICATE);
-            }
             for (int i = 0; i < vein.getHeapQty(); i++)
             {
                 int xShift = 0;
@@ -131,6 +121,18 @@ public class QBarOreGenerator implements IWorldGenerator
                 }
 
                 BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift, center.getZ() + zShift);
+
+                if (!vein.getMarkers().isEmpty()
+                        && (vein.getHeapQty() == 1 || rand.nextFloat() <= 1.0f / vein.getHeapQty()))
+                {
+                    if (world.isBlockLoaded(veinLocation))
+                    {
+                        if (vein.getMarkers().size() > 1)
+                            vein.getMarkers().get(rand.nextInt(vein.getMarkers().size())).accept(world, veinLocation);
+                        else
+                            vein.getMarkers().get(0).accept(world, veinLocation);
+                    }
+                }
                 switch (vein.getHeapForm())
                 {
                     case SPHERES:

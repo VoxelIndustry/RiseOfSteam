@@ -84,31 +84,31 @@ public class QBarVeins
         List<Pair<IBlockState, Float>> ironStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_DIRT.getStateFromMeta(0), 1f));
         IRON_DIRT_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                ironStateList, 6, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                ironStateList, 4, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> copperStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(0), 1f));
         COPPER_SAND_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                copperStateList, 6, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                copperStateList, 4, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> tinClayStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_CLAY.getStateFromMeta(0), 1f));
         TIN_CLAY_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                tinClayStateList, 6, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                tinClayStateList, 3, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> tinSandStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(1), 1f));
         TIN_SAND_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                tinSandStateList, 6, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                tinSandStateList, 3, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> goldStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_STONE.getStateFromMeta(0), 1f));
         GOLD_ROCK_MARKER = (world, pos) -> FeatureGenerator.generateSphere(world, world.getTopSolidOrLiquidBlock(pos),
-                goldStateList, 4, 0.4f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                goldStateList, 3, 0.4f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> redstoneStateList = Lists.newArrayList(
-                Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(0), 0.6f),
-                Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(1), 1f));
+                Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(1), 0.7f),
+                Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(2), 1f));
         REDSTONE_GRASS_MARKER = (world, pos) -> FeatureGenerator.generateTallGrassPatch(world,
                 world.getTopSolidOrLiquidBlock(pos), redstoneStateList, 6, 0.5f);
     }
