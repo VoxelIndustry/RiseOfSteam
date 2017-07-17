@@ -23,7 +23,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 {
     @Getter
     @Setter
-    private float progress;
+    private float                   progress;
 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
@@ -66,25 +66,25 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                     else
                         toCheck = toCheck.up();
                 }
-                this.progress = (((toCheck.getZ() - this.getPos().getZ() + 7) * 14 * (this.getPos().getY() - 1)) +
-                        ((toCheck.getX() - this.getPos().getX() + 7) * (this.getPos().getY() - 1)) +
-                        toCheck.getY()) / (float) (14 * 14 * (this.getPos().getY() - 1));
+                this.progress = (((toCheck.getZ() - this.getPos().getZ() + 7) * 15 * (this.getPos().getY() - 1))
+                        + ((toCheck.getX() - this.getPos().getX() + 7) * (this.getPos().getY() - 1)) + toCheck.getY())
+                        / (float) (15 * 15 * (this.getPos().getY() - 1));
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
                 if (state.getBlock() instanceof BlockVeinOre)
                 {
-                    for (Map.Entry<QBarMineral, Float> mineral :
-                            QBarOres.getOreFromState(state).orElse(QBarOres.CASSITERITE).getMinerals().entrySet())
+                    for (Map.Entry<QBarMineral, Float> mineral : QBarOres.getOreFromState(state)
+                            .orElse(QBarOres.CASSITERITE).getMinerals().entrySet())
                     {
                         this.results.putIfAbsent(mineral.getKey(), 0F);
                         this.results.put(mineral.getKey(), mineral.getValue() + this.results.get(mineral.getKey()));
                     }
                 }
-
                 lastPos = toCheck;
             }
-            this.drainSteam(20, true);
+            //TODO: Change to real value when the portable storage is implemented
+            this.drainSteam(0, true);
         }
     }
 
@@ -124,7 +124,8 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH))
             return this.getStackInSlot(1)
                     .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).getSteam();
-        return 0;
+        //TODO: Change to real value when the portable storage is implemented
+        return 1000;
     }
 
     public int drainSteam(int quantity, boolean doDrain)
