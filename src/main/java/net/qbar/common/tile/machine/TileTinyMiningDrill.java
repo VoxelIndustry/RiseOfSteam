@@ -23,10 +23,10 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 {
     @Getter
     @Setter
-    private float                     progress;
+    private float progress;
 
-    private BlockPos                  lastPos;
-    private Map<QBarMineral, Integer> results;
+    private BlockPos                lastPos;
+    private Map<QBarMineral, Float> results;
 
     public TileTinyMiningDrill()
     {
@@ -71,10 +71,12 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 
                 if (state.getBlock() instanceof BlockVeinOre)
                 {
-                    QBarMineral ore = QBarOres
-                            .getMineralFromName(state.getValue(((BlockVeinOre) state.getBlock()).getVARIANTS()))
-                            .orElse(QBarOres.COPPER);
-                    this.results.put(ore, this.results.getOrDefault(ore, 0) + 1);
+                    for (Map.Entry<QBarMineral, Float> mineral :
+                            QBarOres.getOreFromState(state).orElse(QBarOres.CASSITERITE).getMinerals().entrySet())
+                    {
+                        this.results.putIfAbsent(mineral.getKey(), 0F);
+                        this.results.put(mineral.getKey(), mineral.getValue() + this.results.get(mineral.getKey()));
+                    }
                 }
 
                 lastPos = toCheck;
@@ -90,10 +92,10 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         tag.setLong("lastPos", this.lastPos.toLong());
 
         int i = 0;
-        for (Map.Entry<QBarMineral, Integer> ore : this.results.entrySet())
+        for (Map.Entry<QBarMineral, Float> ore : this.results.entrySet())
         {
             tag.setString("oreType" + i, ore.getKey().getName());
-            tag.setInteger("oreCount" + i, ore.getValue());
+            tag.setFloat("oreCount" + i, ore.getValue());
             i++;
         }
         tag.setInteger("ores", i);
@@ -109,7 +111,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 
         for (int i = 0; i < tag.getInteger("ores"); i++)
             this.results.put(QBarOres.getMineralFromName(tag.getString("oreType" + i)).orElse(null),
-                    tag.getInteger("oreCount" + i));
+                    tag.getFloat("oreCount" + i));
 
         super.readFromNBT(tag);
     }

@@ -14,7 +14,7 @@ public class OreStackRecipeIngredient extends RecipeIngredient<OreStack>
     @Override
     public boolean match(OreStack against)
     {
-        return this.stack.getOre().equals(against.getOre());
+        return this.stack.getMineral().equals(against.getMineral());
     }
 
     @Override

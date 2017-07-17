@@ -10,14 +10,14 @@ import lombok.ToString;
 public class OreStack
 {
     @Getter
-    private QBarMineral ore;
+    private QBarMineral mineral;
     @Getter
     @Setter
-    private float   quantity;
+    private float       quantity;
 
-    public OreStack(QBarMineral ore)
+    public OreStack(QBarMineral mineral)
     {
-        this(ore, 1);
+        this(mineral, 1);
     }
 
     public void grow(float quantity)

@@ -12,18 +12,22 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.block.property.PropertyString;
+import net.qbar.common.ore.QBarOre;
 import net.qbar.common.ore.SludgeData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockVeinOre extends BlockBase implements IModelProvider
 {
     @Getter
-    private BiMap<String, SludgeData> contents;
+    private List<QBarOre> contents;
 
     private static PropertyString FAKE_VARIANTS;
     @Getter
     private final  PropertyString VARIANTS;
 
-    public BlockVeinOre(String name, String defaultValue, BiMap<String, SludgeData> contents, PropertyString variants)
+    public BlockVeinOre(String name, String defaultValue, List<QBarOre> contents, PropertyString variants)
     {
         super(name, Material.ROCK);
 
@@ -88,7 +92,7 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
 
     public static class Builder
     {
-        private BiMap<String, SludgeData> contents = HashBiMap.create();
+        private List<QBarOre> contents = new ArrayList<>();
         private String name;
         private String defaultValue;
 
@@ -97,18 +101,18 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
             this.name = name;
         }
 
-        public Builder addContent(String variant, SludgeData data)
+        public Builder addContent(QBarOre variant)
         {
             if (defaultValue == null)
-                this.defaultValue = variant;
-            this.contents.put(variant, data);
+                this.defaultValue = variant.getName();
+            this.contents.add(variant);
             return this;
         }
 
         public BlockVeinOre create()
         {
             PropertyString variants = new PropertyString("ores");
-            variants.addValues(contents.keySet().toArray(new String[contents.size()]));
+            variants.addValues(contents.stream().map(QBarOre::getName).toArray(String[]::new));
             FAKE_VARIANTS = variants;
 
             return new BlockVeinOre(name, defaultValue, contents, variants);

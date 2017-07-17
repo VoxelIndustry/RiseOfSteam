@@ -16,7 +16,6 @@ import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.block.item.ItemBlockVeinOre;
 import net.qbar.common.multiblock.*;
 import net.qbar.common.ore.QBarOres;
-import net.qbar.common.ore.SludgeData;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
@@ -142,20 +141,21 @@ public class QBarBlocks
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));
 
         registerBlock(new BlockVeinOre.Builder("ironnickelore")
-                .addContent("pentlandite", SludgeData.builder().ore(QBarOres.IRON, 0.4f).ore(QBarOres.NICKEL, 0.4f).build())
-                .addContent("garnierite", SludgeData.builder().ore(QBarOres.IRON, 0.07f).ore(QBarOres.NICKEL, 0.75f).build())
-                .addContent("laterite", SludgeData.builder().ore(QBarOres.IRON, 0.2f).ore(QBarOres.NICKEL, 0.7f).build())
+                .addContent(QBarOres.PENTLANDITE)
+                .addContent(QBarOres.GARNIERITE)
+                .addContent(QBarOres.LATERITE)
                 .create(), ItemBlockVeinOre::new);
         registerBlock(new BlockVeinOre.Builder("ironcopperore")
-                .addContent("chalcopyrite", SludgeData.builder().ore(QBarOres.IRON, 0.3f).ore(QBarOres.COPPER, 0.45f).build())
-                .addContent("tetrahedrite", SludgeData.builder().ore(QBarOres.IRON, 0.1f).ore(QBarOres.COPPER, 0.7f).build())
-                .addContent("malachite", SludgeData.builder().ore(QBarOres.COPPER, 0.3f).build())
+                .addContent(QBarOres.CHALCOPYRITE)
+                .addContent(QBarOres.TETRAHEDRITE)
+                .addContent(QBarOres.MALACHITE)
                 .create(), ItemBlockVeinOre::new);
         registerBlock(new BlockVeinOre.Builder("tinore")
-                .addContent("cassiterite", SludgeData.builder().ore(QBarOres.TIN, 0.8f).build())
+                .addContent(QBarOres.CASSITERITE)
+                .addContent(QBarOres.TEALLITE)
                 .create(), ItemBlockVeinOre::new);
         registerBlock(new BlockVeinOre.Builder("ironzincore")
-                .addContent("sphalerite", SludgeData.builder().ore(QBarOres.IRON, 0.3f).ore(QBarOres.ZINC, 0.6f).build())
+                .addContent(QBarOres.SPHALERITE)
                 .create(), ItemBlockVeinOre::new);
         registerBlock(new BlockOreSand("oresand"), block -> new ItemBlockMetadata(block, "copper_sand", "tin_sand").setFirstVariation(true));
         registerBlock(new BlockOreDirt("oredirt"), block -> new ItemBlockMetadata(block, "iron_dirt").setFirstVariation(true));

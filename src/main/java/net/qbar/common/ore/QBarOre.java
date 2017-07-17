@@ -1,19 +1,21 @@
 package net.qbar.common.ore;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Singular;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 @Getter
+@Builder
 public class QBarOre
 {
-    private String name;
-    private List<QBarMineral> minerals;
+    private String                  name;
+    @Singular
+    private Map<QBarMineral, Float> minerals;
 
-    public QBarOre(String name, QBarMineral... minerals)
+    public SludgeData toSludge()
     {
-        this.name = name;
-        this.minerals = Arrays.asList(minerals);
+        return SludgeData.builder().ores(minerals).build();
     }
 }
