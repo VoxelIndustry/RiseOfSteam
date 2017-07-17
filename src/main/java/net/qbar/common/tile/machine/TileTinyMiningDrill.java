@@ -66,6 +66,9 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                     else
                         toCheck = toCheck.up();
                 }
+                this.progress = (((toCheck.getZ() - this.getPos().getZ() + 7) * 14 * (this.getPos().getY() - 1)) +
+                        ((toCheck.getX() - this.getPos().getX() + 7) * (this.getPos().getY() - 1)) +
+                        toCheck.getY()) / (float) (14 * 14 * (this.getPos().getY() - 1));
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
