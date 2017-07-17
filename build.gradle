@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "0.1.0" + "-" + System.env.TRAVIS_BRANCH + "-r" + System.env.TRAVIS_BUILD_NUMBER
+version = "0.1.0" + "-" + (System.env.TRAVIS_BRANCH == null ? "local" : System.env.TRAVIS_BRANCH.replaceAll("/", "-")) + "-r" + System.env.TRAVIS_BUILD_NUMBER
 group = "net.qbar"
 archivesBaseName = "qbar"
 
