@@ -19,9 +19,9 @@ import java.util.function.Predicate;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
-    private ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
-    public final Predicate<IBlockState>              STONE_PREDICATE;
-    public final Predicate<IBlockState>              DECORATION_PREDICATE;
+    private      ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
+    public final Predicate<IBlockState>                   STONE_PREDICATE;
+    public final Predicate<IBlockState>                   DECORATION_PREDICATE;
 
     private QBarOreGenerator()
     {
@@ -46,7 +46,7 @@ public class QBarOreGenerator implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-            IChunkProvider chunkProvider)
+                         IChunkProvider chunkProvider)
     {
         if (world.provider.getDimension() == 0)
             generateVeins(random, chunkX, chunkZ, world);
@@ -72,7 +72,9 @@ public class QBarOreGenerator implements IWorldGenerator
             y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum())
                     + vein.getHeightRange().getMinimum();
 
-            for (int i = 0; i < vein.getHeapQty(); i++)
+            int quantity = (int) (rand.nextInt((int) (Math.floor(vein.getHeapQty() * 1.25f) -
+                    Math.floor(vein.getHeapQty() * 0.75f))) + Math.floor(vein.getHeapQty() * 0.75f));
+            for (int i = 0; i < quantity; i++)
             {
                 int xShift = 0;
                 int yShift = 0;
@@ -122,29 +124,33 @@ public class QBarOreGenerator implements IWorldGenerator
 
                 BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift, center.getZ() + zShift);
 
+                int heapSize = (int) (rand.nextInt((int)
+                        (Math.floor(vein.getHeapSize() * 1.25f) - Math.floor(vein.getHeapSize() * 0.75f)))
+                        + Math.floor(vein.getHeapSize() * 0.75f));
+
                 if (!vein.getMarkers().isEmpty()
                         && (vein.getHeapQty() == 1 || rand.nextFloat() <= 1.0f / vein.getHeapQty()))
                 {
                     if (world.isBlockLoaded(veinLocation))
                     {
                         if (vein.getMarkers().size() > 1)
-                            vein.getMarkers().get(rand.nextInt(vein.getMarkers().size())).accept(world, veinLocation);
+                            vein.getMarkers().get(rand.nextInt(vein.getMarkers().size())).accept(world, veinLocation, heapSize, vein.getHeapSize());
                         else
-                            vein.getMarkers().get(0).accept(world, veinLocation);
+                            vein.getMarkers().get(0).accept(world, veinLocation, heapSize, vein.getHeapSize());
                     }
                 }
                 switch (vein.getHeapForm())
                 {
                     case SPHERES:
-                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), heapSize,
                                 vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                     case PLATES:
-                        FeatureGenerator.generatePlate(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                        FeatureGenerator.generatePlate(world, veinLocation, vein.getContents(), heapSize,
                                 vein.getHeapSize() / 2, vein.getHeapDensity(), STONE_PREDICATE);
                         break;
-                    case SHATTERED:
-                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), vein.getHeapSize(),
+                    case SCATTERED:
+                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), heapSize,
                                 vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                 }

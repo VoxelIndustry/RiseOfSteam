@@ -64,7 +64,7 @@ public class QBarVeins
                         Biomes.BIRCH_FOREST_HILLS, Biomes.PLAINS, Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.FROZEN_OCEAN,
                         Biomes.EXTREME_HILLS, Biomes.EXTREME_HILLS_WITH_TREES, Biomes.EXTREME_HILLS_EDGE));
 
-        GOLD = new OreVeinDescriptor("gold").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SHATTERED).heapQty(1)
+        GOLD = new OreVeinDescriptor("gold").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SCATTERED).heapQty(1)
                 .heapDensity(0.1f).heapSize(20).rarity(0.0001f).heightRange(4, 64)
                 .content(QBarBlocks.GOLD_ORE.getStateFromOre("gold"), 1).biomes(BiomeMatcher.WILDCARD).marker(GOLD_ROCK_MARKER);
 
@@ -82,33 +82,33 @@ public class QBarVeins
     {
         List<Pair<IBlockState, Float>> ironStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_DIRT.getStateFromMeta(0), 1f));
-        IRON_DIRT_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                ironStateList, 4, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+        IRON_DIRT_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
+                ironStateList, (int) (4 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> copperStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(0), 1f));
-        COPPER_SAND_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                copperStateList, 4, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+        COPPER_SAND_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
+                copperStateList, (int) (4 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> tinClayStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_CLAY.getStateFromMeta(0), 1f));
-        TIN_CLAY_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                tinClayStateList, 3, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+        TIN_CLAY_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
+                tinClayStateList, (int) (3 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> tinSandStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(1), 1f));
-        TIN_SAND_MARKER = (world, pos) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                tinSandStateList, 3, 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+        TIN_SAND_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
+                tinSandStateList, (int) (3 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> goldStateList = Lists
                 .newArrayList(Pair.of(QBarBlocks.ORE_STONE.getStateFromMeta(0), 1f));
-        GOLD_ROCK_MARKER = (world, pos) -> FeatureGenerator.generateSphere(world, world.getTopSolidOrLiquidBlock(pos),
-                goldStateList, 3, 0.4f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+        GOLD_ROCK_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generateSphere(world, world.getTopSolidOrLiquidBlock(pos),
+                goldStateList, (int) (3 * ((float) actualHeapSize / heapSize)), 0.4f, QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> redstoneStateList = Lists.newArrayList(
                 Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(1), 0.7f),
                 Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(2), 1f));
-        REDSTONE_GRASS_MARKER = (world, pos) -> FeatureGenerator.generateTallGrassPatch(world,
-                world.getTopSolidOrLiquidBlock(pos), redstoneStateList, 6, 0.5f);
+        REDSTONE_GRASS_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generateTallGrassPatch(world,
+                world.getTopSolidOrLiquidBlock(pos), redstoneStateList, (int) (6 * ((float) actualHeapSize / heapSize)), 0.5f);
     }
 }
