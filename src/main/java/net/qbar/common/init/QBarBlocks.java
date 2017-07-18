@@ -89,6 +89,10 @@ public class QBarBlocks
     public static final BlockVeinOre            TIN_ORE              = null;
     @ObjectHolder("ironzincore")
     public static final BlockVeinOre            IRON_ZINC_ORE        = null;
+    @ObjectHolder("goldore")
+    public static final BlockVeinOre            GOLD_ORE             = null;
+    @ObjectHolder("redstoneore")
+    public static final BlockVeinOre            REDSTONE_ORE         = null;
     @ObjectHolder("oredirt")
     public static final BlockOreDirt            ORE_DIRT             = null;
     @ObjectHolder("oreclay")
@@ -157,6 +161,13 @@ public class QBarBlocks
         registerBlock(new BlockVeinOre.Builder("ironzincore")
                 .addContent(QBarOres.SPHALERITE)
                 .create(), ItemBlockVeinOre::new);
+        registerBlock(new BlockVeinOre.Builder("goldore")
+                .addContent(QBarOres.GOLD_ORE)
+                .create(), ItemBlockVeinOre::new);
+        registerBlock(new BlockVeinOre.Builder("redstoneore")
+                .addContent(QBarOres.REDSTONE_ORE)
+                .create(), ItemBlockVeinOre::new);
+
         registerBlock(new BlockOreSand("oresand"), block -> new ItemBlockMetadata(block, "copper_sand", "tin_sand").setFirstVariation(true));
         registerBlock(new BlockOreDirt("oredirt"), block -> new ItemBlockMetadata(block, "iron_dirt").setFirstVariation(true));
         registerBlock(new BlockOreClay("oreclay"), block -> new ItemBlockMetadata(block, "tin_clay").setFirstVariation(true));

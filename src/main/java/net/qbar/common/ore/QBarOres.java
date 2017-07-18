@@ -40,6 +40,9 @@ public class QBarOres
     public static final QBarOre GARNIERITE;
     public static final QBarOre LATERITE;
 
+    public static final QBarOre GOLD_ORE;
+    public static final QBarOre REDSTONE_ORE;
+
     static
     {
         MINERALS = new ArrayList<>();
@@ -66,9 +69,11 @@ public class QBarOres
         PENTLANDITE = QBarOre.builder().name("pentlandite").mineral(IRON, 0.4f).mineral(NICKEL, 0.4f).build();
         GARNIERITE = QBarOre.builder().name("garnierite").mineral(IRON, 0.07f).mineral(NICKEL, 0.75f).build();
         LATERITE = QBarOre.builder().name("laterite").mineral(IRON, 0.2f).mineral(NICKEL, 0.7f).build();
+        GOLD_ORE = QBarOre.builder().name("gold").mineral(GOLD, 1f).build();
+        REDSTONE_ORE = QBarOre.builder().name("redstone").mineral(REDSTONE, 1f).build();
 
         ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TEALLITE, CASSITERITE, TEALLITE, PENTLANDITE,
-                GARNIERITE, LATERITE));
+                GARNIERITE, LATERITE, GOLD_ORE, REDSTONE_ORE));
     }
 
     public static Optional<QBarMineral> getMineralFromName(String name)

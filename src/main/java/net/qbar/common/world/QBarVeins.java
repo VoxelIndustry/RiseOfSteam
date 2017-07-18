@@ -3,7 +3,6 @@ package net.qbar.common.world;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Biomes;
-import net.minecraft.init.Blocks;
 import net.qbar.common.init.QBarBlocks;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -13,19 +12,19 @@ public class QBarVeins
 {
     public static List<OreVeinDescriptor> VEINS;
 
-    public static OreVeinDescriptor       IRON_NICKEL;
-    public static OreVeinDescriptor       IRON_COPPER;
-    public static OreVeinDescriptor       TIN;
-    public static OreVeinDescriptor       IRON_ZINC;
-    public static OreVeinDescriptor       GOLD;
-    public static OreVeinDescriptor       REDSTONE;
+    public static OreVeinDescriptor IRON_NICKEL;
+    public static OreVeinDescriptor IRON_COPPER;
+    public static OreVeinDescriptor TIN;
+    public static OreVeinDescriptor IRON_ZINC;
+    public static OreVeinDescriptor GOLD;
+    public static OreVeinDescriptor REDSTONE;
 
-    public static VeinMarker              IRON_DIRT_MARKER;
-    public static VeinMarker              COPPER_SAND_MARKER;
-    public static VeinMarker              TIN_CLAY_MARKER;
-    public static VeinMarker              TIN_SAND_MARKER;
-    public static VeinMarker              GOLD_ROCK_MARKER;
-    public static VeinMarker              REDSTONE_GRASS_MARKER;
+    public static VeinMarker IRON_DIRT_MARKER;
+    public static VeinMarker COPPER_SAND_MARKER;
+    public static VeinMarker TIN_CLAY_MARKER;
+    public static VeinMarker TIN_SAND_MARKER;
+    public static VeinMarker GOLD_ROCK_MARKER;
+    public static VeinMarker REDSTONE_GRASS_MARKER;
 
     public static void initVeins()
     {
@@ -59,7 +58,7 @@ public class QBarVeins
                 .marker(TIN_CLAY_MARKER).marker(TIN_SAND_MARKER);
 
         IRON_ZINC = new OreVeinDescriptor("iron-zinc").veinForm(EVeinForm.FLAT).heapForm(EVeinHeapForm.PLATES)
-                .heapQty(6).heapDensity(0.75f).heapSize(13).rarity(0.0015f).heightRange(4, 64)
+                .heapQty(6).heapDensity(0.75f).heapSize(13).rarity(0.0005f).heightRange(4, 64)
                 .content(QBarBlocks.IRON_ZINC_ORE.getStateFromOre("sphalerite"), 1)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.FOREST, Biomes.FOREST_HILLS, Biomes.BIRCH_FOREST,
                         Biomes.BIRCH_FOREST_HILLS, Biomes.PLAINS, Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.FROZEN_OCEAN,
@@ -67,11 +66,11 @@ public class QBarVeins
 
         GOLD = new OreVeinDescriptor("gold").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SHATTERED).heapQty(1)
                 .heapDensity(0.1f).heapSize(20).rarity(0.0001f).heightRange(4, 64)
-                .content(Blocks.GOLD_ORE.getDefaultState(), 1).biomes(BiomeMatcher.WILDCARD).marker(GOLD_ROCK_MARKER);
+                .content(QBarBlocks.GOLD_ORE.getStateFromOre("gold"), 1).biomes(BiomeMatcher.WILDCARD).marker(GOLD_ROCK_MARKER);
 
         REDSTONE = new OreVeinDescriptor("redstone").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SPHERES)
                 .heapQty(5).heapDensity(0.3f).heapSize(25).rarity(0.0001f).heightRange(4, 64)
-                .content(Blocks.REDSTONE_ORE.getDefaultState(), 1)
+                .content(QBarBlocks.REDSTONE_ORE.getStateFromOre("redstone"), 1)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.PLAINS, Biomes.SWAMPLAND, Biomes.FOREST, Biomes.FOREST_HILLS,
                         Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS))
                 .marker(REDSTONE_GRASS_MARKER);
