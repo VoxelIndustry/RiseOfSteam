@@ -14,6 +14,10 @@ public class QBarOre
     @Singular
     private Map<QBarMineral, Float> minerals;
 
+    private int toolLevel;
+    private float hardness;
+    private float resistance;
+
     public SludgeData toSludge()
     {
         return SludgeData.builder().ores(minerals).build();

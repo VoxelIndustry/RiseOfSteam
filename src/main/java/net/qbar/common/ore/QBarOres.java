@@ -60,17 +60,39 @@ public class QBarOres
 
         ORES = new ArrayList<>();
 
-        SPHALERITE = QBarOre.builder().name("sphalerite").mineral(ZINC, 0.6f).mineral(IRON, 0.3f).build();
-        CHALCOPYRITE = QBarOre.builder().name("chalcopyrite").mineral(COPPER, 0.45f).mineral(IRON, 0.3f).build();
-        MALACHITE = QBarOre.builder().name("malachite").mineral(COPPER, 0.3f).build();
-        TETRAHEDRITE = QBarOre.builder().name("tetrahedrite").mineral(COPPER, 0.7f).mineral(IRON, 0.1f).build();
-        CASSITERITE = QBarOre.builder().name("cassiterite").mineral(TIN, 0.8f).build();
-        TEALLITE = QBarOre.builder().name("teallite").mineral(TIN, 0.4f).mineral(LEAD, 0.3f).build();
-        PENTLANDITE = QBarOre.builder().name("pentlandite").mineral(IRON, 0.4f).mineral(NICKEL, 0.4f).build();
-        GARNIERITE = QBarOre.builder().name("garnierite").mineral(IRON, 0.07f).mineral(NICKEL, 0.75f).build();
-        LATERITE = QBarOre.builder().name("laterite").mineral(IRON, 0.2f).mineral(NICKEL, 0.7f).build();
-        GOLD_ORE = QBarOre.builder().name("gold").mineral(GOLD, 1f).build();
-        REDSTONE_ORE = QBarOre.builder().name("redstone").mineral(REDSTONE, 1f).build();
+        SPHALERITE = QBarOre.builder().name("sphalerite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(ZINC, 0.6f).mineral(IRON, 0.3f).build();
+        CHALCOPYRITE = QBarOre.builder().name("chalcopyrite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(COPPER, 0.45f).mineral(IRON, 0.3f).build();
+        MALACHITE = QBarOre.builder().name("malachite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(COPPER, 0.3f).build();
+        TETRAHEDRITE = QBarOre.builder().name("tetrahedrite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(COPPER, 0.7f).mineral(IRON, 0.1f).build();
+        CASSITERITE = QBarOre.builder().name("cassiterite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(TIN, 0.8f).build();
+        TEALLITE = QBarOre.builder().name("teallite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(TIN, 0.4f).mineral(LEAD, 0.3f).build();
+        PENTLANDITE = QBarOre.builder().name("pentlandite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(IRON, 0.4f).mineral(NICKEL, 0.4f).build();
+        GARNIERITE = QBarOre.builder().name("garnierite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(IRON, 0.07f).mineral(NICKEL, 0.75f).build();
+        LATERITE = QBarOre.builder().name("laterite")
+                .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .mineral(IRON, 0.2f).mineral(NICKEL, 0.7f).build();
+        GOLD_ORE = QBarOre.builder().name("gold")
+                .toolLevel(2).hardness(3.0F).resistance(5.0F)
+                .mineral(GOLD, 1f).build();
+        REDSTONE_ORE = QBarOre.builder().name("redstone")
+                .toolLevel(2).hardness(2.0F).resistance(5.0F)
+                .mineral(REDSTONE, 1f).build();
 
         ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TEALLITE, CASSITERITE, TEALLITE, PENTLANDITE,
                 GARNIERITE, LATERITE, GOLD_ORE, REDSTONE_ORE));
