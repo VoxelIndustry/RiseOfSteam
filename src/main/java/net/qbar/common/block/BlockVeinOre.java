@@ -26,10 +26,10 @@ import java.util.List;
 public class BlockVeinOre extends BlockBase implements IModelProvider
 {
     public static final PropertyEnum<Richness> RICHNESS = PropertyEnum.create("richness", Richness.class);
-    private static PropertyString FAKE_VARIANTS;
+    private static PropertyString              FAKE_VARIANTS;
 
     @Getter
-    private final PropertyString VARIANTS;
+    private final PropertyString               VARIANTS;
 
     public BlockVeinOre(String name, String defaultValue, PropertyString variants)
     {
@@ -37,7 +37,8 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
 
         this.VARIANTS = variants;
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, defaultValue).withProperty(RICHNESS, Richness.NORMAL));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, defaultValue).withProperty(RICHNESS,
+                Richness.NORMAL));
     }
 
     @Override
@@ -93,13 +94,14 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(VARIANTS, VARIANTS.getByIndex(meta % Richness.values().length)).withProperty(RICHNESS, Richness.values()[meta / Richness.values().length]);
+        return this.getDefaultState().withProperty(VARIANTS, VARIANTS.getByIndex(meta / Richness.values().length))
+                .withProperty(RICHNESS, Richness.values()[meta % Richness.values().length]);
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return VARIANTS.indexOf(state.getValue(VARIANTS)) * state.getValue(RICHNESS).ordinal();
+        return VARIANTS.indexOf(state.getValue(VARIANTS)) * (state.getValue(RICHNESS).ordinal() + 1);
     }
 
     @Override
@@ -126,8 +128,8 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     public static class Builder
     {
         private List<QBarOre> contents = new ArrayList<>();
-        private String name;
-        private String defaultValue;
+        private String        name;
+        private String        defaultValue;
 
         public Builder(String name)
         {
