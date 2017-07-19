@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Biomes;
 import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.ore.QBarOres;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -31,79 +32,88 @@ public class QBarVeins
         initMarkers();
 
         IRON_NICKEL = new OreVeinDescriptor("iron-nickel").veinForm(EVeinForm.FLAT).heapForm(EVeinHeapForm.PLATES)
-                .heapQty(5).heapDensity(0.8f).heapSize(10).rarity(0.002f).heightRange(4, 64)
-                .content(QBarBlocks.IRON_NICKEL_ORE.getStateFromOre("pentlandite"), 0.3f)
-                .content(QBarBlocks.IRON_NICKEL_ORE.getStateFromOre("garnierite"), 0.3f)
-                .content(QBarBlocks.IRON_NICKEL_ORE.getStateFromOre("laterite"), 0.4f)
+                .heapQty(5).heapDensity(0.8f).heapSize(10).rarity(0.002f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
+                .content(QBarBlocks.IRON_NICKEL_ORE.getStateFromOre(QBarOres.PENTLANDITE), 0.3f)
+                .content(QBarBlocks.IRON_NICKEL_ORE.getStateFromOre(QBarOres.GARNIERITE), 0.3f)
+                .content(QBarBlocks.IRON_NICKEL_ORE.getStateFromOre(QBarOres.LATERITE), 0.4f)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.JUNGLE, Biomes.JUNGLE_HILLS, Biomes.JUNGLE_EDGE, Biomes.SAVANNA,
                         Biomes.SAVANNA_PLATEAU))
-                .marker(IRON_DIRT_MARKER);
+                .marker(IRON_DIRT_MARKER).createBlockSupplier();
 
         IRON_COPPER = new OreVeinDescriptor("iron-copper").veinForm(EVeinForm.FLAT).heapForm(EVeinHeapForm.PLATES)
-                .heapQty(5).heapDensity(0.7f).heapSize(10).rarity(0.002f).heightRange(4, 64)
-                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre("chalcopyrite"), 0.3f)
-                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre("tetrahedrite"), 0.3f)
-                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre("malachite"), 0.4f)
+                .heapQty(5).heapDensity(0.7f).heapSize(10).rarity(0.002f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
+                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre(QBarOres.CHALCOPYRITE), 0.3f)
+                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre(QBarOres.TETRAHEDRITE), 0.3f)
+                .content(QBarBlocks.IRON_COPPER_ORE.getStateFromOre(QBarOres.MALACHITE), 0.4f)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.RIVER, Biomes.FROZEN_RIVER, Biomes.SWAMPLAND,
                         Biomes.MUTATED_SWAMPLAND, Biomes.FOREST_HILLS, Biomes.BIRCH_FOREST_HILLS, Biomes.JUNGLE_HILLS,
                         Biomes.EXTREME_HILLS, Biomes.TAIGA_HILLS))
-                .marker(COPPER_SAND_MARKER);
+                .marker(COPPER_SAND_MARKER).createBlockSupplier();
 
         TIN = new OreVeinDescriptor("tin").veinForm(EVeinForm.UPWARD).heapForm(EVeinHeapForm.PLATES).heapQty(5)
-                .heapDensity(0.5f).heapSize(15).rarity(0.001f).heightRange(4, 64)
-                .content(QBarBlocks.TIN_ORE.getStateFromOre("cassiterite"), 1)
+                .heapDensity(0.5f).heapSize(15).rarity(0.001f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
+                .content(QBarBlocks.TIN_ORE.getStateFromOre(QBarOres.CASSITERITE), 1)
+                .content(QBarBlocks.TIN_ORE.getStateFromOre(QBarOres.TEALLITE), 1)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.FOREST, Biomes.FOREST_HILLS, Biomes.BIRCH_FOREST_HILLS,
                         Biomes.BIRCH_FOREST, Biomes.EXTREME_HILLS, Biomes.EXTREME_HILLS_EDGE,
                         Biomes.EXTREME_HILLS_WITH_TREES))
-                .marker(TIN_CLAY_MARKER).marker(TIN_SAND_MARKER);
+                .marker(TIN_CLAY_MARKER).marker(TIN_SAND_MARKER).createBlockSupplier();
 
         IRON_ZINC = new OreVeinDescriptor("iron-zinc").veinForm(EVeinForm.FLAT).heapForm(EVeinHeapForm.PLATES)
-                .heapQty(6).heapDensity(0.75f).heapSize(13).rarity(0.0005f).heightRange(4, 64)
-                .content(QBarBlocks.IRON_ZINC_ORE.getStateFromOre("sphalerite"), 1)
+                .heapQty(6).heapDensity(0.75f).heapSize(13).rarity(0.0005f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
+                .content(QBarBlocks.IRON_ZINC_ORE.getStateFromOre(QBarOres.SPHALERITE), 1)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.FOREST, Biomes.FOREST_HILLS, Biomes.BIRCH_FOREST,
                         Biomes.BIRCH_FOREST_HILLS, Biomes.PLAINS, Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.FROZEN_OCEAN,
-                        Biomes.EXTREME_HILLS, Biomes.EXTREME_HILLS_WITH_TREES, Biomes.EXTREME_HILLS_EDGE));
+                        Biomes.EXTREME_HILLS, Biomes.EXTREME_HILLS_WITH_TREES, Biomes.EXTREME_HILLS_EDGE))
+                .createBlockSupplier();
 
         GOLD = new OreVeinDescriptor("gold").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SCATTERED).heapQty(1)
-                .heapDensity(0.1f).heapSize(20).rarity(0.0001f).heightRange(4, 64)
-                .content(QBarBlocks.GOLD_ORE.getStateFromOre("gold"), 1).biomes(BiomeMatcher.WILDCARD).marker(GOLD_ROCK_MARKER);
+                .heapDensity(0.1f).heapSize(20).rarity(0.0001f).heightRange(4, 64).richChance(0, 0.6f).poorChance(0.2f, 1f)
+                .content(QBarBlocks.GOLD_ORE.getStateFromOre(QBarOres.GOLD_ORE), 1)
+                .biomes(BiomeMatcher.WILDCARD)
+                .marker(GOLD_ROCK_MARKER).createBlockSupplier();
 
         REDSTONE = new OreVeinDescriptor("redstone").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SPHERES)
-                .heapQty(5).heapDensity(0.3f).heapSize(25).rarity(0.0001f).heightRange(4, 64)
-                .content(QBarBlocks.REDSTONE_ORE.getStateFromOre("redstone"), 1)
+                .heapQty(5).heapDensity(0.3f).heapSize(25).rarity(0.0001f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
+                .content(QBarBlocks.REDSTONE_ORE.getStateFromOre(QBarOres.REDSTONE_ORE), 1)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.PLAINS, Biomes.SWAMPLAND, Biomes.FOREST, Biomes.FOREST_HILLS,
                         Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS))
-                .marker(REDSTONE_GRASS_MARKER);
+                .marker(REDSTONE_GRASS_MARKER).createBlockSupplier();
 
         VEINS = Lists.newArrayList(IRON_NICKEL, IRON_COPPER, TIN, IRON_ZINC, GOLD, REDSTONE);
     }
 
     private static void initMarkers()
     {
-        List<Pair<IBlockState, Float>> ironStateList = Lists
-                .newArrayList(Pair.of(QBarBlocks.ORE_DIRT.getStateFromMeta(0), 1f));
+        VeinBlockSupplier ironBlockSupplier = (rand, veinSize, centerOffset) -> FeatureGenerator.randomState(rand, Lists
+                .newArrayList(Pair.of(QBarBlocks.ORE_DIRT.getStateFromMeta(0), 1f)));
         IRON_DIRT_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                ironStateList, (int) (4 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                ironBlockSupplier, (int) (4 * ((float) actualHeapSize / heapSize)), 3, 0.8f,
+                QBarOreGenerator.instance().DECORATION_PREDICATE);
 
-        List<Pair<IBlockState, Float>> copperStateList = Lists
-                .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(0), 1f));
+        VeinBlockSupplier copperBlockSupplier = (rand, veinSize, centerOffset) -> FeatureGenerator.randomState(rand, Lists
+                .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(0), 1f)));
         COPPER_SAND_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                copperStateList, (int) (4 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                copperBlockSupplier, (int) (4 * ((float) actualHeapSize / heapSize)), 3, 0.8f,
+                QBarOreGenerator.instance().DECORATION_PREDICATE);
 
-        List<Pair<IBlockState, Float>> tinClayStateList = Lists
-                .newArrayList(Pair.of(QBarBlocks.ORE_CLAY.getStateFromMeta(0), 1f));
+        VeinBlockSupplier tinClayBlockSupplier = (rand, veinSize, centerOffset) -> FeatureGenerator.randomState(rand, Lists
+                .newArrayList(Pair.of(QBarBlocks.ORE_CLAY.getStateFromMeta(0), 1f)));
         TIN_CLAY_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                tinClayStateList, (int) (3 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                tinClayBlockSupplier, (int) (3 * ((float) actualHeapSize / heapSize)), 3, 0.8f,
+                QBarOreGenerator.instance().DECORATION_PREDICATE);
 
-        List<Pair<IBlockState, Float>> tinSandStateList = Lists
-                .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(1), 1f));
+        VeinBlockSupplier tinSandBlockSupplier = (rand, veinSize, centerOffset) -> FeatureGenerator.randomState(rand, Lists
+                .newArrayList(Pair.of(QBarBlocks.ORE_SAND.getStateFromMeta(1), 1f)));
         TIN_SAND_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generatePlate(world, world.getTopSolidOrLiquidBlock(pos),
-                tinSandStateList, (int) (3 * ((float) actualHeapSize / heapSize)), 3, 0.8f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                tinSandBlockSupplier, (int) (3 * ((float) actualHeapSize / heapSize)), 3, 0.8f,
+                QBarOreGenerator.instance().DECORATION_PREDICATE);
 
-        List<Pair<IBlockState, Float>> goldStateList = Lists
-                .newArrayList(Pair.of(QBarBlocks.ORE_STONE.getStateFromMeta(0), 1f));
+        VeinBlockSupplier goldBlockSupplier = (rand, veinSize, centerOffset) -> FeatureGenerator.randomState(rand, Lists
+                .newArrayList(Pair.of(QBarBlocks.ORE_STONE.getStateFromMeta(0), 1f)));
         GOLD_ROCK_MARKER = (world, pos, actualHeapSize, heapSize) -> FeatureGenerator.generateSphere(world, world.getTopSolidOrLiquidBlock(pos),
-                goldStateList, (int) (3 * ((float) actualHeapSize / heapSize)), 0.4f, QBarOreGenerator.instance().DECORATION_PREDICATE);
+                goldBlockSupplier, (int) (3 * ((float) actualHeapSize / heapSize)), 0.4f,
+                QBarOreGenerator.instance().DECORATION_PREDICATE);
 
         List<Pair<IBlockState, Float>> redstoneStateList = Lists.newArrayList(
                 Pair.of(QBarBlocks.ENERGIZED_TALL_GRASS.getStateFromMeta(1), 0.7f),

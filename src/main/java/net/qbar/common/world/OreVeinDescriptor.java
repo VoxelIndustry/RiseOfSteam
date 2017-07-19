@@ -2,6 +2,8 @@ package net.qbar.common.world;
 
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.MathHelper;
+import net.qbar.common.block.BlockVeinOre;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -16,16 +18,19 @@ public class OreVeinDescriptor
     private List<VeinMarker>               markers;
     private BiomeMatcher.BiomePredicate    biomeMatcher;
 
-    private float                          heapDensity;
-    private int                            heapQty;
-    private int                            heapSize;
-    private Range<Integer>                 heightRange;
-    private EVeinHeapForm                  heapForm;
-    private EVeinForm                      veinForm;
+    private float             heapDensity;
+    private int               heapQty;
+    private int               heapSize;
+    private Range<Integer>    heightRange;
+    private EVeinHeapForm     heapForm;
+    private EVeinForm         veinForm;
+    private Range<Float>      richChance;
+    private Range<Float>      poorChance;
+    private VeinBlockSupplier veinBlockSupplier;
 
-    private float                          rarity;
+    private float rarity;
 
-    private String                         name;
+    private String name;
 
     public OreVeinDescriptor(String name)
     {
@@ -92,6 +97,35 @@ public class OreVeinDescriptor
     public OreVeinDescriptor heightRange(int minY, int maxY)
     {
         this.heightRange = Range.between(minY, maxY);
+        return this;
+    }
+
+    public OreVeinDescriptor richChance(float minChance, float maxChance)
+    {
+        this.richChance = Range.between(minChance, maxChance);
+        return this;
+    }
+
+    public OreVeinDescriptor poorChance(float minChance, float maxChance)
+    {
+        this.poorChance = Range.between(minChance, maxChance);
+        return this;
+    }
+
+    public OreVeinDescriptor createBlockSupplier()
+    {
+        this.veinBlockSupplier = (rand, veinSize, centerOffset) -> {
+            BlockVeinOre.Richness richness = BlockVeinOre.Richness.NORMAL;
+
+            if (rand.nextDouble() <= MathHelper.clampedLerp(this.richChance.getMinimum(), this.richChance.getMaximum(),
+                    centerOffset / veinSize))
+                richness = BlockVeinOre.Richness.RICH;
+            else if (rand.nextDouble() <= MathHelper.clampedLerp(this.poorChance.getMinimum(), this.poorChance.getMaximum(),
+                    1 - (centerOffset / veinSize)))
+                richness = BlockVeinOre.Richness.POOR;
+
+            return FeatureGenerator.randomState(rand, this.contents).withProperty(BlockVeinOre.RICHNESS, richness);
+        };
         return this;
     }
 

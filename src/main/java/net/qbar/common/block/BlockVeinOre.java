@@ -83,9 +83,14 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
         return QBarOres.getOreFromName(state.getValue(VARIANTS)).get();
     }
 
-    public IBlockState getStateFromOre(String oreName)
+    public IBlockState getStateFromOreName(String oreName)
     {
         return this.getDefaultState().withProperty(VARIANTS, oreName);
+    }
+
+    public IBlockState getStateFromOre(QBarOre ore)
+    {
+        return this.getDefaultState().withProperty(VARIANTS, ore.getName());
     }
 
     @Override

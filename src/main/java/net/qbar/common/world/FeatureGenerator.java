@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class FeatureGenerator {
-    static int generateSphere(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
-                               float density, Predicate<IBlockState> terrainPredicate)
+public class FeatureGenerator
+{
+    static int generateSphere(World w, BlockPos center, VeinBlockSupplier blockSupplier, int radius,
+                              float density, Predicate<IBlockState> terrainPredicate)
     {
         int count = 0;
         int radiusSquared = radius * radius * radius;
@@ -29,7 +30,7 @@ public class FeatureGenerator {
                     double distance = Math.abs(center.getDistance(current.getX(), current.getY(), current.getZ()));
                     if ((distance * distance * distance) < radiusSquared && w.rand.nextFloat() <= density)
                     {
-                        placeBlock(w, current, randomState(w.rand, contents), terrainPredicate);
+                        placeBlock(w, current, blockSupplier.supply(w.rand, radius, (float) distance), terrainPredicate);
                         count++;
                     }
                 }
@@ -38,8 +39,8 @@ public class FeatureGenerator {
         return count;
     }
 
-    static int generatePlate(World w, BlockPos center, List<Pair<IBlockState, Float>> contents, int radius,
-                              int thickness, float density, Predicate<IBlockState> terrainPredicate)
+    static int generatePlate(World w, BlockPos center, VeinBlockSupplier blockSupplier, int radius,
+                             int thickness, float density, Predicate<IBlockState> terrainPredicate)
     {
         int count = 0;
 
@@ -53,11 +54,11 @@ public class FeatureGenerator {
             int err = 0;
             while (x >= z)
             {
-                count += drawXLine(w, center.add(-z, y, x), center.add(z, y, x), contents, density, terrainPredicate);
-                count += drawXLine(w, center.add(-x, y, z), center.add(x, y, z), contents, density, terrainPredicate);
+                count += drawXLine(w, center.add(-z, y, x), center.add(z, y, x), blockSupplier, center, radius, density, terrainPredicate);
+                count += drawXLine(w, center.add(-x, y, z), center.add(x, y, z), blockSupplier, center, radius, density, terrainPredicate);
 
-                count += drawXLine(w, center.add(-x, y, -z), center.add(x, y, -z), contents, density, terrainPredicate);
-                count += drawXLine(w, center.add(-z, y, -x), center.add(z, y, -x), contents, density, terrainPredicate);
+                count += drawXLine(w, center.add(-x, y, -z), center.add(x, y, -z), blockSupplier, center, radius, density, terrainPredicate);
+                count += drawXLine(w, center.add(-z, y, -x), center.add(z, y, -x), blockSupplier, center, radius, density, terrainPredicate);
                 z++;
 
                 if (err <= 0)
@@ -76,16 +77,16 @@ public class FeatureGenerator {
     {
         int count = 0;
 
-        for(int x = -radius; x < radius; x++)
+        for (int x = -radius; x < radius; x++)
         {
-            for(int z = -radius; z < radius; z++)
+            for (int z = -radius; z < radius; z++)
             {
-                BlockPos current = center.add(x,0,z);
-                if(w.isBlockLoaded(current))
+                BlockPos current = center.add(x, 0, z);
+                if (w.isBlockLoaded(current))
                 {
                     current = w.getTopSolidOrLiquidBlock(current);
 
-                    if(w.getBlockState(current.down()).getMaterial() == Material.GRASS && w.rand.nextFloat() <= density)
+                    if (w.getBlockState(current.down()).getMaterial() == Material.GRASS && w.rand.nextFloat() <= density)
                         placeBlock(w, current, randomState(w.rand, contents), state -> true);
                 }
             }
@@ -93,15 +94,17 @@ public class FeatureGenerator {
         return count;
     }
 
-    static int drawXLine(World w, BlockPos first, BlockPos second, List<Pair<IBlockState, Float>> contents,
-                          float density, Predicate<IBlockState> terrainPredicate)
+    static int drawXLine(World w, BlockPos first, BlockPos second, VeinBlockSupplier blockSupplier, BlockPos center, int veinSize, float density,
+                         Predicate<IBlockState> terrainPredicate)
     {
         int count = 0;
         for (int i = 0; i < (second.getX() - first.getX()); i++)
         {
             if (w.rand.nextFloat() <= density)
             {
-                placeBlock(w, first.add(i, 0, 0), randomState(w.rand, contents), terrainPredicate);
+                BlockPos current = first.add(i, 0, 0);
+                placeBlock(w, current, blockSupplier.supply(w.rand, veinSize,
+                        (float) Math.abs(center.getDistance(current.getX(), current.getY(), current.getZ()))), terrainPredicate);
                 count++;
             }
         }

@@ -142,15 +142,15 @@ public class QBarOreGenerator implements IWorldGenerator
                 switch (vein.getHeapForm())
                 {
                     case SPHERES:
-                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), heapSize,
+                        FeatureGenerator.generateSphere(world, veinLocation, vein.getVeinBlockSupplier(), heapSize,
                                 vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                     case PLATES:
-                        FeatureGenerator.generatePlate(world, veinLocation, vein.getContents(), heapSize,
+                        FeatureGenerator.generatePlate(world, veinLocation, vein.getVeinBlockSupplier(), heapSize,
                                 vein.getHeapSize() / 2, vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                     case SCATTERED:
-                        FeatureGenerator.generateSphere(world, veinLocation, vein.getContents(), heapSize,
+                        FeatureGenerator.generateSphere(world, veinLocation, vein.getVeinBlockSupplier(), heapSize,
                                 vein.getHeapDensity(), STONE_PREDICATE);
                         break;
                 }
