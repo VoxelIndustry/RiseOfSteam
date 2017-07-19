@@ -6,28 +6,24 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": [
-      {}
-    ],
-    "ores": {
-      "redstone": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/redstone"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/redstone"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/redstone"
-            }
-          }
-        }
+    "inventory":
+      {},
+    "ores=redstone,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/redstone"
+      }
+    },
+    "ores=redstone,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/redstone"
+      }
+    },
+    "ores=redstone,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/redstone"
       }
     }
   }

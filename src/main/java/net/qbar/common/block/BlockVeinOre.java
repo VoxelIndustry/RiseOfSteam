@@ -74,7 +74,7 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        for (int i = 0; i < VARIANTS.getAllowedValues().size(); i++)
+        for (int i = 0; i < VARIANTS.getAllowedValues().size() * Richness.values().length; i++)
             items.add(new ItemStack(this, 1, i));
     }
 

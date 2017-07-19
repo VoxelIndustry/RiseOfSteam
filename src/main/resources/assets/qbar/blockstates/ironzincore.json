@@ -6,28 +6,24 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": [
-      {}
-    ],
-    "ores": {
-      "sphalerite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/sphalerite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/sphalerite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/sphalerite"
-            }
-          }
-        }
+    "inventory":
+      {},
+    "ores=sphalerite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/sphalerite"
+      }
+    },
+    "ores=sphalerite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/sphalerite"
+      }
+    },
+    "ores=sphalerite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/sphalerite"
       }
     }
   }

@@ -6,66 +6,63 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": [
-      {}
-    ],
-    "ores": {
-      "pentlandite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/pentlandite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/pentlandite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/pentlandite"
-            }
-          }
-        }
-      },
-      "laterite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/laterite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/laterite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/laterite"
-            }
-          }
-        }
-      },
-      "garnierite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/garnierite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/garnierite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/garnierite"
-            }
-          }
-        }
+    "inventory": {
+      "textures": {
+        "all": "qbar:blocks/pentlandite"
+      }
+    },
+    "ores=pentlandite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/pentlandite"
+      }
+    },
+    "ores=pentlandite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/pentlandite"
+      }
+    },
+    "ores=pentlandite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/pentlandite"
+      }
+    },
+    "ores=garnierite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/garnierite"
+      }
+    },
+    "ores=garnierite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/garnierite"
+      }
+    },
+    "ores=garnierite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/garnierite"
+      }
+    },
+    "ores=laterite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/laterite"
+      }
+    },
+    "ores=laterite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/laterite"
+      }
+    },
+    "ores=laterite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/laterite"
       }
     }
   }

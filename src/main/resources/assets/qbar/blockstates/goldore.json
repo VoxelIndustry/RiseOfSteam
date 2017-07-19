@@ -9,25 +9,22 @@
     "inventory": [
       {}
     ],
-    "ores": {
-      "gold": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/gold"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/gold"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/gold"
-            }
-          }
-        }
+    "ores=gold,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/gold"
+      }
+    },
+    "ores=gold,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/gold"
+      }
+    },
+    "ores=gold,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/gold"
       }
     }
   }

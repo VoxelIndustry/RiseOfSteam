@@ -6,66 +6,63 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": [
-      {}
-    ],
-    "ores": {
-      "chalcopyrite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/chalcopyrite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/chalcopyrite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/chalcopyrite"
-            }
-          }
-        }
-      },
-      "tetrahedrite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/tetrahedrite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/tetrahedrite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/tetrahedrite"
-            }
-          }
-        }
-      },
-      "malachite": {
-        "richness": {
-          "poor": {
-            "textures": {
-              "all": "qbar:blocks/malachite"
-            }
-          },
-          "normal": {
-            "textures": {
-              "all": "qbar:blocks/malachite"
-            }
-          },
-          "rich": {
-            "textures": {
-              "all": "qbar:blocks/malachite"
-            }
-          }
-        }
+    "inventory": {
+      "textures": {
+        "all": "qbar:blocks/chalcopyrite"
+      }
+    },
+    "ores=chalcopyrite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/chalcopyrite"
+      }
+    },
+    "ores=chalcopyrite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/chalcopyrite"
+      }
+    },
+    "ores=chalcopyrite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/chalcopyrite"
+      }
+    },
+    "ores=malachite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/malachite"
+      }
+    },
+    "ores=malachite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/malachite"
+      }
+    },
+    "ores=malachite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/malachite"
+      }
+    },
+    "ores=tetrahedrite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/tetrahedrite"
+      }
+    },
+    "ores=tetrahedrite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/tetrahedrite"
+      }
+    },
+    "ores=tetrahedrite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/tetrahedrite"
       }
     }
   }
