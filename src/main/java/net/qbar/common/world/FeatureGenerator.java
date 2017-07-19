@@ -111,7 +111,7 @@ public class FeatureGenerator
         return count;
     }
 
-    static void placeBlock(World w, BlockPos pos, IBlockState state, Predicate<IBlockState> terrainPredicate)
+    private static void placeBlock(World w, BlockPos pos, IBlockState state, Predicate<IBlockState> terrainPredicate)
     {
         ChunkPos chunk = new ChunkPos(pos);
 
@@ -125,7 +125,7 @@ public class FeatureGenerator
         }
     }
 
-    static boolean isBorder(ChunkPos chunk, BlockPos pos)
+    private static boolean isBorder(ChunkPos chunk, BlockPos pos)
     {
         return chunk.getXStart() == pos.getX() || chunk.getXEnd() == pos.getX() || chunk.getZStart() == pos.getZ()
                 || chunk.getZEnd() == pos.getZ();

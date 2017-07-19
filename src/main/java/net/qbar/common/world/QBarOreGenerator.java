@@ -19,14 +19,11 @@ import java.util.function.Predicate;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
-    private      ConcurrentHashMap<ChunkPos, GenLeftOver> leftOvers;
     public final Predicate<IBlockState>                   STONE_PREDICATE;
     public final Predicate<IBlockState>                   DECORATION_PREDICATE;
 
     private QBarOreGenerator()
     {
-        this.leftOvers = new ConcurrentHashMap<>();
-
         this.STONE_PREDICATE = state -> state != null && state.getBlock() == Blocks.STONE
                 && state.getValue(BlockStone.VARIANT).isNatural();
         this.DECORATION_PREDICATE = this.STONE_PREDICATE
