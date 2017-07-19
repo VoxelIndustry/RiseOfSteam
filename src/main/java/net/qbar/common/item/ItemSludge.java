@@ -54,7 +54,7 @@ public class ItemSludge extends ItemBase
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        if (tab == this.getCreativeTab())
+        if (this.isInCreativeTab(tab))
         {
             for (QBarMineral ore : QBarOres.MINERALS)
             {

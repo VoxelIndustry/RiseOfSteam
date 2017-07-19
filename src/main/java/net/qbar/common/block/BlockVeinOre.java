@@ -74,11 +74,8 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        if (tab == this.getCreativeTabToDisplayOn())
-        {
-            for (int i = 0; i < VARIANTS.getAllowedValues().size(); i++)
-                items.add(new ItemStack(this, 1, i));
-        }
+        for (int i = 0; i < VARIANTS.getAllowedValues().size(); i++)
+            items.add(new ItemStack(this, 1, i));
     }
 
     public QBarOre getOreFromState(IBlockState state)

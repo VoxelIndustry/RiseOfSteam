@@ -113,7 +113,7 @@ public class ItemBlueprint extends ItemBase
     @Override
     public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list)
     {
-        if (tab == this.getCreativeTab())
+        if (this.isInCreativeTab(tab))
         {
             Blueprints.getInstance().getBlueprints().forEach((name, blueprint) ->
             {

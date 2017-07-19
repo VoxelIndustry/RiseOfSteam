@@ -30,8 +30,10 @@ public class ItemRawOre extends ItemBase
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ore"))
-            tooltip.add(QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).get().getRarity().rarityColor
-                    + I18n.translateToLocal(stack.getTagCompound().getString("ore")));
+        {
+            QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).ifPresent(mineral ->
+                    tooltip.add(mineral.getRarity().rarityColor + I18n.translateToLocal(stack.getTagCompound().getString("ore"))));
+        }
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ItemRawOre extends ItemBase
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        if (tab == this.getCreativeTab())
+        if (this.isInCreativeTab(tab))
         {
             for (QBarMineral ore : QBarOres.MINERALS)
             {

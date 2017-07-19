@@ -17,7 +17,7 @@ public class ItemPlate extends ItemBase
     @Override
     public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list)
     {
-        if (tab == this.getCreativeTab())
+        if (this.isInCreativeTab(tab))
         {
             QBarRecipeHandler.metals.forEach(metal ->
             {

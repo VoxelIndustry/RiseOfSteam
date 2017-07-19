@@ -27,11 +27,8 @@ public abstract class BlockPipeBase extends BlockMachineBase<TilePipeBase>
     @Override
     public void getSubBlocks(final CreativeTabs tab, final NonNullList<ItemStack> stacks)
     {
-        if (tab == this.getCreativeTabToDisplayOn())
-        {
-            stacks.add(new ItemStack(this, 1, 0));
-            stacks.add(new ItemStack(this, 1, 1));
-        }
+        stacks.add(new ItemStack(this, 1, 0));
+        stacks.add(new ItemStack(this, 1, 1));
     }
 
     @Override

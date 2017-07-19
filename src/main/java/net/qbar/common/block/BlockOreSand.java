@@ -74,11 +74,8 @@ public class BlockOreSand extends BlockFalling implements INamedBlock, IModelPro
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        if (tab == this.getCreativeTabToDisplayOn())
-        {
-            for (int i = 0; i < EnumType.values().length; i++)
-                items.add(new ItemStack(this, 1, i));
-        }
+        for (int i = 0; i < EnumType.values().length; i++)
+            items.add(new ItemStack(this, 1, i));
     }
 
     @Override
