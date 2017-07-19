@@ -9,6 +9,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.block.BlockVeinOre;
+import net.qbar.common.item.ItemDrillCoreSample;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
@@ -23,7 +24,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 {
     @Getter
     @Setter
-    private float                   progress;
+    private float progress;
 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
@@ -57,7 +58,10 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                         if (toCheck.getX() == this.getPos().getX() + 7)
                         {
                             if (toCheck.getZ() == this.getPos().getZ() + 7)
+                            {
                                 this.progress = 1;
+                                this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(results));
+                            }
                             toCheck = new BlockPos(this.getPos().getX() - 7, 0, toCheck.getZ() + 1);
                         }
                         else
@@ -78,7 +82,8 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                             .orElse(QBarOres.CASSITERITE).getMinerals().entrySet())
                     {
                         this.results.putIfAbsent(mineral.getKey(), 0F);
-                        this.results.put(mineral.getKey(), mineral.getValue() + this.results.get(mineral.getKey()));
+                        this.results.put(mineral.getKey(), mineral.getValue() *
+                                (state.getValue(BlockVeinOre.RICHNESS).ordinal() + 1) + this.results.get(mineral.getKey()));
                     }
                 }
                 lastPos = toCheck;

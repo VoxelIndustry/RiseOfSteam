@@ -40,6 +40,9 @@ public class QBarItems
     @ObjectHolder("rawore")
     public static final ItemBase RAW_ORE                   = null;
 
+    @ObjectHolder("drillcoresample")
+    public static final ItemDrillCoreSample DRILL_CORE_SAMPLE = null;
+
     public static List<Item> ITEMS;
 
     public static final void init()
@@ -61,6 +64,7 @@ public class QBarItems
         QBarItems.registerItem(new ItemSludge("compressedmineralsludge"));
         QBarItems.registerItem(new ItemRawOre());
         QBarItems.registerItem(new ItemMixedRawOre());
+        QBarItems.registerItem(new ItemDrillCoreSample());
 
         ITEMS.addAll(QBarBlocks.BLOCKS.values());
     }
