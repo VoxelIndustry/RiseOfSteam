@@ -11,18 +11,60 @@
     ],
     "ores": {
       "pentlandite": {
-        "textures": {
-          "all": "qbar:blocks/pentlandite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/pentlandite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/pentlandite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/pentlandite"
+            }
+          }
         }
       },
       "laterite": {
-        "textures": {
-          "all": "qbar:blocks/laterite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/laterite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/laterite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/laterite"
+            }
+          }
         }
       },
       "garnierite": {
-        "textures": {
-          "all": "qbar:blocks/garnierite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/garnierite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/garnierite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/garnierite"
+            }
+          }
         }
       }
     }

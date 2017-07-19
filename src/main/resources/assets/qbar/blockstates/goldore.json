@@ -10,21 +10,21 @@
       {}
     ],
     "ores": {
-      "sphalerite": {
+      "gold": {
         "richness": {
           "poor": {
             "textures": {
-              "all": "qbar:blocks/sphalerite"
+              "all": "qbar:blocks/gold"
             }
           },
           "normal": {
             "textures": {
-              "all": "qbar:blocks/sphalerite"
+              "all": "qbar:blocks/gold"
             }
           },
           "rich": {
             "textures": {
-              "all": "qbar:blocks/sphalerite"
+              "all": "qbar:blocks/gold"
             }
           }
         }

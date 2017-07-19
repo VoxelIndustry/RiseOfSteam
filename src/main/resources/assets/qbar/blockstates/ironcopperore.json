@@ -11,18 +11,60 @@
     ],
     "ores": {
       "chalcopyrite": {
-        "textures": {
-          "all": "qbar:blocks/chalcopyrite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/chalcopyrite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/chalcopyrite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/chalcopyrite"
+            }
+          }
         }
       },
       "tetrahedrite": {
-        "textures": {
-          "all": "qbar:blocks/tetrahedrite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/tetrahedrite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/tetrahedrite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/tetrahedrite"
+            }
+          }
         }
       },
       "malachite": {
-        "textures": {
-          "all": "qbar:blocks/malachite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/malachite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/malachite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/malachite"
+            }
+          }
         }
       }
     }

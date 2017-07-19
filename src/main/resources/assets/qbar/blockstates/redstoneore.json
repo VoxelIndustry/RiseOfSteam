@@ -10,21 +10,21 @@
       {}
     ],
     "ores": {
-      "sphalerite": {
+      "redstone": {
         "richness": {
           "poor": {
             "textures": {
-              "all": "qbar:blocks/sphalerite"
+              "all": "qbar:blocks/redstone"
             }
           },
           "normal": {
             "textures": {
-              "all": "qbar:blocks/sphalerite"
+              "all": "qbar:blocks/redstone"
             }
           },
           "rich": {
             "textures": {
-              "all": "qbar:blocks/sphalerite"
+              "all": "qbar:blocks/redstone"
             }
           }
         }

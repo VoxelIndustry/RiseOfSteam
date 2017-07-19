@@ -11,8 +11,41 @@
     ],
     "ores": {
       "cassiterite": {
-        "textures": {
-          "all": "qbar:blocks/cassiterite"
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/cassiterite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/cassiterite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/cassiterite"
+            }
+          }
+        }
+      },
+      "teallite": {
+        "richness": {
+          "poor": {
+            "textures": {
+              "all": "qbar:blocks/teallite"
+            }
+          },
+          "normal": {
+            "textures": {
+              "all": "qbar:blocks/teallite"
+            }
+          },
+          "rich": {
+            "textures": {
+              "all": "qbar:blocks/teallite"
+            }
+          }
         }
       }
     }
