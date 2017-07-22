@@ -2,9 +2,13 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url= "http://maven.ferenyr.info/artifactory/opmcorp"}
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath ('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT') {
+            exclude module: 'commons-io'
+        }
+        classpath 'net.opmcorp:craftystates:0.1.0'
     }
 }
 
@@ -15,7 +19,12 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.opmcorp.craftystates'
 
+statesTranspiling {
+    blockstatesPath = "src/main/resources/assets/qbar/blockstates/"
+    prettyPrinting = true
+}
 
 version = "0.1.0" + "-" + (System.env.TRAVIS_BRANCH == null ? "local" : System.env.TRAVIS_BRANCH.replaceAll("/", "-")) + "-r" + System.env.TRAVIS_BUILD_NUMBER
 group = "net.qbar"

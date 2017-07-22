@@ -1,52 +1,51 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
+    "inventory": {
+      "textures": {
+        "all": "qbar:blocks/cassiterite"
+      }
+    },
     "ores=cassiterite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/cassiterite"
+        "all": "qbar:blocks/cassiterite_poor"
       }
     },
     "ores=cassiterite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/cassiterite"
+        "all": "qbar:blocks/cassiterite_normal"
       }
     },
     "ores=cassiterite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/cassiterite"
+        "all": "qbar:blocks/cassiterite_rich"
       }
     },
     "ores=teallite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/teallite"
+        "all": "qbar:blocks/teallite_poor"
       }
     },
     "ores=teallite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/teallite"
+        "all": "qbar:blocks/teallite_normal"
       }
     },
     "ores=teallite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/teallite"
-      }
-    },
-    "inventory": {
-      "model": "cube_all",
-      "textures": {
-        "all": "qbar:blocks/cassiterite"
+        "all": "qbar:blocks/teallite_rich"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }

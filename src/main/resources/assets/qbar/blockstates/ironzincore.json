@@ -1,30 +1,33 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
-    "inventory":
-      {},
+    "inventory": {
+      "textures": {
+        "all": "qbar:blocks/sphalerite"
+      }
+    },
     "ores=sphalerite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/sphalerite"
+        "all": "qbar:blocks/sphalerite_poor"
       }
     },
     "ores=sphalerite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/sphalerite"
+        "all": "qbar:blocks/sphalerite_normal"
       }
     },
     "ores=sphalerite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/sphalerite"
+        "all": "qbar:blocks/sphalerite_rich"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }

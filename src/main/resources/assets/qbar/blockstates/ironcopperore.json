@@ -1,9 +1,8 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
     "inventory": {
@@ -14,56 +13,57 @@
     "ores=chalcopyrite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/chalcopyrite"
+        "all": "qbar:blocks/chalcopyrite_poor"
       }
     },
     "ores=chalcopyrite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/chalcopyrite"
+        "all": "qbar:blocks/chalcopyrite_normal"
       }
     },
     "ores=chalcopyrite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/chalcopyrite"
+        "all": "qbar:blocks/chalcopyrite_rich"
       }
     },
     "ores=malachite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/malachite"
+        "all": "qbar:blocks/malachite_poor"
       }
     },
     "ores=malachite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/malachite"
+        "all": "qbar:blocks/malachite_normal"
       }
     },
     "ores=malachite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/malachite"
+        "all": "qbar:blocks/malachite_rich"
       }
     },
     "ores=tetrahedrite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/tetrahedrite"
+        "all": "qbar:blocks/tetrahedrite_poor"
       }
     },
     "ores=tetrahedrite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/tetrahedrite"
+        "all": "qbar:blocks/tetrahedrite_normal"
       }
     },
     "ores=tetrahedrite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/tetrahedrite"
+        "all": "qbar:blocks/tetrahedrite_rich"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }

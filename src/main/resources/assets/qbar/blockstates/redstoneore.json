@@ -1,30 +1,33 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
-    "inventory":
-      {},
+    "inventory": {
+      "textures": {
+        "all": "qbar:blocks/redstone"
+      }
+    },
     "ores=redstone,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/redstone"
+        "all": "qbar:blocks/redstone_poor"
       }
     },
     "ores=redstone,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/redstone"
+        "all": "qbar:blocks/redstone_normal"
       }
     },
     "ores=redstone,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/redstone"
+        "all": "qbar:blocks/redstone_rich"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }

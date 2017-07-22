@@ -1,31 +1,33 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
-    "inventory": [
-      {}
-    ],
+    "inventory": {
+      "textures": {
+        "all": "qbar:blocks/gold"
+      }
+    },
     "ores=gold,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/gold"
+        "all": "qbar:blocks/gold_poor"
       }
     },
     "ores=gold,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/gold"
+        "all": "qbar:blocks/gold_normal"
       }
     },
     "ores=gold,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/gold"
+        "all": "qbar:blocks/gold_rich"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }
