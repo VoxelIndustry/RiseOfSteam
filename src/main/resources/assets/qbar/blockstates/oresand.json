@@ -1,25 +1,25 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
     "inventory": [
       {}
     ],
-    "variant": {
-      "copper_sand": {
-        "textures": {
-          "all": "qbar:blocks/ores/copper_sand"
-        }
-      },
-      "tin_sand": {
-        "textures": {
-          "all": "qbar:blocks/ores/tin_sand"
-        }
+    "variant=tin_sand": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/ores/tin_sand"
+      }
+    },
+    "variant=copper_sand": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/ores/copper_sand"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }

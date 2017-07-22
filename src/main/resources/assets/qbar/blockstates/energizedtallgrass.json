@@ -1,29 +1,28 @@
 {
-  "forge_marker": 1,
   "defaults": {
-    "transform": "forge:default-block",
     "model": "tall_grass",
-    "textures": {
-      "cross": "qbar:blocks/ores/energized_tallgrass"
-    }
+    "textures": {},
+    "transform": "forge:default-block"
   },
   "variants": {
-    "type": {
-      "tall_grass": {
-        "model": "tall_grass"
-      },
-      "fern": {
-        "model": "fern",
-        "textures": {
-          "cross": "qbar:blocks/ores/energized_fern"
-        }
-      }
-    },
     "inventory": {
       "model": "tall_grass",
       "textures": {
         "cross": "qbar:blocks/ores/energized_tallgrass"
       }
+    },
+    "type=tall_grass": {
+      "model": "tall_grass",
+      "textures": {
+        "cross": "qbar:blocks/ores/energized_tall_grass"
+      }
+    },
+    "type=fern": {
+      "model": "tall_grass",
+      "textures": {
+        "cross": "qbar:blocks/ores/energized_fern"
+      }
     }
-  }
+  },
+  "forge_marker": 1
 }

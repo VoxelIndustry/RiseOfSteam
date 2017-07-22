@@ -1,20 +1,19 @@
 {
-  "forge_marker": 1,
   "defaults": {
+    "model": "cube_all",
     "textures": {},
-    "transform": "forge:default-block",
-    "model": "cube_all"
+    "transform": "forge:default-block"
   },
   "variants": {
     "inventory": [
       {}
     ],
-    "variant": {
-      "tin_clay": {
-        "textures": {
-          "all": "qbar:blocks/ores/tin_clay"
-        }
+    "variant=tin_clay": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/ores/tin_clay"
       }
     }
-  }
+  },
+  "forge_marker": 1
 }
