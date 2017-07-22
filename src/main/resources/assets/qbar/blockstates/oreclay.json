@@ -12,7 +12,7 @@
     "variant": {
       "tin_clay": {
         "textures": {
-          "all": "qbar:blocks/tin_clay"
+          "all": "qbar:blocks/ores/tin_clay"
         }
       }
     }

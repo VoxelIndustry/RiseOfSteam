@@ -14,7 +14,7 @@
     "variant": {
       "gold_stone": {
         "textures": {
-          "all": "qbar:blocks/gold_stone"
+          "all": "qbar:blocks/ores/gold_stone"
         }
       }
     }

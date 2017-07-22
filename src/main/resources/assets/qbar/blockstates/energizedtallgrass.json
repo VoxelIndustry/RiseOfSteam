@@ -4,7 +4,7 @@
     "transform": "forge:default-block",
     "model": "tall_grass",
     "textures": {
-      "cross": "qbar:blocks/energized_tallgrass"
+      "cross": "qbar:blocks/ores/energized_tallgrass"
     }
   },
   "variants": {
@@ -15,14 +15,14 @@
       "fern": {
         "model": "fern",
         "textures": {
-          "cross": "qbar:blocks/energized_fern"
+          "cross": "qbar:blocks/ores/energized_fern"
         }
       }
     },
     "inventory": {
       "model": "tall_grass",
       "textures": {
-        "cross": "qbar:blocks/energized_tallgrass"
+        "cross": "qbar:blocks/ores/energized_tallgrass"
       }
     }
   }

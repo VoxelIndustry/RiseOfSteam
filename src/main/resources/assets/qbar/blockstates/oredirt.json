@@ -12,7 +12,7 @@
     "variant": {
       "iron_dirt": {
         "textures": {
-          "all": "qbar:blocks/iron_dirt"
+          "all": "qbar:blocks/ores/iron_dirt"
         }
       }
     }

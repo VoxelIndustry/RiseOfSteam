@@ -11,7 +11,7 @@
       "ores": ["redstone"],
       "richness": ["poor", "normal", "rich"],
       "values": {
-        "texture#all": "qbar:blocks/#ores_#richness"
+        "texture#all": "qbar:blocks/ores/#ores_#richness"
       }
     }
   }

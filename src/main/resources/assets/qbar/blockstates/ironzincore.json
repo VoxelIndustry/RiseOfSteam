@@ -13,19 +13,19 @@
     "ores=sphalerite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/sphalerite_poor"
+        "all": "qbar:blocks/ores/sphalerite_poor"
       }
     },
     "ores=sphalerite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/sphalerite_normal"
+        "all": "qbar:blocks/ores/sphalerite_normal"
       }
     },
     "ores=sphalerite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/sphalerite_rich"
+        "all": "qbar:blocks/ores/sphalerite_rich"
       }
     }
   },

@@ -13,19 +13,19 @@
     "ores=redstone,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/redstone_poor"
+        "all": "qbar:blocks/ores/redstone_poor"
       }
     },
     "ores=redstone,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/redstone_normal"
+        "all": "qbar:blocks/ores/redstone_normal"
       }
     },
     "ores=redstone,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/redstone_rich"
+        "all": "qbar:blocks/ores/redstone_rich"
       }
     }
   },

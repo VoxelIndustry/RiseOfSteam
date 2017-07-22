@@ -13,19 +13,19 @@
     "ores=gold,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/gold_poor"
+        "all": "qbar:blocks/ores/gold_poor"
       }
     },
     "ores=gold,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/gold_normal"
+        "all": "qbar:blocks/ores/gold_normal"
       }
     },
     "ores=gold,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/gold_rich"
+        "all": "qbar:blocks/ores/gold_rich"
       }
     }
   },

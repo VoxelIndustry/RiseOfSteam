@@ -13,37 +13,37 @@
     "ores=cassiterite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/cassiterite_poor"
+        "all": "qbar:blocks/ores/cassiterite_poor"
       }
     },
     "ores=cassiterite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/cassiterite_normal"
+        "all": "qbar:blocks/ores/cassiterite_normal"
       }
     },
     "ores=cassiterite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/cassiterite_rich"
+        "all": "qbar:blocks/ores/cassiterite_rich"
       }
     },
     "ores=teallite,richness=poor": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/teallite_poor"
+        "all": "qbar:blocks/ores/teallite_poor"
       }
     },
     "ores=teallite,richness=normal": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/teallite_normal"
+        "all": "qbar:blocks/ores/teallite_normal"
       }
     },
     "ores=teallite,richness=rich": {
       "model": "cube_all",
       "textures": {
-        "all": "qbar:blocks/teallite_rich"
+        "all": "qbar:blocks/ores/teallite_rich"
       }
     }
   },

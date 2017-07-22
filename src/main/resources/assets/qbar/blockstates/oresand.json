@@ -12,12 +12,12 @@
     "variant": {
       "copper_sand": {
         "textures": {
-          "all": "qbar:blocks/copper_sand"
+          "all": "qbar:blocks/ores/copper_sand"
         }
       },
       "tin_sand": {
         "textures": {
-          "all": "qbar:blocks/tin_sand"
+          "all": "qbar:blocks/ores/tin_sand"
         }
       }
     }
