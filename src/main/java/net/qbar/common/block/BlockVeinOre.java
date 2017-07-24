@@ -96,14 +96,16 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(VARIANTS, VARIANTS.getByIndex(meta / Richness.values().length))
-                .withProperty(RICHNESS, Richness.values()[meta % Richness.values().length]);
+        return this.getDefaultState()
+                .withProperty(VARIANTS, VARIANTS.getByIndex(meta % VARIANTS.getAllowedValues().size()))
+                .withProperty(RICHNESS, Richness.values()[meta / VARIANTS.getAllowedValues().size()]);
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return VARIANTS.indexOf(state.getValue(VARIANTS)) * (state.getValue(RICHNESS).ordinal() + 1);
+        return VARIANTS.indexOf(state.getValue(VARIANTS))
+                + (state.getValue(RICHNESS).ordinal() * VARIANTS.getAllowedValues().size());
     }
 
     @Override

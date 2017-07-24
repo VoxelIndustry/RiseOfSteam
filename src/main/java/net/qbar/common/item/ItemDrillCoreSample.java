@@ -30,12 +30,15 @@ public class ItemDrillCoreSample extends ItemBase
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("minerals"))
         {
+            tooltip.add("Position: x=" + stack.getTagCompound().getInteger("xpos") + " y="
+                    + stack.getTagCompound().getInteger("ypos") + " z=" + stack.getTagCompound().getInteger("zpos"));
             tooltip.add("Minerals:");
             for (int i = 0; i < stack.getTagCompound().getInteger("minerals"); i++)
             {
                 float quantity = stack.getTagCompound().getFloat("quantity" + i);
-                QBarOres.getMineralFromName(stack.getTagCompound().getString("mineral" + i)).ifPresent(mineral ->
-                        tooltip.add(mineral.getRarity().rarityColor + I18n.format(mineral.getName()) + " " + quantity));
+                QBarOres.getMineralFromName(stack.getTagCompound().getString("mineral" + i))
+                        .ifPresent(mineral -> tooltip.add(
+                                mineral.getRarity().rarityColor + I18n.format(mineral.getName()) + " " + quantity));
             }
         }
     }
