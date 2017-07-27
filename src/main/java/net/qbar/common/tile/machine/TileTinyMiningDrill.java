@@ -3,12 +3,16 @@ package net.qbar.common.tile.machine;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.block.BlockVeinOre;
+import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.item.ItemDrillCoreSample;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.ore.QBarMineral;
@@ -20,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileTinyMiningDrill extends TileInventoryBase implements ITickable, ITileMultiblockCore
+public class TileTinyMiningDrill extends TileInventoryBase implements ITickable, ITileMultiblockCore, IContainerProvider
 {
     @Getter
     @Setter
@@ -60,14 +64,12 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                             if (toCheck.getZ() == this.getPos().getZ() + 7)
                             {
                                 this.progress = 1;
-                                this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(results));
+                                this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
                             }
                             toCheck = new BlockPos(this.getPos().getX() - 7, 0, toCheck.getZ() + 1);
-                        }
-                        else
+                        } else
                             toCheck = new BlockPos(toCheck.getX() + 1, 0, toCheck.getZ());
-                    }
-                    else
+                    } else
                         toCheck = toCheck.up();
                 }
                 this.progress = (((toCheck.getZ() - this.getPos().getZ() + 7) * 15 * (this.getPos().getY() - 1))
@@ -83,7 +85,8 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                     {
                         this.results.putIfAbsent(mineral.getKey(), 0F);
                         this.results.put(mineral.getKey(), mineral.getValue() *
-                                (state.getValue(BlockVeinOre.RICHNESS).ordinal() + 1) + this.results.get(mineral.getKey()));
+                                (state.getValue(BlockVeinOre.RICHNESS).ordinal() + 1) + this.results.get(mineral
+                                .getKey()));
                     }
                 }
                 lastPos = toCheck;
@@ -165,5 +168,13 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
         return null;
+    }
+
+    @Override
+    public BuiltContainer createContainer(EntityPlayer player)
+    {
+        return new ContainerBuilder("fluidtank", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this).outputSlot(0, 0, 0).slot(1, 0, 20).syncFloatValue(this::getProgress,
+                        this::setProgress).addInventory().create();
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,11 +44,15 @@ public class ItemDrillCoreSample extends ItemBase
         }
     }
 
-    public static ItemStack getSample(Map<QBarMineral, Float> results)
+    public static ItemStack getSample(BlockPos pos, Map<QBarMineral, Float> results)
     {
         ItemStack stack = new ItemStack(QBarItems.DRILL_CORE_SAMPLE);
         NBTTagCompound tag = new NBTTagCompound();
         stack.setTagCompound(tag);
+
+        tag.setInteger("xpos", pos.getX());
+        tag.setInteger("ypos", pos.getY());
+        tag.setInteger("zpos", pos.getZ());
 
         int i = 0;
         for (QBarMineral mineral : Sets.newTreeSet(results.keySet()))
