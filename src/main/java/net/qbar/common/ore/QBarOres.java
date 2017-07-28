@@ -94,7 +94,7 @@ public class QBarOres
                 .toolLevel(2).hardness(2.0F).resistance(5.0F)
                 .mineral(REDSTONE, 1f).build();
 
-        ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TEALLITE, CASSITERITE, TEALLITE, PENTLANDITE,
+        ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TETRAHEDRITE, TEALLITE, CASSITERITE, TEALLITE, PENTLANDITE,
                 GARNIERITE, LATERITE, GOLD_ORE, REDSTONE_ORE));
     }
 
@@ -112,7 +112,7 @@ public class QBarOres
 
     public static Optional<QBarOre> getOreFromName(String name)
     {
-        return ORES.stream().filter(ore -> ore.getName().equalsIgnoreCase(name)).findAny();
+        return ORES.stream().filter(ore -> ore.getName().equals(name)).findAny();
     }
 
     public static ItemStack getRawMineral(QBarMineral mineral)

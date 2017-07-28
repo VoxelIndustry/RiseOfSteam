@@ -4,7 +4,6 @@ import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
@@ -12,15 +11,15 @@ import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.qbar.common.util.MathUtils;
 
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 public class QBarOreGenerator implements IWorldGenerator
 {
-    public final Predicate<IBlockState>                   STONE_PREDICATE;
-    public final Predicate<IBlockState>                   DECORATION_PREDICATE;
+    public final Predicate<IBlockState> STONE_PREDICATE;
+    public final Predicate<IBlockState> DECORATION_PREDICATE;
 
     private QBarOreGenerator()
     {
@@ -43,7 +42,7 @@ public class QBarOreGenerator implements IWorldGenerator
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-                         IChunkProvider chunkProvider)
+            IChunkProvider chunkProvider)
     {
         if (world.provider.getDimension() == 0)
             generateVeins(random, chunkX, chunkZ, world);
@@ -69,8 +68,10 @@ public class QBarOreGenerator implements IWorldGenerator
             y = rand.nextInt(vein.getHeightRange().getMaximum() - vein.getHeightRange().getMinimum())
                     + vein.getHeightRange().getMinimum();
 
-            int quantity = (int) (rand.nextInt((int) (Math.floor(vein.getHeapQty() * 1.25f) -
-                    Math.floor(vein.getHeapQty() * 0.75f))) + Math.floor(vein.getHeapQty() * 0.75f));
+            int quantity = vein.getHeapQty();
+
+            if (quantity != 1)
+                quantity = MathUtils.randBetweenGapRatio(rand, vein.getHeapQty(), .25f);
             for (int i = 0; i < quantity; i++)
             {
                 int xShift = 0;
@@ -121,9 +122,7 @@ public class QBarOreGenerator implements IWorldGenerator
 
                 BlockPos veinLocation = new BlockPos(center.getX() + xShift, y + yShift, center.getZ() + zShift);
 
-                int heapSize = (int) (rand.nextInt((int)
-                        (Math.floor(vein.getHeapSize() * 1.25f) - Math.floor(vein.getHeapSize() * 0.75f)))
-                        + Math.floor(vein.getHeapSize() * 0.75f));
+                int heapSize = MathUtils.randBetweenGapRatio(rand, vein.getHeapSize(), .25f);
 
                 if (!vein.getMarkers().isEmpty()
                         && (vein.getHeapQty() == 1 || rand.nextFloat() <= 1.0f / vein.getHeapQty()))
@@ -131,7 +130,8 @@ public class QBarOreGenerator implements IWorldGenerator
                     if (world.isBlockLoaded(veinLocation))
                     {
                         if (vein.getMarkers().size() > 1)
-                            vein.getMarkers().get(rand.nextInt(vein.getMarkers().size())).accept(world, veinLocation, heapSize, vein.getHeapSize());
+                            vein.getMarkers().get(rand.nextInt(vein.getMarkers().size())).accept(world, veinLocation,
+                                    heapSize, vein.getHeapSize());
                         else
                             vein.getMarkers().get(0).accept(world, veinLocation, heapSize, vein.getHeapSize());
                     }
