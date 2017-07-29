@@ -1,21 +1,27 @@
 package net.qbar.common.multiblock.blueprint;
 
-import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.List;
+
 public class BlueprintState
 {
+    @Getter
     private final Blueprint              blueprint;
     private final NonNullList<ItemStack> currentStacks;
-    private int                          currentStep;
-    private int                          currentTime;
+    @Getter
+    private       int                    currentStep;
+    @Getter
+    @Setter
+    private       int                    currentTime;
 
-    private boolean                      isStepStackComplete;
+    private boolean isStepStackComplete;
 
     public BlueprintState(final Blueprint blueprint)
     {
@@ -46,16 +52,6 @@ public class BlueprintState
         return tag;
     }
 
-    public Blueprint getBlueprint()
-    {
-        return this.blueprint;
-    }
-
-    public int getCurrentStep()
-    {
-        return this.currentStep;
-    }
-
     public void setCurrentStep(final int currentStep)
     {
         this.currentStep = currentStep;
@@ -70,16 +66,6 @@ public class BlueprintState
             });
         this.isStepStackComplete = false;
         this.currentTime = 0;
-    }
-
-    public int getCurrentTime()
-    {
-        return this.currentTime;
-    }
-
-    public void setCurrentTime(final int currentTime)
-    {
-        this.currentTime = currentTime;
     }
 
     public int addStack(final ItemStack stack)

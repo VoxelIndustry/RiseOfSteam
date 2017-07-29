@@ -1,20 +1,22 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-        },
-        "transform": "forge:default-block",
-        "custom": { "flip-v": true }
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
     },
-    "variants": {
-        "normal": {
-			"model": "qbar:steampipe.mwm"
-        },
-        "inventory": {
-			"model": "qbar:steampipe_inventory.obj"
-        },
-        "inventoryvalve": {
-        	"model": "qbar:steampipe_inventory_valve.obj"
-        }
+    "transform": "forge:default-block",
+    "custom": {
+      "flip-v": true
     }
+  },
+  "variants": {
+    "normal": {
+      "model": "qbar:steampipe.mwm"
+    },
+    "inventory": {
+      "model": "qbar:steampipe_inventory.obj"
+    },
+    "inventoryvalve": {
+      "model": "qbar:steampipe_inventory_valve.obj"
+    }
+  }
 }

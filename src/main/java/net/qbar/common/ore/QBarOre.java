@@ -1,25 +1,25 @@
 package net.qbar.common.ore;
 
-import net.minecraft.item.EnumRarity;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Singular;
 
+import java.util.Map;
+
+@Getter
+@Builder
 public class QBarOre
 {
-    private final String     name;
-    private final EnumRarity rarity;
+    private String                  name;
+    @Singular
+    private Map<QBarMineral, Float> minerals;
 
-    public QBarOre(String name, EnumRarity rarity)
-    {
-        this.name = name;
-        this.rarity = rarity;
-    }
+    private int toolLevel;
+    private float hardness;
+    private float resistance;
 
-    public String getName()
+    public SludgeData toSludge()
     {
-        return name;
-    }
-
-    public EnumRarity getRarity()
-    {
-        return rarity;
+        return SludgeData.builder().ores(minerals).build();
     }
 }

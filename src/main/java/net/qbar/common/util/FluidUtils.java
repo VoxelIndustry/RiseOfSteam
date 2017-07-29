@@ -87,7 +87,7 @@ public class FluidUtils
     }
 
     public static final boolean drainContainers(final IFluidHandler fluidHandler, final IInventory inv,
-            final int inputSlot, final int outputSlot)
+                                                final int inputSlot, final int outputSlot)
     {
         final ItemStack input = inv.getStackInSlot(inputSlot);
         final ItemStack output = inv.getStackInSlot(outputSlot);
@@ -147,7 +147,7 @@ public class FluidUtils
     }
 
     public static boolean fillContainers(final IFluidHandler fluidHandler, final IInventory inv, final int inputSlot,
-            final int outputSlot, final Fluid fluidToFill)
+                                         final int outputSlot, final Fluid fluidToFill)
     {
         final ItemStack input = inv.getStackInSlot(inputSlot);
         final ItemStack output = inv.getStackInSlot(outputSlot);

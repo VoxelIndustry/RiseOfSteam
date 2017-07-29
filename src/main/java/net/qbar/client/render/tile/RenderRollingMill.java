@@ -1,7 +1,7 @@
 package net.qbar.client.render.tile;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.client.render.RenderUtil;
 import net.qbar.common.tile.machine.TileRollingMill;
@@ -10,7 +10,7 @@ public class RenderRollingMill extends FastTESR<TileRollingMill>
 {
     @Override
     public void renderTileEntityFast(final TileRollingMill tile, final double x, final double y, final double z,
-            final float partialTicks, final int destroyStage, final VertexBuffer VertexBuffer)
+                                     final float partialTicks, final int destroyStage, final float partial, final BufferBuilder VertexBuffer)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + .42, y + 1.2, z + 1.8);

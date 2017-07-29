@@ -1,17 +1,5 @@
 package net.qbar.client.gui;
 
-import org.yggard.brokkgui.data.EAlignment;
-import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.element.GuiLabel;
-import org.yggard.brokkgui.paint.Background;
-import org.yggard.brokkgui.paint.Color;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiRelativePane;
-import org.yggard.brokkgui.skin.GuiButtonSkin;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
-import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -24,21 +12,32 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.FilteredMachinePacket;
 import net.qbar.common.tile.machine.TileExtractor;
+import org.yggard.brokkgui.data.EAlignment;
+import org.yggard.brokkgui.element.GuiButton;
+import org.yggard.brokkgui.element.GuiLabel;
+import org.yggard.brokkgui.paint.Background;
+import org.yggard.brokkgui.paint.Color;
+import org.yggard.brokkgui.paint.Texture;
+import org.yggard.brokkgui.panel.GuiRelativePane;
+import org.yggard.brokkgui.skin.GuiButtonSkin;
+import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
+import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int      xSize      = 176, ySize = 166;
+    private static final int xSize = 176, ySize = 166;
 
-    private static final Texture  BACKGROUND = new Texture(QBar.MODID + ":textures/gui/extractor.png", 0, 0,
+    private static final Texture BACKGROUND = new Texture(QBar.MODID + ":textures/gui/extractor.png", 0, 0,
             GuiExtractor.xSize / 256.0f, GuiExtractor.ySize / 256.0f);
-    private static final Texture  SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
+    private static final Texture SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
 
-    private final TileExtractor   extractor;
+    private final TileExtractor extractor;
 
     private final GuiRelativePane filterPane;
     private final GuiButton       whitelist;
 
-    private final Background      whitelistBackground, whitelistHoveredBackground, blacklistBackground,
+    private final Background whitelistBackground, whitelistHoveredBackground, blacklistBackground,
             blacklistHoveredBackground;
 
     public GuiExtractor(final EntityPlayer player, final TileExtractor extractor)

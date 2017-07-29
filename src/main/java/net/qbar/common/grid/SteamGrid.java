@@ -1,19 +1,18 @@
 package net.qbar.common.grid;
 
+import net.qbar.common.steam.ISteamHandler;
+import net.qbar.common.steam.SteamTank;
+
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-
-import net.qbar.common.steam.ISteamHandler;
-import net.qbar.common.steam.SteamTank;
-
 public class SteamGrid extends CableGrid
 {
-    private int                   transferCapacity;
-    private final SteamTank       tank;
+    private       int       transferCapacity;
+    private final SteamTank tank;
 
     private final Set<ISteamPipe> connectedPipes;
 

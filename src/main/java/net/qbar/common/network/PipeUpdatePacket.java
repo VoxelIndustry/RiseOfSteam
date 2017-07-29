@@ -1,9 +1,9 @@
 package net.qbar.common.network;
 
-import com.elytradev.concrete.Message;
-import com.elytradev.concrete.NetworkContext;
-import com.elytradev.concrete.annotation.field.MarshalledAs;
-import com.elytradev.concrete.annotation.type.ReceivedOn;
+import com.elytradev.concrete.network.Message;
+import com.elytradev.concrete.network.NetworkContext;
+import com.elytradev.concrete.network.annotation.field.MarshalledAs;
+import com.elytradev.concrete.network.annotation.type.ReceivedOn;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -19,16 +19,16 @@ import java.util.List;
 public class PipeUpdatePacket extends Message
 {
     @MarshalledAs("nbt")
-    NBTTagCompound       sourceTag;
+    NBTTagCompound sourceTag;
 
     @MarshalledAs("nbt-list")
     List<NBTTagCompound> adjacentsTag;
 
     @MarshalledAs("blockpos")
-    BlockPos             sourcePos;
+    BlockPos sourcePos;
 
     @MarshalledAs("blockpos-list")
-    List<BlockPos>       adjacentsPos;
+    List<BlockPos> adjacentsPos;
 
     public PipeUpdatePacket(final NetworkContext ctx)
     {

@@ -3,9 +3,9 @@ package net.qbar.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -18,9 +18,7 @@ import net.qbar.common.item.ItemBlueprint;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.Blueprints;
-import net.qbar.common.tile.machine.TileSolarMirror;
 import net.qbar.common.util.ItemUtils;
-import org.lwjgl.opengl.GL11;
 
 public class ClientEventManager
 {
@@ -70,7 +68,7 @@ public class ClientEventManager
                                 RenderGlobal.drawSelectionBoundingBox(
                                         blueprint.getMultiblock()
                                                 .getBox(e.getPlayer().getHorizontalFacing().getOpposite()).offset(pos)
-                                                .expandXyz(0.0020000000949949026D).offset(-x, -y, -z),
+                                                .grow(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);
 
                                 GlStateManager.depthMask(true);
@@ -89,14 +87,14 @@ public class ClientEventManager
                                 GlStateManager.scale(0.625f / 32, 0.625f / 32, 0.625f / 32);
                                 GlStateManager.disableLighting();
 
-                                Minecraft.getMinecraft().fontRendererObj.drawString(
+                                Minecraft.getMinecraft().fontRenderer.drawString(
                                         String.valueOf(blueprint.getRodAmount()),
-                                        -Minecraft.getMinecraft().fontRendererObj
+                                        -Minecraft.getMinecraft().fontRenderer
                                                 .getStringWidth(String.valueOf(blueprint.getRodAmount())) / 2,
                                         0,
                                         e.getPlayer().capabilities.isCreativeMode || ItemUtils.hasPlayerEnough(
                                                 e.getPlayer().inventory, blueprint.getRodStack(), false) ? 38400
-                                                        : 9830400);
+                                                : 9830400);
 
                                 GlStateManager.enableLighting();
                                 GlStateManager.popMatrix();

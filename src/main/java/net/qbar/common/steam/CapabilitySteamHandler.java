@@ -12,7 +12,7 @@ public class CapabilitySteamHandler
     @CapabilityInject(ISteamHandler.class)
     public static Capability<ISteamHandler> STEAM_HANDLER_CAPABILITY = null;
 
-    public static final void register()
+    public static void register()
     {
         CapabilityManager.INSTANCE.register(ISteamHandler.class, new DefaultSteamHandlerStorage<>(),
                 () -> new SteamTank(0, 10000, SteamUtil.AMBIANT_PRESSURE * 2));

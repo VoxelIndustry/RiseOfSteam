@@ -1,0 +1,28 @@
+{
+  "defaults": {
+    "model": "tall_grass",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": {
+      "model": "tall_grass",
+      "textures": {
+        "cross": "qbar:blocks/ores/energized_tallgrass"
+      }
+    },
+    "type=tall_grass": {
+      "model": "tall_grass",
+      "textures": {
+        "cross": "qbar:blocks/ores/energized_tall_grass"
+      }
+    },
+    "type=fern": {
+      "model": "tall_grass",
+      "textures": {
+        "cross": "qbar:blocks/ores/energized_fern"
+      }
+    }
+  },
+  "forge_marker": 1
+}

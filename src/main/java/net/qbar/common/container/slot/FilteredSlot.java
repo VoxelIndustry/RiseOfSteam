@@ -1,9 +1,9 @@
 package net.qbar.common.container.slot;
 
-import java.util.function.Predicate;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import java.util.function.Predicate;
 
 public class FilteredSlot extends ListenerSlot
 {

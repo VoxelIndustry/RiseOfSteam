@@ -1,7 +1,5 @@
 package net.qbar.common.tile;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -12,6 +10,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.qbar.common.util.ItemUtils;
+
+import javax.annotation.Nonnull;
 
 public abstract class TileInventoryBase extends QBarTileBase implements IInventory
 {

@@ -30,7 +30,7 @@ public interface ITileCable<T extends CableGrid>
     T createGrid(int nextID);
 
     @Nullable
-    public default T getGridObject()
+    default T getGridObject()
     {
         try
         {

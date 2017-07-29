@@ -1,7 +1,6 @@
 package net.qbar.common.item;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -16,17 +15,20 @@ public class ItemPlate extends ItemBase
     }
 
     @Override
-    public void getSubItems(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> list)
+    public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> list)
     {
-        QBarRecipeHandler.metals.forEach(metal ->
+        if (this.isInCreativeTab(tab))
         {
-            final ItemStack stack = new ItemStack(this);
-            final NBTTagCompound tag = new NBTTagCompound();
-            stack.setTagCompound(tag);
+            QBarRecipeHandler.metals.forEach(metal ->
+            {
+                final ItemStack stack = new ItemStack(this);
+                final NBTTagCompound tag = new NBTTagCompound();
+                stack.setTagCompound(tag);
 
-            tag.setString("metal", metal);
-            list.add(stack);
-        });
+                tag.setString("metal", metal);
+                list.add(stack);
+            });
+        }
     }
 
     @Override

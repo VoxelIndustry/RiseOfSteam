@@ -5,11 +5,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.SludgeData;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class SludgeRecipe implements IRecipe
@@ -30,14 +32,14 @@ public class SludgeRecipe implements IRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        SludgeData data = new SludgeData();
+        SludgeData data = SludgeData.builder().build();
 
         for (int i = 0; i < 9; i++)
         {
             SludgeData previous = SludgeData
                     .fromNBT(inv.getStackInSlot(i).getTagCompound().getCompoundTag("sludgeData"));
 
-            for (Map.Entry<QBarOre, Float> ore : previous.getOres().entrySet())
+            for (Map.Entry<QBarMineral, Float> ore : previous.getOres().entrySet())
                 data.addOre(ore.getKey(), ore.getValue() / 9);
         }
         ItemStack result = this.result.copy();
@@ -47,9 +49,9 @@ public class SludgeRecipe implements IRecipe
     }
 
     @Override
-    public int getRecipeSize()
+    public boolean canFit(int width, int height)
     {
-        return 3;
+        return width == 3 && height == 3;
     }
 
     @Override
@@ -62,5 +64,24 @@ public class SludgeRecipe implements IRecipe
     public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    }
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return null;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return null;
     }
 }

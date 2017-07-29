@@ -25,19 +25,20 @@ import net.minecraftforge.common.property.Properties;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.block.BlockMachineBase;
+import net.qbar.common.tile.QBarTileBase;
 
 import javax.annotation.Nullable;
 
-public abstract class BlockMultiblockBase extends BlockMachineBase implements IWrenchable
+public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblockCore> extends BlockMachineBase<T> implements IWrenchable
 {
     public static final PropertyBool      MULTIBLOCK_GAG = PropertyBool.create("multiblockgag");
     public static final PropertyDirection FACING         = BlockHorizontal.FACING;
 
-    private final IMultiblockDescriptor   descriptor;
+    private final IMultiblockDescriptor descriptor;
 
-    public BlockMultiblockBase(final String name, final Material material, final IMultiblockDescriptor descriptor)
+    public BlockMultiblockBase(final String name, final Material material, final IMultiblockDescriptor descriptor, Class<T> tileClass)
     {
-        super(name, material);
+        super(name, material, tileClass);
 
         this.descriptor = descriptor;
 
@@ -110,8 +111,8 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
     public BlockStateContainer createBlockState()
     {
         return new ExtendedBlockState(this,
-                new IProperty[] { BlockMultiblockBase.MULTIBLOCK_GAG, BlockMultiblockBase.FACING },
-                new IUnlistedProperty[] { Properties.AnimationProperty });
+                new IProperty[]{BlockMultiblockBase.MULTIBLOCK_GAG, BlockMultiblockBase.FACING},
+                new IUnlistedProperty[]{Properties.AnimationProperty});
     }
 
     @Override
@@ -142,7 +143,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         final Iterable<BlockPos> searchables = this.descriptor.getAllInBox(pos, BlockMultiblockBase.getFacing(state));
 
@@ -166,7 +167,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
         if (tile != null)
         {
-            if(tile.isCore())
+            if (tile.isCore())
             {
                 if (tile instanceof IInventory)
                 {
@@ -191,8 +192,8 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     @Override
     public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-            final float hitZ)
+                                    final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+                                    final float hitZ)
     {
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
 
@@ -215,7 +216,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, false)
                 .withProperty(BlockMultiblockBase.FACING, placer.getHorizontalFacing().getOpposite());
@@ -223,7 +224,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state, ItemStack wrench)
+                            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         return false;
     }
@@ -237,7 +238,7 @@ public abstract class BlockMultiblockBase extends BlockMachineBase implements IW
         return this.getTile(w, state);
     }
 
-    public abstract TileEntity getTile(final World w, final IBlockState state);
+    public abstract T getTile(final World w, final IBlockState state);
 
     public IMultiblockDescriptor getDescriptor()
     {

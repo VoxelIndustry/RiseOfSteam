@@ -1,15 +1,5 @@
 package net.qbar.client.gui;
 
-import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.paint.Background;
-import org.yggard.brokkgui.paint.Color;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiRelativePane;
-import org.yggard.brokkgui.skin.GuiButtonSkin;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
-import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -26,22 +16,31 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.KeypunchPacket;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.util.ItemUtils;
+import org.yggard.brokkgui.element.GuiButton;
+import org.yggard.brokkgui.paint.Background;
+import org.yggard.brokkgui.paint.Color;
+import org.yggard.brokkgui.paint.Texture;
+import org.yggard.brokkgui.panel.GuiRelativePane;
+import org.yggard.brokkgui.skin.GuiButtonSkin;
+import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
+import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int      xSize      = 176, ySize = 166;
+    private static final int xSize = 176, ySize = 166;
 
-    private static final Texture  BACKGROUND = new Texture(QBar.MODID + ":textures/gui/keypunch.png", 0, 0,
+    private static final Texture BACKGROUND = new Texture(QBar.MODID + ":textures/gui/keypunch.png", 0, 0,
             GuiKeypunch.xSize / 256.0f, GuiKeypunch.ySize / 256.0f);
-    private static final Texture  SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
+    private static final Texture SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
 
-    private final TileKeypunch    keypunch;
+    private final TileKeypunch keypunch;
 
     private final GuiRelativePane header, body;
 
-    private final GuiButton       assemble;
+    private final GuiButton assemble;
 
-    final GuiRelativePane         filterPane, craftPane;
+    final GuiRelativePane filterPane, craftPane;
 
     public GuiKeypunch(final EntityPlayer player, final TileKeypunch keypunch)
     {
@@ -190,7 +189,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         for (int i = 0; i < 9; i++)
             fakeInv.setInventorySlotContents(i, this.keypunch.getCraftStacks().get(i));
         final ItemStackView resultView = new ItemStackView(
-                CraftingManager.getInstance().findMatchingRecipe(fakeInv, this.keypunch.getWorld()));
+                CraftingManager.findMatchingRecipe(fakeInv, this.keypunch.getWorld()).getRecipeOutput());
         resultView.setWidth(22);
         resultView.setHeight(22);
         ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
@@ -276,7 +275,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 if (this.keypunch.getCraftTabProperty().getValue()
                         && stack.getTagCompound().getInteger("cardTypeID") == ECardType.CRAFT.getID()
                         || !this.keypunch.getCraftTabProperty().getValue()
-                                && stack.getTagCompound().getInteger("cardTypeID") == ECardType.FILTER.getID())
+                        && stack.getTagCompound().getInteger("cardTypeID") == ECardType.FILTER.getID())
                     this.assemble.setDisabled(false);
                 else
                     this.assemble.setDisabled(true);

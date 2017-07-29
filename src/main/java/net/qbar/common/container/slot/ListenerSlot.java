@@ -1,10 +1,10 @@
 package net.qbar.common.container.slot;
 
-import java.util.function.Consumer;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import java.util.function.Consumer;
 
 public class ListenerSlot extends Slot
 {

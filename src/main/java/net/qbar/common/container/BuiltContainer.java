@@ -1,7 +1,11 @@
 package net.qbar.common.container;
 
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.container.sync.SyncableProperty;
@@ -15,23 +19,23 @@ import java.util.function.Predicate;
 
 public class BuiltContainer extends Container
 {
+    @Getter
+    private final String name;
 
-    private final String                      name;
+    private final EntityPlayer player;
 
-    private final EntityPlayer                player;
-
-    private final Predicate<EntityPlayer>     canInteract;
-    private final List<Range<Integer>>        playerSlotRanges;
-    private final List<Range<Integer>>        tileSlotRanges;
+    private final Predicate<EntityPlayer> canInteract;
+    private final List<Range<Integer>>    playerSlotRanges;
+    private final List<Range<Integer>>    tileSlotRanges;
 
     private List<SyncableProperty<?>>         syncablesValues;
     private List<Consumer<InventoryCrafting>> craftEvents;
 
-    private final List<IInventory>            inventories;
+    private final List<IInventory> inventories;
 
     public BuiltContainer(final String name, final EntityPlayer player, final List<IInventory> inventories,
-            final Predicate<EntityPlayer> canInteract, final List<Range<Integer>> playerSlotRange,
-            final List<Range<Integer>> tileSlotRange)
+                          final Predicate<EntityPlayer> canInteract, final List<Range<Integer>> playerSlotRange,
+                          final List<Range<Integer>> tileSlotRange)
     {
         this.player = player;
         this.name = name;
@@ -230,11 +234,6 @@ public class BuiltContainer extends Container
             if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
                 return true;
         return false;
-    }
-
-    public String getName()
-    {
-        return this.name;
     }
 
     @Override

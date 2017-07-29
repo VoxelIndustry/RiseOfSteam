@@ -106,6 +106,7 @@ public class DefaultSyncables
             return this.stored.equals(other) && this.stored.amount == other.amount;
         }
 
+        @Override
         public FluidStack copy(FluidStack original)
         {
             return original.copy();
@@ -133,6 +134,7 @@ public class DefaultSyncables
             super(supplier, consumer);
         }
 
+        @Override
         public ItemStack copy(ItemStack original)
         {
             return original.copy();

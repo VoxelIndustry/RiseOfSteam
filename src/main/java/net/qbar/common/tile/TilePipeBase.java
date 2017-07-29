@@ -19,14 +19,14 @@ import java.util.Map.Entry;
 
 public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
-    protected final EnumSet<EnumFacing>                renderConnections;
+    protected final EnumSet<EnumFacing> renderConnections;
 
     protected final EnumMap<EnumFacing, ITileCable<G>> connections;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;
     protected final Capability<H>                      capability;
-    protected int                                      grid;
+    protected       int                                grid;
 
-    protected int                                      transferCapacity;
+    protected int transferCapacity;
 
     public TilePipeBase(final int transferCapacity, final Capability<H> capability)
     {
@@ -68,7 +68,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     @Override
     public EnumFacing[] getConnections()
     {
-        return this.connections.keySet().toArray(new EnumFacing[0]);
+        return this.connections.keySet().toArray(new EnumFacing[this.connections.size()]);
     }
 
     public Collection<H> getConnectedHandlers()

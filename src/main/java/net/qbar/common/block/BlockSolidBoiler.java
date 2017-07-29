@@ -12,11 +12,11 @@ import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileSolidBoiler;
 
-public class BlockSolidBoiler extends BlockMultiblockBase
+public class BlockSolidBoiler extends BlockMultiblockBase<TileSolidBoiler>
 {
     public BlockSolidBoiler()
     {
-        super("solid_boiler", Material.IRON, Multiblocks.SOLID_BOILER);
+        super("solid_boiler", Material.IRON, Multiblocks.SOLID_BOILER, TileSolidBoiler.class);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BlockSolidBoiler extends BlockMultiblockBase
     }
 
     @Override
-    public TileEntity getTile(final World w, final IBlockState state)
+    public TileSolidBoiler getTile(final World w, final IBlockState state)
     {
         return new TileSolidBoiler();
     }

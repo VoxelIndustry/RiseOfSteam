@@ -13,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.qbar.common.tile.machine.TileFluidPump;
 
-public class BlockFluidPump extends BlockOrientableMachine
+public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
 {
     protected static final AxisAlignedBB AABB_EAST     = new AxisAlignedBB(0.00D, 0.30D, 0.00D, 1.00D, 0.80D, 0.85D);
     protected static final AxisAlignedBB AABB_NOTH     = new AxisAlignedBB(0.00D, 0.30D, 0.00D, 0.85D, 0.80D, 1.00D);
@@ -23,7 +23,7 @@ public class BlockFluidPump extends BlockOrientableMachine
 
     public BlockFluidPump()
     {
-        super("fluidpump", Material.IRON, true, true);
+        super("fluidpump", Material.IRON, true, true, TileFluidPump.class);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class BlockFluidPump extends BlockOrientableMachine
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         super.onBlockPlacedBy(w, pos, state, placer, stack);
         if (!w.isRemote)
@@ -65,7 +65,7 @@ public class BlockFluidPump extends BlockOrientableMachine
 
     @Override
     public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
-            final BlockPos posNeighbor)
+                                final BlockPos posNeighbor)
     {
         if (!w.isRemote)
         {

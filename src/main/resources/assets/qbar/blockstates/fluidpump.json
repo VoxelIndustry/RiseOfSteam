@@ -1,45 +1,66 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-        },
-        "model": "qbar:fluidpump.obj",
-        "custom": { "flip-v": true },
-        "transform": "forge:default-block"
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
     },
-    "variants": {
-        "normal": {
-            "transform": "forge:default-block"
-        },
-        "facing": {
-            "north": {
-                "y": 90
-            },
-            "south": {
-                "y": 270
-            },
-            "east": {
-                "y": 180
-            },
-            "west": {},
-            "up": {
-                "transform": {
-                    "rotation": [{"z": -90}]
-                }
-            },
-            "down": {
-                "transform": {
-                    "rotation": [{"z": 90}]
-                }
+    "model": "qbar:fluidpump.obj",
+    "custom": {
+      "flip-v": true
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 90
+      },
+      "south": {
+        "y": 270
+      },
+      "east": {
+        "y": 180
+      },
+      "west": {},
+      "up": {
+        "transform": {
+          "rotation": [
+            {
+              "z": -90
             }
-        },
-        "inventory": {
-            "model": "qbar:fluidpump.obj",
-            "transform": {
-                "scale": 0.85,
-                "rotation": [{"x": 20}, {"y": -45}],
-                "translation": [0, -0.025, 0]
-            }
+          ]
         }
+      },
+      "down": {
+        "transform": {
+          "rotation": [
+            {
+              "z": 90
+            }
+          ]
+        }
+      }
+    },
+    "inventory": {
+      "model": "qbar:fluidpump.obj",
+      "transform": {
+        "scale": 0.85,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.025,
+          0
+        ]
+      }
     }
+  }
 }

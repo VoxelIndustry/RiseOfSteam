@@ -19,14 +19,14 @@ import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
 public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int     xSize      = 176, ySize = 188;
+    private static final int xSize = 176, ySize = 188;
 
     private static final Texture BACKGROUND = new Texture(QBar.MODID + ":textures/gui/assembler.png", 0, 0,
             xSize / 256.0f, ySize / 256.0f);
 
-    private final TileAssembler  assembler;
+    private final TileAssembler assembler;
 
-    final GuiAbsolutePane        craftPane;
+    final GuiAbsolutePane craftPane;
 
     public GuiAssembler(final EntityPlayer player, final TileAssembler assembler)
     {

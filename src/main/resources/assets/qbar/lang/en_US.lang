@@ -79,3 +79,22 @@ ore.tin=Tin
 ore.copper=Copper
 ore.nickel=Nickel
 ore.zinc=Zinc
+
+tile.ironcopperore.chalcopyrite.name=Chalcopyrite Ore
+tile.ironcopperore.tetrahedrite.name=Tetrahedrite Ore
+tile.ironcopperore.malachite.name=Malachite Ore
+
+tile.ironnickelore.pentlandite.name=Pentlandite Ore
+tile.ironnickelore.garnierite.name=Garnierite Ore
+tile.ironnickelore.laterite.name=Laterite Ore
+
+tile.ironzincore.sphalerite.name=Sphalerite Ore
+
+tile.tinore.cassiterite.name=Cassiterite Ore
+
+tile.oredirt.iron_dirt.name=Ferrous Dirt
+tile.oreclay.tin_clay.name=Tin Clay
+tile.oresand.copper_sand.name=Copper Sand
+tile.oresand.tin_sand.name=Tin Sand
+tile.orestone.gold_rock.name=Gold Bearing Rock
+

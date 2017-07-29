@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import java.util.List;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -17,30 +15,32 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
-import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.QBarTileBase;
+
+import java.util.List;
 
 public class TileOffshorePump extends QBarTileBase implements ITickable
 {
-    private int               transferCapacity;
-    private IFluidHandler     top;
-    private boolean           water = false;
+    private int           transferCapacity;
+    private IFluidHandler top;
+    private boolean water = false;
 
     private final LimitedTank tank;
 
-    private final SteamTank   steamTank;
+    private final SteamTank steamTank;
 
-    private EnumFacing        facing;
+    private EnumFacing facing;
 
     public TileOffshorePump(final int transferCapacity)
     {
         this.transferCapacity = transferCapacity;
 
-        this.tank = new LimitedTank("TileOffshorePump", 0, 0);
+        this.tank = new LimitedTank("offshorepump", 0, 0);
         this.tank.setCanDrain(false);
         this.tank.setCanFill(false);
 
-        this.steamTank = new SteamTank(0, 4000, SteamUtil.AMBIANT_PRESSURE * 2);
+        this.steamTank = new SteamTank(0, QBarMachines.OFFSHORE_PUMP.getSteamCapacity(),
+                QBarMachines.OFFSHORE_PUMP.getMaxPressureCapacity());
 
         this.facing = EnumFacing.NORTH;
     }

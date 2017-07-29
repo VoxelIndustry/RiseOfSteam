@@ -1,18 +1,19 @@
 package net.qbar.common.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemRawOre extends ItemBase
@@ -24,14 +25,18 @@ public class ItemRawOre extends ItemBase
         this.setHasSubtypes(true);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ore"))
-            tooltip.add(QBarOres.getOreFromName(stack.getTagCompound().getString("ore")).get().getRarity().rarityColor
-                    + I18n.translateToLocal(stack.getTagCompound().getString("ore")));
+        {
+            QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).ifPresent(mineral ->
+                    tooltip.add(mineral.getRarity().rarityColor + I18n.translateToLocal(stack.getTagCompound().getString("ore"))));
+        }
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         if (stack.hasTagCompound())
@@ -44,21 +49,23 @@ public class ItemRawOre extends ItemBase
     public EnumRarity getRarity(ItemStack stack)
     {
         if (stack.hasTagCompound())
-            return QBarOres.getOreFromName(stack.getTagCompound().getString("ore")).get().getRarity();
+            return QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).get().getRarity();
         return EnumRarity.COMMON;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        for (QBarOre ore : QBarOres.ORES)
+        if (this.isInCreativeTab(tab))
         {
-            ItemStack stack = new ItemStack(item);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("ore", ore.getName());
-            stack.getTagCompound().setString("density", "normal");
-            subItems.add(stack);
+            for (QBarMineral ore : QBarOres.MINERALS)
+            {
+                ItemStack stack = new ItemStack(this);
+                stack.setTagCompound(new NBTTagCompound());
+                stack.getTagCompound().setString("ore", ore.getName());
+                stack.getTagCompound().setString("density", "normal");
+                subItems.add(stack);
+            }
         }
     }
 }

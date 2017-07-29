@@ -1,22 +1,26 @@
 package net.qbar.common.init;
 
-import net.qbar.common.item.*;
-import org.apache.commons.lang3.StringUtils;
-
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
+import net.qbar.common.item.*;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ObjectHolder(QBar.MODID)
 public class QBarItems
 {
     @ObjectHolder("punched_card")
-    public static final ItemBase PUNCHED_CARD    = null;
+    public static final ItemBase PUNCHED_CARD = null;
 
     @ObjectHolder("wrench")
-    public static final ItemBase WRENCH          = null;
+    public static final ItemBase WRENCH = null;
 
     @ObjectHolder("blueprint")
     public static final ItemBase BLUEPRINT       = null;
@@ -28,16 +32,23 @@ public class QBarItems
     public static final ItemBase SOLAR_REFLECTOR = null;
 
     @ObjectHolder("mineralsludge")
-    public static final ItemBase MINERAL_SLUDGE = null;
+    public static final ItemBase MINERAL_SLUDGE            = null;
     @ObjectHolder("compressedmineralsludge")
     public static final ItemBase COMPRESSED_MINERAL_SLUDGE = null;
     @ObjectHolder("mixedrawore")
-    public static final ItemBase MIXED_RAW_ORE = null;
+    public static final ItemBase MIXED_RAW_ORE             = null;
     @ObjectHolder("rawore")
-    public static final ItemBase RAW_ORE = null;
+    public static final ItemBase RAW_ORE                   = null;
 
-    public static final void registerItems()
+    @ObjectHolder("drillcoresample")
+    public static final ItemDrillCoreSample DRILL_CORE_SAMPLE = null;
+
+    public static List<Item> ITEMS;
+
+    public static final void init()
     {
+        ITEMS = new ArrayList<>();
+
         QBarItems.registerMetal("iron");
         QBarItems.registerMetal("gold");
 
@@ -53,14 +64,20 @@ public class QBarItems
         QBarItems.registerItem(new ItemSludge("compressedmineralsludge"));
         QBarItems.registerItem(new ItemRawOre());
         QBarItems.registerItem(new ItemMixedRawOre());
+        QBarItems.registerItem(new ItemDrillCoreSample());
+
+        ITEMS.addAll(QBarBlocks.BLOCKS.values());
+    }
+
+    @SubscribeEvent
+    public void onItemRegister(RegistryEvent.Register<Item> event)
+    {
+        event.getRegistry().registerAll(ITEMS.stream().toArray(Item[]::new));
     }
 
     private static final void registerItem(final ItemBase item)
     {
-        item.setRegistryName(QBar.MODID, item.name);
-        GameRegistry.register(item);
-
-        QBar.proxy.registerItemRenderer(item, 0, item.name);
+        ITEMS.add(item);
     }
 
     private static final void registerMetal(final String metalName)

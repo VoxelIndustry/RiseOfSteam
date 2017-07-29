@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.qbar.common.tile.machine.TileOffshorePump;
 
-public class BlockOffshorePump extends BlockOrientableMachine
+public class BlockOffshorePump extends BlockOrientableMachine<TileOffshorePump>
 {
     protected static final AxisAlignedBB AABB_EAST  = new AxisAlignedBB(0.20D, 0.00D, 0.00D, 1.00D, 1.00D, 0.77D);
     protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.00D, 0.00D, 0.00D, 0.80D, 1.00D, 0.77D);
@@ -21,7 +21,7 @@ public class BlockOffshorePump extends BlockOrientableMachine
 
     public BlockOffshorePump()
     {
-        super("offshore_pump", Material.IRON, true, false);
+        super("offshore_pump", Material.IRON, true, false, TileOffshorePump.class);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class BlockOffshorePump extends BlockOrientableMachine
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         super.onBlockPlacedBy(w, pos, state, placer, stack);
         if (!w.isRemote)

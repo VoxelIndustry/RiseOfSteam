@@ -1,12 +1,11 @@
 package net.qbar.common.recipe;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
+import org.apache.commons.lang3.StringUtils;
 
 public class QBarRecipeHelper
 {

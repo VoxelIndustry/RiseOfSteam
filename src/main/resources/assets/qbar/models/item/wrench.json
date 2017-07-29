@@ -1,6 +1,6 @@
 {
-  "parent":"item/generated",
+  "parent": "item/generated",
   "textures": {
-    "layer0":"qbar:items/wrench"
+    "layer0": "qbar:items/wrench"
   }
 }

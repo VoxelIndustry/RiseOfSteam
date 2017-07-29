@@ -1,8 +1,8 @@
 package net.qbar.common.grid;
 
-import java.util.Collection;
-
 import net.qbar.common.steam.ISteamHandler;
+
+import java.util.Collection;
 
 public interface ISteamPipe extends ITileCable<SteamGrid>
 {

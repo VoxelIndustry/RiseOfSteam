@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TileMultiblockGag extends QBarTileBase implements ITileMultiblock, ITileInfoProvider, IConnectionAware
 {
-    private BlockPos corePos    = this.pos;
+    private BlockPos corePos = this.pos;
 
     private BlockPos coreOffset = null;
 

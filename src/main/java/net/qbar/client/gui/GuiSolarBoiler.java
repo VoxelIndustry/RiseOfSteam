@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
+import net.qbar.client.gui.util.GuiMachineBase;
 import net.qbar.common.tile.machine.TileSolarBoiler;
 
 import java.text.NumberFormat;
@@ -26,7 +27,7 @@ public class GuiSolarBoiler extends GuiMachineBase<TileSolarBoiler>
 
     public GuiSolarBoiler(final EntityPlayer player, final TileSolarBoiler boiler)
     {
-        super(player, boiler);
+        super(player, boiler, BACKGROUND);
 
         this.addFluidTank(boiler.getWaterTank(), 128, 7, 18, 73);
         this.addSteamTank(boiler.getSteamTank(), 151, 7, 18, 73);
@@ -46,7 +47,7 @@ public class GuiSolarBoiler extends GuiMachineBase<TileSolarBoiler>
             GuiUtils.drawHoveringText(
                     Arrays.asList(TextFormatting.GOLD + "" + heatFormat.format(this.getMachine().getHeat() / 10) + " / "
                             + this.getMachine().getMaxHeat() / 10 + " °C"),
-                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
     }
@@ -54,16 +55,13 @@ public class GuiSolarBoiler extends GuiMachineBase<TileSolarBoiler>
     @Override
     protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY)
     {
-        this.mc.renderEngine.bindTexture(BACKGROUND);
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
 
         final int heatProgress = this.getHeatScaled(71);
         this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 85 - heatProgress, 12, heatProgress);
-
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
     }
 
     private int getHeatScaled(final int pixels)

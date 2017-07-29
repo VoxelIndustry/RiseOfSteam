@@ -1,18 +1,19 @@
 package net.qbar.common.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.common.ore.QBarOre;
+import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.ore.SludgeData;
 
+import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
@@ -34,30 +35,36 @@ public class ItemSludge extends ItemBase
         this.setHasSubtypes(true);
     }
 
+
+    @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("sludgeData"))
         {
             SludgeData data = SludgeData.fromNBT(stack.getTagCompound().getCompoundTag("sludgeData"));
 
-            for (Map.Entry<QBarOre, Float> ore : data.getOres().entrySet())
+            for (Map.Entry<QBarMineral, Float> ore : data.getOres().entrySet())
                 tooltip.add(ore.getKey().getRarity().rarityColor + I18n.translateToLocal(ore.getKey().getName()) + " "
                         + percentFormatter.format(ore.getValue()));
         }
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        for (QBarOre ore : QBarOres.ORES)
+        if (this.isInCreativeTab(tab))
         {
-            ItemStack stack = new ItemStack(item);
+            for (QBarMineral ore : QBarOres.MINERALS)
+            {
+                ItemStack stack = new ItemStack(this);
 
-            NBTTagCompound data = new SludgeData().addOre(ore, 1).writeToNBT(new NBTTagCompound());
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setTag("sludgeData", data);
-            subItems.add(stack);
+                NBTTagCompound data = SludgeData.builder().ore(ore, 1f).build().writeToNBT(new NBTTagCompound());
+                stack.setTagCompound(new NBTTagCompound());
+                stack.getTagCompound().setTag("sludgeData", data);
+                subItems.add(stack);
+            }
         }
     }
 }

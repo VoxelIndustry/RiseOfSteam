@@ -1,19 +1,22 @@
 package net.qbar.common.compat.jei;
 
+import lombok.Getter;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
+import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
+import net.qbar.QBar;
 import net.qbar.client.gui.GuiRollingMill;
 import net.qbar.common.recipe.QBarRecipeHandler;
 
-public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRecipeWrapper>
+public class RollingMillRecipeCategory implements IRecipeCategory<RollingMillRecipeWrapper>
 {
     private final IDrawable background;
+    @Getter
     private final String    title;
 
     public RollingMillRecipeCategory(final IGuiHelper guiHelper)
@@ -29,9 +32,9 @@ public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRe
     }
 
     @Override
-    public String getTitle()
+    public String getModName()
     {
-        return this.title;
+        return QBar.MODNAME;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class RollingMillRecipeCategory extends BlankRecipeCategory<RollingMillRe
 
     @Override
     public void setRecipe(final IRecipeLayout recipeLayout, final RollingMillRecipeWrapper recipeWrapper,
-            final IIngredients ingredients)
+                          final IIngredients ingredients)
     {
         final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         guiItemStacks.init(0, true, 0, 19);

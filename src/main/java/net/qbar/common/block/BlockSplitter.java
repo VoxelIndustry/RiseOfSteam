@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,24 +22,24 @@ import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.machine.TileSplitter;
 
-public class BlockSplitter extends BlockOrientableMachine
+public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
 {
     protected static final AxisAlignedBB AABB_BOTTOM_HALF = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 14 / 16D, 1.0D);
-    public static PropertyBool           FILTER           = PropertyBool.create("filter");
+    public static          PropertyBool  FILTER           = PropertyBool.create("filter");
 
     public BlockSplitter()
     {
-        super("itemsplitter", Material.IRON, true, false);
+        super("itemsplitter", Material.IRON, true, false, TileSplitter.class);
         this.setDefaultState(
                 this.blockState.getBaseState().withProperty(BlockOrientableMachine.FACING, EnumFacing.NORTH)
                         .withProperty(BlockSplitter.FILTER, false));
     }
 
     @Override
-    public void getSubBlocks(final Item item, final CreativeTabs tab, final NonNullList<ItemStack> stacks)
+    public void getSubBlocks(final CreativeTabs tab, final NonNullList<ItemStack> stacks)
     {
-        stacks.add(new ItemStack(item, 1, 0));
-        stacks.add(new ItemStack(item, 1, 1));
+        stacks.add(new ItemStack(this, 1, 0));
+        stacks.add(new ItemStack(this, 1, 1));
     }
 
     @Override
@@ -51,8 +50,8 @@ public class BlockSplitter extends BlockOrientableMachine
 
     @Override
     public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-            final float hitZ)
+                                    final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+                                    final float hitZ)
     {
         if (player.isSneaking())
             return false;
@@ -110,7 +109,7 @@ public class BlockSplitter extends BlockOrientableMachine
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
     {
         return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer)
                 .withProperty(BlockSplitter.FILTER, meta == 1);
@@ -127,7 +126,7 @@ public class BlockSplitter extends BlockOrientableMachine
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
         super.onBlockPlacedBy(w, pos, state, placer, stack);
         if (!w.isRemote)

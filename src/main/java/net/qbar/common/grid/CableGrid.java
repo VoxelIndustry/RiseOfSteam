@@ -1,13 +1,17 @@
 package net.qbar.common.grid;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.annotation.Nonnull;
-
+@EqualsAndHashCode
+@ToString
 public abstract class CableGrid
 {
-    private final int                    identifier;
+    private final int identifier;
 
     private final HashSet<ITileCable<?>> cables;
 
@@ -35,8 +39,7 @@ public abstract class CableGrid
     /**
      * Called on the destination grid after the merging has occurred.
      *
-     * @param the
-     *            source grid
+     * @param the source grid
      */
     void onMerge(final CableGrid grid)
     {
@@ -47,8 +50,7 @@ public abstract class CableGrid
      * Called after a grid splitting has occurred, each new fragment will
      * receive this event.
      *
-     * @param the
-     *            grid source grid before splitting.
+     * @param the grid source grid before splitting.
      */
     void onSplit(final CableGrid grid)
     {
@@ -94,43 +96,5 @@ public abstract class CableGrid
     public HashSet<ITileCable<?>> getCables()
     {
         return this.cables;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "CableGrid [identifier=" + this.identifier + ", cables=" + this.cables + "]";
-    }
-
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.cables == null ? 0 : this.cables.hashCode());
-        result = prime * result + this.identifier;
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (this.getClass() != obj.getClass())
-            return false;
-        final CableGrid other = (CableGrid) obj;
-        if (this.cables == null)
-        {
-            if (other.cables != null)
-                return false;
-        }
-        else if (!this.cables.equals(other.cables))
-            return false;
-        if (this.identifier != other.identifier)
-            return false;
-        return true;
     }
 }

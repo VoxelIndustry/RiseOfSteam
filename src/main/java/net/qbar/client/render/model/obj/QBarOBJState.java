@@ -1,18 +1,20 @@
 package net.qbar.client.render.model.obj;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.List;
+import java.util.Optional;
 
+@Getter
 public class QBarOBJState implements IModelState
 {
     protected List<String> visibilityList;
     protected boolean      whitelist;
-    public IModelState     parent;
+    public    IModelState  parent;
 
     public QBarOBJState(List<String> visibleGroups, boolean visibility)
     {
@@ -31,16 +33,6 @@ public class QBarOBJState implements IModelState
     {
         if (parent != null)
             return parent.apply(part);
-        return Optional.absent();
-    }
-
-    public List<String> getVisibilityList()
-    {
-        return visibilityList;
-    }
-
-    public boolean isWhitelist()
-    {
-        return whitelist;
+        return Optional.empty();
     }
 }

@@ -1,4 +1,4 @@
-package net.qbar.client.gui;
+package net.qbar.client.gui.util;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,6 +10,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.qbar.client.gui.GuiTexturedSpace;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.tile.TileInventoryBase;
@@ -17,21 +18,27 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerProvider> extends GuiContainer
 {
-    private T                                      machine;
+    private T machine;
 
+    private final ResourceLocation                 background;
     private final List<Pair<IFluidTank, GuiSpace>> fluidtanks;
     private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
 
-    public GuiMachineBase(EntityPlayer player, T tile)
+    private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
+
+    public GuiMachineBase(EntityPlayer player, T tile, ResourceLocation background)
     {
         super(tile.createContainer(player));
 
         this.machine = tile;
+        this.background = background;
         this.fluidtanks = new ArrayList<>();
         this.steamtanks = new ArrayList<>();
+        this.animatedSprites = new ArrayList<>();
     }
 
     protected void addFluidTank(IFluidTank fluidTank, int x, int y, int width, int height)
@@ -44,14 +51,33 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         this.steamtanks.add(Pair.of(steamTank, new GuiSpace(x, y, width, height)));
     }
 
+    protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, int x, int y, int width, int height,
+                                     int u, int v, GuiProgress.StartDirection direction, boolean reverted)
+    {
+        this.addAnimatedSprite(stateSupplier, GuiTexturedSpace.builder().x(x).y(y).width(width).height(height).u(u).v
+                (v).s(width).t(height).build(), direction, reverted);
+    }
+
+    protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, GuiTexturedSpace space,
+                                     GuiProgress.StartDirection direction, boolean reverted)
+    {
+        this.animatedSprites.add(Pair.of(stateSupplier, GuiProgress.builder().space(space).direction(direction).revert
+                (reverted).build()));
+    }
+
+    protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, GuiProgress progress)
+    {
+        this.animatedSprites.add(Pair.of(stateSupplier, progress));
+    }
+
     @Override
     public void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY)
     {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        GlStateManager.translate(-this.guiLeft, -this.guiTop, 0.0F);
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
+        GlStateManager.translate(-this.guiLeft, -this.guiTop, 0.0F);
 
         for (Pair<IFluidTank, GuiSpace> fluidTank : fluidtanks)
         {
@@ -66,7 +92,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                     lines.add(TextFormatting.GOLD + "" + fluidTank.getKey().getFluidAmount() + " / "
                             + fluidTank.getKey().getCapacity() + " mB");
                 }
-                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
         for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
@@ -88,7 +114,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                             (this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
                                     + "Overload!");
                 }
-                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRendererObj);
+                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
@@ -100,6 +126,8 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
 
+        this.mc.renderEngine.bindTexture(background);
+        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
         for (Pair<IFluidTank, GuiSpace> fluidTank : fluidtanks)
         {
             if (fluidTank.getKey().getFluid() != null)
@@ -116,10 +144,16 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                         steamTank.getValue().getHeight(),
                         (int) (steamTank.getKey().getCapacity() * steamTank.getKey().getMaxPressure()));
         }
+
+       /* for(Pair<Function<Integer, Integer>, GuiTexturedSpace> animatedSprites : animatedSprites)
+        {
+            final int burnProgress = animatedSprites.getKey().apply(animatedSprites.getValue().getWidth());
+            this.drawTexturedModalRect(x + 81, y + 38 - burnProgress, 176, 12 - burnProgress, 14, burnProgress + 1);
+        }*/
     }
 
     protected void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
-            final int maxCapacity)
+                             final int maxCapacity)
     {
         this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         final ResourceLocation still = fluid.getFluid().getStill(fluid);

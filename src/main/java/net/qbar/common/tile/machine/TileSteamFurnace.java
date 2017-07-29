@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +19,7 @@ import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class TileSteamFurnace extends TileCraftingMachineBase
 {
@@ -116,11 +115,11 @@ public class TileSteamFurnace extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
-        if(player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
         player.openGui(QBar.instance, EGui.STEAMFURNACE.ordinal(), this.world, this.pos.getX(), this.pos.getY(),

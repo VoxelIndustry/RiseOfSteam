@@ -1,29 +1,23 @@
 package net.qbar.common.ore;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@AllArgsConstructor
 public class OreStack
 {
-    private QBarOre ore;
-    private float   quantity;
+    @Getter
+    private QBarMineral mineral;
+    @Getter
+    @Setter
+    private float       quantity;
 
-    public OreStack(QBarOre ore, float quantity)
+    public OreStack(QBarMineral mineral)
     {
-        this.ore = ore;
-        this.quantity = quantity;
-    }
-
-    public OreStack(QBarOre ore)
-    {
-        this(ore, 1);
-    }
-
-    public QBarOre getOre()
-    {
-        return ore;
-    }
-
-    public float getQuantity()
-    {
-        return quantity;
+        this(mineral, 1);
     }
 
     public void grow(float quantity)
@@ -34,16 +28,5 @@ public class OreStack
     public void shrink(float quantity)
     {
         this.quantity -= quantity;
-    }
-
-    public void setQuantity(float quantity)
-    {
-        this.quantity = quantity;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "OreStack{" + "ore=" + ore + ", quantity=" + quantity + '}';
     }
 }

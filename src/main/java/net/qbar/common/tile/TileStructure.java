@@ -30,12 +30,12 @@ import java.util.List;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
-    private Blueprint                 blueprint;
-    private BlueprintState            blueprintState;
+    private Blueprint      blueprint;
+    private BlueprintState blueprintState;
 
-    private int                       meta;
+    private int meta;
 
-    private AxisAlignedBB             cachedBB;
+    private AxisAlignedBB cachedBB;
 
     public final VisibilityModelState state = new VisibilityModelState();
 
@@ -214,7 +214,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         return super.getRenderBoundingBox();
     }
 
-    private int             previousStep = -1;
+    private int previousStep = -1;
     private List<BakedQuad> quadsCache;
 
     @SideOnly(Side.CLIENT)

@@ -1,15 +1,11 @@
 package net.qbar.common;
 
-import com.elytradev.concrete.NetworkContext;
-
+import com.elytradev.concrete.network.NetworkContext;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
@@ -21,6 +17,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.world.QBarOreGenerator;
 
 public class CommonProxy
 {
@@ -36,9 +33,12 @@ public class CommonProxy
 
         CapabilitySteamHandler.register();
 
-        QBarBlocks.registerBlocks();
-        QBarItems.registerItems();
+        QBarBlocks.init();
         QBarFluids.registerFluids();
+        QBarItems.init();
+
+        MinecraftForge.EVENT_BUS.register(new QBarBlocks());
+        MinecraftForge.EVENT_BUS.register(new QBarItems());
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         CompatManager.preInit(e);
@@ -49,6 +49,10 @@ public class CommonProxy
     public void init(final FMLInitializationEvent e)
     {
         QBarRecipeHandler.registerRecipes();
+
+        MinecraftForge.ORE_GEN_BUS.register(QBarOreGenerator.instance());
+        MinecraftForge.EVENT_BUS.register(QBarOreGenerator.instance());
+        GameRegistry.registerWorldGenerator(QBarOreGenerator.instance(), 0);
 
         CompatManager.init(e);
     }

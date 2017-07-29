@@ -1,20 +1,19 @@
 package net.qbar.client.render.tile;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.base.Optional;
 import com.google.common.collect.UnmodifiableIterator;
-
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.Models;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class VisibilityModelState implements IModelState
 {
-    public final List<String>                  parts     = new ArrayList<>();
-    public boolean                             blacklist = true;
+    public final  List<String>                 parts     = new ArrayList<>();
+    public        boolean                      blacklist = true;
     private final Optional<TRSRTransformation> value     = Optional.of(TRSRTransformation.identity());
 
     @Override
@@ -31,6 +30,6 @@ public class VisibilityModelState implements IModelState
                     return this.value;
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 }

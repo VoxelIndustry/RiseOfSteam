@@ -12,8 +12,6 @@ import java.util.Random;
 
 public class SortingMachineRecipeCategory extends QBarRecipeCategory
 {
-    private Random rand = new Random();
-
     public SortingMachineRecipeCategory(String name)
     {
         super(name);

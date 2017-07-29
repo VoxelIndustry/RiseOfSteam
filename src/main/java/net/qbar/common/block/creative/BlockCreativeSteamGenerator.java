@@ -6,11 +6,11 @@ import net.minecraft.world.World;
 import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
 
-public class BlockCreativeSteamGenerator extends BlockMachineBase
+public class BlockCreativeSteamGenerator extends BlockMachineBase<TileCreativeSteamGenerator>
 {
     public BlockCreativeSteamGenerator()
     {
-        super("creative_steam_generator", Material.IRON);
+        super("creative_steam_generator", Material.IRON, TileCreativeSteamGenerator.class);
     }
 
     @Override

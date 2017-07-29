@@ -1,16 +1,15 @@
 package net.qbar.client.render.model;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraftforge.client.ForgeHooksClient;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class FlattenedModelCache
 {
