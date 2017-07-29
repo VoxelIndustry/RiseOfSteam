@@ -17,14 +17,8 @@ public class MathUtils
         return rand.nextInt(max - min) + min;
     }
 
-    public static int randBetweenGap(Random rand, int median, int gapMin, int gapMax)
-    {
-        return randBetweenRange(rand, median - gapMin, median + gapMax);
-    }
-
     public static int randBetweenGapRatio(Random rand, int median, float ratio)
     {
-        return randBetweenGap(rand, median, (int) Math.ceil(median * (1 - ratio)),
-                (int) Math.floor(median * (1 + ratio)));
+        return randBetweenRange(rand, (int) Math.floor(median * (1 - ratio)), (int) Math.ceil(median * (1 + ratio)));
     }
 }

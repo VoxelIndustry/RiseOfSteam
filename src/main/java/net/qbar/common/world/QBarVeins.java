@@ -74,7 +74,7 @@ public class QBarVeins
                 .marker(GOLD_ROCK_MARKER).createBlockSupplier();
 
         REDSTONE = new OreVeinDescriptor("redstone").veinForm(EVeinForm.SCATTERED).heapForm(EVeinHeapForm.SPHERES)
-                .heapQty(5).heapDensity(0.3f).heapSize(25).rarity(0.0001f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
+                .heapQty(3).heapDensity(0.3f).heapSize(20).rarity(0.0001f).heightRange(4, 64).richChance(0.1f, 0.8f).poorChance(0, 0.8f)
                 .content(QBarBlocks.REDSTONE_ORE.getStateFromOre(QBarOres.REDSTONE_ORE), 1)
                 .biomes(BiomeMatcher.fromBiomes(Biomes.PLAINS, Biomes.SWAMPLAND, Biomes.FOREST, Biomes.FOREST_HILLS,
                         Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS))
