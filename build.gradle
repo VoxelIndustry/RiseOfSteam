@@ -100,8 +100,11 @@ dependencies {
     deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5'
     deobfCompile 'mezz.jei:jei_1.12:4.7.1.69'
 
-    compile 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
-    shadow 'org.yggard:brokkgui-binding-mc1.12:0.1.+'
+    compile 'org.yggard:brokkgui-binding-mc1.12:0.1.1'
+    shadow 'org.yggard:brokkgui-binding-mc1.12:0.1.1'
+
+    compile 'fr.ourten:teabeans:0.5.2'
+    shadow 'fr.ourten:teabeans:0.5.2'
 
     compile 'org.hjson:hjson:1.0.0'
     shadow 'org.hjson:hjson:1.0.0'

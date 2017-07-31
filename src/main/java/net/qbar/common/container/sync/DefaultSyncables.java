@@ -3,6 +3,7 @@ package net.qbar.common.container.sync;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+import net.qbar.common.util.ItemUtils;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -132,6 +133,11 @@ public class DefaultSyncables
         public SyncableItem(final Supplier<ItemStack> supplier, final Consumer<ItemStack> consumer)
         {
             super(supplier, consumer);
+        }
+
+        public boolean areEquals(final ItemStack other)
+        {
+            return ItemUtils.deepEquals(this.stored, other);
         }
 
         @Override

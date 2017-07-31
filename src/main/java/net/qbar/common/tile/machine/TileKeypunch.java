@@ -8,6 +8,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -25,15 +26,15 @@ import net.qbar.common.tile.TileInventoryBase;
 
 public class TileKeypunch extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileMultiblockCore
 {
-    private final int[] INPUT  = new int[]{0};
-    private final int[] OUTPUT = new int[]{1};
+    private final int[]                       INPUT   = new int[] { 0 };
+    private final int[]                       OUTPUT  = new int[] { 1 };
 
     private final BaseListProperty<ItemStack> craftStacks;
     private final BaseListProperty<ItemStack> filterStacks;
 
-    private final BaseProperty<Boolean> isCraftTabProperty, canPrintProperty;
+    private final BaseProperty<Boolean>       isCraftTabProperty, canPrintProperty;
 
-    private final InventoryCrafting fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
+    private final InventoryCrafting           fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
 
     public TileKeypunch()
     {
@@ -171,7 +172,9 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
     {
         for (int i = 0; i < 9; i++)
             this.fakeInv.setInventorySlotContents(i, this.getCraftStacks().get(i));
-        return CraftingManager.findMatchingRecipe(this.fakeInv, this.getWorld()).getRecipeOutput();
+
+        IRecipe recipe = CraftingManager.findMatchingRecipe(this.fakeInv, this.getWorld());
+        return recipe != null ? recipe.getRecipeOutput() : ItemStack.EMPTY;
     }
 
     @Override
@@ -200,7 +203,7 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

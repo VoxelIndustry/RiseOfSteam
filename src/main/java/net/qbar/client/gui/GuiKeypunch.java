@@ -1,21 +1,5 @@
 package net.qbar.client.gui;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.nbt.NBTTagCompound;
-import net.qbar.QBar;
-import net.qbar.common.card.CraftCard;
-import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.PunchedCardDataManager;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
-import net.qbar.common.container.BuiltContainer;
-import net.qbar.common.container.slot.ListenerSlot;
-import net.qbar.common.init.QBarItems;
-import net.qbar.common.network.KeypunchPacket;
-import net.qbar.common.tile.machine.TileKeypunch;
-import net.qbar.common.util.ItemUtils;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Color;
@@ -26,21 +10,39 @@ import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
+import fr.ourten.teabeans.listener.ListValueChangeListener;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
+import net.qbar.QBar;
+import net.qbar.common.card.CraftCard;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.slot.ListenerSlot;
+import net.qbar.common.init.QBarItems;
+import net.qbar.common.network.KeypunchPacket;
+import net.qbar.common.tile.machine.TileKeypunch;
+import net.qbar.common.util.ItemUtils;
+
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int xSize = 176, ySize = 166;
+    private static final int      xSize      = 176, ySize = 166;
 
-    private static final Texture BACKGROUND = new Texture(QBar.MODID + ":textures/gui/keypunch.png", 0, 0,
+    private static final Texture  BACKGROUND = new Texture(QBar.MODID + ":textures/gui/keypunch.png", 0, 0,
             GuiKeypunch.xSize / 256.0f, GuiKeypunch.ySize / 256.0f);
-    private static final Texture SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
+    private static final Texture  SLOT       = new Texture(QBar.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
 
-    private final TileKeypunch keypunch;
+    private final TileKeypunch    keypunch;
 
     private final GuiRelativePane header, body;
 
-    private final GuiButton assemble;
+    private final GuiButton       assemble;
 
-    final GuiRelativePane filterPane, craftPane;
+    final GuiRelativePane         filterPane, craftPane;
 
     public GuiKeypunch(final EntityPlayer player, final TileKeypunch keypunch)
     {
@@ -149,9 +151,6 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
         this.refreshCraftSlots(player);
         this.refreshFilterSlots(player);
-
-        this.keypunch.getCraftStacks().addListener(obs -> this.refreshCraftSlots(player));
-        this.keypunch.getFilterStacks().addListener(obs -> this.refreshFilterSlots(player));
     }
 
     private void refreshCraftSlots(final EntityPlayer player)
@@ -163,6 +162,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             final ItemStackView view = new ItemStackView(this.keypunch.getCraftStacks().get(index));
             view.setWidth(18);
             view.setHeight(18);
+            view.setTooltip(true);
             ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
             view.setOnClickEvent(click ->
             {
@@ -188,12 +188,31 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         final InventoryCrafting fakeInv = new InventoryCrafting(this.getContainer(), 3, 3);
         for (int i = 0; i < 9; i++)
             fakeInv.setInventorySlotContents(i, this.keypunch.getCraftStacks().get(i));
-        final ItemStackView resultView = new ItemStackView(
-                CraftingManager.findMatchingRecipe(fakeInv, this.keypunch.getWorld()).getRecipeOutput());
+
+        IRecipe recipe = CraftingManager.findMatchingRecipe(fakeInv, this.keypunch.getWorld());
+        final ItemStackView resultView = new ItemStackView(recipe != null ? recipe.getRecipeOutput() : ItemStack.EMPTY);
         resultView.setWidth(22);
         resultView.setHeight(22);
+        resultView.setTooltip(true);
         ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
         this.craftPane.addChild(resultView, 0.195f + 0.104f * 4, 0.2f + 0.3f);
+
+        this.keypunch.getCraftStacks()
+                .addListener((ListValueChangeListener<? super ItemStack>) (obs, oldStack, currentStack) ->
+                {
+                    if ((oldStack == null && currentStack == null) || (oldStack != null && currentStack != null
+                            && ItemUtils.deepEquals(oldStack, currentStack)))
+                        return;
+                    for (int i = 0; i < 9; i++)
+                        ((ItemStackView) this.craftPane.getChildrens().get(i))
+                                .setItemStack(this.keypunch.getCraftStacks().get(i));
+
+                    for (int i = 0; i < 9; i++)
+                        fakeInv.setInventorySlotContents(i, this.keypunch.getCraftStacks().get(i));
+
+                    IRecipe output = CraftingManager.findMatchingRecipe(fakeInv, this.keypunch.getWorld());
+                    resultView.setItemStack(output != null ? output.getRecipeOutput() : ItemStack.EMPTY);
+                });
     }
 
     private void refreshFilterSlots(final EntityPlayer player)
@@ -205,6 +224,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             final ItemStackView view = new ItemStackView(this.keypunch.getFilterStacks().get(index));
             view.setWidth(18);
             view.setHeight(18);
+            view.setTooltip(true);
             ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
             view.setOnClickEvent(click ->
             {
@@ -226,6 +246,12 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             });
             this.filterPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
         }
+        this.keypunch.getFilterStacks().addListener(obs ->
+        {
+            for (int i = 0; i < 9; i++)
+                ((ItemStackView) this.filterPane.getChildrens().get(i))
+                        .setItemStack(this.keypunch.getFilterStacks().get(i));
+        });
     }
 
     private void refreshMessage(final ItemStack stack)
@@ -249,7 +275,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
                         if (this.keypunch.getCraftTabProperty().getValue())
                         {
-                            final CraftCard card = new CraftCard(ECardType.CRAFT.getID());
+                            final CraftCard card = new CraftCard(PunchedCardDataManager.ECardType.CRAFT.getID());
                             for (int i = 0; i < this.keypunch.getCraftStacks().size(); i++)
                                 card.recipe[i] = this.keypunch.getCraftStacks().get(i);
                             card.result = this.keypunch.getRecipeResult();
@@ -257,7 +283,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                         }
                         else
                         {
-                            final FilterCard card = new FilterCard(ECardType.FILTER.getID());
+                            final FilterCard card = new FilterCard(PunchedCardDataManager.ECardType.FILTER.getID());
                             for (int i = 0; i < this.keypunch.getFilterStacks().size(); i++)
                                 card.stacks[i] = this.keypunch.getFilterStacks().get(i);
                             PunchedCardDataManager.getInstance().writeToNBT(temp.getTagCompound(), card);
@@ -273,9 +299,10 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             {
                 this.assemble.setText("LOAD");
                 if (this.keypunch.getCraftTabProperty().getValue()
-                        && stack.getTagCompound().getInteger("cardTypeID") == ECardType.CRAFT.getID()
-                        || !this.keypunch.getCraftTabProperty().getValue()
-                        && stack.getTagCompound().getInteger("cardTypeID") == ECardType.FILTER.getID())
+                        && stack.getTagCompound().getInteger("cardTypeID") == PunchedCardDataManager.ECardType.CRAFT
+                                .getID()
+                        || !this.keypunch.getCraftTabProperty().getValue() && stack.getTagCompound()
+                                .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.FILTER.getID())
                     this.assemble.setDisabled(false);
                 else
                     this.assemble.setDisabled(true);
