@@ -4,6 +4,7 @@ import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
+import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.skin.GuiButtonSkin;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
@@ -42,7 +43,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
     private final GuiButton       assemble;
 
-    final GuiRelativePane         filterPane, craftPane;
+    final GuiAbsolutePane filterPane, craftPane;
 
     public GuiKeypunch(final EntityPlayer player, final TileKeypunch keypunch)
     {
@@ -68,8 +69,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.body.setBackground(new Background(GuiKeypunch.BACKGROUND));
         mainPanel.addChild(this.body, 0.5f, 0.55f);
 
-        this.craftPane = new GuiRelativePane();
-        this.filterPane = new GuiRelativePane();
+        this.craftPane = new GuiAbsolutePane();
+        this.filterPane = new GuiAbsolutePane();
         this.initPanels(player);
 
         final GuiButton craftTab = new GuiButton("CRAFT");
@@ -182,7 +183,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                     }
                 }
             });
-            this.craftPane.addChild(view, 0.195f + 0.104f * (i % 3), 0.2f + 0.3f * (i / 3));
+            this.craftPane.addChild(view, 25 + 18 * (i % 3), 3  + 18 * (i / 3));
         }
 
         final InventoryCrafting fakeInv = new InventoryCrafting(this.getContainer(), 3, 3);
@@ -195,7 +196,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         resultView.setHeight(22);
         resultView.setTooltip(true);
         ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
-        this.craftPane.addChild(resultView, 0.195f + 0.104f * 4, 0.2f + 0.3f);
+        this.craftPane.addChild(resultView, 25 + (18*4), 3 + 18);
 
         this.keypunch.getCraftStacks()
                 .addListener((ListValueChangeListener<? super ItemStack>) (obs, oldStack, currentStack) ->
@@ -244,7 +245,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                     }
                 }
             });
-            this.filterPane.addChild(view, 0.195f + 0.104f * (i / 3), 0.2f + 0.3f * (i % 3));
+            this.filterPane.addChild(view, 25 + 18 * (i % 3), 3  + 18 * (i / 3));
         }
         this.keypunch.getFilterStacks().addListener(obs ->
         {
@@ -295,7 +296,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 else
                     this.assemble.setDisabled(true);
             }
-            else if (stack.getTagCompound() != null)
+            else
             {
                 this.assemble.setText("LOAD");
                 if (this.keypunch.getCraftTabProperty().getValue()
