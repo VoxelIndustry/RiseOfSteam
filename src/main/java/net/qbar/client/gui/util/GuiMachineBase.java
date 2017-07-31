@@ -22,11 +22,11 @@ import java.util.function.Function;
 
 public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerProvider> extends GuiContainer
 {
-    private T machine;
+    private T                                                         machine;
 
-    private final ResourceLocation                 background;
-    private final List<Pair<IFluidTank, GuiSpace>> fluidtanks;
-    private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
+    private final ResourceLocation                                    background;
+    private final List<Pair<IFluidTank, GuiSpace>>                    fluidtanks;
+    private final List<Pair<ISteamTank, GuiSpace>>                    steamtanks;
 
     private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
 
@@ -52,17 +52,18 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     }
 
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, int x, int y, int width, int height,
-                                     int u, int v, GuiProgress.StartDirection direction, boolean reverted)
+            int u, int v, GuiProgress.StartDirection direction, boolean reverted)
     {
-        this.addAnimatedSprite(stateSupplier, GuiTexturedSpace.builder().x(x).y(y).width(width).height(height).u(u).v
-                (v).s(width).t(height).build(), direction, reverted);
+        this.addAnimatedSprite(stateSupplier,
+                GuiTexturedSpace.builder().x(x).y(y).width(width).height(height).u(u).v(v).s(width).t(height).build(),
+                direction, reverted);
     }
 
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, GuiTexturedSpace space,
-                                     GuiProgress.StartDirection direction, boolean reverted)
+            GuiProgress.StartDirection direction, boolean reverted)
     {
-        this.animatedSprites.add(Pair.of(stateSupplier, GuiProgress.builder().space(space).direction(direction).revert
-                (reverted).build()));
+        this.animatedSprites.add(Pair.of(stateSupplier,
+                GuiProgress.builder().space(space).direction(direction).revert(reverted).build()));
     }
 
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, GuiProgress progress)
@@ -145,15 +146,30 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                         (int) (steamTank.getKey().getCapacity() * steamTank.getKey().getMaxPressure()));
         }
 
-       /* for(Pair<Function<Integer, Integer>, GuiTexturedSpace> animatedSprites : animatedSprites)
+        for (Pair<Function<Integer, Integer>, GuiProgress> animatedSprites : animatedSprites)
         {
-            final int burnProgress = animatedSprites.getKey().apply(animatedSprites.getValue().getWidth());
-            this.drawTexturedModalRect(x + 81, y + 38 - burnProgress, 176, 12 - burnProgress, 14, burnProgress + 1);
-        }*/
+            int length = animatedSprites.getValue().getDirection().isVertical()
+                    ? animatedSprites.getValue().getSpace().getHeight()
+                    : animatedSprites.getValue().getSpace().getWidth();
+
+            // TODO : REFACTOR THIS MESS!
+            final int progress = animatedSprites.getValue().getDirection().isPositive() ? animatedSprites.getKey().apply(length) : -animatedSprites.getKey().apply(length);
+
+            this.drawTexturedModalRect(x + animatedSprites.getValue().getSpace().getX() - (animatedSprites.getValue().getDirection().isVertical() ? 0 : progress),
+                    y + animatedSprites.getValue().getSpace().getY() - (animatedSprites.getValue().getDirection().isVertical() ? progress : 0),
+                    animatedSprites.getValue().getSpace().getU() - (animatedSprites.getValue().getDirection().isVertical() ? 0 : progress),
+                    animatedSprites.getValue().getSpace().getV() - (animatedSprites.getValue().getDirection().isVertical() ? progress : 0),
+                    animatedSprites.getValue().getDirection().isVertical()
+                            ? animatedSprites.getValue().getSpace().getWidth()
+                            : progress + animatedSprites.getValue().getPaddingLeft(),
+                    animatedSprites.getValue().getDirection().isVertical()
+                            ? progress + animatedSprites.getValue().getPaddingBottom()
+                            : animatedSprites.getValue().getSpace().getHeight());
+        }
     }
 
     protected void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
-                             final int maxCapacity)
+            final int maxCapacity)
     {
         this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         final ResourceLocation still = fluid.getFluid().getStill(fluid);

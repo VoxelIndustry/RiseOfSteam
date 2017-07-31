@@ -7,6 +7,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
 import net.qbar.client.gui.util.GuiMachineBase;
+import net.qbar.client.gui.util.GuiProgress;
 import net.qbar.common.tile.machine.TileLiquidBoiler;
 
 import java.util.Arrays;
@@ -23,6 +24,10 @@ public class GuiLiquidBoiler extends GuiMachineBase<TileLiquidBoiler>
         this.addFluidTank(boiler.getWaterTank(), 128, 7, 18, 73);
         this.addFluidTank(boiler.getFuelTank(), 79, 7, 18, 73);
         this.addSteamTank(boiler.getSteamTank(), 151, 7, 18, 73);
+
+        this.addAnimatedSprite(this::getHeatScaled,
+                GuiProgress.builder().space(new GuiTexturedSpace(10, 79, 12, 78, 176, 84, 176 + 12, 85 + 79))
+                        .direction(GuiProgress.StartDirection.TOP).revert(false).build());
     }
 
     @Override
@@ -42,18 +47,6 @@ public class GuiLiquidBoiler extends GuiMachineBase<TileLiquidBoiler>
                     mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY)
-    {
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-
-        final int x = (this.width - this.xSize) / 2;
-        final int y = (this.height - this.ySize) / 2;
-
-        final int heatProgress = this.getHeatScaled(71);
-        this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 85 - heatProgress, 12, heatProgress);
     }
 
     private int getHeatScaled(final int pixels)

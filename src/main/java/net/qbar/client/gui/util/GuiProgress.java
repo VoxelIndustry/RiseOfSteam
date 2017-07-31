@@ -30,5 +30,15 @@ public class GuiProgress
     public enum StartDirection
     {
         LEFT, RIGHT, TOP, BOTTOM;
+
+        public boolean isVertical()
+        {
+            return this == TOP || this == BOTTOM;
+        }
+
+        public boolean isPositive()
+        {
+            return this == TOP || this == LEFT;
+        }
     }
 }

@@ -11,8 +11,7 @@ public class ItemUtils
 {
     public static boolean deepEquals(final ItemStack a, final ItemStack b)
     {
-        if (a == ItemStack.EMPTY || b == ItemStack.EMPTY || a.getItem() != b.getItem()
-                || !ItemStack.areItemStackTagsEqual(a, b))
+        if (a.getItem() != b.getItem() || !ItemStack.areItemStackTagsEqual(a, b))
             return false;
         if (a.getHasSubtypes())
         {

@@ -9,10 +9,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.QBar;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.gui.EGui;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.item.ItemDrillCoreSample;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.ore.QBarMineral;
@@ -90,6 +93,9 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                     }
                 }
                 lastPos = toCheck;
+
+                if(this.progress == 1)
+                    this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
             }
             //TODO: Change to real value when the portable storage is implemented
             this.drainSteam(0, true);
@@ -176,5 +182,19 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         return new ContainerBuilder("fluidtank", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this).outputSlot(0, 0, 0).slot(1, 0, 20).syncFloatValue(this::getProgress,
                         this::setProgress).addInventory().create();
+    }
+
+    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
+                                 final float hitZ, BlockPos from)
+    {
+        if (player.isSneaking())
+            return false;
+        if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
+            return false;
+
+        System.out.println(this.progress);
+        player.openGui(QBar.instance, EGui.TINYMININGDRILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+                this.pos.getZ());
+        return true;
     }
 }
