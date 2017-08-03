@@ -3,7 +3,6 @@ package net.qbar.client.gui.util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import net.qbar.client.gui.GuiTexturedSpace;
 
 @Getter
 @AllArgsConstructor

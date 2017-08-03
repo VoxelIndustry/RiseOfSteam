@@ -2,6 +2,7 @@ package net.qbar.client.gui.util;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,11 +11,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import net.qbar.client.gui.GuiTexturedSpace;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.tile.TileInventoryBase;
 import org.apache.commons.lang3.tuple.Pair;
+import org.yggard.brokkgui.wrapper.GuiRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +23,15 @@ import java.util.function.Function;
 
 public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerProvider> extends GuiContainer
 {
-    private T                                                         machine;
+    private T machine;
 
-    private final ResourceLocation                                    background;
-    private final List<Pair<IFluidTank, GuiSpace>>                    fluidtanks;
-    private final List<Pair<ISteamTank, GuiSpace>>                    steamtanks;
+    private final ResourceLocation                 background;
+    private final List<Pair<IFluidTank, GuiSpace>> fluidtanks;
+    private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
 
     private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
+
+    private final GuiRenderer renderer;
 
     public GuiMachineBase(EntityPlayer player, T tile, ResourceLocation background)
     {
@@ -39,6 +42,8 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         this.fluidtanks = new ArrayList<>();
         this.steamtanks = new ArrayList<>();
         this.animatedSprites = new ArrayList<>();
+
+        this.renderer = new GuiRenderer(Tessellator.getInstance());
     }
 
     protected void addFluidTank(IFluidTank fluidTank, int x, int y, int width, int height)
@@ -52,7 +57,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     }
 
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, int x, int y, int width, int height,
-            int u, int v, GuiProgress.StartDirection direction, boolean reverted)
+                                     int u, int v, GuiProgress.StartDirection direction, boolean reverted)
     {
         this.addAnimatedSprite(stateSupplier,
                 GuiTexturedSpace.builder().x(x).y(y).width(width).height(height).u(u).v(v).s(width).t(height).build(),
@@ -60,7 +65,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     }
 
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, GuiTexturedSpace space,
-            GuiProgress.StartDirection direction, boolean reverted)
+                                     GuiProgress.StartDirection direction, boolean reverted)
     {
         this.animatedSprites.add(Pair.of(stateSupplier,
                 GuiProgress.builder().space(space).direction(direction).revert(reverted).build()));
@@ -148,28 +153,57 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
 
         for (Pair<Function<Integer, Integer>, GuiProgress> animatedSprites : animatedSprites)
         {
-            int length = animatedSprites.getValue().getDirection().isVertical()
-                    ? animatedSprites.getValue().getSpace().getHeight()
-                    : animatedSprites.getValue().getSpace().getWidth();
+            GuiProgress progress = animatedSprites.getValue();
 
-            // TODO : REFACTOR THIS MESS!
-            final int progress = animatedSprites.getValue().getDirection().isPositive() ? animatedSprites.getKey().apply(length) : -animatedSprites.getKey().apply(length);
+            int projectedLength = progress.getDirection().isVertical() ? progress.getSpace().getHeight() : progress
+                    .getSpace().getWidth();
 
-            this.drawTexturedModalRect(x + animatedSprites.getValue().getSpace().getX() - (animatedSprites.getValue().getDirection().isVertical() ? 0 : progress),
-                    y + animatedSprites.getValue().getSpace().getY() - (animatedSprites.getValue().getDirection().isVertical() ? progress : 0),
-                    animatedSprites.getValue().getSpace().getU() - (animatedSprites.getValue().getDirection().isVertical() ? 0 : progress),
-                    animatedSprites.getValue().getSpace().getV() - (animatedSprites.getValue().getDirection().isVertical() ? progress : 0),
-                    animatedSprites.getValue().getDirection().isVertical()
-                            ? animatedSprites.getValue().getSpace().getWidth()
-                            : progress + animatedSprites.getValue().getPaddingLeft(),
-                    animatedSprites.getValue().getDirection().isVertical()
-                            ? progress + animatedSprites.getValue().getPaddingBottom()
-                            : animatedSprites.getValue().getSpace().getHeight());
+            int originalLength = progress.getDirection().isVertical() ? progress.getSpace().getT() - progress
+                    .getSpace().getV() : progress.getSpace().getS() - progress.getSpace().getU();
+
+            int projectedCurrent = animatedSprites.getKey().apply(projectedLength);
+
+            int xStart = x + progress.getSpace().getX();
+            int yStart = y + progress.getSpace().getY();
+
+            int width = progress.getDirection().isVertical() ? progress.getSpace().getWidth() : projectedCurrent;
+            int height = progress.getDirection().isVertical() ? projectedCurrent : progress.getSpace().getHeight();
+
+            int u = progress.getSpace().getU() + progress.getPaddingLeft();
+            int v = progress.getSpace().getV() + progress.getPaddingBottom();
+            int s = progress.getSpace().getS() - progress.getPaddingRight();
+            int t = progress.getSpace().getT() - progress.getPaddingTop();
+
+            int originalCurrent = animatedSprites.getKey().apply(originalLength);
+
+            if (progress.getDirection().isPositive())
+            {
+                if (!progress.getDirection().isVertical())
+                {
+                    // TODO
+                }
+                else
+                {
+                    v -= originalCurrent;
+                    yStart -= projectedCurrent;
+                }
+            }
+            else
+            {
+                if (!progress.getDirection().isVertical())
+                    u = s - originalCurrent;
+                else
+                {
+                    // TODO
+                }
+            }
+
+            this.drawTexturedModalRect(xStart, yStart, u, v, width, height);
         }
     }
 
     protected void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
-            final int maxCapacity)
+                             final int maxCapacity)
     {
         this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         final ResourceLocation still = fluid.getFluid().getStill(fluid);

@@ -1,4 +1,4 @@
-package net.qbar.client.gui;
+package net.qbar.client.gui.util;
 
 import lombok.Builder;
 import lombok.Getter;
