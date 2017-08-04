@@ -134,22 +134,6 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
 
         this.mc.renderEngine.bindTexture(background);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-        for (Pair<IFluidTank, GuiSpace> fluidTank : fluidtanks)
-        {
-            if (fluidTank.getKey().getFluid() != null)
-                this.drawFluid(fluidTank.getKey().getFluid(), x + fluidTank.getValue().getX(),
-                        y + fluidTank.getValue().getY(), fluidTank.getValue().getWidth(),
-                        fluidTank.getValue().getHeight(), fluidTank.getKey().getCapacity());
-        }
-
-        for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
-        {
-            if (steamTank.getKey().getSteam() != 0)
-                this.drawFluid(steamTank.getKey().toFluidStack(), x + steamTank.getValue().getX(),
-                        y + steamTank.getValue().getY(), steamTank.getValue().getWidth(),
-                        steamTank.getValue().getHeight(),
-                        (int) (steamTank.getKey().getCapacity() * steamTank.getKey().getMaxPressure()));
-        }
 
         for (Pair<Function<Integer, Integer>, GuiProgress> animatedSprites : animatedSprites)
         {
@@ -190,7 +174,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
             }
             else
             {
-                if (!progress.getDirection().isVertical())
+                if (!progress.getDirection().isVertical() && !progress.isRevert())
                     u = s - originalCurrent;
                 else
                 {
@@ -199,6 +183,23 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
             }
 
             this.drawTexturedModalRect(xStart, yStart, u, v, width, height);
+        }
+
+        for (Pair<IFluidTank, GuiSpace> fluidTank : fluidtanks)
+        {
+            if (fluidTank.getKey().getFluid() != null)
+                this.drawFluid(fluidTank.getKey().getFluid(), x + fluidTank.getValue().getX(),
+                        y + fluidTank.getValue().getY(), fluidTank.getValue().getWidth(),
+                        fluidTank.getValue().getHeight(), fluidTank.getKey().getCapacity());
+        }
+
+        for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
+        {
+            if (steamTank.getKey().getSteam() != 0)
+                this.drawFluid(steamTank.getKey().toFluidStack(), x + steamTank.getValue().getX(),
+                        y + steamTank.getValue().getY(), steamTank.getValue().getWidth(),
+                        steamTank.getValue().getHeight(),
+                        (int) (steamTank.getKey().getCapacity() * steamTank.getKey().getMaxPressure()));
         }
     }
 

@@ -19,7 +19,7 @@ public class GuiTinyMiningDrill extends GuiMachineBase<TileTinyMiningDrill>
 
         this.addAnimatedSprite(this::getProgressScaled,
                 GuiProgress.builder().space(GuiTexturedSpace.builder().x(61).y(39).width(55).height(7).u(176).v(0).s
-                        (176 + 55).t(7).build()).direction(GuiProgress.StartDirection.RIGHT).revert(false).build());
+                        (176 + 55).t(7).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true).build());
     }
 
     private int getProgressScaled(final int pixels)

@@ -7,6 +7,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
 import net.qbar.client.gui.util.GuiMachineBase;
+import net.qbar.client.gui.util.GuiProgress;
+import net.qbar.client.gui.util.GuiTexturedSpace;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
 
 import java.util.Arrays;
@@ -20,6 +22,15 @@ public class GuiSteamFurnaceMK2 extends GuiMachineBase<TileSteamFurnaceMK2>
         super(player, steamfurnace, BACKGROUND);
 
         this.addSteamTank(steamfurnace.getSteamTank(), 151, 7, 18, 73);
+
+        this.addAnimatedSprite(this::getHeatScaled,
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(10).y(79).width(12).height(78).u(176).v(102)
+                        .s(176 + 12).t(102 + 79).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
+                        .build());
+        this.addAnimatedSprite(this.getMachine()::getProgressScaled,
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(79).y(34).width(25).height(16).u(176).v(14).s
+                        (176 + 25).t(14 + 16).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
+                        .build());
     }
 
     @Override
@@ -39,22 +50,6 @@ public class GuiSteamFurnaceMK2 extends GuiMachineBase<TileSteamFurnaceMK2>
                     mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(final float partialTicks, final int mouseX, final int mouseY)
-    {
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-
-        final int x = (this.width - this.xSize) / 2;
-        final int y = (this.height - this.ySize) / 2;
-
-        final int j = this.getMachine().getProgressScaled(24);
-        if (j > 0)
-            this.drawTexturedModalRect(x + 79, y + 34, 176, 14, j + 1, 16);
-
-        final int heatProgress = this.getHeatScaled(71);
-        this.drawTexturedModalRect(x + 10, y + 79 - heatProgress, 176, 102 - heatProgress, 12, heatProgress);
     }
 
     private int getHeatScaled(final int pixels)
