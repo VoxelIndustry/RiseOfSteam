@@ -5,11 +5,9 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "inventory": {
-      "textures": {
-        "all": "qbar:blocks/chalcopyrite"
-      }
-    },
+    "inventory": [
+      {}
+    ],
     "ores=chalcopyrite,richness=poor": {
       "model": "cube_all",
       "textures": {

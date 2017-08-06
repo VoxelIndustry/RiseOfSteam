@@ -4,9 +4,9 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": {
-      "texture#all": "qbar:blocks/sphalerite"
-    },
+    "inventory": [
+      {}
+    ],
     "matcher": {
       "ores": ["sphalerite"],
       "richness": ["poor", "normal", "rich"],

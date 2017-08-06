@@ -4,9 +4,9 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": {
-      "texture#all": "qbar:blocks/redstone"
-    },
+    "inventory": [
+      {}
+    ],
     "matcher": {
       "ores": ["redstone"],
       "richness": ["poor", "normal", "rich"],

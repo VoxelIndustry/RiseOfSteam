@@ -5,11 +5,9 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "inventory": {
-      "textures": {
-        "all": "qbar:blocks/redstone"
-      }
-    },
+    "inventory": [
+      {}
+    ],
     "ores=redstone,richness=poor": {
       "model": "cube_all",
       "textures": {

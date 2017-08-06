@@ -5,11 +5,9 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "inventory": {
-      "textures": {
-        "all": "qbar:blocks/gold"
-      }
-    },
+    "inventory": [
+      {}
+    ],
     "ores=gold,richness=poor": {
       "model": "cube_all",
       "textures": {

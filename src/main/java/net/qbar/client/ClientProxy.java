@@ -29,6 +29,7 @@ import net.qbar.common.block.INamedBlock;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.item.IItemModelProvider;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.TileBelt;
 import net.qbar.common.tile.machine.TileRollingMill;
@@ -47,17 +48,20 @@ public class ClientProxy extends CommonProxy
         super.preInit(e);
 
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
-                new ResourceLocation(QBar.MODID + ":block/belt.mwm"), new String[]{"Top"},
-                new String[]{"qbar:blocks/belt_top_anim"});
+                new ResourceLocation(QBar.MODID + ":block/belt.mwm"), new String[] { "Top" },
+                new String[] { "qbar:blocks/belt_top_anim" });
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_animated.mwm",
-                new ResourceLocation(QBar.MODID + ":block/belt_slope.mwm"), new String[]{"None"},
-                new String[]{"qbar:blocks/belt_slope_anim"});
+                new ResourceLocation(QBar.MODID + ":block/belt_slope.mwm"), new String[] { "None" },
+                new String[] { "qbar:blocks/belt_slope_anim" });
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope2_animated.mwm",
-                new ResourceLocation(QBar.MODID + ":block/belt_slope2.mwm"), new String[]{"None"},
-                new String[]{"qbar:blocks/belt_slope_anim"});
+                new ResourceLocation(QBar.MODID + ":block/belt_slope2.mwm"), new String[] { "None" },
+                new String[] { "qbar:blocks/belt_slope_anim" });
 
         ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
+
+        QBarItems.ITEMS.stream().filter(item -> item instanceof IItemModelProvider)
+                .forEach(item -> ((IItemModelProvider) item).registerModels());
     }
 
     @Override
@@ -81,7 +85,7 @@ public class ClientProxy extends CommonProxy
 
     public static final void registerFluidsClient()
     {
-        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluid",
+        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluidsteam",
                 "steam");
         ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
         {
@@ -92,7 +96,7 @@ public class ClientProxy extends CommonProxy
             }
         });
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam), fluidSteamLocation);
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
                 stack -> fluidSteamLocation);
     }
@@ -105,7 +109,7 @@ public class ClientProxy extends CommonProxy
         final IBakedModel originalModel = evt.getModelRegistry().getObject(key);
         evt.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
-        QBarItems.ITEMS
+        QBarItems.ITEMS.stream().filter(item -> item != QBarItems.METALPLATE)
                 .forEach(item -> QBar.proxy.registerItemRenderer(item, 0, item.getUnlocalizedName().substring(5)));
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
@@ -122,9 +126,8 @@ public class ClientProxy extends CommonProxy
             IModelProvider modelProvider = (IModelProvider) block;
 
             for (int i = 0; i < modelProvider.getItemModelCount(); i++)
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i,
-                        new ModelResourceLocation(QBar.MODID + ":" + ((INamedBlock) block).getName(),
-                                modelProvider.getItemModelFromMeta(i)));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i, new ModelResourceLocation(
+                        QBar.MODID + ":" + ((INamedBlock) block).getName(), modelProvider.getItemModelFromMeta(i)));
         });
 
         this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");

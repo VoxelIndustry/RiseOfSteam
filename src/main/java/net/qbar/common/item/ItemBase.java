@@ -3,7 +3,7 @@ package net.qbar.common.item;
 import net.minecraft.item.Item;
 import net.qbar.QBar;
 
-public class ItemBase extends Item
+public class ItemBase extends Item implements IItemModelProvider
 {
     public String name;
 

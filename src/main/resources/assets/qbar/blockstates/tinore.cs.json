@@ -4,9 +4,9 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": {
-      "texture#all": "qbar:blocks/cassiterite"
-    },
+    "inventory": [
+      {}
+    ],
     "matcher": {
       "ores": ["cassiterite", "teallite"],
       "richness": ["poor", "normal", "rich"],

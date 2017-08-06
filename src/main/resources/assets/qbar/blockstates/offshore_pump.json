@@ -23,7 +23,9 @@
       },
       "west": {
         "y": 90
-      }
+      },
+      "up": {},
+      "down": {}
     },
     "inventory": {
       "model": "qbar:offshore_pump.obj",

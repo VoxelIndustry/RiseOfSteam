@@ -4,9 +4,9 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": {
-      "texture#all": "qbar:blocks/gold"
-    },
+    "inventory": [
+      {}
+    ],
     "matcher": {
       "ores": ["gold"],
       "richness": ["poor", "normal", "rich"],
