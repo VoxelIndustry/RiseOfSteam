@@ -61,7 +61,7 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
         QBarItems.ITEMS.stream().filter(item -> item instanceof IItemModelProvider)
-                .forEach(item -> ((IItemModelProvider) item).registerModels());
+                .forEach(item -> ((IItemModelProvider) item).registerVariants());
     }
 
     @Override
@@ -109,8 +109,13 @@ public class ClientProxy extends CommonProxy
         final IBakedModel originalModel = evt.getModelRegistry().getObject(key);
         evt.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
-        QBarItems.ITEMS.stream().filter(item -> item != QBarItems.METALPLATE)
-                .forEach(item -> QBar.proxy.registerItemRenderer(item, 0, item.getUnlocalizedName().substring(5)));
+        for (Item item : QBarItems.ITEMS)
+        {
+            if (item instanceof IItemModelProvider && ((IItemModelProvider) item).hasSpecialModel())
+                ((IItemModelProvider) item).registerModels();
+            else
+                QBar.proxy.registerItemRenderer(item, 0, item.getUnlocalizedName().substring(5));
+        }
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
                 new ModelResourceLocation(QBar.MODID + ":fluidpipe", "inventoryvalve"));
@@ -129,7 +134,5 @@ public class ClientProxy extends CommonProxy
                 ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i, new ModelResourceLocation(
                         QBar.MODID + ":" + ((INamedBlock) block).getName(), modelProvider.getItemModelFromMeta(i)));
         });
-
-        this.registerItemRenderer(Item.getByNameOrId("qbar:punched_card"), 1, "punched_card1");
     }
 }

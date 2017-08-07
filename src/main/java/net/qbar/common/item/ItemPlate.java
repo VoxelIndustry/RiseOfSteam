@@ -1,6 +1,5 @@
 package net.qbar.common.item;
 
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -9,8 +8,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import net.qbar.QBar;
 import net.qbar.common.recipe.QBarRecipeHandler;
-
-import java.util.HashMap;
 
 public class ItemPlate extends ItemBase
 {
@@ -46,21 +43,29 @@ public class ItemPlate extends ItemBase
     }
 
     @Override
+    public void registerVariants()
+    {
+        this.addVariant("gold", new ModelResourceLocation(QBar.MODID + ":plate_gold", "inventory"));
+        this.addVariant("iron", new ModelResourceLocation(QBar.MODID + ":plate_iron", "inventory"));
+        super.registerVariants();
+    }
+
+    @Override
     public void registerModels()
     {
-        HashMap<String, ModelResourceLocation> plateModels = new HashMap<>();
-
-        plateModels.put("gold", new ModelResourceLocation(QBar.MODID + ":plate_gold", "inventory"));
-        plateModels.put("iron", new ModelResourceLocation(QBar.MODID + ":plate_iron", "inventory"));
-
-        ModelBakery.registerItemVariants(this,
-                plateModels.values().toArray(new ModelResourceLocation[plateModels.size()]));
-
         ModelLoader.setCustomMeshDefinition(this, stack ->
         {
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("metal"))
-                return plateModels.get(stack.getTagCompound().getString("metal"));
-            return new ModelResourceLocation(QBar.MODID + "ironrod");
+                return this.getVariantModel(stack.getTagCompound().getString("metal"));
+            return new ModelResourceLocation("");
         });
+
+        super.registerModels();
+    }
+
+    @Override
+    public boolean hasSpecialModel()
+    {
+        return true;
     }
 }

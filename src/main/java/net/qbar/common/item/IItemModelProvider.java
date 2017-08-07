@@ -5,4 +5,14 @@ public interface IItemModelProvider {
     {
 
     }
+
+    default void registerVariants()
+    {
+
+    }
+
+    default boolean hasSpecialModel()
+    {
+        return false;
+    }
 }

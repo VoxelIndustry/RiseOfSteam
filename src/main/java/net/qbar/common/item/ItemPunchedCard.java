@@ -1,8 +1,11 @@
 package net.qbar.common.item;
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.qbar.QBar;
 import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
 
@@ -30,5 +33,32 @@ public class ItemPunchedCard extends ItemBase
         }
         else
             tooltip.add("Card Empty");
+    }
+
+    @Override
+    public void registerVariants()
+    {
+        this.addVariant("empty", new ModelResourceLocation(QBar.MODID + ":punched_card", "inventory"));
+        this.addVariant("used", new ModelResourceLocation(QBar.MODID + ":punched_card_used", "inventory"));
+        super.registerVariants();
+    }
+
+    @Override
+    public void registerModels()
+    {
+        ModelLoader.setCustomMeshDefinition(this, stack ->
+        {
+            if (stack.hasTagCompound())
+                return this.getVariantModel("used");
+            return this.getVariantModel("empty");
+        });
+
+        super.registerModels();
+    }
+
+    @Override
+    public boolean hasSpecialModel()
+    {
+        return true;
     }
 }
