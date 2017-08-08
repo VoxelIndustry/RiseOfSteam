@@ -26,20 +26,22 @@ import java.util.Map.Entry;
 
 public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnectionAware
 {
-    private       int                                       gridID;
+    private int                                             gridID;
     private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connections;
-    private       float                                     beltSpeed;
+    private float                                           beltSpeed;
 
-    private EnumFacing facing;
+    private EnumFacing                                      facing;
 
-    private final List<ItemBelt> items;
+    private final List<ItemBelt>                            items;
 
-    private boolean hasChanged = false;
-    private boolean isWorking  = false;
+    private boolean                                         hasChanged = false;
+    private boolean                                         isWorking  = false;
 
-    private final EnumMap<EnumFacing, ISteamHandler> steamConnections;
+    private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
 
-    private EBeltSlope slopeState;
+    private EBeltSlope                                      slopeState;
+
+    private long                                            lastWorkStateChange;
 
     public TileBelt(final float beltSpeed)
     {
@@ -135,6 +137,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         boolean needStateUpdate = false;
         if (this.isWorking != tag.getBoolean("isWorking"))
             needStateUpdate = true;
+
         this.isWorking = tag.getBoolean("isWorking");
 
         if (this.isClient())
@@ -381,6 +384,13 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     public void setWorking(final boolean working)
     {
         this.isWorking = working;
+        this.lastWorkStateChange = System.currentTimeMillis();
+    }
+
+    @Override
+    public long getLastWorkStateChange()
+    {
+        return this.lastWorkStateChange;
     }
 
     ////////////

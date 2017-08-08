@@ -19,13 +19,13 @@ public class BeltGrid extends CableGrid
     private final SteamTank tank;
 
     @Getter
-    private final float beltSpeed;
+    private final float     beltSpeed;
 
-    private final float BELT_MIDDLE = 10 / 32F;
+    private final float     BELT_MIDDLE      = 10 / 32F;
 
-    private int movedCount = 0;
+    private int             movedCount       = 0;
 
-    private boolean lastWorkingState = false;
+    private boolean         lastWorkingState = false;
 
     public BeltGrid(final int identifier, final float beltSpeed)
     {
@@ -89,8 +89,11 @@ public class BeltGrid extends CableGrid
 
             if (this.getTank().getSteam() > 0)
             {
-                if (!belt.isWorking())
+                if (!belt.isWorking() && System.currentTimeMillis() - belt.getLastWorkStateChange() > 500)
+                {
                     belt.setWorking(true);
+                    belt.setChanged(true);
+                }
                 if (!belt.getItems().isEmpty())
                 {
                     final Iterator<ItemBelt> iterator = belt.getItems().iterator();
@@ -157,7 +160,7 @@ public class BeltGrid extends CableGrid
 
                                     if (tile != null
                                             && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                            belt.getFacing().getOpposite()))
+                                                    belt.getFacing().getOpposite()))
                                     {
                                         if (ItemHandlerHelper
                                                 .insertItem(tile.getCapability(
@@ -171,8 +174,9 @@ public class BeltGrid extends CableGrid
                                                     item.getStack(), false);
                                         }
                                         else
-                                            InventoryHelper.spawnItemStack(belt.getBlockWorld(), belt.getBlockPos().getX(),
-                                                    belt.getBlockPos().getY(), belt.getBlockPos().getZ(), item.getStack());
+                                            InventoryHelper.spawnItemStack(belt.getBlockWorld(),
+                                                    belt.getBlockPos().getX(), belt.getBlockPos().getY(),
+                                                    belt.getBlockPos().getZ(), item.getStack());
                                     }
                                     else
                                         InventoryHelper.spawnItemStack(belt.getBlockWorld(), belt.getBlockPos().getX(),
@@ -186,7 +190,7 @@ public class BeltGrid extends CableGrid
 
                                     if (tile != null
                                             && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                                            belt.getFacing().getOpposite()))
+                                                    belt.getFacing().getOpposite()))
                                     {
                                         if (ItemHandlerHelper
                                                 .insertItem(tile.getCapability(
@@ -222,15 +226,18 @@ public class BeltGrid extends CableGrid
                     }
                 }
             }
-            else if (belt.isWorking())
+            else if (belt.isWorking() && System.currentTimeMillis() - belt.getLastWorkStateChange() > 500)
+            {
                 belt.setWorking(false);
+                belt.setChanged(true);
+            }
         }
 
         for (final ITileCable<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
-            if (belt.hasChanged() || this.lastWorkingState != currentWorkingState)
+            if (belt.hasChanged())
             {
                 belt.itemUpdate();
                 belt.setChanged(false);
