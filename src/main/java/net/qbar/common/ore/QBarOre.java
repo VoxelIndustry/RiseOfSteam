@@ -20,6 +20,6 @@ public class QBarOre
 
     public SludgeData toSludge()
     {
-        return SludgeData.builder().ores(minerals).build();
+        return new SludgeData().addOres(minerals);
     }
 }

@@ -39,6 +39,7 @@ public class CommonProxy
 
         MinecraftForge.EVENT_BUS.register(new QBarBlocks());
         MinecraftForge.EVENT_BUS.register(new QBarItems());
+        MinecraftForge.EVENT_BUS.register(new QBarRecipeHandler());
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         CompatManager.preInit(e);

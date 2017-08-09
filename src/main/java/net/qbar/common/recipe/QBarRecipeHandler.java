@@ -1,6 +1,12 @@
 package net.qbar.common.recipe;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.qbar.QBar;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
@@ -38,8 +44,12 @@ public class QBarRecipeHandler
         });
 
         QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
+    }
 
-        //   GameRegistry.addRecipe(new SludgeRecipe());
+    @SubscribeEvent
+    public void onRecipeRegister(RegistryEvent.Register<IRecipe> event)
+    {
+        event.getRegistry().register(new SludgeRecipe().setRegistryName(new ResourceLocation(QBar.MODID, "compressedsludge")));
     }
 
     @SuppressWarnings("unchecked")

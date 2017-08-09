@@ -60,7 +60,7 @@ public class ItemSludge extends ItemBase
             {
                 ItemStack stack = new ItemStack(this);
 
-                NBTTagCompound data = SludgeData.builder().ore(ore, 1f).build().writeToNBT(new NBTTagCompound());
+                NBTTagCompound data = new SludgeData().addOre(ore, 1f).writeToNBT(new NBTTagCompound());
                 stack.setTagCompound(new NBTTagCompound());
                 stack.getTagCompound().setTag("sludgeData", data);
                 subItems.add(stack);

@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.SludgeData;
@@ -14,7 +15,7 @@ import net.qbar.common.ore.SludgeData;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class SludgeRecipe implements IRecipe
+public class SludgeRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
     private ItemStack result = new ItemStack(QBarItems.COMPRESSED_MINERAL_SLUDGE);
 
@@ -32,7 +33,7 @@ public class SludgeRecipe implements IRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        SludgeData data = SludgeData.builder().build();
+        SludgeData data = new SludgeData();
 
         for (int i = 0; i < 9; i++)
         {
@@ -64,24 +65,5 @@ public class SludgeRecipe implements IRecipe
     public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-    }
-
-    @Override
-    public IRecipe setRegistryName(ResourceLocation name)
-    {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getRegistryName()
-    {
-        return null;
-    }
-
-    @Override
-    public Class<IRecipe> getRegistryType()
-    {
-        return null;
     }
 }

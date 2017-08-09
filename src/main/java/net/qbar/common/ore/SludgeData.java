@@ -1,19 +1,20 @@
 package net.qbar.common.ore;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Singular;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 public class SludgeData
 {
     @Getter
-    @Singular
-    private final Map<QBarMineral, Float> ores;
+    private Map<QBarMineral, Float> ores;
+
+    public SludgeData()
+    {
+        this.ores = new HashMap<>();
+    }
 
     public SludgeData addOre(QBarMineral ore, float proportion)
     {
@@ -21,6 +22,12 @@ public class SludgeData
             this.ores.put(ore, this.ores.get(ore) + proportion);
         else
             this.ores.put(ore, proportion);
+        return this;
+    }
+
+    public SludgeData addOres(Map<QBarMineral, Float> ores)
+    {
+        ores.forEach(this::addOre);
         return this;
     }
 
@@ -39,7 +46,7 @@ public class SludgeData
 
     public static SludgeData fromNBT(NBTTagCompound tag)
     {
-        SludgeData sludge = new SludgeData(new HashMap<>());
+        SludgeData sludge = new SludgeData();
 
         for (int i = 0; i < tag.getInteger("oreQty"); i++)
             sludge.addOre(QBarOres.getMineralFromName(tag.getString("ore" + i)).get(), tag.getFloat("proportion" + i));
