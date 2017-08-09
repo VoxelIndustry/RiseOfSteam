@@ -70,9 +70,11 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                                 this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
                             }
                             toCheck = new BlockPos(this.getPos().getX() - 7, 0, toCheck.getZ() + 1);
-                        } else
+                        }
+                        else
                             toCheck = new BlockPos(toCheck.getX() + 1, 0, toCheck.getZ());
-                    } else
+                    }
+                    else
                         toCheck = toCheck.up();
                 }
                 this.progress = (((toCheck.getZ() - this.getPos().getZ() + 7) * 15 * (this.getPos().getY() - 1))
@@ -94,7 +96,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                 }
                 lastPos = toCheck;
 
-                if(this.progress == 1)
+                if (this.progress == 1)
                     this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
             }
             //TODO: Change to real value when the portable storage is implemented
@@ -166,14 +168,14 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     @Override
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        return false;
+        return super.hasCapability(capability, facing);
     }
 
     @Nullable
     @Override
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        return null;
+        return super.getCapability(capability, facing);
     }
 
     @Override
@@ -185,7 +187,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                 final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

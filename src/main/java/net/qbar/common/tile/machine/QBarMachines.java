@@ -9,6 +9,7 @@ import net.qbar.common.tile.MachineDescriptor;
 public class QBarMachines
 {
     public static final MachineDescriptor OFFSHORE_PUMP;
+    public static final MachineDescriptor SMALL_MINING_DRILL;
 
     public static final CraftingMachineDescriptor ROLLING_MILL;
     public static final CraftingMachineDescriptor FURNACE_MK1;
@@ -23,6 +24,11 @@ public class QBarMachines
         OFFSHORE_PUMP = MachineDescriptor.builder().name("offshorepump")
                 .steamCapacity(2000).steamConsumption(5)
                 .workingPressure(SteamUtil.AMBIANT_PRESSURE).maxPressureCapacity(1.5f * SteamUtil.AMBIANT_PRESSURE)
+                .allowOvercharge(true).build();
+
+        SMALL_MINING_DRILL = MachineDescriptor.builder().name("smallminingdrill")
+                .steamCapacity(2000).steamConsumption(25)
+                .workingPressure(SteamUtil.AMBIANT_PRESSURE).maxPressureCapacity(2 * SteamUtil.AMBIANT_PRESSURE)
                 .allowOvercharge(true).build();
 
         ROLLING_MILL = new CraftingMachineDescriptor.Builder("rollingmill")

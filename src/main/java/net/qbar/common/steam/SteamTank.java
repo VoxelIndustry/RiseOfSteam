@@ -69,11 +69,12 @@ public class SteamTank implements ISteamTank
         this.maxPressure = nbt.getFloat("maxPressure");
     }
 
-    public void writeToNBT(final NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(final NBTTagCompound nbt)
     {
         nbt.setInteger("steam", this.steam);
         nbt.setInteger("capacity", this.capacity);
         nbt.setFloat("maxPressure", this.maxPressure);
+        return nbt;
     }
 
     @Override
