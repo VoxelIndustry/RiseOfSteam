@@ -180,7 +180,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("fluidtank", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).outputSlot(0, 0, 0).slot(1, 0, 20).syncFloatValue(this::getProgress,
+                .addInventory().tile(this).outputSlot(0, 80, 12).slot(1, 80, 58).syncFloatValue(this::getProgress,
                         this::setProgress).addInventory().create();
     }
 
@@ -192,7 +192,6 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        System.out.println(this.progress);
         player.openGui(QBar.instance, EGui.TINYMININGDRILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;

@@ -1,17 +1,15 @@
 package net.qbar.client.gui;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.QBar;
 import net.qbar.client.gui.util.GuiMachineBase;
 import net.qbar.client.gui.util.GuiProgress;
+import net.qbar.client.gui.util.GuiSpace;
 import net.qbar.client.gui.util.GuiTexturedSpace;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class GuiSteamFurnaceMK2 extends GuiMachineBase<TileSteamFurnaceMK2>
 {
@@ -31,34 +29,18 @@ public class GuiSteamFurnaceMK2 extends GuiMachineBase<TileSteamFurnaceMK2>
                 GuiProgress.builder().space(GuiTexturedSpace.builder().x(79).y(34).width(25).height(16).u(176).v(14).s
                         (176 + 25).t(14 + 16).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
                         .build());
-    }
 
-    @Override
-    public void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY)
-    {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
-        GlStateManager.translate(-this.guiLeft, -this.guiTop, 0.0F);
-        final int x = (this.width - this.xSize) / 2;
-        final int y = (this.height - this.ySize) / 2;
-
-        if (mouseX > x + 10 && mouseX < x + 22 && mouseY > y + 8 && mouseY < y + 79)
-        {
-            GuiUtils.drawHoveringText(
-                    Arrays.asList(TextFormatting.GOLD + "" + this.getMachine().getCurrentHeat() + " / "
-                            + this.getMachine().getMaxHeat() + " °C"),
-                    mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
-        }
-        GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
+        this.addTooltip(new GuiSpace(10, 8, 12, 71), () ->
+                Collections.singletonList(this.getHeatTooltip(this.getMachine()::getCurrentHeat, this.getMachine()::getMaxHeat)));
     }
 
     private int getHeatScaled(final int pixels)
     {
-        final int i = this.getMachine().getMaxHeat();
+        final int i = (int) this.getMachine().getMaxHeat();
 
         if (i == 0)
             return -1;
 
-        return Math.min(this.getMachine().getCurrentHeat() * pixels / i, pixels);
+        return (int) Math.min(this.getMachine().getCurrentHeat() * pixels / i, pixels);
     }
 }

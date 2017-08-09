@@ -28,7 +28,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 {
     private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
 
-    private int currentHeat, maxHeat;
+    private float currentHeat, maxHeat;
 
     private ItemStack cachedStack;
 
@@ -85,7 +85,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     {
         super.writeToNBT(tag);
 
-        tag.setInteger("heat", this.currentHeat);
+        tag.setFloat("heat", this.currentHeat);
 
         tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
         return tag;
@@ -96,7 +96,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     {
         super.readFromNBT(tag);
 
-        this.currentHeat = tag.getInteger("heat");
+        this.currentHeat = tag.getFloat("heat");
 
         this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
     }
@@ -176,8 +176,8 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
                 .syncFloatValue(this::getCurrentProgress, this::setCurrentProgress)
                 .syncFloatValue(this::getMaxProgress, this::setMaxProgress)
                 .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam)
-                .syncIntegerValue(this::getCurrentHeat, this::setCurrentHeat)
-                .syncIntegerValue(this::getMaxHeat, this::setMaxHeat).addInventory().create();
+                .syncFloatValue(this::getCurrentHeat, this::setCurrentHeat)
+                .syncFloatValue(this::getMaxHeat, this::setMaxHeat).addInventory().create();
     }
 
     @Override
@@ -214,22 +214,22 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
         return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
-    public int getCurrentHeat()
+    public float getCurrentHeat()
     {
         return currentHeat;
     }
 
-    public void setCurrentHeat(int currentHeat)
+    public void setCurrentHeat(float currentHeat)
     {
         this.currentHeat = currentHeat;
     }
 
-    public int getMaxHeat()
+    public float getMaxHeat()
     {
         return maxHeat;
     }
 
-    public void setMaxHeat(int maxHeat)
+    public void setMaxHeat(float maxHeat)
     {
         this.maxHeat = maxHeat;
     }

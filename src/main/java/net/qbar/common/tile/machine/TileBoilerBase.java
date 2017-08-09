@@ -26,7 +26,7 @@ public abstract class TileBoilerBase extends TileInventoryBase
     private final SteamTank steamTank;
 
     protected     float heat;
-    private final int   maxHeat;
+    private final float   maxHeat;
 
     public TileBoilerBase(String name, int inventorySize, int maxHeat, int steamCapacity, int steamMaxPressure,
                           int waterCapacity)
@@ -160,7 +160,7 @@ public abstract class TileBoilerBase extends TileInventoryBase
         return heat;
     }
 
-    public int getMaxHeat()
+    public float getMaxHeat()
     {
         return maxHeat;
     }

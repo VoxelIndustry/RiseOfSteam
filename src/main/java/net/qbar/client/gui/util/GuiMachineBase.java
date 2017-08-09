@@ -17,12 +17,23 @@ import net.qbar.common.tile.TileInventoryBase;
 import org.apache.commons.lang3.tuple.Pair;
 import org.yggard.brokkgui.wrapper.GuiRenderer;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerProvider> extends GuiContainer
 {
+    public static final NumberFormat heatFormat;
+
+    static
+    {
+        heatFormat = NumberFormat.getInstance();
+        heatFormat.setMaximumFractionDigits(1);
+        heatFormat.setMinimumFractionDigits(1);
+    }
+
     private T machine;
 
     private final ResourceLocation                 background;
@@ -30,6 +41,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
 
     private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
+    private final List<Pair<GuiSpace, Supplier<List<String>>>>        tooltips;
 
     private final GuiRenderer renderer;
 
@@ -42,6 +54,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         this.fluidtanks = new ArrayList<>();
         this.steamtanks = new ArrayList<>();
         this.animatedSprites = new ArrayList<>();
+        this.tooltips = new ArrayList<>();
 
         this.renderer = new GuiRenderer(Tessellator.getInstance());
     }
@@ -74,6 +87,22 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, GuiProgress progress)
     {
         this.animatedSprites.add(Pair.of(stateSupplier, progress));
+    }
+
+    protected void addTooltip(GuiSpace space, Supplier<List<String>> textSupplier)
+    {
+        this.tooltips.add(Pair.of(space, textSupplier));
+    }
+
+    protected void addTooltip(int startX, int startY, int endX, int endY, Supplier<List<String>> textSupplier)
+    {
+        this.addTooltip(new GuiSpace(startX, startY, endX - startX, endY - startY), textSupplier);
+    }
+
+    protected String getHeatTooltip(Supplier<Float> heatSupplier, Supplier<Float> maxHeatSupplier)
+    {
+        return TextFormatting.GOLD + "" + heatFormat.format(heatSupplier.get() / 10) + " / "
+                + maxHeatSupplier.get() / 10 + " °C";
     }
 
     @Override
@@ -129,6 +158,15 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                                     + "Overload!");
                 }
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
+            }
+        }
+        for (Pair<GuiSpace, Supplier<List<String>>> tooltip : this.tooltips)
+        {
+            if (mouseX > x + tooltip.getKey().getX() && mouseX < x + tooltip.getKey().getEndX() &&
+                    mouseY > y + tooltip.getKey().getY() && mouseY < y + tooltip.getKey().getEndY())
+            {
+                GuiUtils.drawHoveringText(tooltip.getValue().get(),
+                        mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
