@@ -2,15 +2,19 @@ package net.qbar.common.gui;
 
 public enum EGui
 {
-    BOILER(true), EXTRACTOR(true), KEYPUNCH(true), SPLITTER(true), ROLLINGMILL(true), FLUIDTANK(true), STEAMFURNACE(
-        true), ASSEMBLER(true), LIQUIDBOILER(
-        true), SOLARBOILER(true), STEAMFURNACEMK2(true), OREWASHER(true), SORTINGMACHINE(true), TINYMININGDRILL(true);
+    BOILER, EXTRACTOR, KEYPUNCH, SPLITTER, ROLLINGMILL, FLUIDTANK, STEAMFURNACE, ASSEMBLER, LIQUIDBOILER, SOLARBOILER,
+    STEAMFURNACEMK2, OREWASHER, SORTINGMACHINE, TINYMININGDRILL, SMALLMININGDRILL;
 
     private final boolean containerBuilder;
 
-    private EGui(final boolean containerBuilder)
+    EGui(final boolean containerBuilder)
     {
         this.containerBuilder = containerBuilder;
+    }
+
+    EGui()
+    {
+        this(true);
     }
 
     public boolean useContainerBuilder()

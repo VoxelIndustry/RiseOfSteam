@@ -110,7 +110,7 @@ public class DefaultSyncables
         @Override
         public FluidStack copy(FluidStack original)
         {
-            return original.copy();
+            return original != null ? original.copy() : null;
         }
 
         @Override

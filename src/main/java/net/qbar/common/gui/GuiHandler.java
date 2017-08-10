@@ -68,6 +68,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiSortingMachine(player, (TileSortingMachine) tile);
             case TINYMININGDRILL:
                 return new GuiTinyMiningDrill(player, (TileTinyMiningDrill) tile);
+            case SMALLMININGDRILL:
+                return new GuiSmallMiningDrill(player, (TileSmallMiningDrill)tile);
             default:
                 break;
         }

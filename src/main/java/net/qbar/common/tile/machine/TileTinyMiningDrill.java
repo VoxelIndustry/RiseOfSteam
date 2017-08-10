@@ -181,7 +181,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return new ContainerBuilder("fluidtank", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+        return new ContainerBuilder("tinyminingdrill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this).outputSlot(0, 80, 12).slot(1, 80, 58).syncFloatValue(this::getProgress,
                         this::setProgress).addInventory().create();
     }
