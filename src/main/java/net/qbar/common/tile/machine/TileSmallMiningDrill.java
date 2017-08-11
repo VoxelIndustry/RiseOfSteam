@@ -4,15 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.QBar;
+import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -21,6 +27,7 @@ import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.ore.SludgeData;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.tile.TileInventoryBase;
@@ -48,6 +55,9 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
     private final float heatPerOperationTick = 30;
     private int tickBeforeHarvest;
 
+    private final NonNullList<ItemStack> tempVarious;
+    private       ItemStack              tempSludge;
+
     public TileSmallMiningDrill()
     {
         super("smallminingdrill", 0);
@@ -59,6 +69,9 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
         this.heat = 0;
         this.maxHeat = 3000;
         this.lastPos = this.getPos();
+
+        this.tempVarious = NonNullList.create();
+        this.tempSludge = ItemStack.EMPTY;
     }
 
     @Override
@@ -69,7 +82,8 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
 
         boolean isDirty = false;
 
-        if (!this.isCompleted() && this.heat < this.maxHeat && this.getSteamTank().getSteam() >= QBarMachines.SMALL_MINING_DRILL.getSteamConsumption())
+        if (!this.isCompleted() && this.tempVarious.isEmpty() && this.heat < this.maxHeat &&
+                this.getSteamTank().getSteam() >= QBarMachines.SMALL_MINING_DRILL.getSteamConsumption())
         {
             BlockPos toCheck = this.lastPos;
 
@@ -97,12 +111,29 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
-                if (!this.world.isAirBlock(toCheck) && state.getBlockHardness(world, toCheck) >= 0)
+                if (!this.world.isAirBlock(toCheck) && !(state.getBlock() instanceof IFluidBlock) &&
+                        state.getBlockHardness(world, toCheck) >= 0)
                 {
-                    // TODO : mining logic
-                    if (Math.abs(toCheck.getX() - this.getPos().getX()) < 2 && Math.abs(toCheck.getZ() - this.getPos().getZ()) < 2)
+                    if (state.getBlock() instanceof BlockVeinOre)
+                    {
+                        SludgeData sludge = ((BlockVeinOre) state.getBlock()).getOreFromState(state).toSludge();
+
+                        ItemStack sludgeStack = new ItemStack(QBarItems.MINERAL_SLUDGE);
+                        sludgeStack.setTagCompound(new NBTTagCompound());
+                        sludgeStack.getTagCompound().setTag("sludgeData", sludge.writeToNBT(new NBTTagCompound()));
+                        tempSludge = sludgeStack;
                         this.world.destroyBlock(toCheck, false);
+                    }
+                    else if (Math.abs(toCheck.getX() - this.getPos().getX()) < 2 && Math.abs(toCheck.getZ() - this.getPos().getZ()) < 2)
+                    {
+                        state.getBlock().getDrops(tempVarious, this.world, toCheck, state, 0);
+                        this.world.destroyBlock(toCheck, false);
+                    }
+                    else
+                        this.tickBeforeHarvest = 0;
                 }
+                else
+                    this.tickBeforeHarvest = 0;
             }
             else
                 this.tickBeforeHarvest--;
@@ -122,12 +153,26 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
             {
                 int removable = Math.min(20, this.getFluidTank().getFluidAmount());
 
-                if(this.heat - removable <= this.getMinimumTemp())
-                    removable = (int) (this.getMinimumTemp() - (this.heat - removable));
+                if (this.heat - removable <= this.getMinimumTemp())
+                    removable = (int) (this.heat - this.getMinimumTemp());
 
-                this.heat = this.heat - removable;
-                this.getFluidTank().drainInternal(removable, true);
+                if (removable > 0)
+                {
+                    this.heat = this.heat - removable;
+                    this.getFluidTank().drainInternal(removable, true);
+                }
             }
+        }
+        if (!this.tempVarious.isEmpty())
+        {
+            for (ItemStack stack : this.tempVarious)
+                InventoryHelper.spawnItemStack(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), stack);
+            this.tempVarious.clear();
+        }
+        if (!this.tempSludge.isEmpty())
+        {
+            InventoryHelper.spawnItemStack(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), tempSludge);
+            tempSludge.setCount(0);
         }
 
         if (this.world.getTotalWorldTime() % 5 == 0)
@@ -167,6 +212,9 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
         tag.setBoolean("completed", this.isCompleted());
         tag.setLong("lastPos", this.lastPos.toLong());
         tag.setInteger("tickBeforeHarvest", this.tickBeforeHarvest);
+
+        tag.setTag("tempVarious", ItemStackHelper.saveAllItems(new NBTTagCompound(), this.tempVarious));
+        tag.setTag("tempSludge", this.tempSludge.writeToNBT(new NBTTagCompound()));
         return tag;
     }
 
@@ -188,6 +236,9 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
         this.completed = tag.getBoolean("completed");
         this.lastPos = BlockPos.fromLong(tag.getLong("lastPos"));
         this.tickBeforeHarvest = tag.getInteger("tickBeforeHarvest");
+
+        ItemStackHelper.loadAllItems(tag.getCompoundTag("tempVarious"), this.tempVarious);
+        this.tempSludge = new ItemStack(tag.getCompoundTag("tempSludge"));
     }
 
     @Override
