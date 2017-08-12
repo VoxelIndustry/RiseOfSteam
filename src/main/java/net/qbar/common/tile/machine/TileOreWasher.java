@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
@@ -13,6 +13,8 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
@@ -39,7 +41,7 @@ public class TileOreWasher extends TileCraftingMachineBase
     @Override
     public Object[] getCustomData()
     {
-        return new Object[]{0};
+        return new Object[] { 0 };
     }
 
     @Override
@@ -70,7 +72,7 @@ public class TileOreWasher extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -91,11 +93,16 @@ public class TileOreWasher extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        MultiblockSide side = Multiblocks.ORE_WASHER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
+
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getPos().getX() == -1
+                && side.getPos().getY() == 0 && side.getPos().getZ() == 0 && side.getFacing() == EnumFacing.WEST)
         {
             return true;
         }
-        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side.getPos().getX() == 1
+                && side.getPos().getY() == 0 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.EAST)
         {
             return true;
         }
@@ -106,13 +113,18 @@ public class TileOreWasher extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-        {
-            return (T) this.inventoryHandler;
-        }
-        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        MultiblockSide side = Multiblocks.ORE_WASHER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
+
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getPos().getX() == -1
+                && side.getPos().getY() == 0 && side.getPos().getZ() == 0 && side.getFacing() == EnumFacing.WEST)
         {
             return (T) this.getSteamTank();
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side.getPos().getX() == 1
+                && side.getPos().getY() == 0 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.EAST)
+        {
+            return (T) this.getInputTanks()[0];
         }
         return null;
     }
