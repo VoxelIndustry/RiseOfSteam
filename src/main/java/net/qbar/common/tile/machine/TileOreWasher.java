@@ -1,15 +1,18 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
@@ -36,6 +39,38 @@ public class TileOreWasher extends TileCraftingMachineBase
 
         if (this.isClient())
             return;
+
+        final EnumFacing orientation = this.getFacing();
+
+        if (!this.isOutputEmpty())
+            tryInsert(orientation);
+    }
+
+    private void tryInsert(final EnumFacing facing)
+    {
+        TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2));
+        if (tile instanceof IBelt)
+        {
+            final IBelt belt = (IBelt) tile;
+
+            if (belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
+            {
+                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), true);
+                this.sync();
+            }
+        }
+        TileEntity trashTile = this.world.getTileEntity(this.pos.offset(facing.rotateY(), 2).offset(facing));
+        if (trashTile instanceof IBelt)
+        {
+            final IBelt trashBelt = (IBelt) trashTile;
+
+            if (trashBelt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
+            {
+                trashBelt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[1], 1, false),
+                        true);
+                this.sync();
+            }
+        }
     }
 
     @Override
@@ -106,6 +141,11 @@ public class TileOreWasher extends TileCraftingMachineBase
         {
             return true;
         }
+        else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
+                && side.getPos().getY() == 1 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.NORTH)
+        {
+            return true;
+        }
         return false;
     }
 
@@ -125,6 +165,11 @@ public class TileOreWasher extends TileCraftingMachineBase
                 && side.getPos().getY() == 0 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.EAST)
         {
             return (T) this.getInputTanks()[0];
+        }
+        else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
+                && side.getPos().getY() == 1 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.NORTH)
+        {
+            return (T) this.inventoryHandler;
         }
         return null;
     }
