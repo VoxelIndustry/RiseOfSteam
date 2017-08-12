@@ -2,10 +2,12 @@ package net.qbar.common.tile.machine;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,7 +33,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
 {
     @Getter
     @Setter
-    private float progress;
+    private float                   progress;
 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
@@ -48,7 +50,16 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     public void update()
     {
         if (this.isClient())
+        {
+            if (this.getProgress() < 1)
+                this.world.spawnParticle(EnumParticleTypes.BLOCK_DUST,
+                        this.getPos().getX() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F, this.getPos().getY(),
+                        this.getPos().getZ() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F,
+                        (this.world.rand.nextFloat() / 4.0F) - 0.125F, 0.25D,
+                        (this.world.rand.nextFloat() / 4.0F) - 0.125F,
+                        Block.getStateId(this.world.getBlockState(pos.down())));
             return;
+        }
 
         if (this.getProgress() < 1 && this.getSteam() >= 20)
         {
@@ -89,9 +100,9 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                             .orElse(QBarOres.CASSITERITE).getMinerals().entrySet())
                     {
                         this.results.putIfAbsent(mineral.getKey(), 0F);
-                        this.results.put(mineral.getKey(), mineral.getValue() *
-                                (state.getValue(BlockVeinOre.RICHNESS).ordinal() + 1) + this.results.get(mineral
-                                .getKey()));
+                        this.results.put(mineral.getKey(),
+                                mineral.getValue() * (state.getValue(BlockVeinOre.RICHNESS).ordinal() + 1)
+                                        + this.results.get(mineral.getKey()));
                     }
                 }
                 lastPos = toCheck;
@@ -99,8 +110,10 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
                 if (this.progress == 1)
                     this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
             }
-            //TODO: Change to real value when the portable storage is implemented
+            // TODO: Change to real value when the portable storage is implemented
             this.drainSteam(0, true);
+
+            this.sync();
         }
     }
 
@@ -135,12 +148,19 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         super.readFromNBT(tag);
     }
 
+    @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
+    }
+
     public int getSteam()
     {
         if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH))
             return this.getStackInSlot(1)
                     .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).getSteam();
-        //TODO: Change to real value when the portable storage is implemented
+        // TODO: Change to real value when the portable storage is implemented
         return 1000;
     }
 
@@ -182,12 +202,12 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("tinyminingdrill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).outputSlot(0, 80, 12).slot(1, 80, 58).syncFloatValue(this::getProgress,
-                        this::setProgress).addInventory().create();
+                .addInventory().tile(this).outputSlot(0, 80, 12).slot(1, 80, 58)
+                .syncFloatValue(this::getProgress, this::setProgress).addInventory().create();
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

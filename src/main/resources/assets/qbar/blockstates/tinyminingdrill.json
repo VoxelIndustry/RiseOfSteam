@@ -3,7 +3,7 @@
   "defaults": {
     "textures": {
     },
-    "model": "qbar:solar_mirror.obj",
+    "model": "qbar:tiny_mining_drill.obj",
     "custom": {
       "flip-v": true
     }
@@ -29,7 +29,7 @@
       "false": {}
     },
     "inventory": {
-      "model": "qbar:solar_mirror.obj",
+      "model": "qbar:tiny_mining_drill.obj",
       "transform": {
         "scale": 0.23,
         "rotation": [
