@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -148,6 +149,10 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
     {
         GridManager.getInstance().disconnectCable((TileBelt) w.getTileEntity(pos));
 
+        TileBelt belt = this.getWorldTile(w, pos);
+
+        if(!belt.getItems().isEmpty())
+            belt.getItems().forEach(item -> InventoryHelper.spawnItemStack(w, pos.getX(), pos.getY(),pos.getZ(), item.getStack()));
         super.breakBlock(w, pos, state);
     }
 
