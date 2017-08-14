@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
@@ -23,10 +23,13 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
+import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.ore.SludgeData;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
@@ -35,34 +38,37 @@ import net.qbar.common.util.FluidUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class TileSmallMiningDrill extends TileInventoryBase implements ITileMultiblockCore, ITickable, IContainerProvider
+public class TileSmallMiningDrill extends TileInventoryBase
+        implements ITileMultiblockCore, ITickable, IContainerProvider
 {
     @Getter
-    private SteamTank steamTank;
+    private SteamTank                    steamTank;
     @Getter
-    private FluidTank fluidTank;
+    private FluidTank                    fluidTank;
 
     @Getter
     @Setter
-    private float heat, maxHeat;
+    private float                        heat, maxHeat;
 
     @Getter
     @Setter
-    private boolean  completed;
-    private BlockPos lastPos;
+    private boolean                      completed;
+    private BlockPos                     lastPos;
 
-    private final float heatPerOperationTick = 30;
-    private int tickBeforeHarvest;
+    private final float                  heatPerOperationTick = 30;
+    private int                          tickBeforeHarvest;
 
     private final NonNullList<ItemStack> tempVarious;
-    private       ItemStack              tempSludge;
+    private ItemStack                    tempSludge;
 
     public TileSmallMiningDrill()
     {
         super("smallminingdrill", 0);
 
-        this.fluidTank = new FilteredFluidTank(32000, fluid -> fluid != null && fluid.getFluid() == FluidRegistry.WATER);
+        this.fluidTank = new FilteredFluidTank(32000,
+                fluid -> fluid != null && fluid.getFluid() == FluidRegistry.WATER);
         this.steamTank = new SteamTank(0, QBarMachines.SMALL_MINING_DRILL.getSteamCapacity(),
                 QBarMachines.SMALL_MINING_DRILL.getMaxPressureCapacity());
 
@@ -82,8 +88,8 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
 
         boolean isDirty = false;
 
-        if (!this.isCompleted() && this.tempVarious.isEmpty() && this.heat < this.maxHeat &&
-                this.getSteamTank().getSteam() >= QBarMachines.SMALL_MINING_DRILL.getSteamConsumption())
+        if (!this.isCompleted() && this.tempVarious.isEmpty() && this.heat < this.maxHeat
+                && this.getSteamTank().getSteam() >= QBarMachines.SMALL_MINING_DRILL.getSteamConsumption())
         {
             BlockPos toCheck = this.lastPos;
 
@@ -100,19 +106,21 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
                             this.setCompleted(true);
                         }
                         else
-                            toCheck = new BlockPos(this.getPos().getX() - 2, toCheck.getY() - 1, this.getPos().getZ() - 2);
+                            toCheck = new BlockPos(this.getPos().getX() - 2, toCheck.getY() - 1,
+                                    this.getPos().getZ() - 2);
                     }
                     else
                         toCheck = new BlockPos(this.getPos().getX() - 2, toCheck.getY(), toCheck.getZ() + 1);
                 }
                 else
                     toCheck = new BlockPos(toCheck.getX() + 1, toCheck.getY(), toCheck.getZ());
-                this.tickBeforeHarvest = (int) Math.ceil(4 * (1 / (this.getSteamTank().getPressure() / QBarMachines.SMALL_MINING_DRILL.getMaxPressureCapacity())));
+                this.tickBeforeHarvest = (int) Math.ceil(4 * (1 / (this.getSteamTank().getPressure()
+                        / QBarMachines.SMALL_MINING_DRILL.getMaxPressureCapacity())));
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
-                if (!this.world.isAirBlock(toCheck) && !(state.getBlock() instanceof IFluidBlock) &&
-                        state.getBlockHardness(world, toCheck) >= 0)
+                if (!this.world.isAirBlock(toCheck) && !(state.getBlock() instanceof IFluidBlock)
+                        && state.getBlockHardness(world, toCheck) >= 0)
                 {
                     if (state.getBlock() instanceof BlockVeinOre)
                     {
@@ -124,7 +132,8 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
                         tempSludge = sludgeStack;
                         this.world.destroyBlock(toCheck, false);
                     }
-                    else if (Math.abs(toCheck.getX() - this.getPos().getX()) < 2 && Math.abs(toCheck.getZ() - this.getPos().getZ()) < 2)
+                    else if (Math.abs(toCheck.getX() - this.getPos().getX()) < 2
+                            && Math.abs(toCheck.getZ() - this.getPos().getZ()) < 2)
                     {
                         state.getBlock().getDrops(tempVarious, this.world, toCheck, state, 0);
                         this.world.destroyBlock(toCheck, false);
@@ -142,9 +151,9 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
 
             this.heat += 30 * (this.getSteamTank().getPressure() / 2);
 
-            this.steamTank.drainSteam((int)
-                    Math.max(QBarMachines.SMALL_MINING_DRILL.getSteamConsumption() * this.getSteamTank().getPressure(),
-                            QBarMachines.SMALL_MINING_DRILL.getSteamConsumption()), true);
+            this.steamTank.drainSteam((int) Math.max(
+                    QBarMachines.SMALL_MINING_DRILL.getSteamConsumption() * this.getSteamTank().getPressure(),
+                    QBarMachines.SMALL_MINING_DRILL.getSteamConsumption()), true);
             isDirty = true;
         }
         if (!this.isCompleted())
@@ -165,14 +174,13 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
         }
         if (!this.tempVarious.isEmpty())
         {
-            for (ItemStack stack : this.tempVarious)
-                InventoryHelper.spawnItemStack(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), stack);
-            this.tempVarious.clear();
+            if (this.tryInsertTrash(this.getFacing()))
+                isDirty = true;
         }
         if (!this.tempSludge.isEmpty())
         {
-            InventoryHelper.spawnItemStack(this.world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), tempSludge);
-            tempSludge.setCount(0);
+            if (this.tryInsertSludge(this.getFacing()))
+                isDirty = true;
         }
 
         if (this.world.getTotalWorldTime() % 5 == 0)
@@ -196,6 +204,52 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
     private int getMinimumTemp()
     {
         return (int) (this.world.getBiome(this.getPos()).getFloatTemperature(this.pos) * 200);
+    }
+
+    private boolean tryInsertSludge(final EnumFacing facing)
+    {
+        TileEntity slugdeTile = this.world.getTileEntity(this.pos.offset(facing, 2));
+        if (slugdeTile instanceof IBelt)
+        {
+            final IBelt sludgeBelt = (IBelt) slugdeTile;
+
+            ItemStack next = this.tempSludge;
+            if (sludgeBelt.insert(next, false))
+            {
+                sludgeBelt.insert(next, true);
+                this.tempSludge = ItemStack.EMPTY;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tryInsertTrash(final EnumFacing facing)
+    {
+        TileEntity trashTile = this.world.getTileEntity(this.pos.offset(facing.getOpposite(), 2));
+        if (trashTile instanceof IBelt)
+        {
+            final IBelt trashBelt = (IBelt) trashTile;
+
+            Iterator<ItemStack> variousIterator = this.tempVarious.iterator();
+
+            while (variousIterator.hasNext())
+            {
+                ItemStack next = variousIterator.next();
+                if (trashBelt.insert(next, false))
+                {
+                    trashBelt.insert(next, true);
+                    variousIterator.remove();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
     @Override
@@ -256,8 +310,19 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
     @Override
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        MultiblockSide side = Multiblocks.SMALL_MINING_DRILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
+
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.EAST
+                && side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
+        {
             return true;
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
+                && side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
+        {
+            return true;
+        }
         return super.hasCapability(capability, facing);
     }
 
@@ -265,24 +330,32 @@ public class TileSmallMiningDrill extends TileInventoryBase implements ITileMult
     @Override
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        MultiblockSide side = Multiblocks.SMALL_MINING_DRILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
+
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.EAST
+                && side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
+        {
             return (T) this.steamTank;
-        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        }
+        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
+                && side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
+        {
             return (T) this.fluidTank;
+        }
         return super.getCapability(capability, facing);
     }
 
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return new ContainerBuilder("smallminingdrill", player).player(player.inventory).inventory(8, 84)
-                .hotbar(8, 142).addInventory().tile(this)
-                .syncFluidValue(this.getFluidTank()::getFluid, this.getFluidTank()::setFluid).syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam)
-                .addInventory().create();
+        return new ContainerBuilder("smallminingdrill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this).syncFluidValue(this.getFluidTank()::getFluid, this.getFluidTank()::setFluid)
+                .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam).addInventory().create();
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
