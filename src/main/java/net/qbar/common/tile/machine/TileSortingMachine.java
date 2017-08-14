@@ -14,6 +14,8 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockSide;
+import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
@@ -50,11 +52,16 @@ public class TileSortingMachine extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        MultiblockSide side = Multiblocks.SORTING_MACHINE.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
+
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.NORTH
+                && side.getPos().getX() == 0 && side.getPos().getY() == 1 && side.getPos().getZ() == 0)
         {
             return true;
         }
-        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
+                && side.getPos().getX() == 0 && side.getPos().getY() == 0 && side.getPos().getZ() == 1)
         {
             return true;
         }
@@ -65,11 +72,16 @@ public class TileSortingMachine extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        MultiblockSide side = Multiblocks.SORTING_MACHINE.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+                this.getFacing());
+
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.NORTH
+                && side.getPos().getX() == 0 && side.getPos().getY() == 1 && side.getPos().getZ() == 0)
         {
             return (T) this.inventoryHandler;
         }
-        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
+                && side.getPos().getX() == 0 && side.getPos().getY() == 0 && side.getPos().getZ() == 1)
         {
             return (T) this.getSteamTank();
         }
@@ -89,7 +101,7 @@ public class TileSortingMachine extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
