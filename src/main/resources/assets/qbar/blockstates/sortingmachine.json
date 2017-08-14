@@ -3,7 +3,7 @@
   "defaults": {
     "textures": {
     },
-    "model": "qbar:solar_mirror.obj",
+    "model": "qbar:sorting_machine.obj",
     "custom": {
       "flip-v": true
     }
@@ -13,15 +13,15 @@
       "transform": "forge:default-block"
     },
     "facing": {
-      "north": {
-        "y": 270
-      },
+      "north": {},
       "south": {
+        "y": 180
+      },
+      "east": {
         "y": 90
       },
-      "east": {},
       "west": {
-        "y": 180
+        "y": 270
       }
     },
     "multiblockgag": {
@@ -29,7 +29,7 @@
       "false": {}
     },
     "inventory": {
-      "model": "qbar:solar_mirror.obj",
+      "model": "qbar:sorting_machine.obj",
       "transform": {
         "scale": 0.23,
         "rotation": [
