@@ -1,5 +1,7 @@
 package net.qbar.common.tile;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +30,11 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 {
     private final CraftingMachineDescriptor descriptor;
 
+    @Getter
+    @Setter
     private float      currentProgress;
+    @Getter
+    @Setter
     private float      maxProgress;
     private QBarRecipe currentRecipe;
 
@@ -323,6 +329,12 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     }
 
     @Override
+    public boolean isItemValidForSlot(final int index, final ItemStack stack)
+    {
+        return QBarRecipeHandler.inputMatchWithoutCount(this.descriptor.getRecipeCategory(), index, stack);
+    }
+
+    @Override
     public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
     {
         if (ArrayUtils.contains(this.descriptor.getInputs(), index))
@@ -334,26 +346,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public boolean canExtractItem(final int index, final ItemStack stack, final EnumFacing direction)
     {
         return ArrayUtils.contains(this.descriptor.getOutputs(), index);
-    }
-
-    public float getCurrentProgress()
-    {
-        return this.currentProgress;
-    }
-
-    public void setCurrentProgress(final float currentProgress)
-    {
-        this.currentProgress = currentProgress;
-    }
-
-    public float getMaxProgress()
-    {
-        return this.maxProgress;
-    }
-
-    public void setMaxProgress(final float maxProgress)
-    {
-        this.maxProgress = maxProgress;
     }
 
     public int getProgressScaled(final int scale)
