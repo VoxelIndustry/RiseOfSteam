@@ -2,6 +2,7 @@ package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,6 +12,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
@@ -28,6 +30,54 @@ public class TileSortingMachine extends TileCraftingMachineBase
     public TileSortingMachine()
     {
         super(QBarMachines.SORTING_MACHINE);
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
+
+        if (this.isClient())
+            return;
+
+        final EnumFacing orientation = this.getFacing();
+
+        if (!this.isOutputEmpty())
+            tryInsert(orientation);
+    }
+
+    private void tryInsert(final EnumFacing facing)
+    {
+        TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2));
+        if (tile instanceof IBelt)
+        {
+            final IBelt belt = (IBelt) tile;
+
+            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[0]).isEmpty()
+                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
+            {
+                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), true);
+                this.sync();
+            }
+            else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[1]).isEmpty()
+                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
+            {
+                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[1], 1, false), true);
+                this.sync();
+            }
+            else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[2]).isEmpty()
+                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[2]), false))
+            {
+                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[2], 1, false), true);
+                this.sync();
+            }
+            else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[3]).isEmpty()
+                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[3]), false))
+            {
+                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[3], 1, false), true);
+                this.sync();
+            }
+        }
     }
 
     @Override
