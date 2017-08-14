@@ -172,17 +172,17 @@ public class BeltGrid extends CableGrid
                                                     tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
                                                             belt.getFacing().getOpposite()),
                                                     item.getStack(), false);
+                                            iterator.remove();
+                                            hasChanged = true;
                                         }
-                                        else
-                                            InventoryHelper.spawnItemStack(belt.getBlockWorld(),
-                                                    belt.getBlockPos().getX(), belt.getBlockPos().getY(),
-                                                    belt.getBlockPos().getZ(), item.getStack());
                                     }
                                     else
+                                    {
                                         InventoryHelper.spawnItemStack(belt.getBlockWorld(), belt.getBlockPos().getX(),
                                                 belt.getBlockPos().getY(), belt.getBlockPos().getZ(), item.getStack());
-                                    iterator.remove();
-                                    hasChanged = true;
+                                        iterator.remove();
+                                        hasChanged = true;
+                                    }
                                 }
                                 else
                                 {
