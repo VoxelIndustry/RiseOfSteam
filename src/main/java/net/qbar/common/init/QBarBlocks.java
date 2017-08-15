@@ -143,6 +143,8 @@ public class QBarBlocks
                 TileSmallMiningDrill::new, TileSmallMiningDrill.class));
         registerBlock(new BlockMultiblockMachine<>("tinyminingdrill", Material.IRON, Multiblocks.TINY_MINING_DRILL,
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));
+        registerBlock(new BlockMultiblockMachine<>("alloycauldron", Material.IRON, Multiblocks.ALLOY_CAULDRON,
+                TileAlloyCauldron::new, TileAlloyCauldron.class));
 
         registerBlock(new BlockVeinOre.Builder("ironnickelore")
                 .addContent(QBarOres.PENTLANDITE)
