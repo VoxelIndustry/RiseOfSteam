@@ -7,10 +7,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
 import net.qbar.common.item.*;
-import net.qbar.common.recipe.QBarRecipeHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ObjectHolder(QBar.MODID)
@@ -23,13 +23,17 @@ public class QBarItems
     public static final ItemBase WRENCH = null;
 
     @ObjectHolder("blueprint")
-    public static final ItemBase BLUEPRINT       = null;
+    public static final ItemBase  BLUEPRINT       = null;
     @ObjectHolder("ironrod")
-    public static final ItemBase IRON_ROD        = null;
+    public static final ItemBase  IRON_ROD        = null;
     @ObjectHolder("metalplate")
-    public static final ItemBase METALPLATE      = null;
+    public static final ItemMetal METALPLATE      = null;
+    @ObjectHolder("metalgear")
+    public static final ItemMetal METALGEAR       = null;
+    @ObjectHolder("metalingot")
+    public static final ItemMetal METALINGOT      = null;
     @ObjectHolder("solarreflector")
-    public static final ItemBase SOLAR_REFLECTOR = null;
+    public static final ItemBase  SOLAR_REFLECTOR = null;
 
     @ObjectHolder("mineralsludge")
     public static final ItemBase MINERAL_SLUDGE            = null;
@@ -49,15 +53,15 @@ public class QBarItems
     {
         ITEMS = new ArrayList<>();
 
-        QBarItems.registerMetal("iron");
-        QBarItems.registerMetal("gold");
-
         QBarItems.registerItem(new ItemPunchedCard());
         QBarItems.registerItem(new ItemWrench());
 
         QBarItems.registerItem(new ItemBlueprint());
         QBarItems.registerItem(new ItemBase("ironrod"));
-        QBarItems.registerItem(new ItemPlate());
+        QBarItems.registerItem(new ItemMetal("plate", m -> true));
+        QBarItems.registerItem(new ItemMetal("gear", Arrays.asList("iron", "copper", "bronze", "brass", "steel")::contains));
+        QBarItems.registerItem(new ItemMetal("ingot", metal -> !OreDictionary.doesOreNameExist("ingot" + StringUtils.capitalize(metal))));
+
         QBarItems.registerItem(new ItemBase("solarreflector"));
 
         QBarItems.registerItem(new ItemSludge("mineralsludge"));
@@ -78,11 +82,5 @@ public class QBarItems
     private static final void registerItem(final ItemBase item)
     {
         ITEMS.add(item);
-    }
-
-    private static final void registerMetal(final String metalName)
-    {
-        if (OreDictionary.doesOreNameExist("ingot" + StringUtils.capitalize(metalName)))
-            QBarRecipeHandler.metals.add(metalName);
     }
 }

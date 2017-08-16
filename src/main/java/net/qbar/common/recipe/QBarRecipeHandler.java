@@ -1,17 +1,22 @@
 package net.qbar.common.recipe;
 
-import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
+import net.qbar.common.block.BlockMetal;
+import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +32,7 @@ public class QBarRecipeHandler
 
     public static final HashMap<String, QBarRecipeCategory> RECIPES = new HashMap<>();
 
-    public static final ArrayList<String> metals = new ArrayList<>();
+    public static final ArrayList<IRecipe> CRAFTING_RECIPES = new ArrayList<>();
 
     public static void registerRecipes()
     {
@@ -37,19 +42,62 @@ public class QBarRecipeHandler
         QBarRecipeHandler.RECIPES.put(FURNACE_UID, new FurnaceRecipeCategory(FURNACE_UID));
         QBarRecipeHandler.RECIPES.put(SORTING_MACHINE_UID, new SortingMachineRecipeCategory(SORTING_MACHINE_UID));
 
-        QBarRecipeHandler.metals.forEach(metalName ->
+        QBarMaterials.metals.forEach(metalName ->
         {
             QBarRecipeHelper.addIngotToPlateRecipe(metalName);
-            QBarRecipeHelper.addBlockToPlateRecipe(metalName);
+
+            if (BlockMetal.VARIANTS.getAllowedValues().contains(metalName))
+                QBarRecipeHelper.addBlockToPlateRecipe(metalName);
+
+            if (QBarItems.METALGEAR.hasMetalVariant(metalName))
+                QBarRecipeHelper.addIngotToGearRecipe(metalName);
         });
 
         QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
+
+        CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBar.MODID, "compressedsludge")));
+    }
+
+    public static void registerOreDict()
+    {
+        QBarItems.METALGEAR.getMetals().forEach(metal -> {
+
+            ItemStack gear = new ItemStack(QBarItems.METALGEAR);
+            gear.setTagCompound(new NBTTagCompound());
+            gear.getTagCompound().setString("metal", metal);
+
+            OreDictionary.registerOre("gear"+ StringUtils.capitalize(metal), gear);
+        });
+
+        QBarItems.METALPLATE.getMetals().forEach(metal -> {
+
+            ItemStack gear = new ItemStack(QBarItems.METALPLATE);
+            gear.setTagCompound(new NBTTagCompound());
+            gear.getTagCompound().setString("metal", metal);
+
+            OreDictionary.registerOre("plate"+ StringUtils.capitalize(metal), gear);
+        });
+
+        QBarItems.METALINGOT.getMetals().forEach(metal -> {
+
+            ItemStack gear = new ItemStack(QBarItems.METALINGOT);
+            gear.setTagCompound(new NBTTagCompound());
+            gear.getTagCompound().setString("metal", metal);
+
+            OreDictionary.registerOre("ingot"+ StringUtils.capitalize(metal), gear);
+        });
+
+        BlockMetal.VARIANTS.getAllowedValues().forEach(metal -> OreDictionary.registerOre("block" + StringUtils.capitalize(metal),
+                new ItemStack(QBarBlocks.METALBLOCK, 1, BlockMetal.VARIANTS.indexOf(metal))));
     }
 
     @SubscribeEvent
     public void onRecipeRegister(RegistryEvent.Register<IRecipe> event)
     {
-        event.getRegistry().register(new SludgeRecipe().setRegistryName(new ResourceLocation(QBar.MODID, "compressedsludge")));
+        QBarRecipeHandler.registerOreDict();
+        QBarRecipeHandler.registerRecipes();
+
+        event.getRegistry().registerAll(CRAFTING_RECIPES.toArray(new IRecipe[CRAFTING_RECIPES.size()]));
     }
 
     @SuppressWarnings("unchecked")

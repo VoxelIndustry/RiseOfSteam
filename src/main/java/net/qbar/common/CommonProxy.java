@@ -15,6 +15,7 @@ import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.*;
+import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.world.QBarOreGenerator;
@@ -33,6 +34,7 @@ public class CommonProxy
 
         CapabilitySteamHandler.register();
 
+        QBarMaterials.initMaterials();
         QBarBlocks.init();
         QBarFluids.registerFluids();
         QBarItems.init();
@@ -49,8 +51,6 @@ public class CommonProxy
 
     public void init(final FMLInitializationEvent e)
     {
-        QBarRecipeHandler.registerRecipes();
-
         MinecraftForge.ORE_GEN_BUS.register(QBarOreGenerator.instance());
         MinecraftForge.EVENT_BUS.register(QBarOreGenerator.instance());
         GameRegistry.registerWorldGenerator(QBarOreGenerator.instance(), 0);

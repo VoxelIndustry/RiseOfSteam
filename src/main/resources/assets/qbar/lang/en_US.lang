@@ -37,6 +37,16 @@ tile.sortingmachine.name=Sorting Machine
 tile.smallminingdrill.name=Small Mining Drill
 tile.tinyminingdrill.name=Tiny Mining Drill
 
+#Blocks
+tile.metalblock.copper.name=Copper Block
+tile.metalblock.bronze.name=Bronze Block
+tile.metalblock.brass.name=Brass Block
+tile.metalblock.tin.name=Tin Block
+tile.metalblock.zinc.name=Zinc Block
+tile.metalblock.nickel.name=Nickel Block
+tile.metalblock.steel.name=Steel Block
+tile.metalblock.lead.name=Lead Block
+
 #Items
 item.punched_card.name=Punched Card
 item.wrench.name=Wrench
@@ -45,6 +55,20 @@ item.blueprint.name=%s Blueprint
 item.ironrod.name=Iron Rod
 item.metalplate.iron.name=Iron Plate
 item.metalplate.gold.name=Gold Plate
+item.metalplate.copper.name=Copper Plate
+item.metalplate.bronze.name=Bronze Plate
+item.metalplate.brass.name=Brass Plate
+item.metalplate.tin.name=Tin Plate
+item.metalplate.zinc.name=Zinc Plate
+item.metalplate.nickel.name=Nickel Plate
+item.metalplate.steel.name=Steel Plate
+item.metalplate.lead.name=Lead Plate
+
+item.metalgear.iron.name=Iron Gear
+item.metalgear.copper.name=Copper Gear
+item.metalgear.bronze.name=Bronze Gear
+item.metalgear.brass.name=Brass Gear
+item.metalgear.steel.name=Steel Gear
 
 item.solarreflector.name=Solar Reflector
 item.mineralsludge.name=Mineral Sludge
@@ -79,6 +103,7 @@ ore.tin=Tin
 ore.copper=Copper
 ore.nickel=Nickel
 ore.zinc=Zinc
+ore.lead=Lead
 
 tile.ironcopperore.chalcopyrite.name=Chalcopyrite Ore
 tile.ironcopperore.tetrahedrite.name=Tetrahedrite Ore
@@ -91,10 +116,10 @@ tile.ironnickelore.laterite.name=Laterite Ore
 tile.ironzincore.sphalerite.name=Sphalerite Ore
 
 tile.tinore.cassiterite.name=Cassiterite Ore
+tile.tinore.teallite.name=Teallite Ore
 
 tile.oredirt.iron_dirt.name=Ferrous Dirt
 tile.oreclay.tin_clay.name=Tin Clay
 tile.oresand.copper_sand.name=Copper Sand
 tile.oresand.tin_sand.name=Tin Sand
 tile.orestone.gold_rock.name=Gold Bearing Rock
-

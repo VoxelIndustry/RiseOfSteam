@@ -1,20 +1,41 @@
 package net.qbar.common.item;
 
+import lombok.Getter;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
+import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import org.apache.commons.lang3.StringUtils;
 
-public class ItemPlate extends ItemBase
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+public class ItemMetal extends ItemBase
 {
-    public ItemPlate()
+    @Getter
+    private List<String> metals;
+    private String       type;
+
+    public ItemMetal(String type, Predicate<String> acceptor)
     {
-        super("metalplate");
+        super("metal" + type);
+
         this.setHasSubtypes(true);
+        this.type = type;
+
+        this.metals = QBarMaterials.metals.stream().filter(acceptor).collect(Collectors.toList());
+    }
+
+    public boolean hasMetalVariant(String metal)
+    {
+        return this.metals.contains(metal);
     }
 
     @Override
@@ -22,7 +43,7 @@ public class ItemPlate extends ItemBase
     {
         if (this.isInCreativeTab(tab))
         {
-            QBarRecipeHandler.metals.forEach(metal ->
+            this.metals.forEach(metal ->
             {
                 final ItemStack stack = new ItemStack(this);
                 final NBTTagCompound tag = new NBTTagCompound();
@@ -45,8 +66,7 @@ public class ItemPlate extends ItemBase
     @Override
     public void registerVariants()
     {
-        this.addVariant("gold", new ModelResourceLocation(QBar.MODID + ":plate_gold", "inventory"));
-        this.addVariant("iron", new ModelResourceLocation(QBar.MODID + ":plate_iron", "inventory"));
+        this.metals.forEach(metal -> this.addVariant(metal, new ModelResourceLocation(QBar.MODID + ":" + type + "_" + metal, "inventory")));
         super.registerVariants();
     }
 

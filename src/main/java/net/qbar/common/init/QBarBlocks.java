@@ -104,6 +104,9 @@ public class QBarBlocks
     @ObjectHolder("energizedtallgrass")
     public static final BlockEnergizedTallGrass ENERGIZED_TALL_GRASS = null;
 
+    @ObjectHolder("blockmetal")
+    public static final BlockMetal METALBLOCK = null;
+
     public static Map<Block, ItemBlock> BLOCKS;
 
     public static void init()
@@ -177,6 +180,9 @@ public class QBarBlocks
         registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"),
                 block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
 
+        registerBlock(new BlockMetal(), block ->
+                new ItemBlockMetadata(block, BlockMetal.VARIANTS.getAllowedValues().toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()])).setFirstVariation(true));
+
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
         QBarBlocks.registerTile(TileSolidBoiler.class, "boiler");
@@ -201,6 +207,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileSortingMachine.class, "sortingmachine");
         QBarBlocks.registerTile(TileSmallMiningDrill.class, "smallminingdrill");
         QBarBlocks.registerTile(TileTinyMiningDrill.class, "tinyminingdrill");
+        QBarBlocks.registerTile(TileAlloyCauldron.class, "alloycauldron");
     }
 
     @SubscribeEvent
