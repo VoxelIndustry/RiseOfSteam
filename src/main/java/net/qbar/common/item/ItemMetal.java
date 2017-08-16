@@ -7,11 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
 import net.qbar.common.recipe.QBarMaterials;
-import net.qbar.common.recipe.QBarRecipeHandler;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.function.Predicate;

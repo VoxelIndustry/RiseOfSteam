@@ -38,14 +38,14 @@ tile.smallminingdrill.name=Small Mining Drill
 tile.tinyminingdrill.name=Tiny Mining Drill
 
 #Blocks
-tile.metalblock.copper.name=Copper Block
-tile.metalblock.bronze.name=Bronze Block
-tile.metalblock.brass.name=Brass Block
-tile.metalblock.tin.name=Tin Block
-tile.metalblock.zinc.name=Zinc Block
-tile.metalblock.nickel.name=Nickel Block
-tile.metalblock.steel.name=Steel Block
-tile.metalblock.lead.name=Lead Block
+tile.blockmetal.copper.name=Copper Block
+tile.blockmetal.bronze.name=Bronze Block
+tile.blockmetal.brass.name=Brass Block
+tile.blockmetal.tin.name=Tin Block
+tile.blockmetal.zinc.name=Zinc Block
+tile.blockmetal.nickel.name=Nickel Block
+tile.blockmetal.steel.name=Steel Block
+tile.blockmetal.lead.name=Lead Block
 
 #Items
 item.punched_card.name=Punched Card
@@ -69,6 +69,15 @@ item.metalgear.copper.name=Copper Gear
 item.metalgear.bronze.name=Bronze Gear
 item.metalgear.brass.name=Brass Gear
 item.metalgear.steel.name=Steel Gear
+
+item.metalingot.copper.name=Copper Ingot
+item.metalingot.bronze.name=Bronze Ingot
+item.metalingot.brass.name=Brass Ingot
+item.metalingot.tin.name=Tin Ingot
+item.metalingot.zinc.name=Zinc Ingot
+item.metalingot.nickel.name=Nickel Ingot
+item.metalingot.lead.name=Lead Ingot
+item.metalingot.steel.name=Steel Ingot
 
 item.solarreflector.name=Solar Reflector
 item.mineralsludge.name=Mineral Sludge
@@ -105,18 +114,41 @@ ore.nickel=Nickel
 ore.zinc=Zinc
 ore.lead=Lead
 
-tile.ironcopperore.chalcopyrite.name=Chalcopyrite Ore
-tile.ironcopperore.tetrahedrite.name=Tetrahedrite Ore
-tile.ironcopperore.malachite.name=Malachite Ore
+tile.ironcopperore.chalcopyrite.poor.name=Chalcopyrite Ore
+tile.ironcopperore.chalcopyrite.normal.name=Chalcopyrite Ore
+tile.ironcopperore.chalcopyrite.rich.name=Chalcopyrite Ore
 
-tile.ironnickelore.pentlandite.name=Pentlandite Ore
-tile.ironnickelore.garnierite.name=Garnierite Ore
-tile.ironnickelore.laterite.name=Laterite Ore
+tile.ironcopperore.tetrahedrite.poor.name=Tetrahedrite Ore
+tile.ironcopperore.tetrahedrite.normal.name=Tetrahedrite Ore
+tile.ironcopperore.tetrahedrite.rich.name=Tetrahedrite Ore
 
-tile.ironzincore.sphalerite.name=Sphalerite Ore
+tile.ironcopperore.malachite.poor.name=Malachite Ore
+tile.ironcopperore.malachite.normal.name=Malachite Ore
+tile.ironcopperore.malachite.rich.name=Malachite Ore
 
-tile.tinore.cassiterite.name=Cassiterite Ore
-tile.tinore.teallite.name=Teallite Ore
+tile.ironnickelore.pentlandite.poor.name=Pentlandite Ore
+tile.ironnickelore.pentlandite.normal.name=Pentlandite Ore
+tile.ironnickelore.pentlandite.rich.name=Pentlandite Ore
+
+tile.ironnickelore.garnierite.poor.name=Garnierite Ore
+tile.ironnickelore.garnierite.normal.name=Garnierite Ore
+tile.ironnickelore.garnierite.rich.name=Garnierite Ore
+
+tile.ironnickelore.laterite.poor.name=Laterite Ore
+tile.ironnickelore.laterite.normal.name=Laterite Ore
+tile.ironnickelore.laterite.rich.name=Laterite Ore
+
+tile.ironzincore.sphalerite.poor.name=Sphalerite Ore
+tile.ironzincore.sphalerite.normal.name=Sphalerite Ore
+tile.ironzincore.sphalerite.rich.name=Sphalerite Ore
+
+tile.tinore.cassiterite.poor.name=Cassiterite Ore
+tile.tinore.cassiterite.normal.name=Cassiterite Ore
+tile.tinore.cassiterite.rich.name=Cassiterite Ore
+
+tile.tinore.teallite.poor.name=Teallite Ore
+tile.tinore.teallite.normal.name=Teallite Ore
+tile.tinore.teallite.rich.name=Teallite Ore
 
 tile.oredirt.iron_dirt.name=Ferrous Dirt
 tile.oreclay.tin_clay.name=Tin Clay

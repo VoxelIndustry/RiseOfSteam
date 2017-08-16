@@ -47,7 +47,11 @@ public class QBarRecipeHandler
             QBarRecipeHelper.addIngotToPlateRecipe(metalName);
 
             if (BlockMetal.VARIANTS.getAllowedValues().contains(metalName))
+            {
                 QBarRecipeHelper.addBlockToPlateRecipe(metalName);
+                QBarRecipeHelper.addBlockToIngotRecipe(metalName);
+                QBarRecipeHelper.addIngotToBlockRecipe(metalName);
+            }
 
             if (QBarItems.METALGEAR.hasMetalVariant(metalName))
                 QBarRecipeHelper.addIngotToGearRecipe(metalName);

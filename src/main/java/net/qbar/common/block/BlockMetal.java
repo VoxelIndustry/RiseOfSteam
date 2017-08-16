@@ -15,13 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BlockMetal extends BlockBase implements IModelProvider
 {
-    public static PropertyString VARIANTS = new PropertyString("variants",
+    public static PropertyString VARIANTS = new PropertyString("variant",
             QBarMaterials.metals.stream().filter(metal ->
                     !OreDictionary.doesOreNameExist("block" + StringUtils.capitalize(metal))).toArray(String[]::new));
 
     public BlockMetal()
     {
-        super("metalblock", Material.IRON);
+        super("blockmetal", Material.IRON);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, VARIANTS.getByIndex(0)));
 

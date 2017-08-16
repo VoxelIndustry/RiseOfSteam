@@ -1,0 +1,36 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "qbar:solar_mirror.obj",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 270
+      },
+      "south": {
+        "y": 90
+      },
+      "east": {},
+      "west": {
+        "y": 180
+      }
+    },
+    "multiblockgag": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": {
+      "transform": "forge:default-block",
+      "model": "qbar:solar_mirror.obj"
+    }
+  }
+}

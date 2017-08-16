@@ -1,0 +1,61 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant=copper": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/copper_block"
+      }
+    },
+    "variant=tin": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/tin_block"
+      }
+    },
+    "variant=zinc": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/zinc_block"
+      }
+    },
+    "variant=nickel": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/nickel_block"
+      }
+    },
+    "variant=steel": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/steel_block"
+      }
+    },
+    "variant=bronze": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/bronze_block"
+      }
+    },
+    "variant=brass": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/brass_block"
+      }
+    },
+    "variant=lead": {
+      "model": "cube_all",
+      "textures": {
+        "all": "qbar:blocks/lead_block"
+      }
+    }
+  },
+  "forge_marker": 1
+}
