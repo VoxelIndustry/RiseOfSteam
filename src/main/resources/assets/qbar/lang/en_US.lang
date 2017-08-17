@@ -114,41 +114,41 @@ ore.nickel=Nickel
 ore.zinc=Zinc
 ore.lead=Lead
 
-tile.ironcopperore.chalcopyrite.poor.name=Chalcopyrite Ore
-tile.ironcopperore.chalcopyrite.normal.name=Chalcopyrite Ore
-tile.ironcopperore.chalcopyrite.rich.name=Chalcopyrite Ore
+tile.ironcopperore.chalcopyrite.poor.name=Poor Chalcopyrite Ore
+tile.ironcopperore.chalcopyrite.normal.name=Normal Chalcopyrite Ore
+tile.ironcopperore.chalcopyrite.rich.name=Rich Chalcopyrite Ore
 
-tile.ironcopperore.tetrahedrite.poor.name=Tetrahedrite Ore
-tile.ironcopperore.tetrahedrite.normal.name=Tetrahedrite Ore
-tile.ironcopperore.tetrahedrite.rich.name=Tetrahedrite Ore
+tile.ironcopperore.tetrahedrite.poor.name=Poor Tetrahedrite Ore
+tile.ironcopperore.tetrahedrite.normal.name=Normal Tetrahedrite Ore
+tile.ironcopperore.tetrahedrite.rich.name=Rich Tetrahedrite Ore
 
-tile.ironcopperore.malachite.poor.name=Malachite Ore
-tile.ironcopperore.malachite.normal.name=Malachite Ore
-tile.ironcopperore.malachite.rich.name=Malachite Ore
+tile.ironcopperore.malachite.poor.name=Poor Malachite Ore
+tile.ironcopperore.malachite.normal.name=Normal Malachite Ore
+tile.ironcopperore.malachite.rich.name=Rich Malachite Ore
 
-tile.ironnickelore.pentlandite.poor.name=Pentlandite Ore
-tile.ironnickelore.pentlandite.normal.name=Pentlandite Ore
-tile.ironnickelore.pentlandite.rich.name=Pentlandite Ore
+tile.ironnickelore.pentlandite.poor.name=Poor Pentlandite Ore
+tile.ironnickelore.pentlandite.normal.name=Normal Pentlandite Ore
+tile.ironnickelore.pentlandite.rich.name=Rich Pentlandite Ore
 
-tile.ironnickelore.garnierite.poor.name=Garnierite Ore
-tile.ironnickelore.garnierite.normal.name=Garnierite Ore
-tile.ironnickelore.garnierite.rich.name=Garnierite Ore
+tile.ironnickelore.garnierite.poor.name=Poor Garnierite Ore
+tile.ironnickelore.garnierite.normal.name=Normal Garnierite Ore
+tile.ironnickelore.garnierite.rich.name=Rich Garnierite Ore
 
-tile.ironnickelore.laterite.poor.name=Laterite Ore
-tile.ironnickelore.laterite.normal.name=Laterite Ore
-tile.ironnickelore.laterite.rich.name=Laterite Ore
+tile.ironnickelore.laterite.poor.name=Poor Laterite Ore
+tile.ironnickelore.laterite.normal.name=Normal Laterite Ore
+tile.ironnickelore.laterite.rich.name=Rich Laterite Ore
 
-tile.ironzincore.sphalerite.poor.name=Sphalerite Ore
-tile.ironzincore.sphalerite.normal.name=Sphalerite Ore
-tile.ironzincore.sphalerite.rich.name=Sphalerite Ore
+tile.ironzincore.sphalerite.poor.name=Poor Sphalerite Ore
+tile.ironzincore.sphalerite.normal.name=Normal Sphalerite Ore
+tile.ironzincore.sphalerite.rich.name=Rich Sphalerite Ore
 
-tile.tinore.cassiterite.poor.name=Cassiterite Ore
-tile.tinore.cassiterite.normal.name=Cassiterite Ore
-tile.tinore.cassiterite.rich.name=Cassiterite Ore
+tile.tinore.cassiterite.poor.name=Poor Cassiterite Ore
+tile.tinore.cassiterite.normal.name=Normal Cassiterite Ore
+tile.tinore.cassiterite.rich.name=Rich Cassiterite Ore
 
-tile.tinore.teallite.poor.name=Teallite Ore
-tile.tinore.teallite.normal.name=Teallite Ore
-tile.tinore.teallite.rich.name=Teallite Ore
+tile.tinore.teallite.poor.name=Poor Teallite Ore
+tile.tinore.teallite.normal.name=Normal Teallite Ore
+tile.tinore.teallite.rich.name=Rich Teallite Ore
 
 tile.oredirt.iron_dirt.name=Ferrous Dirt
 tile.oreclay.tin_clay.name=Tin Clay
