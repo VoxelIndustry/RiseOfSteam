@@ -16,6 +16,7 @@ import net.qbar.common.block.item.ItemBlockMetadata;
 import net.qbar.common.block.item.ItemBlockVeinOre;
 import net.qbar.common.multiblock.*;
 import net.qbar.common.ore.QBarOres;
+import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
@@ -181,7 +182,7 @@ public class QBarBlocks
                 block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
 
         registerBlock(new BlockMetal(), block ->
-                new ItemBlockMetadata(block, BlockMetal.VARIANTS.getAllowedValues().toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()])).setFirstVariation(true));
+                new ItemBlockMetadata(block, QBarMaterials.metals.toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()])).setFirstVariation(true));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");

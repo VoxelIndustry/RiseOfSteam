@@ -1,5 +1,6 @@
 package net.qbar.client;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -34,6 +35,8 @@ import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.TileBelt;
 import net.qbar.common.tile.machine.TileRollingMill;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
+
+import java.util.function.BiConsumer;
 
 public class ClientProxy extends CommonProxy
 {
@@ -130,9 +133,9 @@ public class ClientProxy extends CommonProxy
         {
             IModelProvider modelProvider = (IModelProvider) block;
 
+            BiConsumer<Integer, Block> modelRegister = modelProvider.registerItemModels();
             for (int i = 0; i < modelProvider.getItemModelCount(); i++)
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i, new ModelResourceLocation(
-                        QBar.MODID + ":" + ((INamedBlock) block).getName(), modelProvider.getItemModelFromMeta(i)));
+                modelRegister.accept(i, block);
         });
     }
 }

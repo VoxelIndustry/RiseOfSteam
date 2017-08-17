@@ -37,9 +37,9 @@ public class BlockOreClay extends BlockBase implements IModelProvider
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String getItemModelFromMeta(int itemMeta)
+    public String getItemModelByIndex(int index)
     {
-        return "variant=" + this.getStateFromMeta(itemMeta).getValue(VARIANTS);
+        return "variant=" + this.getStateFromMeta(index).getValue(VARIANTS);
     }
 
     @Override

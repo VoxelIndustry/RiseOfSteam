@@ -123,9 +123,9 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String getItemModelFromMeta(int itemMeta)
+    public String getItemModelByIndex(int index)
     {
-        IBlockState state = this.getStateFromMeta(itemMeta);
+        IBlockState state = this.getStateFromMeta(index);
         return "ores=" + state.getValue(VARIANTS) + ",richness=" + state.getValue(RICHNESS).getName();
     }
 

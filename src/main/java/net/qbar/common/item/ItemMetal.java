@@ -39,15 +39,18 @@ public class ItemMetal extends ItemBase
     {
         if (this.isInCreativeTab(tab))
         {
-            for (int i = 0; i < this.metals.size(); i++)
-                list.add(new ItemStack(this, 1, i));
+            for (int i = 0; i < QBarMaterials.metals.size(); i++)
+            {
+                if (metals.contains(QBarMaterials.metals.get(i)))
+                    list.add(new ItemStack(this, 1, i));
+            }
         }
     }
 
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        return this.getUnlocalizedName() + "." + this.metals.get(stack.getMetadata());
+        return this.getUnlocalizedName() + "." + QBarMaterials.metals.get(stack.getMetadata());
     }
 
     @Override
@@ -60,7 +63,7 @@ public class ItemMetal extends ItemBase
     @Override
     public void registerModels()
     {
-        ModelLoader.setCustomMeshDefinition(this, stack -> this.getVariantModel(this.metals.get(stack.getMetadata())));
+        ModelLoader.setCustomMeshDefinition(this, stack -> this.getVariantModel(QBarMaterials.metals.get(stack.getMetadata())));
         super.registerModels();
     }
 

@@ -65,24 +65,24 @@ public class QBarRecipeHandler
     {
         QBarItems.METALGEAR.getMetals().forEach(metal -> {
 
-            ItemStack gear = new ItemStack(QBarItems.METALGEAR, 1, QBarItems.METALGEAR.getMetals().indexOf(metal));
+            ItemStack gear = new ItemStack(QBarItems.METALGEAR, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("gear" + StringUtils.capitalize(metal), gear);
         });
 
         QBarItems.METALPLATE.getMetals().forEach(metal -> {
 
-            ItemStack gear = new ItemStack(QBarItems.METALPLATE, 1, QBarItems.METALPLATE.getMetals().indexOf(metal));
+            ItemStack gear = new ItemStack(QBarItems.METALPLATE, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), gear);
         });
 
         QBarItems.METALINGOT.getMetals().forEach(metal -> {
 
-            ItemStack gear = new ItemStack(QBarItems.METALINGOT, 1, QBarItems.METALINGOT.getMetals().indexOf(metal));
+            ItemStack gear = new ItemStack(QBarItems.METALINGOT, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), gear);
         });
 
         BlockMetal.VARIANTS.getAllowedValues().forEach(metal -> OreDictionary.registerOre("block" + StringUtils.capitalize(metal),
-                new ItemStack(QBarBlocks.METALBLOCK, 1, BlockMetal.VARIANTS.indexOf(metal))));
+                new ItemStack(QBarBlocks.METALBLOCK, 1, QBarMaterials.metals.indexOf(metal))));
     }
 
     @SubscribeEvent

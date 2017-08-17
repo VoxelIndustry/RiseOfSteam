@@ -8,7 +8,6 @@ import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.qbar.QBar;
-import net.qbar.common.block.BlockMetal;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
@@ -18,7 +17,7 @@ public class QBarRecipeHelper
 {
     public static void addBlockToPlateRecipe(final String metalName)
     {
-        final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 9, QBarItems.METALPLATE.getMetals().indexOf(metalName));
+        final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 9, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.ROLLINGMILL_UID)
                 .add(new RollingMillRecipe(
@@ -28,7 +27,7 @@ public class QBarRecipeHelper
 
     public static void addIngotToPlateRecipe(final String metalName)
     {
-        final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 1, QBarItems.METALPLATE.getMetals().indexOf(metalName));
+        final ItemStack plate = new ItemStack(QBarItems.METALPLATE, 1, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.ROLLINGMILL_UID)
                 .add(new RollingMillRecipe(
@@ -38,7 +37,7 @@ public class QBarRecipeHelper
 
     public static void addIngotToGearRecipe(String metalName)
     {
-        ItemStack gearStack = new ItemStack(QBarItems.METALGEAR, 1, QBarItems.METALGEAR.getMetals().indexOf(metalName));
+        ItemStack gearStack = new ItemStack(QBarItems.METALGEAR, 1, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.CRAFTING_RECIPES.add(new ShapedOreRecipe(new ResourceLocation(QBar.MODID, "gear" + metalName),
                 gearStack, " X ", "XOX", " X ", 'X', new OreIngredient("ingot" + StringUtils.capitalize(metalName)),
@@ -48,7 +47,7 @@ public class QBarRecipeHelper
 
     public static void addBlockToIngotRecipe(String metalName)
     {
-        ItemStack ingotStack = new ItemStack(QBarItems.METALINGOT, 9, QBarItems.METALINGOT.getMetals().indexOf(metalName));
+        ItemStack ingotStack = new ItemStack(QBarItems.METALINGOT, 9, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.CRAFTING_RECIPES
                 .add(new ShapelessOreRecipe(new ResourceLocation(QBar.MODID, "block" + metalName), ingotStack,
@@ -58,7 +57,7 @@ public class QBarRecipeHelper
 
     public static void addIngotToBlockRecipe(String metalName)
     {
-        ItemStack blockStack = new ItemStack(QBarBlocks.METALBLOCK, 1, BlockMetal.VARIANTS.indexOf(metalName));
+        ItemStack blockStack = new ItemStack(QBarBlocks.METALBLOCK, 1, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.CRAFTING_RECIPES
                 .add(new ShapedOreRecipe(new ResourceLocation(QBar.MODID, "block_ingot" + metalName), blockStack,
