@@ -2,7 +2,6 @@ package net.qbar.common.recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -66,29 +65,20 @@ public class QBarRecipeHandler
     {
         QBarItems.METALGEAR.getMetals().forEach(metal -> {
 
-            ItemStack gear = new ItemStack(QBarItems.METALGEAR);
-            gear.setTagCompound(new NBTTagCompound());
-            gear.getTagCompound().setString("metal", metal);
-
-            OreDictionary.registerOre("gear"+ StringUtils.capitalize(metal), gear);
+            ItemStack gear = new ItemStack(QBarItems.METALGEAR, 1, QBarItems.METALGEAR.getMetals().indexOf(metal));
+            OreDictionary.registerOre("gear" + StringUtils.capitalize(metal), gear);
         });
 
         QBarItems.METALPLATE.getMetals().forEach(metal -> {
 
-            ItemStack gear = new ItemStack(QBarItems.METALPLATE);
-            gear.setTagCompound(new NBTTagCompound());
-            gear.getTagCompound().setString("metal", metal);
-
-            OreDictionary.registerOre("plate"+ StringUtils.capitalize(metal), gear);
+            ItemStack gear = new ItemStack(QBarItems.METALPLATE, 1, QBarItems.METALPLATE.getMetals().indexOf(metal));
+            OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), gear);
         });
 
         QBarItems.METALINGOT.getMetals().forEach(metal -> {
 
-            ItemStack gear = new ItemStack(QBarItems.METALINGOT);
-            gear.setTagCompound(new NBTTagCompound());
-            gear.getTagCompound().setString("metal", metal);
-
-            OreDictionary.registerOre("ingot"+ StringUtils.capitalize(metal), gear);
+            ItemStack gear = new ItemStack(QBarItems.METALINGOT, 1, QBarItems.METALINGOT.getMetals().indexOf(metal));
+            OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), gear);
         });
 
         BlockMetal.VARIANTS.getAllowedValues().forEach(metal -> OreDictionary.registerOre("block" + StringUtils.capitalize(metal),

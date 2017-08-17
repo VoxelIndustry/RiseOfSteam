@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import net.qbar.QBar;
@@ -40,24 +39,15 @@ public class ItemMetal extends ItemBase
     {
         if (this.isInCreativeTab(tab))
         {
-            this.metals.forEach(metal ->
-            {
-                final ItemStack stack = new ItemStack(this);
-                final NBTTagCompound tag = new NBTTagCompound();
-                stack.setTagCompound(tag);
-
-                tag.setString("metal", metal);
-                list.add(stack);
-            });
+            for (int i = 0; i < this.metals.size(); i++)
+                list.add(new ItemStack(this, 1, i));
         }
     }
 
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("metal"))
-            return this.getUnlocalizedName() + "." + stack.getTagCompound().getString("metal");
-        return this.getUnlocalizedName();
+        return this.getUnlocalizedName() + "." + this.metals.get(stack.getMetadata());
     }
 
     @Override
@@ -70,13 +60,7 @@ public class ItemMetal extends ItemBase
     @Override
     public void registerModels()
     {
-        ModelLoader.setCustomMeshDefinition(this, stack ->
-        {
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("metal"))
-                return this.getVariantModel(stack.getTagCompound().getString("metal"));
-            return new ModelResourceLocation("");
-        });
-
+        ModelLoader.setCustomMeshDefinition(this, stack -> this.getVariantModel(this.metals.get(stack.getMetadata())));
         super.registerModels();
     }
 
