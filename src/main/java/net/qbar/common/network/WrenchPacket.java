@@ -36,12 +36,6 @@ public class WrenchPacket extends Message
     @Override
     protected void handle(EntityPlayer sender)
     {
-        /*
-         * sender.getEntityWorld().spawnParticle(EnumParticleTypes.CRIT,
-         * pos.getX()+0.5+ (facing.getFrontOffsetX() / 2.0), pos.getY(),
-         * pos.getZ()+0.5, 0.1, 1, 0.1);
-         */
-
         for (int i = 0; i < 3; i++)
             sender.getEntityWorld().spawnParticle(EnumParticleTypes.CRIT,
                     pos.getX() + 0.5 + (facing.getFrontOffsetX() / 2.0),

@@ -21,18 +21,14 @@ public class ItemWrench extends ItemBase
                                       final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
     {
         final Block block = world.getBlockState(pos).getBlock();
-        if (!world.isRemote)
+        if (block instanceof IWrenchable)
         {
-            if (block instanceof IWrenchable)
-            {
-                ((IWrenchable) block).onWrench(player, world, pos, hand, facing, world.getBlockState(pos),
-                        player.getActiveItemStack());
-                return EnumActionResult.SUCCESS;
-            }
-            else
-                block.rotateBlock(world, pos, facing.rotateAround(facing.getAxis()));
-
+            ((IWrenchable) block).onWrench(player, world, pos, hand, facing, world.getBlockState(pos),
+                    player.getActiveItemStack());
+            return EnumActionResult.SUCCESS;
         }
+        else if (block.rotateBlock(world, pos, facing.rotateAround(facing.getAxis())))
+            return EnumActionResult.SUCCESS;
         return EnumActionResult.PASS;
     }
 }
