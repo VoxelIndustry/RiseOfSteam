@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "qbar:redstone_card",
+    "data": 0,
+    "count": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "qbar:punched_card",
+      "data": 0
+    }
+  ]
+}

@@ -69,6 +69,9 @@ public class QBarItems
         QBarItems.registerItem(new ItemRawOre());
         QBarItems.registerItem(new ItemMixedRawOre());
         QBarItems.registerItem(new ItemDrillCoreSample());
+        QBarItems.registerItem(new ItemBase("redstone_card"));
+        QBarItems.registerItem(new ItemBase("gearbox"));
+        QBarItems.registerItem(new ItemBase("logicbox"));
 
         ITEMS.addAll(QBarBlocks.BLOCKS.values());
     }

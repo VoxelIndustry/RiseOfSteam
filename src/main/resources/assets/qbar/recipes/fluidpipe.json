@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "qbar:fluidpipe",
+    "data": 0,
+    "count": 6
+  },
+  "pattern": [
+    "III",
+    "   ",
+    "III"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

@@ -42,7 +42,7 @@ public class QBarBlocks
     public static final BlockMachineBase STEAM_PIPE       = null;
     @ObjectHolder("fluidpump")
     public static final BlockMachineBase FLUID_PUMP       = null;
-    @ObjectHolder("offshorepump")
+    @ObjectHolder("offshore_pump")
     public static final BlockMachineBase OFFSHORE_PUMP    = null;
     @ObjectHolder("assembler")
     public static final BlockMachineBase ASSEMBLER        = null;

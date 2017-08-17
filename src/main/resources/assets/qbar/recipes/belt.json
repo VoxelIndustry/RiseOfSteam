@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "qbar:belt",
+    "data": 0,
+    "count": 3
+  },
+  "pattern": [
+    "XXX",
+    "IGI",
+    "PPP"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "G": {
+      "item": "qbar:gearbox",
+      "data": 0
+    },
+    "P": {
+      "item": "qbar:steampipe",
+      "data": 0
+    }
+  }
+}

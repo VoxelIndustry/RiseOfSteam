@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "qbar:solarreflector",
+    "data": 0
+  },
+  "pattern": [
+    "CG"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "paneGlass"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "plateCopper"
+    }
+  }
+}

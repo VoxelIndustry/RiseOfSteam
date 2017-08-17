@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "qbar:itemsplitter",
+    "data": 1
+  },
+  "pattern": [
+    " B ",
+    "IGI",
+    " L "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "qbar:belt",
+      "data": 0
+    },
+    "G": {
+      "item": "qbar:gearbox",
+      "data": 0
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "qbar:logicbox",
+      "data": 0
+    }
+  }
+}
