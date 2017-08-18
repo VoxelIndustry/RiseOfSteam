@@ -29,6 +29,13 @@ public class ItemMetal extends ItemBase
         this.metals = QBarMaterials.metals.stream().filter(acceptor).collect(Collectors.toList());
     }
 
+    public int getMetalMeta(String metal)
+    {
+        if (this.hasMetalVariant(metal))
+            return QBarMaterials.metals.indexOf(metal);
+        return -1;
+    }
+
     public boolean hasMetalVariant(String metal)
     {
         return this.metals.contains(metal);

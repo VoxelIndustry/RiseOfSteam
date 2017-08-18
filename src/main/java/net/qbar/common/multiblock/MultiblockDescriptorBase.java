@@ -1,5 +1,6 @@
 package net.qbar.common.multiblock;
 
+import lombok.Getter;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
@@ -11,8 +12,10 @@ import java.util.EnumMap;
 
 public class MultiblockDescriptorBase implements IMultiblockDescriptor
 {
+    @Getter
     private final String name;
 
+    @Getter
     private final int width, height, length, offsetX, offsetY, offsetZ;
 
     private final EnumMap<EnumFacing, BlockPos>      CORE_OFFSET;
@@ -47,48 +50,6 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
                                 this.getLength() - this.getOffsetZ(), this.getHeight() - this.getOffsetY(),
                                 this.getWidth() - this.getOffsetX()).offset(this.CORE_OFFSET.get(facing)));
         }
-    }
-
-    @Override
-    public String getName()
-    {
-        return this.name;
-    }
-
-    @Override
-    public int getWidth()
-    {
-        return this.width;
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return this.height;
-    }
-
-    @Override
-    public int getLength()
-    {
-        return this.length;
-    }
-
-    @Override
-    public int getOffsetX()
-    {
-        return this.offsetX;
-    }
-
-    @Override
-    public int getOffsetY()
-    {
-        return this.offsetY;
-    }
-
-    @Override
-    public int getOffsetZ()
-    {
-        return this.offsetZ;
     }
 
     private BlockPos internalGetCoreOffset(EnumFacing facing)

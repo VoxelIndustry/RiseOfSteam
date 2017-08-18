@@ -21,6 +21,7 @@ public class Multiblocks
     public static final IMultiblockDescriptor ORE_WASHER;
     public static final IMultiblockDescriptor SORTING_MACHINE;
     public static final IMultiblockDescriptor ALLOY_CAULDRON;
+    public static final IMultiblockDescriptor SAW_MILL;
 
     static
     {
@@ -44,5 +45,6 @@ public class Multiblocks
         SORTING_MACHINE = new MultiblockDescriptorBase("SORTING_MACHINE", 1, 2, 2, 0, 0, 0);
 
         ALLOY_CAULDRON = new MultiblockDescriptorBase("ALLOY_CAULDRON", 2, 2, 2, 0, 0, 0);
+        SAW_MILL = new MultiblockDescriptorBase("SAW_MILL", 1, 1, 1, 0, 0, 0);
     }
 }
