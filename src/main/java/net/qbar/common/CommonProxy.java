@@ -1,6 +1,7 @@
 package net.qbar.common;
 
 import com.elytradev.concrete.network.NetworkContext;
+
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;
@@ -31,6 +32,7 @@ public class CommonProxy
         QBar.network.register(FilteredMachinePacket.class);
         QBar.network.register(PipeUpdatePacket.class);
         QBar.network.register(WrenchPacket.class);
+        QBar.network.register(MultiblockBoxPacket.class);
 
         CapabilitySteamHandler.register();
 

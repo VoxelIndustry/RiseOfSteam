@@ -2,12 +2,15 @@ package net.qbar.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -26,15 +29,16 @@ import net.qbar.client.render.tile.RenderSteamFurnaceMK2;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.block.IModelProvider;
-import net.qbar.common.block.INamedBlock;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.item.IItemModelProvider;
+import net.qbar.common.network.MultiblockBoxPacket;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.TileBelt;
 import net.qbar.common.tile.machine.TileRollingMill;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
+import org.lwjgl.input.Mouse;
 
 import java.util.function.BiConsumer;
 
@@ -137,5 +141,21 @@ public class ClientProxy extends CommonProxy
             for (int i = 0; i < modelProvider.getItemModelCount(); i++)
                 modelRegister.accept(i, block);
         });
+    }
+
+    @SubscribeEvent
+    public void onRightClick(GuiScreenEvent.MouseInputEvent event)
+    {
+        if (event.getGui() instanceof GuiContainer && Mouse.isButtonDown(1))
+        {
+            GuiContainer container = (GuiContainer) event.getGui();
+            if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty()
+                    && container.getSlotUnderMouse().getStack().getItem() == QBarItems.MULTIBLOCK_BOX)
+            {
+                System.out.println(container.getSlotUnderMouse().getStack());
+                new MultiblockBoxPacket(container.getSlotUnderMouse().slotNumber).sendToServer();
+                event.setCanceled(true);
+            }
+        }
     }
 }
