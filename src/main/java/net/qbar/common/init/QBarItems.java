@@ -48,9 +48,11 @@ public class QBarItems
     public static final ItemDrillCoreSample DRILL_CORE_SAMPLE = null;
 
     @ObjectHolder("gearbox")
-    public static final ItemBase GEARBOX  = null;
+    public static final ItemBase          GEARBOX        = null;
     @ObjectHolder("logicbox")
-    public static final ItemBase LOGICBOX = null;
+    public static final ItemBase          LOGICBOX       = null;
+    @ObjectHolder("multiblockbox")
+    public static final ItemMultiblockBox MULTIBLOCK_BOX = null;
 
     public static List<Item> ITEMS;
 
@@ -77,6 +79,7 @@ public class QBarItems
         QBarItems.registerItem(new ItemBase("redstone_card"));
         QBarItems.registerItem(new ItemBase("gearbox"));
         QBarItems.registerItem(new ItemBase("logicbox"));
+        QBarItems.registerItem(new ItemMultiblockBox());
 
         ITEMS.addAll(QBarBlocks.BLOCKS.values());
     }

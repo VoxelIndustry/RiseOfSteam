@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Blueprints
 {
@@ -95,32 +96,32 @@ public class Blueprints
         this.registerBlueprint("solar_mirror", Multiblocks.SOLAR_MIRROR)
                 .addStep(10, new ItemStack(Items.IRON_INGOT, 6));
 
-        this.registerBlueprint("ore_washer", Multiblocks.ORE_WASHER)
+        this.registerBlueprint("orewasher", Multiblocks.ORE_WASHER)
                 .addStep(15, new ItemStack(Items.IRON_INGOT, 20))
                 .addStep(20, new ItemStack(QBarItems.METALPLATE, 20, QBarItems.METALPLATE.getMetalMeta("bronze")))
                 .addStep(15, new ItemStack(QBarBlocks.STEAM_PIPE, 4), new ItemStack(QBarBlocks.FLUID_PIPE, 2),
                         new ItemStack(QBarBlocks.BELT, 3));
 
-        this.registerBlueprint("sorting_machine", Multiblocks.SORTING_MACHINE)
+        this.registerBlueprint("sortingmachine", Multiblocks.SORTING_MACHINE)
                 .addStep(15, new ItemStack(Items.IRON_INGOT, 15))
                 .addStep(20, new ItemStack(QBarItems.METALPLATE, 10, QBarItems.METALPLATE.getMetalMeta("bronze")))
                 .addStep(10, new ItemStack(QBarBlocks.STEAM_PIPE, 3));
 
-        this.registerBlueprint("small_mining_drill", Multiblocks.SMALL_MINING_DRILL)
+        this.registerBlueprint("smallminingdrill", Multiblocks.SMALL_MINING_DRILL)
                 .addStep(25, new ItemStack(Items.IRON_INGOT, 48))
                 .addStep(40, new ItemStack(QBarItems.METALPLATE, 32, QBarItems.METALPLATE.getMetalMeta("bronze")))
                 .addStep(30, new ItemStack(QBarItems.GEARBOX, 4), new ItemStack(QBarBlocks.STEAM_PIPE, 10),
                         new ItemStack(QBarBlocks.FLUID_PIPE, 10), new ItemStack(QBarBlocks.BELT));
 
-        this.registerBlueprint("tiny_mining_drill", Multiblocks.TINY_MINING_DRILL)
+        this.registerBlueprint("tinyminingdrill", Multiblocks.TINY_MINING_DRILL)
                 .addStep(15, new ItemStack(Blocks.PLANKS, 4), new ItemStack(Items.IRON_INGOT, 12))
                 .addStep(10, new ItemStack(QBarItems.GEARBOX));
 
-        this.registerBlueprint("alloy_cauldron", Multiblocks.ALLOY_CAULDRON)
+        this.registerBlueprint("alloycauldron", Multiblocks.ALLOY_CAULDRON)
                 .addStep(40, new ItemStack(QBarItems.METALPLATE, 64, QBarItems.METALPLATE.getMetalMeta("bronze")))
                 .addStep(30, new ItemStack(QBarBlocks.FLUID_PIPE, 16), new ItemStack(Blocks.GLASS_PANE));
 
-        this.registerBlueprint("saw_mill", Multiblocks.SAW_MILL)
+        this.registerBlueprint("sawmill", Multiblocks.SAW_MILL)
                 .addStep(40, new ItemStack(QBarItems.METALPLATE, 64, QBarItems.METALPLATE.getMetalMeta("bronze")))
                 .addStep(30, new ItemStack(QBarBlocks.FLUID_PIPE, 16), new ItemStack(Blocks.GLASS_PANE));
 
@@ -163,5 +164,10 @@ public class Blueprints
     public Blueprint getBlueprint(final String name)
     {
         return this.blueprints.get(name);
+    }
+
+    public Optional<Blueprint> getByMultiblock(IMultiblockDescriptor multiblock)
+    {
+        return this.blueprints.values().stream().filter(b -> b.getMultiblock() == multiblock).findAny();
     }
 }

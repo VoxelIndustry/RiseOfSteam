@@ -3,6 +3,7 @@ package net.qbar.common.item;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,8 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.BlockStructure;
@@ -127,15 +129,13 @@ public class ItemBlueprint extends ItemBase
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(final ItemStack stack)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("blueprint"))
-            return I18n
-                    .translateToLocalFormatted("item.blueprint.name", new Object[]{
-                            I18n.translateToLocal("tile." + stack.getTagCompound().getString("blueprint") + ".name")})
-                    .trim();
+            return I18n.format("item.blueprint.name",
+                    I18n.format("tile." + stack.getTagCompound().getString("blueprint") + ".name")).trim();
         return this.name;
     }
 }

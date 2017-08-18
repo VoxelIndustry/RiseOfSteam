@@ -168,7 +168,7 @@ public abstract class TileBoilerBase extends TileInventoryBase
     @Override
     public void breakCore()
     {
-        this.world.destroyBlock(this.getPos(), true);
+        this.world.destroyBlock(this.getPos(), false);
     }
 
     @Override

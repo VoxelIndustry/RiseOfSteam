@@ -37,6 +37,9 @@ tile.sortingmachine.name=Sorting Machine
 tile.smallminingdrill.name=Small Mining Drill
 tile.tinyminingdrill.name=Tiny Mining Drill
 
+tile.alloycauldron.name=Alloy Cauldron
+tile.sawmill.name=Saw Mill
+
 #Blocks
 tile.blockmetal.copper.name=Copper Block
 tile.blockmetal.bronze.name=Bronze Block
@@ -86,6 +89,12 @@ item.rawore.poor.name=Poor Raw Ore
 item.rawore.normal.name=Raw Ore
 item.rawore.rich.name=Rich Raw Ore
 item.mixedrawore.name=Mixed Raw Ore
+
+item.drillcoresample.name=Drill Core Sample
+item.redstone_card.name=Redstone Card
+item.gearbox.name=Gear Box
+item.logicbox.name=Logic Box
+item.multiblockbox.name=Multiblock Box
 
 #Fluids
 fluid.steam=Steam
@@ -150,8 +159,18 @@ tile.tinore.teallite.poor.name=Poor Teallite Ore
 tile.tinore.teallite.normal.name=Normal Teallite Ore
 tile.tinore.teallite.rich.name=Rich Teallite Ore
 
+tile.goldore.gold.poor.name=Poor Gold Ore
+tile.goldore.gold.normal.name=Normal Gold Ore
+tile.goldore.gold.rich.name=Rich Gold Ore
+
+tile.redstoneore.redstone.poor.name=Poor Redstone Ore
+tile.redstoneore.redstone.normal.name=Normal Redstone Ore
+tile.redstoneore.redstone.rich.name=Rich Redstone Ore
+
 tile.oredirt.iron_dirt.name=Ferrous Dirt
 tile.oreclay.tin_clay.name=Tin Clay
 tile.oresand.copper_sand.name=Copper Sand
 tile.oresand.tin_sand.name=Tin Sand
 tile.orestone.gold_rock.name=Gold Bearing Rock
+tile.energizedtallgrass.tall_grass.name=Energized Tall Grass
+tile.energizedtallgrass.fern.name=Energized Fern

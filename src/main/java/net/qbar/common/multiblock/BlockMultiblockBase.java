@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -25,9 +26,13 @@ import net.minecraftforge.common.property.Properties;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.block.BlockMachineBase;
+import net.qbar.common.init.QBarItems;
+import net.qbar.common.multiblock.blueprint.Blueprint;
+import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.tile.QBarTileBase;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblockCore> extends BlockMachineBase<T> implements IWrenchable
 {
@@ -174,8 +179,10 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
                     InventoryHelper.dropInventoryItems(w, pos, (IInventory) tile);
                     w.updateComparatorOutputLevel(pos, this);
                 }
+                this.dropBlockAsItem(w, pos, state, 0);
             }
-            tile.breakCore();
+            else
+                tile.breakCore();
         }
         super.breakBlock(w, pos, state);
     }
@@ -227,6 +234,19 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
                             final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         return false;
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        if (this.getWorldTile(world, pos).isCore())
+        {
+            Optional<Blueprint> blueprint = Blueprints.getInstance().getByMultiblock(this.descriptor);
+            if (blueprint.isPresent())
+                drops.add(QBarItems.MULTIBLOCK_BOX.getBox(blueprint.get()));
+            else
+                drops.add(new ItemStack(this));
+        }
     }
 
     @Override

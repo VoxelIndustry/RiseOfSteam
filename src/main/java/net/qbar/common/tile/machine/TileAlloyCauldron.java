@@ -49,7 +49,7 @@ public class TileAlloyCauldron extends TileInventoryBase
     @Override
     public void breakCore()
     {
-        this.world.destroyBlock(this.getPos(), true);
+        this.world.destroyBlock(this.getPos(), false);
     }
 
     @Override
