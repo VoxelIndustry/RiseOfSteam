@@ -101,6 +101,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
             }
             this.sync();
         }
+        this.markDirty();
     }
 
     @Override

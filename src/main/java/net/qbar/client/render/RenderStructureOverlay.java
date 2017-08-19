@@ -17,7 +17,7 @@ import java.util.List;
 public class RenderStructureOverlay
 {
     public static final void renderStructureOverlay(final EntityPlayer player, final BlockPos pos,
-                                                    final float partialTicks)
+            final float partialTicks)
     {
         final TileEntity tile = player.getEntityWorld().getTileEntity(pos);
 
@@ -110,6 +110,8 @@ public class RenderStructureOverlay
             GlStateManager.translate(0.2, 0.15, -.02);
             GlStateManager.scale(0.625f / 48, 0.625f / 48, 0.625f / 48);
 
+            System.out.println(state.getStepStacks() + " " + state.getCurrentStacks().get(stack) + " "
+                    + state.getStepStacks().get(stack));
             String count = state.getCurrentStacks().get(stack).getCount() - 1 + "/"
                     + state.getStepStacks().get(stack).getCount();
             int color;
@@ -169,15 +171,18 @@ public class RenderStructureOverlay
             GlStateManager.scale(0.625f / 48, 0.625f / 48, 0.625f / 48);
 
             String count;
-            if (step == state.getCurrentStep())
-                count = state.getCurrentStacks().get(stack).getCount() - 1 + "/" + stackList.get(stack).getCount();
+
+            if (step == state.getCurrentStep() && state.getCurrentStacks().size() > stack)
+            {
+                count = state.getCurrentStacks().get(stack).getCount() - 1 + "/" + state.getStepStacks().get(stack).getCount();
+            }
             else if (step < state.getCurrentStep())
                 count = stackList.get(stack).getCount() + "/" + stackList.get(stack).getCount();
             else
                 count = "0/" + stackList.get(stack).getCount();
 
             int color = 15728640;
-            if (step == state.getCurrentStep())
+            if (step == state.getCurrentStep() && state.getCurrentStacks().size() > stack)
             {
                 if (state.getCurrentStacks().get(stack).getCount() - 1 == state.getStepStacks().get(stack).getCount())
                     color = 61440;

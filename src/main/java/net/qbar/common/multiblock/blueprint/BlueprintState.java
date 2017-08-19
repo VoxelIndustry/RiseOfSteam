@@ -13,15 +13,15 @@ import java.util.List;
 public class BlueprintState
 {
     @Getter
-    private final Blueprint              blueprint;
-    private final NonNullList<ItemStack> currentStacks;
+    private final Blueprint        blueprint;
+    private NonNullList<ItemStack> currentStacks;
     @Getter
-    private       int                    currentStep;
+    private int                    currentStep;
     @Getter
     @Setter
-    private       int                    currentTime;
+    private int                    currentTime;
 
-    private boolean isStepStackComplete;
+    private boolean                isStepStackComplete;
 
     public BlueprintState(final Blueprint blueprint)
     {
@@ -38,7 +38,9 @@ public class BlueprintState
         this.currentStep = tag.getInteger("currentStep");
         this.currentTime = tag.getInteger("currentTime");
         this.isStepStackComplete = tag.getBoolean("isStepStackComplete");
-        ItemStackHelper.loadAllItems(tag, this.currentStacks);
+
+        this.currentStacks = NonNullList.withSize(tag.getTagList("Items", 10).tagCount(), ItemStack.EMPTY);
+        ItemUtils.loadAllItems(tag, this.currentStacks);
     }
 
     public NBTTagCompound toNBT()
@@ -58,12 +60,17 @@ public class BlueprintState
 
         this.currentStacks.clear();
         if (this.blueprint.getSteps().size() > currentStep)
-            this.blueprint.getSteps().get(currentStep).forEach(stack ->
+        {
+            this.currentStacks = NonNullList.withSize(this.blueprint.getSteps().get(currentStep).size(), ItemStack.EMPTY);
+            int i = 0;
+            for (ItemStack stack : this.blueprint.getSteps().get(currentStep))
             {
                 final ItemStack copy = stack.copy();
                 copy.setCount(1);
-                this.currentStacks.add(copy);
-            });
+                this.currentStacks.set(i, copy);
+                i++;
+            }
+        }
         this.isStepStackComplete = false;
         this.currentTime = 0;
     }

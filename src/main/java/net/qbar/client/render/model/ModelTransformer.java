@@ -11,13 +11,18 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 public final class ModelTransformer
 {
     public static IBakedModel transform(final IBakedModel model, final IBlockState state, final long rand,
-                                        final IVertexTransformer transformer)
+            final IVertexTransformer transformer)
     {
         final MutableBakedModel out = new MutableBakedModel(model);
 
-        for (final EnumFacing side : EnumFacing.VALUES)
-            for (final BakedQuad quad : model.getQuads(state, side, rand))
-                out.addQuad(side, ModelTransformer.transform(quad, transformer));
+        for (int i = 0; i <= 6; i++)
+        {
+            EnumFacing side = (i == 6 ? null : EnumFacing.getFront(i));
+            for (BakedQuad quad : model.getQuads(state, side, rand))
+            {
+                out.addQuad(side, transform(quad, transformer));
+            }
+        }
         return out;
     }
 
