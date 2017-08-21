@@ -1,5 +1,7 @@
 package net.qbar.common.recipe;
 
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +17,7 @@ import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
+import net.qbar.common.recipe.type.SludgeRecipe;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ public class QBarRecipeHandler
     public static final String LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
     public static final String ORE_WASHER_UID      = QBar.MODID + ".orewasher";
     public static final String SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
+    public static final String SAW_MILL_UID        = QBar.MODID + ".sawmill";
 
     public static final HashMap<String, QBarRecipeCategory> RECIPES = new HashMap<>();
 
@@ -40,6 +44,7 @@ public class QBarRecipeHandler
         QBarRecipeHandler.RECIPES.put(ORE_WASHER_UID, new OreWasherRecipeCategory(ORE_WASHER_UID));
         QBarRecipeHandler.RECIPES.put(FURNACE_UID, new FurnaceRecipeCategory(FURNACE_UID));
         QBarRecipeHandler.RECIPES.put(SORTING_MACHINE_UID, new SortingMachineRecipeCategory(SORTING_MACHINE_UID));
+        QBarRecipeHandler.RECIPES.put(SAW_MILL_UID, new QBarRecipeCategory(SAW_MILL_UID));
 
         QBarMaterials.metals.forEach(metalName ->
         {
@@ -57,6 +62,19 @@ public class QBarRecipeHandler
         });
 
         QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
+
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG, 1, BlockPlanks.EnumType.OAK.getMetadata()),
+                new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.OAK.getMetadata()));
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG, 1, BlockPlanks.EnumType.SPRUCE.getMetadata()),
+                new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.SPRUCE.getMetadata()));
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG, 1, BlockPlanks.EnumType.BIRCH.getMetadata()),
+                new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.BIRCH.getMetadata()));
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG, 1, BlockPlanks.EnumType.JUNGLE.getMetadata()),
+                new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.JUNGLE.getMetadata()));
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG2, 1, BlockPlanks.EnumType.ACACIA.getMetadata() - 4),
+                new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.ACACIA.getMetadata()));
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG2, 1, BlockPlanks.EnumType.DARK_OAK.getMetadata() - 4),
+                new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.DARK_OAK.getMetadata()));
 
         CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBar.MODID, "compressedsludge")));
     }

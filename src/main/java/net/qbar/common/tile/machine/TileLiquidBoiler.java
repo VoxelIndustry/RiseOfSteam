@@ -22,7 +22,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
-import net.qbar.common.recipe.LiquidBoilerRecipe;
+import net.qbar.common.recipe.type.LiquidBoilerRecipe;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;

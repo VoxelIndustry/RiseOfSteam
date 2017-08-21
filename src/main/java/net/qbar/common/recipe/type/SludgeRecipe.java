@@ -1,4 +1,4 @@
-package net.qbar.common.recipe;
+package net.qbar.common.recipe.type;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;

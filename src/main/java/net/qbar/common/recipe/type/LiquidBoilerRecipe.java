@@ -1,9 +1,10 @@
-package net.qbar.common.recipe;
+package net.qbar.common.recipe.type;
 
 import lombok.Getter;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.qbar.common.recipe.ingredient.SteamStackRecipeIngredient;
 import net.qbar.common.steam.SteamStack;

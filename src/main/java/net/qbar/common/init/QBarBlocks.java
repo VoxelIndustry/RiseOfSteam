@@ -106,7 +106,11 @@ public class QBarBlocks
     public static final BlockEnergizedTallGrass ENERGIZED_TALL_GRASS = null;
 
     @ObjectHolder("blockmetal")
-    public static final BlockMetal METALBLOCK = null;
+    public static final BlockMetal       METALBLOCK    = null;
+    @ObjectHolder("sawmill")
+    public static final BlockMachineBase SAWMILL       = null;
+    @ObjectHolder("alloycauldron")
+    public static final BlockMachineBase ALLOYCAULDRON = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 
@@ -149,6 +153,8 @@ public class QBarBlocks
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));
         registerBlock(new BlockMultiblockMachine<>("alloycauldron", Material.IRON, Multiblocks.ALLOY_CAULDRON,
                 TileAlloyCauldron::new, TileAlloyCauldron.class));
+        registerBlock(new BlockMultiblockMachine<>("sawmill", Material.IRON, Multiblocks.SAW_MILL,
+                TileSawMill::new, TileSawMill.class));
 
         registerBlock(new BlockVeinOre.Builder("ironnickelore")
                 .addContent(QBarOres.PENTLANDITE)
@@ -209,6 +215,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileSmallMiningDrill.class, "smallminingdrill");
         QBarBlocks.registerTile(TileTinyMiningDrill.class, "tinyminingdrill");
         QBarBlocks.registerTile(TileAlloyCauldron.class, "alloycauldron");
+        QBarBlocks.registerTile(TileSawMill.class, "sawmill");
     }
 
     @SubscribeEvent

@@ -7,7 +7,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.qbar.client.gui.GuiRollingMill;
-import net.qbar.common.recipe.RollingMillRecipe;
+import net.qbar.common.recipe.type.RollingMillRecipe;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
 
 import java.util.stream.Collectors;

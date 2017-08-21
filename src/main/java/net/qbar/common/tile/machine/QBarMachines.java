@@ -18,6 +18,7 @@ public class QBarMachines
 
     public static final CraftingMachineDescriptor ORE_WASHER;
     public static final CraftingMachineDescriptor SORTING_MACHINE;
+    public static final CraftingMachineDescriptor SAW_MILL;
 
     static
     {
@@ -53,5 +54,10 @@ public class QBarMachines
         SORTING_MACHINE = new CraftingMachineDescriptor.Builder("sortingmachine")
                 .recipe(QBarRecipeHandler.SORTING_MACHINE_UID, 1f).inventory(6, 1, 4)
                 .steam(2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true).create();
+
+        SAW_MILL = new CraftingMachineDescriptor.Builder("sawmill")
+                .recipe(QBarRecipeHandler.SAW_MILL_UID, 1f).inventory(3, 1, 1)
+                .steam(2000, 10, SteamUtil.AMBIANT_PRESSURE, 1.5f * SteamUtil.AMBIANT_PRESSURE, true)
+                .create();
     }
 }

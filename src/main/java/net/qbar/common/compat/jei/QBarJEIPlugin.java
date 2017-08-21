@@ -9,7 +9,7 @@ import net.qbar.client.gui.GuiRollingMill;
 import net.qbar.client.gui.GuiSteamFurnace;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.recipe.RollingMillRecipe;
+import net.qbar.common.recipe.type.RollingMillRecipe;
 
 @JEIPlugin
 @Getter

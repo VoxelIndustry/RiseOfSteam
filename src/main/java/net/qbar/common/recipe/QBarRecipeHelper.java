@@ -11,6 +11,9 @@ import net.qbar.QBar;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
+import net.qbar.common.recipe.type.LiquidBoilerRecipe;
+import net.qbar.common.recipe.type.RollingMillRecipe;
+import net.qbar.common.recipe.type.SawMillRecipe;
 import org.apache.commons.lang3.StringUtils;
 
 public class QBarRecipeHelper
@@ -69,5 +72,11 @@ public class QBarRecipeHelper
     {
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.LIQUIDBOILER_UID)
                 .add(new LiquidBoilerRecipe(fuel, heatPerMb, timePerBucket));
+    }
+
+    public static void addSawMillRecipe(ItemStack input, ItemStack output)
+    {
+        QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.SAW_MILL_UID).add(
+                new SawMillRecipe(new ItemStackRecipeIngredient(input), new ItemStackRecipeIngredient(output)));
     }
 }
