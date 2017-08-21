@@ -17,7 +17,7 @@ public class GuiHandler implements IGuiHandler
 
     @Override
     public Object getServerGuiElement(final int ID, final EntityPlayer player, final World world, final int x,
-            final int y, final int z)
+                                      final int y, final int z)
     {
         final EGui gui = EGui.values()[ID];
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
@@ -30,7 +30,7 @@ public class GuiHandler implements IGuiHandler
 
     @Override
     public Object getClientGuiElement(final int ID, final EntityPlayer player, final World world, final int x,
-            final int y, final int z)
+                                      final int y, final int z)
     {
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
@@ -69,7 +69,9 @@ public class GuiHandler implements IGuiHandler
             case TINYMININGDRILL:
                 return new GuiTinyMiningDrill(player, (TileTinyMiningDrill) tile);
             case SMALLMININGDRILL:
-                return new GuiSmallMiningDrill(player, (TileSmallMiningDrill)tile);
+                return new GuiSmallMiningDrill(player, (TileSmallMiningDrill) tile);
+            case SAWMILL:
+                return new GuiSawMill(player, (TileSawMill) tile);
             default:
                 break;
         }
