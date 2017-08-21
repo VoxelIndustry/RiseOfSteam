@@ -93,11 +93,10 @@ public class Blueprints
                         new ItemStack(QBarItems.METALPLATE, 10, QBarItems.METALPLATE.getMetalMeta("steel")))
                 .addStep(15, new ItemStack(QBarBlocks.STEAM_PIPE, 4), new ItemStack(QBarBlocks.BELT, 3));
 
-        this.registerBlueprint("solar_mirror", Multiblocks.SOLAR_MIRROR)
-                .addStep(10, new ItemStack(Items.IRON_INGOT, 6));
+        this.registerBlueprint("solar_mirror", Multiblocks.SOLAR_MIRROR).addStep(10,
+                new ItemStack(Items.IRON_INGOT, 6));
 
-        this.registerBlueprint("orewasher", Multiblocks.ORE_WASHER)
-                .addStep(15, new ItemStack(Items.IRON_INGOT, 20))
+        this.registerBlueprint("orewasher", Multiblocks.ORE_WASHER).addStep(15, new ItemStack(Items.IRON_INGOT, 20))
                 .addStep(20, new ItemStack(QBarItems.METALPLATE, 20, QBarItems.METALPLATE.getMetalMeta("bronze")))
                 .addStep(15, new ItemStack(QBarBlocks.STEAM_PIPE, 4), new ItemStack(QBarBlocks.FLUID_PIPE, 2),
                         new ItemStack(QBarBlocks.BELT, 3));
@@ -105,7 +104,7 @@ public class Blueprints
         this.registerBlueprint("sortingmachine", Multiblocks.SORTING_MACHINE)
                 .addStep(15, new ItemStack(Items.IRON_INGOT, 15))
                 .addStep(20, new ItemStack(QBarItems.METALPLATE, 10, QBarItems.METALPLATE.getMetalMeta("bronze")))
-                .addStep(10, new ItemStack(QBarBlocks.STEAM_PIPE, 3));
+                .addStep(10, new ItemStack(QBarBlocks.STEAM_PIPE, 3), new ItemStack(QBarItems.LOGICBOX, 1));
 
         this.registerBlueprint("smallminingdrill", Multiblocks.SMALL_MINING_DRILL)
                 .addStep(25, new ItemStack(Items.IRON_INGOT, 48))
