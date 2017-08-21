@@ -6,26 +6,32 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.qbar.client.gui.GuiRollingMill;
-import net.qbar.common.recipe.type.RollingMillRecipe;
+import net.minecraft.util.ResourceLocation;
+import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Collectors;
 
-public class RollingMillRecipeWrapper implements IRecipeWrapper
+public class QBarJEIRecipeWrapper implements IRecipeWrapper
 {
     private final IDrawableAnimated arrow;
 
-    private final RollingMillRecipe recipe;
+    private final QBarRecipe recipe;
 
-    RollingMillRecipeWrapper(final RollingMillRecipe recipe)
+    QBarJEIRecipeWrapper(final QBarRecipe recipe, ResourceLocation background, int u, int v, int width, int height)
     {
         this.recipe = recipe;
 
         final IDrawableStatic arrowStatic = QBarJEIPlugin.instance().getGuiHelper()
-                .createDrawable(GuiRollingMill.BACKGROUND, 176, 14, 24, 17);
+                .createDrawable(background, u, v, width, height);
         this.arrow = QBarJEIPlugin.instance().getGuiHelper()
                 .createAnimatedDrawable(arrowStatic, 20, IDrawableAnimated.StartDirection.LEFT, false);
+    }
+
+    public static Builder builder()
+    {
+        return new Builder();
     }
 
     @Override
@@ -42,5 +48,47 @@ public class RollingMillRecipeWrapper implements IRecipeWrapper
                 .map(RecipeIngredient::getRawIngredient).collect(Collectors.toList()));
         ingredients.setOutputs(ItemStack.class, this.recipe.getRecipeOutputs(ItemStack.class).stream()
                 .map(RecipeIngredient::getRawIngredient).collect(Collectors.toList()));
+    }
+
+    public static class Builder
+    {
+        private ResourceLocation background;
+        private int              u, v, width, height;
+
+        public Builder background(ResourceLocation background)
+        {
+            this.background = background;
+            return this;
+        }
+
+        public Builder u(int u)
+        {
+            this.u = u;
+            return this;
+        }
+
+        public Builder v(int v)
+        {
+            this.v = v;
+            return this;
+        }
+
+        public Builder width(int width)
+        {
+            this.width = width;
+            return this;
+        }
+
+        public Builder height(int height)
+        {
+            this.height = height;
+            return this;
+        }
+
+        @Nonnull
+        public QBarJEIRecipeWrapper create(QBarRecipe recipe)
+        {
+            return new QBarJEIRecipeWrapper(recipe, background, u, v, width, height);
+        }
     }
 }

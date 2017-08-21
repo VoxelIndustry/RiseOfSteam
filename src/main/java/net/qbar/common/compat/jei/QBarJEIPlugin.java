@@ -37,7 +37,10 @@ public class QBarJEIPlugin implements IModPlugin
         this.jeiHelpers = registry.getJeiHelpers();
         this.guiHelper = this.jeiHelpers.getGuiHelper();
 
-        registry.addRecipeCategories(new RollingMillRecipeCategory(guiHelper));
+        registry.addRecipeCategories(QBarJEIRecipeCategory.builder(guiHelper)
+                .background(GuiRollingMill.BACKGROUND).uid(QBarRecipeHandler.ROLLINGMILL_UID)
+                .title("gui.rollingmill.name").u(46).v(16).width(91).height(54)
+                .input(0, 19).output(69, 18).create());
     }
 
     @Override
@@ -48,7 +51,9 @@ public class QBarJEIPlugin implements IModPlugin
         registry.addRecipeCatalyst(new ItemStack(QBarBlocks.ROLLING_MILL),
                 QBarRecipeHandler.ROLLINGMILL_UID);
 
-        registry.handleRecipes(RollingMillRecipe.class, RollingMillRecipeWrapper::new, QBarRecipeHandler.ROLLINGMILL_UID);
+        QBarJEIRecipeWrapper.Builder rollingMillWrapper = QBarJEIRecipeWrapper.builder().background(GuiRollingMill.BACKGROUND)
+                .u(176).v(14).width(24).height(17);
+        registry.handleRecipes(RollingMillRecipe.class, rollingMillWrapper::create, QBarRecipeHandler.ROLLINGMILL_UID);
 
         registry.addRecipeClickArea(GuiRollingMill.class, 80, 35, 26, 20, QBarRecipeHandler.ROLLINGMILL_UID);
         registry.addRecipeClickArea(GuiSteamFurnace.class, 80, 35, 26, 20, VanillaRecipeCategoryUid.SMELTING);
