@@ -233,6 +233,8 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
                             final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
+        if(player.isSneaking())
+            this.getWorldTile(world, pos).breakCore();
         return false;
     }
 
