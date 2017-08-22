@@ -21,47 +21,44 @@ import net.qbar.QBar;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.ore.SludgeData;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.tile.TileMultiblockInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TileSmallMiningDrill extends TileInventoryBase
-        implements ITileMultiblockCore, ITickable, IContainerProvider
+public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements ITickable
 {
     @Getter
-    private SteamTank                    steamTank;
+    private SteamTank steamTank;
     @Getter
-    private FluidTank                    fluidTank;
+    private FluidTank fluidTank;
 
     @Getter
     @Setter
-    private float                        heat, maxHeat;
+    private float heat, maxHeat;
 
     @Getter
     @Setter
-    private boolean                      completed;
-    private BlockPos                     lastPos;
+    private boolean  completed;
+    private BlockPos lastPos;
 
-    private final float                  heatPerOperationTick = 30;
-    private int                          tickBeforeHarvest;
+    private final float heatPerOperationTick = 30;
+    private int tickBeforeHarvest;
 
     private final NonNullList<ItemStack> tempVarious;
-    private ItemStack                    tempSludge;
+    private       ItemStack              tempSludge;
 
     public TileSmallMiningDrill()
     {
@@ -247,11 +244,6 @@ public class TileSmallMiningDrill extends TileInventoryBase
         return false;
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
@@ -293,18 +285,6 @@ public class TileSmallMiningDrill extends TileInventoryBase
 
         ItemStackHelper.loadAllItems(tag.getCompoundTag("tempVarious"), this.tempVarious);
         this.tempSludge = new ItemStack(tag.getCompoundTag("tempSludge"));
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
     }
 
     @Override
@@ -355,7 +335,7 @@ public class TileSmallMiningDrill extends TileInventoryBase
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -371,5 +351,23 @@ public class TileSmallMiningDrill extends TileInventoryBase
         player.openGui(QBar.instance, EGui.SMALLMININGDRILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return new int[0];
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return false;
     }
 }

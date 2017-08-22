@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 
 public abstract class TileMultiblockInventoryBase extends TileInventoryBase implements ITileMultiblockCore,
@@ -16,6 +17,11 @@ public abstract class TileMultiblockInventoryBase extends TileInventoryBase impl
     public TileMultiblockInventoryBase(String name, int size)
     {
         super(name, size);
+    }
+
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
     @Override

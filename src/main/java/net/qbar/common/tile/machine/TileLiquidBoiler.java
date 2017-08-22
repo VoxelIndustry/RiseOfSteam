@@ -1,6 +1,7 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -273,11 +274,6 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
         }
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
         this.connections.add(Multiblocks.LIQUID_FUEL_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
@@ -382,5 +378,23 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return new int[0];
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return false;
     }
 }

@@ -3,7 +3,6 @@ package net.qbar.common.tile.machine;
 import fr.ourten.teabeans.value.BaseListProperty;
 import fr.ourten.teabeans.value.BaseProperty;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -14,27 +13,26 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.tile.TileMultiblockInventoryBase;
 
-public class TileKeypunch extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileMultiblockCore
+public class TileKeypunch extends TileMultiblockInventoryBase
 {
-    private final int[]                       INPUT   = new int[] { 0 };
-    private final int[]                       OUTPUT  = new int[] { 1 };
+    private final int[] INPUT  = new int[]{0};
+    private final int[] OUTPUT = new int[]{1};
 
     private final BaseListProperty<ItemStack> craftStacks;
     private final BaseListProperty<ItemStack> filterStacks;
 
-    private final BaseProperty<Boolean>       isCraftTabProperty, canPrintProperty;
+    private final BaseProperty<Boolean> isCraftTabProperty, canPrintProperty;
 
-    private final InventoryCrafting           fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
+    private final InventoryCrafting fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
 
     public TileKeypunch()
     {
@@ -178,32 +176,24 @@ public class TileKeypunch extends TileInventoryBase implements IContainerProvide
     }
 
     @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
-    @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return true;
         return false;
     }
 
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) this.inventoryHandler;
         return null;
     }
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

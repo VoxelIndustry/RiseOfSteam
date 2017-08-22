@@ -1,5 +1,7 @@
 package net.qbar.common.tile.machine;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -10,23 +12,23 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.qbar.client.ParticleHelper;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
-import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import java.util.List;
 
-public abstract class TileBoilerBase extends TileInventoryBase
-        implements ITickable, IContainerProvider, ITileMultiblockCore
+@Getter
+public abstract class TileBoilerBase extends TileMultiblockInventoryBase implements ITickable
 {
     private final FluidTank waterTank;
     private final SteamTank steamTank;
 
+    @Setter
     protected     float heat;
-    private final float   maxHeat;
+    @Setter
+    private final float maxHeat;
 
     public TileBoilerBase(String name, int inventorySize, int maxHeat, int steamCapacity, int steamMaxPressure,
                           int waterCapacity)
@@ -138,42 +140,5 @@ public abstract class TileBoilerBase extends TileInventoryBase
     public void setSteamAmount(final int amount)
     {
         this.getSteamTank().setSteam(amount);
-    }
-
-    public void setHeat(float heat)
-    {
-        this.heat = heat;
-    }
-
-    public FluidTank getWaterTank()
-    {
-        return waterTank;
-    }
-
-    public SteamTank getSteamTank()
-    {
-        return steamTank;
-    }
-
-    public float getHeat()
-    {
-        return heat;
-    }
-
-    public float getMaxHeat()
-    {
-        return maxHeat;
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
     }
 }

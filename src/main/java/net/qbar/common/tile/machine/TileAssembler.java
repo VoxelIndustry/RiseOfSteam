@@ -2,7 +2,6 @@ package net.qbar.common.tile.machine;
 
 import fr.ourten.teabeans.value.BaseProperty;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -25,29 +24,25 @@ import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.CraftingMachineDescriptor;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.tile.TileMultiblockInventoryBase;
 import net.qbar.common.util.ItemUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 
-public class TileAssembler extends TileInventoryBase
-        implements IContainerProvider, ITickable, ITileMultiblockCore, ISidedInventory
+public class TileAssembler extends TileMultiblockInventoryBase implements ITickable
 {
     private final CraftingMachineDescriptor descriptor       = QBarMachines.ASSEMBLER;
-    private final IItemHandler              inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
     private final BaseProperty<Float> currentProgress;
     private       float               maxProgress;
 
@@ -247,11 +242,6 @@ public class TileAssembler extends TileInventoryBase
         this.maxProgress = tag.getFloat("maxProgress");
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
     @Override
     public void addInfo(final List<String> lines)
     {
@@ -289,18 +279,6 @@ public class TileAssembler extends TileInventoryBase
         player.openGui(QBar.instance, EGui.ASSEMBLER.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
     }
 
     @Override

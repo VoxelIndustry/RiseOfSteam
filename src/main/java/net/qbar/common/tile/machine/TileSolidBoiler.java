@@ -1,6 +1,7 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
@@ -12,6 +13,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.slot.SlotFuel;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.BlockMultiblockBase;
@@ -123,7 +125,7 @@ public class TileSolidBoiler extends TileBoilerBase
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("boiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).slot(0, 80, 43).syncFloatValue(this::getHeat, this::setHeat)
+                .addInventory().tile(this).fuelSlot(0, 80, 43).syncFloatValue(this::getHeat, this::setHeat)
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
@@ -172,11 +174,6 @@ public class TileSolidBoiler extends TileBoilerBase
         return null;
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
                                 final float hitZ, BlockPos from)
@@ -202,5 +199,23 @@ public class TileSolidBoiler extends TileBoilerBase
     {
         if (this.isClient())
             this.forceSync();
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return new int[]{0};
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return index == 0 && TileEntityFurnace.isItemFuel(stack) || SlotFuel.isBucket(stack);
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return index == 0;
     }
 }

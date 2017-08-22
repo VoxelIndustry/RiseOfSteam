@@ -1,6 +1,7 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -134,11 +135,6 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
         return null;
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
@@ -193,5 +189,23 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
                 this.mirrors.put(facing,
                         (TileSolarMirror) ((ITileMultiblock) this.world.getTileEntity(search)).getCore());
         }
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return new int[0];
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return false;
     }
 }
