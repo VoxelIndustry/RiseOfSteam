@@ -5,35 +5,35 @@ import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.QBar;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.item.ItemDrillCoreSample;
-import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.steam.CapabilitySteamHandler;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileTinyMiningDrill extends TileInventoryBase implements ITickable, ITileMultiblockCore, IContainerProvider
+public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements ITickable
 {
     @Getter
     @Setter
-    private float                   progress;
+    private float progress;
 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
@@ -174,20 +174,10 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     }
 
     @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
-    @Override
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN && from.getY() == 1)
+            return true;
         return super.hasCapability(capability, facing);
     }
 
@@ -195,6 +185,8 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     @Override
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN && from.getY() == 1)
+            return (T) this.inventoryHandler;
         return super.getCapability(capability, facing);
     }
 
@@ -207,7 +199,7 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -217,5 +209,25 @@ public class TileTinyMiningDrill extends TileInventoryBase implements ITickable,
         player.openGui(QBar.instance, EGui.TINYMININGDRILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return new int[]{0, 1};
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        if (index == 1) //TODO: Add steam item capability check
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return direction == EnumFacing.UP && index == 0 || direction != EnumFacing.UP && index != 0;
     }
 }
