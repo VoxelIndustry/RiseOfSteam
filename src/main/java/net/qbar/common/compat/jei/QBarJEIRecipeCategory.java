@@ -60,12 +60,12 @@ public class QBarJEIRecipeCategory implements IRecipeCategory<QBarJEIRecipeWrapp
             int count = this.getSlotCount(slot);
             if (slot.isInput())
             {
-                if (ingredients.getInputs(ItemStack.class).size() < count)
+                if (ingredients.getInputs(ItemStack.class).size() > count)
                     guiItemStacks.set(this.slots.indexOf(slot), ingredients.getInputs(ItemStack.class).get(count));
             }
             else
             {
-                if (ingredients.getOutputs(ItemStack.class).size() < count)
+                if (ingredients.getOutputs(ItemStack.class).size() > count)
                     guiItemStacks.set(this.slots.indexOf(slot), ingredients.getOutputs(ItemStack.class).get(count));
             }
         });

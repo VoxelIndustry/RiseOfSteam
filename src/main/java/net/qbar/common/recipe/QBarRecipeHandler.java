@@ -17,6 +17,8 @@ import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
+import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
+import net.qbar.common.recipe.type.RollingMillRecipe;
 import net.qbar.common.recipe.type.SludgeRecipe;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,14 +51,13 @@ public class QBarRecipeHandler
         QBarMaterials.metals.forEach(metalName ->
         {
             QBarRecipeHelper.addIngotToPlateRecipe(metalName);
+            QBarRecipeHelper.addBlockToPlateRecipe(metalName);
 
             if (BlockMetal.VARIANTS.getAllowedValues().contains(metalName))
             {
-                QBarRecipeHelper.addBlockToPlateRecipe(metalName);
                 QBarRecipeHelper.addBlockToIngotRecipe(metalName);
                 QBarRecipeHelper.addIngotToBlockRecipe(metalName);
             }
-
             if (QBarItems.METALGEAR.hasMetalVariant(metalName))
                 QBarRecipeHelper.addIngotToGearRecipe(metalName);
         });

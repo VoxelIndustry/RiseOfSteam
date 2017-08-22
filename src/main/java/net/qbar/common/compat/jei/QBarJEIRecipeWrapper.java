@@ -1,5 +1,6 @@
 package net.qbar.common.compat.jei;
 
+import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.ingredients.IIngredients;
@@ -19,19 +20,17 @@ public class QBarJEIRecipeWrapper implements IRecipeWrapper
 
     private final QBarRecipe recipe;
 
-    QBarJEIRecipeWrapper(final QBarRecipe recipe, ResourceLocation background, int u, int v, int width, int height)
+    QBarJEIRecipeWrapper(final QBarRecipe recipe, IGuiHelper guiHelper, ResourceLocation background, int u, int v, int width, int height)
     {
         this.recipe = recipe;
 
-        final IDrawableStatic arrowStatic = QBarJEIPlugin.instance().getGuiHelper()
-                .createDrawable(background, u, v, width, height);
-        this.arrow = QBarJEIPlugin.instance().getGuiHelper()
-                .createAnimatedDrawable(arrowStatic, 20, IDrawableAnimated.StartDirection.LEFT, false);
+        final IDrawableStatic arrowStatic = guiHelper.createDrawable(background, u, v, width, height);
+        this.arrow = guiHelper.createAnimatedDrawable(arrowStatic, 20, IDrawableAnimated.StartDirection.LEFT, false);
     }
 
-    public static Builder builder()
+    public static Builder builder(IGuiHelper guiHelper)
     {
-        return new Builder();
+        return new Builder(guiHelper);
     }
 
     @Override
@@ -54,6 +53,12 @@ public class QBarJEIRecipeWrapper implements IRecipeWrapper
     {
         private ResourceLocation background;
         private int              u, v, width, height;
+        private final IGuiHelper guiHelper;
+
+        public Builder(IGuiHelper guiHelper)
+        {
+            this.guiHelper = guiHelper;
+        }
 
         public Builder background(ResourceLocation background)
         {
@@ -88,7 +93,7 @@ public class QBarJEIRecipeWrapper implements IRecipeWrapper
         @Nonnull
         public QBarJEIRecipeWrapper create(QBarRecipe recipe)
         {
-            return new QBarJEIRecipeWrapper(recipe, background, u, v, width, height);
+            return new QBarJEIRecipeWrapper(recipe, guiHelper, background, u, v, width, height);
         }
     }
 }
