@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -10,6 +10,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.tile.TileInventoryBase;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;

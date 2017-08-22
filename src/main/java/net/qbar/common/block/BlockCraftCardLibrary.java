@@ -10,15 +10,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
-import net.qbar.common.tile.machine.TileEngineerStorage;
+import net.qbar.common.tile.machine.TileBlueprintPrinter;
+import net.qbar.common.tile.machine.TileCraftCardLibrary;
 
 import javax.annotation.Nullable;
 
-public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerStorage>
+public class BlockCraftCardLibrary extends BlockOrientableMachine<TileCraftCardLibrary>
 {
-    public BlockEngineerStorage()
+    public BlockCraftCardLibrary()
     {
-        super("engineerstorage", Material.WOOD, true, false, TileEngineerStorage.class);
+        super("craftcardlibrary", Material.WOOD, true, false, TileCraftCardLibrary.class);
     }
 
     @Override
@@ -28,7 +29,7 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     {
         if (player.isSneaking())
             return false;
-        player.openGui(QBar.instance, EGui.ENGINEERSTORAGE.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+        player.openGui(QBar.instance, EGui.CRAFTCARDLIBRARY.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
@@ -37,6 +38,6 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEngineerStorage();
+        return new TileCraftCardLibrary();
     }
 }

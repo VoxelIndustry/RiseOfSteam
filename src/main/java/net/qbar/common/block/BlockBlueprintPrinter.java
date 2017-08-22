@@ -10,15 +10,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.QBar;
 import net.qbar.common.gui.EGui;
-import net.qbar.common.tile.machine.TileEngineerStorage;
+import net.qbar.common.tile.machine.TileBlueprintPrinter;
 
 import javax.annotation.Nullable;
 
-public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerStorage>
+public class BlockBlueprintPrinter extends BlockOrientableMachine<TileBlueprintPrinter>
 {
-    public BlockEngineerStorage()
+    public BlockBlueprintPrinter()
     {
-        super("engineerstorage", Material.WOOD, true, false, TileEngineerStorage.class);
+        super("blueprintprinter", Material.WOOD, true, false, TileBlueprintPrinter.class);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     {
         if (player.isSneaking())
             return false;
-        player.openGui(QBar.instance, EGui.ENGINEERSTORAGE.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+        player.openGui(QBar.instance, EGui.BLUEPRINTPRINTER.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
@@ -37,6 +37,6 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEngineerStorage();
+        return new TileBlueprintPrinter();
     }
 }

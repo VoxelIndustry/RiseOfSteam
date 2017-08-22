@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.*;
 import net.qbar.common.container.IContainerProvider;
-import net.qbar.common.tile.TileEngineerStorage;
+import net.qbar.common.tile.machine.TileEngineerStorage;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.*;
 import org.yggard.brokkgui.wrapper.BrokkGuiManager;

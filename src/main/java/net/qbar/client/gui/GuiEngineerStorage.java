@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.qbar.QBar;
 import net.qbar.client.gui.util.GuiMachineBase;
-import net.qbar.common.tile.TileEngineerStorage;
+import net.qbar.common.tile.machine.TileEngineerStorage;
 
 public class GuiEngineerStorage extends GuiMachineBase<TileEngineerStorage>
 {

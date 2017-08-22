@@ -17,7 +17,6 @@ import net.qbar.common.block.item.ItemBlockVeinOre;
 import net.qbar.common.multiblock.*;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.recipe.QBarMaterials;
-import net.qbar.common.tile.TileEngineerStorage;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
@@ -192,6 +191,11 @@ public class QBarBlocks
                 new ItemBlockMetadata(block, QBarMaterials.metals.toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()])).setFirstVariation(true));
 
         registerBlock(new BlockEngineerStorage());
+        registerBlock(new BlockEngineerWorkbench());
+        registerBlock(new BlockMultiblockMachine<>("blueprintprinter", Material.WOOD, Multiblocks.BLUEPRINT_PRINTER,
+                TileBlueprintPrinter::new, TileBlueprintPrinter.class));
+        registerBlock(new BlockMultiblockMachine<>("craftcardlibrary", Material.WOOD, Multiblocks.CRAFT_CARD_LIBRARY,
+                TileCraftCardLibrary::new, TileCraftCardLibrary.class));
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
@@ -220,6 +224,9 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileAlloyCauldron.class, "alloycauldron");
         QBarBlocks.registerTile(TileSawMill.class, "sawmill");
         QBarBlocks.registerTile(TileEngineerStorage.class, "engineerstorage");
+        QBarBlocks.registerTile(TileEngineerWorkbench.class, "engineerworkbench");
+        QBarBlocks.registerTile(TileBlueprintPrinter.class, "blueprintprinter");
+        QBarBlocks.registerTile(TileCraftCardLibrary.class, "craftcardlibrary");
     }
 
     @SubscribeEvent

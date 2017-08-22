@@ -23,6 +23,10 @@ public class Multiblocks
     public static final IMultiblockDescriptor ALLOY_CAULDRON;
     public static final IMultiblockDescriptor SAW_MILL;
 
+    public static final IMultiblockDescriptor ENGINEER_WORKBENCH;
+    public static final IMultiblockDescriptor BLUEPRINT_PRINTER;
+    public static final IMultiblockDescriptor CRAFT_CARD_LIBRARY;
+
     static
     {
         SMALL_FLUID_TANK = new MultiblockDescriptorBase("SMALL_FLUID_TANK", 1, 4, 1, 0, 0, 0);
@@ -46,5 +50,9 @@ public class Multiblocks
 
         ALLOY_CAULDRON = new MultiblockDescriptorBase("ALLOY_CAULDRON", 2, 2, 2, 0, 0, 0);
         SAW_MILL = new MultiblockDescriptorBase("SAW_MILL", 1, 1, 1, 0, 0, 0);
+
+        ENGINEER_WORKBENCH = new MultiblockDescriptorBase("ENGINEER_WORKBENCH", 2, 1, 1, 0, 0, 0);
+        BLUEPRINT_PRINTER = new MultiblockDescriptorBase("BLUEPRINT_PRINTER", 1, 2, 1, 0, 0, 0);
+        CRAFT_CARD_LIBRARY = new MultiblockDescriptorBase("CRAFT_CARD_LIBRARY", 1, 2, 1, 0, 0, 0);
     }
 }
