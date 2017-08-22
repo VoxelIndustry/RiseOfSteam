@@ -117,12 +117,14 @@ public class Blueprints
                 .addStep(10, new ItemStack(QBarItems.GEARBOX));
 
         this.registerBlueprint("alloycauldron", Multiblocks.ALLOY_CAULDRON)
-                .addStep(40, new ItemStack(QBarItems.METALPLATE, 64, QBarItems.METALPLATE.getMetalMeta("bronze")))
-                .addStep(30, new ItemStack(QBarBlocks.FLUID_PIPE, 16), new ItemStack(Blocks.GLASS_PANE));
+                .addStep(15, new ItemStack(Blocks.BRICK_BLOCK, 20))
+                .addStep(10, new ItemStack(Items.IRON_INGOT, 15));
 
         this.registerBlueprint("sawmill", Multiblocks.SAW_MILL)
-                .addStep(40, new ItemStack(QBarItems.METALPLATE, 64, QBarItems.METALPLATE.getMetalMeta("bronze")))
-                .addStep(30, new ItemStack(QBarBlocks.FLUID_PIPE, 16), new ItemStack(Blocks.GLASS_PANE));
+                .addStep(10, new ItemStack(Items.IRON_INGOT, 10))
+                .addStep(10, new ItemStack(QBarItems.METALPLATE, 10, QBarItems.METALPLATE.getMetalMeta("bronze")))
+                .addStep(10, new ItemStack(QBarItems.GEARBOX), new ItemStack(QBarBlocks.STEAM_PIPE, 1),
+                        new ItemStack(QBarBlocks.BELT, 3));
 
         for (Map.Entry<String, Blueprint> blueprint : this.blueprints.entrySet())
             blueprint.getValue().setMultiblockSteps(this.loadBlueprintModel(blueprint.getKey()));
