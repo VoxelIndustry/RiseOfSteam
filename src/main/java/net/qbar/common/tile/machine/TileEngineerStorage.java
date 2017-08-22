@@ -9,6 +9,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.tile.TileInventoryBase;
 
@@ -45,7 +46,13 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return null;
+        return new ContainerBuilder("engineerstorage", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this)
+                .slotLine(0, 16,8,8, EnumFacing.Axis.X)
+                .slotLine(8, 16,26,8, EnumFacing.Axis.X)
+                .slotLine(16, 16,44,8, EnumFacing.Axis.X)
+                .slotLine(24, 16,62,8, EnumFacing.Axis.X)
+                .addInventory().create();
     }
 
     @Override
