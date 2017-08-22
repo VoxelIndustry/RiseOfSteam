@@ -17,6 +17,7 @@ import net.qbar.common.block.item.ItemBlockVeinOre;
 import net.qbar.common.multiblock.*;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.recipe.QBarMaterials;
+import net.qbar.common.tile.TileEngineerStorage;
 import net.qbar.common.tile.TileFluidPipe;
 import net.qbar.common.tile.TileSteamPipe;
 import net.qbar.common.tile.TileStructure;
@@ -190,6 +191,8 @@ public class QBarBlocks
         registerBlock(new BlockMetal(), block ->
                 new ItemBlockMetadata(block, QBarMaterials.metals.toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()])).setFirstVariation(true));
 
+        registerBlock(new BlockEngineerStorage());
+
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
         QBarBlocks.registerTile(TileSolidBoiler.class, "boiler");
@@ -216,6 +219,7 @@ public class QBarBlocks
         QBarBlocks.registerTile(TileTinyMiningDrill.class, "tinyminingdrill");
         QBarBlocks.registerTile(TileAlloyCauldron.class, "alloycauldron");
         QBarBlocks.registerTile(TileSawMill.class, "sawmill");
+        QBarBlocks.registerTile(TileEngineerStorage.class, "engineerstorage");
     }
 
     @SubscribeEvent
