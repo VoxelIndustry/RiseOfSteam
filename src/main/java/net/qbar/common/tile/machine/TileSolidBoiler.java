@@ -16,8 +16,9 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.slot.SlotFuel;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.FluidUtils;
@@ -134,7 +135,7 @@ public class TileSolidBoiler extends TileBoilerBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.SOLID_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class).worldSideToMultiblockSide(new MultiblockSide(from, facing),
                 this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
@@ -155,7 +156,7 @@ public class TileSolidBoiler extends TileBoilerBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.SOLID_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
+        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class).worldSideToMultiblockSide(new MultiblockSide(from, facing),
                 this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)

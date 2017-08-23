@@ -20,11 +20,12 @@ import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
-import net.qbar.common.recipe.type.LiquidBoilerRecipe;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import net.qbar.common.recipe.type.LiquidBoilerRecipe;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamStack;
 import net.qbar.common.steam.SteamUtil;
@@ -35,14 +36,13 @@ import java.util.Optional;
 
 public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 {
-    private final FluidTank fuelTank;
+    private final FluidTank                 fuelTank;
 
     private final ArrayList<MultiblockSide> connections;
 
     public TileLiquidBoiler()
     {
-        super("liquidboiler", 0, 3000, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2,
-                Fluid.BUCKET_VOLUME * 64);
+        super("liquidboiler", 0, 3000, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 64);
 
         this.fuelTank = new FilteredFluidTank(Fluid.BUCKET_VOLUME * 48,
                 fluidStack -> fluidStack != null && fluidStack.getFluid() != (FluidRegistry.WATER));
@@ -51,7 +51,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     private Fluid              cachedFluid;
     private LiquidBoilerRecipe recipe;
-    private double pendingFuel = 0;
+    private double             pendingFuel = 0;
 
     @Override
     public void update()
@@ -172,7 +172,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
             return (T) this.getSteamTank();
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
         {
-            MultiblockSide side = Multiblocks.LIQUID_FUEL_BOILER
+            MultiblockSide side = QBarMachines.LIQUID_BOILER.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getFacing() == EnumFacing.NORTH)
             {
@@ -233,7 +233,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -275,14 +275,14 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
-        this.connections.add(Multiblocks.LIQUID_FUEL_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing()));
+        this.connections.add(QBarMachines.LIQUID_BOILER.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
         this.updateState();
     }
 
     public void disconnectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
-        this.connections.remove(Multiblocks.LIQUID_FUEL_BOILER
+        this.connections.remove(QBarMachines.LIQUID_BOILER.get(MultiblockComponent.class)
                 .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
         this.updateState();
     }

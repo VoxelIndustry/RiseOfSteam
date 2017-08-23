@@ -17,8 +17,8 @@ import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
@@ -103,8 +103,8 @@ public class TileSortingMachine extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.SORTING_MACHINE.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.SORTING_MACHINE.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.NORTH
                 && side.getPos().getX() == 0 && side.getPos().getY() == 1 && side.getPos().getZ() == 0)
@@ -123,8 +123,8 @@ public class TileSortingMachine extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.SORTING_MACHINE.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.SORTING_MACHINE.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.NORTH
                 && side.getPos().getX() == 0 && side.getPos().getY() == 1 && side.getPos().getZ() == 0)

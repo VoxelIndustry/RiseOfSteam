@@ -15,9 +15,10 @@ import net.qbar.common.event.TickHandler;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.ITileMultiblock;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
@@ -91,8 +92,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
     {
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = QBarMachines.SOLAR_BOILER.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
             if (side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
@@ -100,8 +101,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
         }
         else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = QBarMachines.SOLAR_BOILER.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
             if (side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
@@ -115,8 +116,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
     {
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = QBarMachines.SOLAR_BOILER.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
             if (side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
@@ -124,8 +125,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
         }
         else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.SOLAR_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = QBarMachines.SOLAR_BOILER.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
             if (side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
@@ -145,7 +146,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

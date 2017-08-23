@@ -27,8 +27,8 @@ import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.ore.SludgeData;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
@@ -41,27 +41,28 @@ import java.util.Iterator;
 
 public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements ITickable
 {
-    private final SteamComponent steamMachine = QBarMachines.SMALL_MINING_DRILL.get(SteamComponent.class);
+    private final SteamComponent         steamMachine         = QBarMachines.SMALL_MINING_DRILL
+            .get(SteamComponent.class);
 
     @Getter
-    private SteamTank steamTank;
+    private SteamTank                    steamTank;
     @Getter
-    private FluidTank fluidTank;
-
-    @Getter
-    @Setter
-    private float heat, maxHeat;
+    private FluidTank                    fluidTank;
 
     @Getter
     @Setter
-    private boolean  completed;
-    private BlockPos lastPos;
+    private float                        heat, maxHeat;
 
-    private final float heatPerOperationTick = 30;
-    private int tickBeforeHarvest;
+    @Getter
+    @Setter
+    private boolean                      completed;
+    private BlockPos                     lastPos;
+
+    private final float                  heatPerOperationTick = 30;
+    private int                          tickBeforeHarvest;
 
     private final NonNullList<ItemStack> tempVarious;
-    private       ItemStack              tempSludge;
+    private ItemStack                    tempSludge;
 
     public TileSmallMiningDrill()
     {
@@ -69,8 +70,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
 
         this.fluidTank = new FilteredFluidTank(32000,
                 fluid -> fluid != null && fluid.getFluid() == FluidRegistry.WATER);
-        this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(),
-                steamMachine.getMaxPressureCapacity());
+        this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(), steamMachine.getMaxPressureCapacity());
 
         this.heat = 0;
         this.maxHeat = 3000;
@@ -114,8 +114,8 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
                 }
                 else
                     toCheck = new BlockPos(toCheck.getX() + 1, toCheck.getY(), toCheck.getZ());
-                this.tickBeforeHarvest = (int) Math.ceil(4 * (1 / (this.getSteamTank().getPressure()
-                        / steamMachine.getMaxPressureCapacity())));
+                this.tickBeforeHarvest = (int) Math
+                        .ceil(4 * (1 / (this.getSteamTank().getPressure() / steamMachine.getMaxPressureCapacity())));
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
@@ -151,9 +151,9 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
 
             this.heat += 30 * (this.getSteamTank().getPressure() / 2);
 
-            this.steamTank.drainSteam((int) Math.max(
-                    steamMachine.getSteamConsumption() * this.getSteamTank().getPressure(),
-                    steamMachine.getSteamConsumption()), true);
+            this.steamTank
+                    .drainSteam((int) Math.max(steamMachine.getSteamConsumption() * this.getSteamTank().getPressure(),
+                            steamMachine.getSteamConsumption()), true);
             isDirty = true;
         }
         if (!this.isCompleted())
@@ -293,8 +293,8 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
     @Override
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.SMALL_MINING_DRILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.SMALL_MINING_DRILL.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.EAST
                 && side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
@@ -313,8 +313,8 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
     @Override
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.SMALL_MINING_DRILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.SMALL_MINING_DRILL.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.EAST
                 && side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
@@ -338,7 +338,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

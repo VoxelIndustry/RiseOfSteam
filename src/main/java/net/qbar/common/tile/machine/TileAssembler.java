@@ -29,8 +29,8 @@ import net.qbar.common.machine.CraftingComponent;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
@@ -42,18 +42,18 @@ import java.util.List;
 
 public class TileAssembler extends TileMultiblockInventoryBase implements ITickable
 {
-    private final MachineDescriptor descriptor = QBarMachines.ASSEMBLER;
-    private final CraftingComponent crafter    = descriptor.get(CraftingComponent.class);
+    private final MachineDescriptor   descriptor = QBarMachines.ASSEMBLER;
+    private final CraftingComponent   crafter    = descriptor.get(CraftingComponent.class);
     private final BaseProperty<Float> currentProgress;
-    private       float               maxProgress;
+    private float                     maxProgress;
 
-    private final SteamTank steamTank;
+    private final SteamTank           steamTank;
 
-    private CraftCard craft;
-    private ItemStack cached = ItemStack.EMPTY;
+    private CraftCard                 craft;
+    private ItemStack                 cached     = ItemStack.EMPTY;
 
-    private ItemStack              resultTemp;
-    private NonNullList<ItemStack> remainingsTemp;
+    private ItemStack                 resultTemp;
+    private NonNullList<ItemStack>    remainingsTemp;
 
     // 0 : PunchedCard
     // 1 - 10 : Crafting Ingredients
@@ -270,7 +270,7 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -299,8 +299,8 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
     {
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.ASSEMBLER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = QBarMachines.ASSEMBLER.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 0 && side.getPos().getY() == 0
                     && side.getPos().getZ() == 1)
                 return true;
@@ -315,8 +315,8 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
     {
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.ASSEMBLER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                    this.getFacing());
+            MultiblockSide side = QBarMachines.ASSEMBLER.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 0 && side.getPos().getY() == 0
                     && side.getPos().getZ() == 1)
                 return (T) this.steamTank;
@@ -326,8 +326,8 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
         return super.getCapability(capability, facing);
     }
 
-    private final int[] inputSlots   = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    private final int[] outputsSlots = new int[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+    private final int[] inputSlots   = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    private final int[] outputsSlots = new int[] { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 
     @Override
     public int[] getSlotsForFace(final EnumFacing side)
