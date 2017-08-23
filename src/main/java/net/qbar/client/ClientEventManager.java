@@ -16,6 +16,7 @@ import net.qbar.client.render.RenderUtil;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.item.ItemBlueprint;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.util.ItemUtils;
@@ -66,7 +67,7 @@ public class ClientEventManager
                                 final double z = e.getPlayer().lastTickPosZ
                                         + (e.getPlayer().posZ - e.getPlayer().lastTickPosZ) * e.getPartialTicks();
                                 RenderGlobal.drawSelectionBoundingBox(
-                                        blueprint.getMultiblock()
+                                        blueprint.getDescriptor().get(MultiblockComponent.class)
                                                 .getBox(e.getPlayer().getHorizontalFacing().getOpposite()).offset(pos)
                                                 .grow(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);

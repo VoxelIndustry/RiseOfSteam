@@ -1,5 +1,7 @@
 package net.qbar.common.tile;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,6 +22,7 @@ import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.BlueprintState;
 import net.qbar.common.multiblock.blueprint.Blueprints;
@@ -30,9 +33,12 @@ import java.util.List;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
-    private Blueprint      blueprint;
-    private BlueprintState blueprintState;
+    private Blueprint           blueprint;
+    private MultiblockComponent multiblock;
+    private BlueprintState      blueprintState;
 
+    @Getter
+    @Setter
     private int meta;
 
     private AxisAlignedBB cachedBB;
@@ -85,7 +91,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
                 else
                 {
                     final BlockMultiblockBase block = (BlockMultiblockBase) Block
-                            .getBlockFromName("qbar:" + this.blueprint.getName());
+                            .getBlockFromName("qbar:" + this.blueprint.getDescriptor().getName());
                     final IBlockState state = block.getStateFromMeta(this.meta);
                     final IBlockState previous = this.world.getBlockState(this.getPos());
 
@@ -111,7 +117,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 
         if (this.blueprint != null)
         {
-            tag.setString("blueprint", this.blueprint.getName());
+            tag.setString("blueprint", this.blueprint.getDescriptor().getName());
 
             if (this.blueprintState != null)
                 tag.setTag("blueprintState", this.blueprintState.toNBT());
@@ -126,6 +132,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         super.readFromNBT(tag);
 
         this.blueprint = Blueprints.getInstance().getBlueprint(tag.getString("blueprint"));
+        this.multiblock = this.blueprint.getDescriptor().get(MultiblockComponent.class);
         if (this.blueprint != null)
             this.blueprintState = new BlueprintState(this.blueprint, tag.getCompoundTag("blueprintState"));
         this.meta = tag.getInteger("statemeta");
@@ -134,6 +141,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     public void setBlueprint(final Blueprint blueprint)
     {
         this.blueprint = blueprint;
+        this.multiblock = this.blueprint.getDescriptor().get(MultiblockComponent.class);
         this.blueprintState = new BlueprintState(blueprint);
     }
 
@@ -145,16 +153,6 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     public BlueprintState getBlueprintState()
     {
         return this.blueprintState;
-    }
-
-    public int getMeta()
-    {
-        return this.meta;
-    }
-
-    public void setMeta(final int meta)
-    {
-        this.meta = meta;
     }
 
     @Override
@@ -198,17 +196,17 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         {
             if (BlockMultiblockBase.getFacing(this.meta).getAxis() == Axis.Z)
             {
-                this.cachedBB = new AxisAlignedBB(this.pos.add(-this.blueprint.getMultiblock().getOffsetX(),
-                        -this.blueprint.getMultiblock().getOffsetY(), -this.blueprint.getMultiblock().getOffsetZ()),
-                        this.pos.add(this.blueprint.getMultiblock().getWidth(),
-                                this.blueprint.getMultiblock().getHeight(),
-                                this.blueprint.getMultiblock().getLength()));
+                this.cachedBB = new AxisAlignedBB(this.pos.add(-this.multiblock.getOffsetX(),
+                        -this.multiblock.getOffsetY(), -this.multiblock.getOffsetZ()),
+                        this.pos.add(this.multiblock.getWidth(),
+                                this.multiblock.getHeight(),
+                                this.multiblock.getLength()));
             }
             else
-                this.cachedBB = new AxisAlignedBB(this.pos.add(-this.blueprint.getMultiblock().getOffsetZ(),
-                        -this.blueprint.getMultiblock().getOffsetY(), -this.blueprint.getMultiblock().getOffsetX()),
-                        this.pos.add(this.blueprint.getMultiblock().getLength(),
-                                this.blueprint.getMultiblock().getHeight(), this.blueprint.getMultiblock().getWidth()));
+                this.cachedBB = new AxisAlignedBB(this.pos.add(-this.multiblock.getOffsetZ(),
+                        -this.multiblock.getOffsetY(), -this.multiblock.getOffsetX()),
+                        this.pos.add(this.multiblock.getLength(),
+                                this.multiblock.getHeight(), this.multiblock.getWidth()));
         }
         if (this.cachedBB != null)
             return this.cachedBB;
@@ -223,7 +221,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     {
         if (this.quadsCache == null || this.previousStep != this.getBlueprintState().getCurrentStep())
         {
-            final IBlockState state = Block.getBlockFromName(QBar.MODID + ":" + this.getBlueprint().getName())
+            final IBlockState state = Block.getBlockFromName(QBar.MODID + ":" + this.getBlueprint().getDescriptor().getName())
                     .getStateFromMeta(this.getMeta());
 
             final IBakedModel model = RenderStructure.blockRender.getModelForState(state);

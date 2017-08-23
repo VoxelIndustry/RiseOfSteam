@@ -16,7 +16,6 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.slot.SlotFuel;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.steam.CapabilitySteamHandler;
@@ -30,7 +29,7 @@ public class TileSolidBoiler extends TileBoilerBase
 
     public TileSolidBoiler()
     {
-        super("TileSolidBoiler", 1, 3000, 4000, SteamUtil.AMBIANT_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
+        super("TileSolidBoiler", 1, 3000, 4000, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
     }
 
     @Override

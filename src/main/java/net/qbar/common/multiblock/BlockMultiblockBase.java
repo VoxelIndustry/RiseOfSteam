@@ -39,9 +39,9 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     public static final PropertyBool      MULTIBLOCK_GAG = PropertyBool.create("multiblockgag");
     public static final PropertyDirection FACING         = BlockHorizontal.FACING;
 
-    private final IMultiblockDescriptor descriptor;
+    private final MultiblockComponent descriptor;
 
-    public BlockMultiblockBase(final String name, final Material material, final IMultiblockDescriptor descriptor, Class<T> tileClass)
+    public BlockMultiblockBase(final String name, final Material material, final MultiblockComponent descriptor, Class<T> tileClass)
     {
         super(name, material, tileClass);
 
@@ -262,7 +262,7 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
 
     public abstract T getTile(final World w, final IBlockState state);
 
-    public IMultiblockDescriptor getDescriptor()
+    public MultiblockComponent getDescriptor()
     {
         return this.descriptor;
     }

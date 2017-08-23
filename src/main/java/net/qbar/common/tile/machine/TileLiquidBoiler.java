@@ -20,7 +20,6 @@ import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.type.LiquidBoilerRecipe;
@@ -42,7 +41,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     public TileLiquidBoiler()
     {
-        super("liquidboiler", 0, 3000, Fluid.BUCKET_VOLUME * 32, SteamUtil.AMBIANT_PRESSURE * 2,
+        super("liquidboiler", 0, 3000, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2,
                 Fluid.BUCKET_VOLUME * 64);
 
         this.fuelTank = new FilteredFluidTank(Fluid.BUCKET_VOLUME * 48,

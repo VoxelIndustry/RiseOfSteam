@@ -33,7 +33,7 @@ public class RenderStructure extends TileEntitySpecialRenderer<TileStructure>
             final int k = l / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0F, k / 1.0F);
 
-            final IBlockState state = Block.getBlockFromName(QBar.MODID + ":" + structure.getBlueprint().getName())
+            final IBlockState state = Block.getBlockFromName(QBar.MODID + ":" + structure.getBlueprint().getDescriptor().getName())
                     .getStateFromMeta(structure.getMeta());
 
             if (structure.getBlueprintState().getMultiblockStep() != null)

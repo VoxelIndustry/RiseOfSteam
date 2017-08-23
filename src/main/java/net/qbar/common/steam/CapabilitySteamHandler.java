@@ -15,7 +15,7 @@ public class CapabilitySteamHandler
     public static void register()
     {
         CapabilityManager.INSTANCE.register(ISteamHandler.class, new DefaultSteamHandlerStorage<>(),
-                () -> new SteamTank(0, 10000, SteamUtil.AMBIANT_PRESSURE * 2));
+                () -> new SteamTank(0, 10000, SteamUtil.BASE_PRESSURE * 2));
     }
 
     private static class DefaultSteamHandlerStorage<T extends ISteamHandler> implements Capability.IStorage<T>

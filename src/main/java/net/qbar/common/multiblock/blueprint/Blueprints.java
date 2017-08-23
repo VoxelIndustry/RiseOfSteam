@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.qbar.QBar;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.IMultiblockDescriptor;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.Multiblocks;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -130,9 +130,9 @@ public class Blueprints
             blueprint.getValue().setMultiblockSteps(this.loadBlueprintModel(blueprint.getKey()));
     }
 
-    public Blueprint registerBlueprint(final String name, final IMultiblockDescriptor multiblock)
+    public Blueprint registerBlueprint(final String name, final MultiblockComponent multiblock)
     {
-        this.blueprints.put(name, new Blueprint(name, multiblock, multiblock.getBlockCount() * 4));
+        //   this.blueprints.put(name, new Blueprint(name, multiblock, multiblock.getBlockCount() * 4));
         return this.blueprints.get(name);
     }
 
@@ -167,8 +167,9 @@ public class Blueprints
         return this.blueprints.get(name);
     }
 
-    public Optional<Blueprint> getByMultiblock(IMultiblockDescriptor multiblock)
+    public Optional<Blueprint> getByMultiblock(MultiblockComponent multiblock)
     {
-        return this.blueprints.values().stream().filter(b -> b.getMultiblock() == multiblock).findAny();
+        return Optional.empty();
+        //return this.blueprints.values().stream().filter(b -> b.getMultiblock() == multiblock).findAny();
     }
 }

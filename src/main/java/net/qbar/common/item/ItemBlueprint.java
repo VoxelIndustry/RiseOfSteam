@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.BlockStructure;
-import net.qbar.common.multiblock.IMultiblockDescriptor;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.Blueprints;
@@ -79,7 +79,7 @@ public class ItemBlueprint extends ItemBase
     }
 
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
-                                final IBlockState newState, final IMultiblockDescriptor descriptor)
+                                final IBlockState newState, final MultiblockComponent descriptor)
     {
         if (!world.setBlockState(pos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
@@ -117,7 +117,8 @@ public class ItemBlueprint extends ItemBase
     {
         if (this.isInCreativeTab(tab))
         {
-            Blueprints.getInstance().getBlueprints().forEach((name, blueprint) ->
+            //TODO : Move to new unified data system
+         /*   Blueprints.getInstance().getBlueprints().forEach((name, blueprint) ->
             {
                 final ItemStack stack = new ItemStack(this);
                 final NBTTagCompound tag = new NBTTagCompound();
@@ -125,7 +126,7 @@ public class ItemBlueprint extends ItemBase
 
                 tag.setString("blueprint", name);
                 list.add(stack);
-            });
+            });*/
         }
     }
 

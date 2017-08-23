@@ -1,0 +1,48 @@
+{
+    tier: 0
+    type: RESOURCE_PRODUCER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 5
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 3
+            height: 3
+            length: 3
+            offsetX: 1
+            offsetZ: 1
+        }
+        blueprint: [
+            {
+                time: 25
+                item: 48xminecraft:iron_ingot
+            }
+            {
+                time: 40
+                item: 32x(bronzePlate)
+            }
+            {
+                time: 30
+                items: [
+                    4xqbar:gearbox
+                    10xqbar:steampipe
+                    10xqbar:fluidpipe
+                    qbar:belt
+                ]
+            }
+        ]
+        crafter: {
+            category: qbar.rollingmill
+            inventorySize: 3
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 1
+            tankInput: 1
+            tankOutput: 1
+        }
+    }
+}

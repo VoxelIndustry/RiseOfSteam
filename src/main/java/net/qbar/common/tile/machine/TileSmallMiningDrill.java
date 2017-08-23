@@ -25,7 +25,8 @@ import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.SteamComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.ore.SludgeData;
@@ -40,6 +41,8 @@ import java.util.Iterator;
 
 public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements ITickable
 {
+    private final SteamComponent steamMachine = QBarMachines.SMALL_MINING_DRILL.get(SteamComponent.class);
+
     @Getter
     private SteamTank steamTank;
     @Getter
@@ -66,8 +69,8 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
 
         this.fluidTank = new FilteredFluidTank(32000,
                 fluid -> fluid != null && fluid.getFluid() == FluidRegistry.WATER);
-        this.steamTank = new SteamTank(0, QBarMachines.SMALL_MINING_DRILL.getSteamCapacity(),
-                QBarMachines.SMALL_MINING_DRILL.getMaxPressureCapacity());
+        this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(),
+                steamMachine.getMaxPressureCapacity());
 
         this.heat = 0;
         this.maxHeat = 3000;
@@ -86,7 +89,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
         boolean isDirty = false;
 
         if (!this.isCompleted() && this.tempVarious.isEmpty() && this.heat < this.maxHeat
-                && this.getSteamTank().getSteam() >= QBarMachines.SMALL_MINING_DRILL.getSteamConsumption())
+                && this.getSteamTank().getSteam() >= steamMachine.getSteamConsumption())
         {
             BlockPos toCheck = this.lastPos;
 
@@ -112,7 +115,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
                 else
                     toCheck = new BlockPos(toCheck.getX() + 1, toCheck.getY(), toCheck.getZ());
                 this.tickBeforeHarvest = (int) Math.ceil(4 * (1 / (this.getSteamTank().getPressure()
-                        / QBarMachines.SMALL_MINING_DRILL.getMaxPressureCapacity())));
+                        / steamMachine.getMaxPressureCapacity())));
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
@@ -149,8 +152,8 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
             this.heat += 30 * (this.getSteamTank().getPressure() / 2);
 
             this.steamTank.drainSteam((int) Math.max(
-                    QBarMachines.SMALL_MINING_DRILL.getSteamConsumption() * this.getSteamTank().getPressure(),
-                    QBarMachines.SMALL_MINING_DRILL.getSteamConsumption()), true);
+                    steamMachine.getSteamConsumption() * this.getSteamTank().getPressure(),
+                    steamMachine.getSteamConsumption()), true);
             isDirty = true;
         }
         if (!this.isCompleted())

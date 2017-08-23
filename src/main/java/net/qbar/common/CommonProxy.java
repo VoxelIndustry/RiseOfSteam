@@ -15,6 +15,7 @@ import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -58,6 +59,8 @@ public class CommonProxy
         GameRegistry.registerWorldGenerator(QBarOreGenerator.instance(), 0);
 
         CompatManager.init(e);
+
+        QBarMachines.loadMachines();
     }
 
     public void postInit(final FMLPostInitializationEvent e)

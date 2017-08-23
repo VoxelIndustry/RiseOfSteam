@@ -15,7 +15,6 @@ import net.qbar.common.event.TickHandler;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblock;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.Multiblocks;
@@ -32,7 +31,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
     public TileSolarBoiler()
     {
-        super("solarboiler", 0, 3000, Fluid.BUCKET_VOLUME * 128, SteamUtil.AMBIANT_PRESSURE * 2,
+        super("solarboiler", 0, 3000, Fluid.BUCKET_VOLUME * 128, SteamUtil.BASE_PRESSURE * 2,
                 Fluid.BUCKET_VOLUME * 144);
 
         this.mirrors = new EnumMap<>(EnumFacing.class);

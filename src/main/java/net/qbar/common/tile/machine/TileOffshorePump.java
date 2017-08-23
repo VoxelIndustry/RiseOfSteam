@@ -13,6 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.SteamComponent;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.tile.QBarTileBase;
@@ -39,8 +41,8 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
         this.tank.setCanDrain(false);
         this.tank.setCanFill(false);
 
-        this.steamTank = new SteamTank(0, QBarMachines.OFFSHORE_PUMP.getSteamCapacity(),
-                QBarMachines.OFFSHORE_PUMP.getMaxPressureCapacity());
+        this.steamTank = new SteamTank(0, QBarMachines.OFFSHORE_PUMP.get(SteamComponent.class).getSteamCapacity(),
+                QBarMachines.OFFSHORE_PUMP.get(SteamComponent.class).getMaxPressureCapacity());
 
         this.facing = EnumFacing.NORTH;
     }

@@ -1,30 +1,32 @@
 package net.qbar.common.multiblock;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.qbar.common.machine.IMachineComponent;
+import net.qbar.common.machine.MachineDescriptor;
 
 import java.util.EnumMap;
 
-public class MultiblockDescriptorBase implements IMultiblockDescriptor
+public class MultiblockComponent implements IMachineComponent
 {
-    @Getter
-    private final String name;
-
     @Getter
     private final int width, height, length, offsetX, offsetY, offsetZ;
 
     private final EnumMap<EnumFacing, BlockPos>      CORE_OFFSET;
     private final EnumMap<EnumFacing, AxisAlignedBB> CACHED_AABB;
 
-    MultiblockDescriptorBase(final String name, final int width, final int height, final int length, final int offsetX,
-                             final int offsetY, final int offsetZ)
+    @Getter
+    @Setter
+    private MachineDescriptor descriptor;
+
+    public MultiblockComponent(int width, int height, int length, int offsetX, int offsetY, int offsetZ)
     {
-        this.name = name;
         this.width = width;
         this.height = height;
         this.length = length;
@@ -79,13 +81,11 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
         return this.CORE_OFFSET.get(facing);
     }
 
-    @Override
     public AxisAlignedBB getBox(final EnumFacing facing)
     {
         return this.CACHED_AABB.get(facing);
     }
 
-    @Override
     public Iterable<BlockPos> getAllInBox(BlockPos pos, final EnumFacing facing)
     {
         Iterable<BlockPos> searchables = null;
@@ -128,5 +128,10 @@ public class MultiblockDescriptorBase implements IMultiblockDescriptor
             }
         }
         return new MultiblockSide(resultPos, resultFacing);
+    }
+
+    public int getBlockCount()
+    {
+        return this.width * this.height * this.length;
     }
 }
