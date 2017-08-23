@@ -20,12 +20,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.QBar;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.BlueprintState;
-import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.util.ItemUtils;
 
 import java.util.ArrayList;
@@ -33,15 +33,15 @@ import java.util.List;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
-    private Blueprint           blueprint;
-    private MultiblockComponent multiblock;
-    private BlueprintState      blueprintState;
+    private Blueprint                 blueprint;
+    private MultiblockComponent       multiblock;
+    private BlueprintState            blueprintState;
 
     @Getter
     @Setter
-    private int meta;
+    private int                       meta;
 
-    private AxisAlignedBB cachedBB;
+    private AxisAlignedBB             cachedBB;
 
     public final VisibilityModelState state = new VisibilityModelState();
 
@@ -131,7 +131,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     {
         super.readFromNBT(tag);
 
-        this.blueprint = Blueprints.getInstance().getBlueprint(tag.getString("blueprint"));
+        this.blueprint = QBarMachines.getComponent(Blueprint.class, tag.getString("blueprint"));
         this.multiblock = this.blueprint.getDescriptor().get(MultiblockComponent.class);
         if (this.blueprint != null)
             this.blueprintState = new BlueprintState(this.blueprint, tag.getCompoundTag("blueprintState"));
@@ -196,24 +196,25 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         {
             if (BlockMultiblockBase.getFacing(this.meta).getAxis() == Axis.Z)
             {
-                this.cachedBB = new AxisAlignedBB(this.pos.add(-this.multiblock.getOffsetX(),
-                        -this.multiblock.getOffsetY(), -this.multiblock.getOffsetZ()),
-                        this.pos.add(this.multiblock.getWidth(),
-                                this.multiblock.getHeight(),
+                this.cachedBB = new AxisAlignedBB(
+                        this.pos.add(-this.multiblock.getOffsetX(), -this.multiblock.getOffsetY(),
+                                -this.multiblock.getOffsetZ()),
+                        this.pos.add(this.multiblock.getWidth(), this.multiblock.getHeight(),
                                 this.multiblock.getLength()));
             }
             else
-                this.cachedBB = new AxisAlignedBB(this.pos.add(-this.multiblock.getOffsetZ(),
-                        -this.multiblock.getOffsetY(), -this.multiblock.getOffsetX()),
-                        this.pos.add(this.multiblock.getLength(),
-                                this.multiblock.getHeight(), this.multiblock.getWidth()));
+                this.cachedBB = new AxisAlignedBB(
+                        this.pos.add(-this.multiblock.getOffsetZ(), -this.multiblock.getOffsetY(),
+                                -this.multiblock.getOffsetX()),
+                        this.pos.add(this.multiblock.getLength(), this.multiblock.getHeight(),
+                                this.multiblock.getWidth()));
         }
         if (this.cachedBB != null)
             return this.cachedBB;
         return super.getRenderBoundingBox();
     }
 
-    private int previousStep = -1;
+    private int             previousStep = -1;
     private List<BakedQuad> quadsCache;
 
     @SideOnly(Side.CLIENT)
@@ -221,7 +222,8 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     {
         if (this.quadsCache == null || this.previousStep != this.getBlueprintState().getCurrentStep())
         {
-            final IBlockState state = Block.getBlockFromName(QBar.MODID + ":" + this.getBlueprint().getDescriptor().getName())
+            final IBlockState state = Block
+                    .getBlockFromName(QBar.MODID + ":" + this.getBlueprint().getDescriptor().getName())
                     .getStateFromMeta(this.getMeta());
 
             final IBakedModel model = RenderStructure.blockRender.getModelForState(state);

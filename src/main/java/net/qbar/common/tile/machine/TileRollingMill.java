@@ -222,7 +222,7 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public AxisAlignedBB getRenderBoundingBox()
     {
-        return ((BlockMultiblockBase) this.getBlockType()).getDescriptor().getBox(this.getFacing()).offset(this.pos);
+        return ((BlockMultiblockBase) this.getBlockType()).getMultiblock().getBox(this.getFacing()).offset(this.pos);
     }
 
     public ItemStack getCachedStack()

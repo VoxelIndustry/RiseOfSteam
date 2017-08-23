@@ -9,14 +9,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblock;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileSolarBoiler;
 
 public class BlockSolarBoiler extends BlockMultiblockBase<TileSolarBoiler>
 {
     public BlockSolarBoiler()
     {
-        super("solar_boiler", Material.IRON, Multiblocks.SOLAR_BOILER, TileSolarBoiler.class);
+        super("solar_boiler", Material.IRON, TileSolarBoiler.class);
     }
 
     @Override

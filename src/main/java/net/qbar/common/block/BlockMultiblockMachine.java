@@ -14,10 +14,10 @@ public class BlockMultiblockMachine<T extends TileInventoryBase & ITileMultibloc
 {
     private Supplier<T> tileSupplier;
 
-    public BlockMultiblockMachine(String name, Material material, MultiblockComponent descriptor,
+    public BlockMultiblockMachine(String name, Material material,
                                   Supplier<T> tileSupplier, Class<T> tileClass)
     {
-        super(name, material, descriptor, tileClass);
+        super(name, material, tileClass);
 
         this.tileSupplier = tileSupplier;
     }

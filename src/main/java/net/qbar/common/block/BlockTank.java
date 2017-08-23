@@ -9,7 +9,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.tile.machine.TileTank;
 
 public class BlockTank extends BlockMultiblockBase<TileTank>
@@ -17,9 +16,9 @@ public class BlockTank extends BlockMultiblockBase<TileTank>
     private final int capacity;
     private final int tier;
 
-    public BlockTank(final String name, final MultiblockComponent descriptor, final int capacity, final int tier)
+    public BlockTank(final String name, final int capacity, final int tier)
     {
-        super(name, Material.IRON, descriptor, TileTank.class);
+        super(name, Material.IRON, TileTank.class);
 
         this.capacity = capacity;
         this.tier = tier;

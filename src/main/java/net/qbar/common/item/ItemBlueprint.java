@@ -16,12 +16,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.init.QBarBlocks;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.BlockStructure;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.multiblock.blueprint.Blueprint;
-import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.util.ItemUtils;
 
@@ -35,7 +35,7 @@ public class ItemBlueprint extends ItemBase
 
     @Override
     public EnumActionResult onItemUse(final EntityPlayer player, final World world, BlockPos pos, final EnumHand hand,
-                                      final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
+            final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
     {
         final IBlockState iblockstate = world.getBlockState(pos);
         final Block block = iblockstate.getBlock();
@@ -48,8 +48,8 @@ public class ItemBlueprint extends ItemBase
         if (!stack.isEmpty() && stack.hasTagCompound() && stack.getTagCompound().hasKey("blueprint"))
         {
             final String name = stack.getTagCompound().getString("blueprint");
-            final Blueprint blueprint = Blueprints.getInstance().getBlueprints()
-                    .get(stack.getTagCompound().getString("blueprint"));
+            final Blueprint blueprint = QBarMachines.getComponent(Blueprint.class,
+                    stack.getTagCompound().getString("blueprint"));
             final BlockMultiblockBase base = (BlockMultiblockBase) Block.getBlockFromName("qbar:" + name);
 
             if ((player.capabilities.isCreativeMode
@@ -62,7 +62,7 @@ public class ItemBlueprint extends ItemBase
                 final IBlockState state = base.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player,
                         hand);
 
-                if (this.placeBlockAt(stack, player, world, pos, state, base.getDescriptor()))
+                if (this.placeBlockAt(stack, player, world, pos, state, base.getMultiblock()))
                 {
                     final SoundType soundtype = world.getBlockState(pos).getBlock()
                             .getSoundType(world.getBlockState(pos), world, pos, player);
@@ -79,7 +79,7 @@ public class ItemBlueprint extends ItemBase
     }
 
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
-                                final IBlockState newState, final MultiblockComponent descriptor)
+            final IBlockState newState, final MultiblockComponent descriptor)
     {
         if (!world.setBlockState(pos, QBarBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
@@ -90,8 +90,8 @@ public class ItemBlueprint extends ItemBase
         final TileStructure structure = (TileStructure) world.getTileEntity(pos);
         if (structure != null)
         {
-            structure
-                    .setBlueprint(Blueprints.getInstance().getBlueprint(stack.getTagCompound().getString("blueprint")));
+            structure.setBlueprint(
+                    QBarMachines.getComponent(Blueprint.class, stack.getTagCompound().getString("blueprint")));
             structure.setMeta(newState.getBlock().getMetaFromState(newState));
         }
 
@@ -117,16 +117,15 @@ public class ItemBlueprint extends ItemBase
     {
         if (this.isInCreativeTab(tab))
         {
-            //TODO : Move to new unified data system
-         /*   Blueprints.getInstance().getBlueprints().forEach((name, blueprint) ->
+            QBarMachines.getAllByComponent(Blueprint.class).forEach(descriptor ->
             {
-                final ItemStack stack = new ItemStack(this);
-                final NBTTagCompound tag = new NBTTagCompound();
+                ItemStack stack = new ItemStack(this);
+                NBTTagCompound tag = new NBTTagCompound();
                 stack.setTagCompound(tag);
 
-                tag.setString("blueprint", name);
+                tag.setString("blueprint", descriptor.getName());
                 list.add(stack);
-            });*/
+            });
         }
     }
 

@@ -50,6 +50,8 @@ public class CommonProxy
         CompatManager.preInit(e);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(QBar.instance, new GuiHandler());
+
+        QBarMachines.loadMachines();
     }
 
     public void init(final FMLInitializationEvent e)
@@ -59,8 +61,6 @@ public class CommonProxy
         GameRegistry.registerWorldGenerator(QBarOreGenerator.instance(), 0);
 
         CompatManager.init(e);
-
-        QBarMachines.loadMachines();
     }
 
     public void postInit(final FMLPostInitializationEvent e)

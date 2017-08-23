@@ -80,7 +80,8 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
         }
         if (stack.startsWith("("))
         {
-            NonNullList<ItemStack> ores = OreDictionary.getOres(stack.substring(1, stack.length() - 1));
+            stack = stack.substring(1, stack.length() - 1);
+            NonNullList<ItemStack> ores = OreDictionary.getOres(stack);
             if (ores.isEmpty())
             {
                 QBar.logger.error("Unknown oredict entry detected while reading a blueprint step (" + stack + ")!");
