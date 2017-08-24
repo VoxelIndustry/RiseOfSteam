@@ -1,5 +1,7 @@
 package net.qbar.common.tile.machine;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,21 +18,21 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 {
     private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
 
-    private float currentHeat, maxHeat;
+    private float              currentHeat, maxHeat;
 
-    private ItemStack cachedStack;
+    private ItemStack          cachedStack;
 
     public TileSteamFurnaceMK2()
     {
@@ -127,14 +129,14 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.STEAM_FURNACE_MK2
+            MultiblockSide side = QBarMachines.FURNACE_MK2.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getPos().equals(BlockPos.ORIGIN) && side.getFacing() == EnumFacing.WEST)
                 return true;
         }
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.STEAM_FURNACE_MK2
+            MultiblockSide side = QBarMachines.FURNACE_MK2.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getPos().getX() == 1 && side.getPos().getY() == 1 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
@@ -149,14 +151,14 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     {
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.STEAM_FURNACE_MK2
+            MultiblockSide side = QBarMachines.FURNACE_MK2.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getPos().equals(BlockPos.ORIGIN) && side.getFacing() == EnumFacing.WEST)
                 return (T) this.getSteamTank();
         }
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
-            MultiblockSide side = Multiblocks.STEAM_FURNACE_MK2
+            MultiblockSide side = QBarMachines.FURNACE_MK2.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getPos().getX() == 1 && side.getPos().getY() == 1 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
@@ -182,7 +184,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

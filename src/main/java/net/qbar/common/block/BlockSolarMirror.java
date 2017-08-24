@@ -8,14 +8,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileSolarMirror;
 
 public class BlockSolarMirror extends BlockMultiblockBase<TileSolarMirror>
 {
     public BlockSolarMirror()
     {
-        super("solar_mirror", Material.GLASS, Multiblocks.SOLAR_MIRROR, TileSolarMirror.class);
+        super("solar_mirror", Material.GLASS, TileSolarMirror.class);
     }
 
     @Override

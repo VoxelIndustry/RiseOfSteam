@@ -1,7 +1,6 @@
 package net.qbar.common;
 
 import com.elytradev.concrete.network.NetworkContext;
-
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;
@@ -15,6 +14,7 @@ import net.qbar.common.gui.GuiHandler;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -49,6 +49,8 @@ public class CommonProxy
         CompatManager.preInit(e);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(QBar.instance, new GuiHandler());
+
+        QBarMachines.preLoadMachines();
     }
 
     public void init(final FMLInitializationEvent e)
@@ -58,6 +60,8 @@ public class CommonProxy
         GameRegistry.registerWorldGenerator(QBarOreGenerator.instance(), 0);
 
         CompatManager.init(e);
+
+        QBarMachines.loadMachines();
     }
 
     public void postInit(final FMLPostInitializationEvent e)

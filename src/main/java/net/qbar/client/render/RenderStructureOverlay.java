@@ -46,7 +46,7 @@ public class RenderStructureOverlay
                 GlStateManager.disableBlend();
 
                 final String name = I18n.translateToLocal(
-                        Block.getBlockFromName("qbar:" + structure.getBlueprint().getName()).getUnlocalizedName()
+                        Block.getBlockFromName("qbar:" + structure.getBlueprint().getDescriptor().getName()).getUnlocalizedName()
                                 + ".name");
                 Minecraft.getMinecraft().fontRenderer.drawString(name,
                         -Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2, 0, 16777215);

@@ -9,14 +9,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileLiquidBoiler;
 
 public class BlockLiquidBoiler extends BlockMultiblockBase<TileLiquidBoiler>
 {
     public BlockLiquidBoiler()
     {
-        super("liquidfuel_boiler", Material.IRON, Multiblocks.LIQUID_FUEL_BOILER, TileLiquidBoiler.class);
+        super("liquidfuel_boiler", Material.IRON, TileLiquidBoiler.class);
     }
 
     @Override

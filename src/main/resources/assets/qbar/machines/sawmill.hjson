@@ -1,0 +1,43 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 1
+            height: 2
+            length: 3
+            offsetZ: 1
+        }
+        blueprint: [
+            {
+                time: 10
+                item: 10xminecraft:iron_ingot
+            }
+            {
+                time: 10
+                item: 10x(plateBronze)
+            }
+            {
+                time: 10
+                items: [
+                    qbar:gearbox
+                    qbar:steampipe
+                    3xqbar:belt
+                ]
+            }
+        ]
+        crafter: {
+            category: qbar.sawmill
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 1
+        }
+    }
+}

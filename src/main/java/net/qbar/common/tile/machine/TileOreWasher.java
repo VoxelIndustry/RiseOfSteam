@@ -15,9 +15,10 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
@@ -128,8 +129,8 @@ public class TileOreWasher extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.ORE_WASHER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.ORE_WASHER.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getPos().getX() == -1
                 && side.getPos().getY() == 0 && side.getPos().getZ() == 0 && side.getFacing() == EnumFacing.WEST)
@@ -141,7 +142,7 @@ public class TileOreWasher extends TileCraftingMachineBase
         {
             return true;
         }
-        else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
+        else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
                 && side.getPos().getY() == 1 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.NORTH)
         {
             return true;
@@ -153,8 +154,8 @@ public class TileOreWasher extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.ORE_WASHER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.ORE_WASHER.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getPos().getX() == -1
                 && side.getPos().getY() == 0 && side.getPos().getZ() == 0 && side.getFacing() == EnumFacing.WEST)
@@ -166,7 +167,7 @@ public class TileOreWasher extends TileCraftingMachineBase
         {
             return (T) this.getInputTanks()[0];
         }
-        else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
+        else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
                 && side.getPos().getY() == 1 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.NORTH)
         {
             return (T) this.inventoryHandler;

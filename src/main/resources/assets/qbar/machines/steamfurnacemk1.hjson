@@ -1,0 +1,38 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 1
+            height: 1
+            length: 3
+            offsetZ: 1
+        }
+        blueprint: [
+            {
+                time: 20
+                item: 9xminecraft:brick_block
+            }
+            {
+                time: 15
+                items: [
+                    2xqbar:steampipe
+                    2xqbar:belt
+                ]
+            }
+        ]
+        crafter: {
+            category: qbar.furnace
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 1
+        }
+    }
+}

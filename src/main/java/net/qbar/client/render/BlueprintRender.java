@@ -21,8 +21,9 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.client.model.pipeline.VertexTransformer;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.qbar.common.multiblock.IMultiblockDescriptor;
-import net.qbar.common.multiblock.blueprint.Blueprints;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.multiblock.MultiblockComponent;
+import net.qbar.common.multiblock.blueprint.Blueprint;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -47,13 +48,13 @@ public class BlueprintRender implements IBakedModel
         @Nonnull
         @Override
         public IBakedModel handleItemState(final IBakedModel model, final ItemStack stack, final World world,
-                                           final EntityLivingBase entity)
+                final EntityLivingBase entity)
         {
             final IBakedModel multiblock = BlueprintRender.this.getModel(stack);
-            if (Blueprints.getInstance().getBlueprints().containsKey(stack.getTagCompound().getString("blueprint")))
+            if (QBarMachines.contains(Blueprint.class, stack.getTagCompound().getString("blueprint")))
             {
-                final IMultiblockDescriptor descriptor = Blueprints.getInstance()
-                        .getBlueprint(stack.getTagCompound().getString("blueprint")).getMultiblock();
+                final MultiblockComponent descriptor = QBarMachines.getComponent(MultiblockComponent.class,
+                        stack.getTagCompound().getString("blueprint"));
                 if (multiblock != null)
                     return BlueprintRender.this.getModel(multiblock, descriptor);
             }
@@ -120,7 +121,7 @@ public class BlueprintRender implements IBakedModel
 
     private final IdentityHashMap<IBakedModel, CompositeBakedModel> cache = new IdentityHashMap<>();
 
-    private CompositeBakedModel getModel(final IBakedModel multiblock, final IMultiblockDescriptor descriptor)
+    private CompositeBakedModel getModel(final IBakedModel multiblock, final MultiblockComponent descriptor)
     {
         CompositeBakedModel model = this.cache.get(multiblock);
         if (model == null)
@@ -166,12 +167,12 @@ public class BlueprintRender implements IBakedModel
     private static class CompositeBakedModel implements IBakedModel
     {
 
-        private final IBakedModel     blueprint;
-        private final List<BakedQuad> genQuads;
+        private final IBakedModel                      blueprint;
+        private final List<BakedQuad>                  genQuads;
         private final Map<EnumFacing, List<BakedQuad>> faceQuads = new EnumMap<>(EnumFacing.class);
 
         CompositeBakedModel(final IBakedModel multiblock, final IBakedModel blueprint,
-                            final IMultiblockDescriptor descriptor)
+                final MultiblockComponent descriptor)
         {
             this.blueprint = blueprint;
 

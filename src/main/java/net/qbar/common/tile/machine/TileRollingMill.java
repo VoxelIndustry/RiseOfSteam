@@ -1,5 +1,7 @@
 package net.qbar.common.tile.machine;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,18 +19,18 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class TileRollingMill extends TileCraftingMachineBase
 {
     private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-    private ItemStack cachedStack;
+    private ItemStack          cachedStack;
 
     public TileRollingMill()
     {
@@ -127,8 +129,8 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.ROLLING_MILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.ROLLING_MILL.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
@@ -151,8 +153,8 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = Multiblocks.ROLLING_MILL.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.ROLLING_MILL.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
@@ -191,7 +193,7 @@ public class TileRollingMill extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -221,7 +223,7 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public AxisAlignedBB getRenderBoundingBox()
     {
-        return ((BlockMultiblockBase) this.getBlockType()).getDescriptor().getBox(this.getFacing()).offset(this.pos);
+        return ((BlockMultiblockBase) this.getBlockType()).getMultiblock().getBox(this.getFacing()).offset(this.pos);
     }
 
     public ItemStack getCachedStack()

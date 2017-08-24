@@ -18,10 +18,11 @@ import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
@@ -30,18 +31,18 @@ import java.util.List;
 
 public class TileTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider, IConnectionAware
 {
-    private BlockPos inputPos;
+    private BlockPos                        inputPos;
 
-    private final DirectionalTank tank;
-    private       int             tier;
+    private final DirectionalTank           tank;
+    private int                             tier;
 
     private final ArrayList<MultiblockSide> connections;
 
     public TileTank(final int capacity, int tier)
     {
         super("fluidtank", 0);
-        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[]{EnumFacing.DOWN},
-                new EnumFacing[]{EnumFacing.UP});
+        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[] { EnumFacing.DOWN },
+                new EnumFacing[] { EnumFacing.UP });
         this.tier = tier;
         this.connections = new ArrayList<>();
     }
@@ -212,7 +213,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -248,15 +249,29 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
 
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
-        this.connections.add(Multiblocks.LIQUID_FUEL_BOILER.worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing()));
+        if (tier == 0)
+            this.connections.add(QBarMachines.SMALL_FLUID_TANK.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        else if (tier == 1)
+            this.connections.add(QBarMachines.MEDIUM_FLUID_TANK.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        else
+            this.connections.add(QBarMachines.BIG_FLUID_TANK.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
         this.updateState();
     }
 
     public void disconnectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
-        this.connections.remove(Multiblocks.LIQUID_FUEL_BOILER
-                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        if (tier == 0)
+            this.connections.remove(QBarMachines.SMALL_FLUID_TANK.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        else if (tier == 1)
+            this.connections.remove(QBarMachines.MEDIUM_FLUID_TANK.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        else
+            this.connections.remove(QBarMachines.BIG_FLUID_TANK.get(MultiblockComponent.class)
+                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
         this.updateState();
     }
 

@@ -85,7 +85,7 @@ public class ItemMultiblockBox extends ItemBase
         }));
 
         ItemUtils.saveAllItems(box.getTagCompound(), stacks);
-        box.getTagCompound().setString("blueprint", blueprint.getName());
+        box.getTagCompound().setString("blueprint", blueprint.getDescriptor().getName());
         return box;
     }
 }

@@ -15,9 +15,10 @@ import net.qbar.client.render.RenderStructureOverlay;
 import net.qbar.client.render.RenderUtil;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.item.ItemBlueprint;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.blueprint.Blueprint;
-import net.qbar.common.multiblock.blueprint.Blueprints;
 import net.qbar.common.util.ItemUtils;
 
 public class ClientEventManager
@@ -35,8 +36,8 @@ public class ClientEventManager
                         && e.getPlayer().getHeldItemMainhand().getTagCompound().hasKey("blueprint"))
                 {
                     final String name = e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint");
-                    final Blueprint blueprint = Blueprints.getInstance().getBlueprints()
-                            .get(e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint"));
+                    final Blueprint blueprint = QBarMachines.getComponent(Blueprint.class,
+                            e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint"));
                     final BlockMultiblockBase base = (BlockMultiblockBase) Block.getBlockFromName("qbar:" + name);
                     final World w = Minecraft.getMinecraft().world;
                     if (base != null)
@@ -66,7 +67,7 @@ public class ClientEventManager
                                 final double z = e.getPlayer().lastTickPosZ
                                         + (e.getPlayer().posZ - e.getPlayer().lastTickPosZ) * e.getPartialTicks();
                                 RenderGlobal.drawSelectionBoundingBox(
-                                        blueprint.getMultiblock()
+                                        blueprint.getDescriptor().get(MultiblockComponent.class)
                                                 .getBox(e.getPlayer().getHorizontalFacing().getOpposite()).offset(pos)
                                                 .grow(0.0020000000949949026D).offset(-x, -y, -z),
                                         0.0F, 0.0F, 0.0F, 0.4F);
@@ -87,14 +88,14 @@ public class ClientEventManager
                                 GlStateManager.scale(0.625f / 32, 0.625f / 32, 0.625f / 32);
                                 GlStateManager.disableLighting();
 
-                                Minecraft.getMinecraft().fontRenderer.drawString(
-                                        String.valueOf(blueprint.getRodAmount()),
-                                        -Minecraft.getMinecraft().fontRenderer
-                                                .getStringWidth(String.valueOf(blueprint.getRodAmount())) / 2,
-                                        0,
-                                        e.getPlayer().capabilities.isCreativeMode || ItemUtils.hasPlayerEnough(
-                                                e.getPlayer().inventory, blueprint.getRodStack(), false) ? 38400
-                                                : 9830400);
+                                Minecraft.getMinecraft().fontRenderer
+                                        .drawString(String.valueOf(blueprint.getRodAmount()),
+                                                -Minecraft.getMinecraft().fontRenderer
+                                                        .getStringWidth(String.valueOf(blueprint.getRodAmount())) / 2,
+                                                0,
+                                                e.getPlayer().capabilities.isCreativeMode || ItemUtils.hasPlayerEnough(
+                                                        e.getPlayer().inventory, blueprint.getRodStack(), false) ? 38400
+                                                                : 9830400);
 
                                 GlStateManager.enableLighting();
                                 GlStateManager.popMatrix();

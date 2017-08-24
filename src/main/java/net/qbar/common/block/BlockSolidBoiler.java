@@ -9,14 +9,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.Multiblocks;
 import net.qbar.common.tile.machine.TileSolidBoiler;
 
 public class BlockSolidBoiler extends BlockMultiblockBase<TileSolidBoiler>
 {
     public BlockSolidBoiler()
     {
-        super("solid_boiler", Material.IRON, Multiblocks.SOLID_BOILER, TileSolidBoiler.class);
+        super("solid_boiler", Material.IRON, TileSolidBoiler.class);
     }
 
     @Override

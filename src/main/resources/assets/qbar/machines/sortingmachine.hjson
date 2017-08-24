@@ -1,0 +1,41 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 1
+            height: 2
+            length: 2
+        }
+        blueprint: [
+            {
+                time: 15
+                item: 15xminecraft:iron_ingot
+            }
+            {
+                time: 20
+                item: 10x(plateBronze)
+            }
+            {
+                time: 10
+                items: [
+                    3xqbar:steampipe
+                    qbar:logicbox
+                ]
+            }
+        ]
+        crafter: {
+            category: qbar.sortingmachine
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 4
+        }
+    }
+}
