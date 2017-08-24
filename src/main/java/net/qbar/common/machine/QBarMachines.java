@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.qbar.QBar;
 import net.qbar.common.machine.typeadapter.MachineDescriptorTypeAdapter;
+import net.qbar.common.multiblock.blueprint.Blueprint;
 import org.apache.commons.io.IOUtils;
 import org.hjson.JsonValue;
 
@@ -44,7 +45,7 @@ public class QBarMachines
     private static Set<MachineDescriptor>                                              machines = new HashSet<>();
     private static HashMap<Class<? extends IMachineComponent>, Set<MachineDescriptor>> subLists = new HashMap<>();
 
-    private static final Gson GSON = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(MachineDescriptor.class, new MachineDescriptorTypeAdapter()).create();
     private static boolean preload;
 
@@ -67,6 +68,7 @@ public class QBarMachines
             machines.clear();
             subLists.clear();
         }
+
         SMALL_MINING_DRILL = loadMachine("smallminingdrill");
         OFFSHORE_PUMP = loadMachine("offshore_pump");
         SMALL_FLUID_TANK = loadMachine("fluidtank_small");
@@ -89,6 +91,9 @@ public class QBarMachines
         FURNACE_MK1 = loadMachine("steamfurnacemk1");
         FURNACE_MK2 = loadMachine("steamfurnacemk2");
         TINY_MINING_DRILL = loadMachine("tinyminingdrill");
+
+        if(!isPreloading())
+            getAllByComponent(Blueprint.class).forEach(new BlueprintLoader());
     }
 
     public static Set<MachineDescriptor> getAllByComponent(Class<? extends IMachineComponent> componentType)
@@ -119,6 +124,11 @@ public class QBarMachines
         return null;
     }
 
+    public static boolean isPreloading()
+    {
+        return preload;
+    }
+
     private static MachineDescriptor loadMachine(String name)
     {
         MachineDescriptor descriptor = null;
@@ -129,17 +139,12 @@ public class QBarMachines
             descriptor = GSON.fromJson(JsonValue.readHjson(IOUtils.toString(stream, StandardCharsets.UTF_8)).toString(),
                     MachineDescriptor.class);
             stream.close();
+            descriptor.setName(name);
+            machines.add(descriptor);
         } catch (IOException e)
         {
             e.printStackTrace();
         }
-        descriptor.setName(name);
-        machines.add(descriptor);
         return descriptor;
-    }
-
-    public static boolean isPreloading()
-    {
-        return preload;
     }
 }
