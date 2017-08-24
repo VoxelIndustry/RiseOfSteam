@@ -13,12 +13,11 @@ import net.qbar.QBar;
 import net.qbar.common.block.BlockMetal;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
-import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
-import net.qbar.common.recipe.type.RollingMillRecipe;
 import net.qbar.common.recipe.type.SludgeRecipe;
 import org.apache.commons.lang3.StringUtils;
 

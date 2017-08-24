@@ -8,11 +8,18 @@ import net.qbar.common.multiblock.MultiblockComponent;
 import java.io.IOException;
 
 public class MultiblockComponentTypeAdapter extends TypeAdapter<MultiblockComponent>
+        implements IMachineComponentTypeAdapter<MultiblockComponent>
 {
     @Override
     public void write(JsonWriter out, MultiblockComponent value) throws IOException
     {
 
+    }
+
+    @Override
+    public Class<MultiblockComponent> getComponentClass()
+    {
+        return MultiblockComponent.class;
     }
 
     @Override

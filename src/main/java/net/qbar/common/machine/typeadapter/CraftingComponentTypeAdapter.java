@@ -13,11 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
+        implements IMachineComponentTypeAdapter<CraftingComponent>
 {
     @Override
     public void write(JsonWriter out, CraftingComponent value) throws IOException
     {
 
+    }
+
+    @Override
+    public Class<CraftingComponent> getComponentClass()
+    {
+        return CraftingComponent.class;
     }
 
     @Override
@@ -97,6 +104,13 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
         else
             component.setInventorySize(component.getInputs().length +
                     component.getOutputs().length + component.getBuffers().length);
+
+        if (component.getInputTanks() == null)
+            component.setInputTanks(new int[0]);
+        if (component.getOutputTanks() == null)
+            component.setOutputTanks(new int[0]);
+        if (component.getBufferTanks() == null)
+            component.setBufferTanks(new int[0]);
         return component;
     }
 }

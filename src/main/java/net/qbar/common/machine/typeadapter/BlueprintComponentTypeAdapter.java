@@ -16,11 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
+        implements IMachineComponentTypeAdapter<Blueprint>
 {
     @Override
     public void write(JsonWriter out, Blueprint value) throws IOException
     {
 
+    }
+
+    @Override
+    public Class<Blueprint> getComponentClass()
+    {
+        return Blueprint.class;
     }
 
     @Override

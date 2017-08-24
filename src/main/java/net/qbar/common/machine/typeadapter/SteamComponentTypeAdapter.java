@@ -10,11 +10,18 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.io.IOException;
 
 public class SteamComponentTypeAdapter extends TypeAdapter<SteamComponent>
+        implements IMachineComponentTypeAdapter<SteamComponent>
 {
     @Override
     public void write(JsonWriter out, SteamComponent value) throws IOException
     {
 
+    }
+
+    @Override
+    public Class<SteamComponent> getComponentClass()
+    {
+        return SteamComponent.class;
     }
 
     @Override

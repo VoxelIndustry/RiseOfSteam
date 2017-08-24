@@ -5,15 +5,15 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.qbar.common.machine.EMachineTier;
 import net.qbar.common.machine.EMachineType;
-import net.qbar.common.machine.IMachineComponent;
 import net.qbar.common.machine.MachineDescriptor;
+import net.qbar.common.machine.QBarMachines;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 public class MachineDescriptorTypeAdapter extends TypeAdapter<MachineDescriptor>
 {
-    private HashMap<String, TypeAdapter<? extends IMachineComponent>> subTypeAdapters;
+    private HashMap<String, IMachineComponentTypeAdapter> subTypeAdapters;
 
     public MachineDescriptorTypeAdapter()
     {
@@ -51,7 +51,15 @@ public class MachineDescriptorTypeAdapter extends TypeAdapter<MachineDescriptor>
                     descriptor.setComponents(new HashMap<>());
                     in.beginObject();
                     while (in.hasNext())
-                        descriptor.component(this.subTypeAdapters.get(in.nextName()).read(in));
+                    {
+                        if (QBarMachines.isPreloading())
+                        {
+                            descriptor.getComponents().put(this.subTypeAdapters.get(in.nextName()).getComponentClass(), null);
+                            in.skipValue();
+                        }
+                        else
+                            descriptor.component(this.subTypeAdapters.get(in.nextName()).read(in));
+                    }
                     in.endObject();
                     break;
                 default:
