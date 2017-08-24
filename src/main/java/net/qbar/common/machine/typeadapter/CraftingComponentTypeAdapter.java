@@ -9,6 +9,8 @@ import net.qbar.common.recipe.QBarRecipeHandler;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
 {
@@ -53,11 +55,27 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
                     component.setOutputs(new int[in.nextInt()]);
                     break;
                 case "tankInput":
-                    component.setInputTanks(new int[in.nextInt()]);
-                    component.setBufferTanks(new int[component.getInputTanks().length]);
+                    in.beginArray();
+                    List<Integer> inputs = new ArrayList<>();
+                    while (in.hasNext())
+                        inputs.add(in.nextInt());
+                    in.endArray();
+
+                    component.setInputTanks(new int[inputs.size()]);
+                    for (int i = 0; i < inputs.size(); i++)
+                        component.getInputTanks()[i] = inputs.get(i);
+                    component.setBufferTanks(ArrayUtils.clone(component.getInputTanks()));
                     break;
                 case "tankOutput":
-                    component.setOutputTanks(new int[in.nextInt()]);
+                    in.beginArray();
+                    List<Integer> outputs = new ArrayList<>();
+                    while (in.hasNext())
+                        outputs.add(in.nextInt());
+                    in.endArray();
+
+                    component.setOutputTanks(new int[outputs.size()]);
+                    for (int i = 0; i < outputs.size(); i++)
+                        component.getOutputTanks()[i] = outputs.get(i);
                     break;
                 default:
                     break;
@@ -65,7 +83,15 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
         }
         in.endObject();
 
+        for (int i = 0; i < component.getInputs().length; i++)
+        {
+            component.getInputs()[i] = i;
+            component.getBuffers()[i] = i + component.getInputs().length + component.getOutputs().length;
+        }
+        for (int i = 0; i < component.getOutputs().length; i++)
+            component.getOutputs()[i] = i + component.getInputs().length;
         component.setIoUnion(ArrayUtils.addAll(component.getInputs(), component.getOutputs()));
+
         if (inventorySize != 0)
             component.setInventorySize(inventorySize);
         else
