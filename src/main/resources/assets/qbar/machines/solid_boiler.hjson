@@ -1,0 +1,24 @@
+{
+    tier: 1
+    type: ENERGY_PRODUCER
+    components: {
+        multiblock: {
+            width: 2
+            height: 3
+            length: 2
+        }
+        blueprint: [
+            {
+                time: 20
+                item: 10x(plateBrass)
+            }
+            {
+                time: 15
+                items: [
+                    4xqbar:steampipe
+                    2xqbar:fluidpipe
+                ]
+            }
+        ]
+    }
+}

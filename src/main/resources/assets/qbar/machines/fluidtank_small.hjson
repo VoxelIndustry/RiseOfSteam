@@ -1,0 +1,24 @@
+{
+    tier: 0
+    type: LOGISTIC
+    components: {
+        multiblock: {
+            width: 1
+            height: 4
+            length: 1
+        }
+        blueprint: [
+            {
+                time: 20
+                item: 20x(plateIron)
+            }
+            {
+                time: 15
+                items: [
+                    4xqbar:fluidpipe
+                    minecraft:glass_pane
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,11 @@
+{
+    tier: 1
+    type: UTILITY
+    components: {
+        multiblock: {
+            width: 2
+            height: 1
+            length: 1
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    tier: 1
+    type: ENERGY_PRODUCER
+    components: {
+        multiblock: {
+            width: 3
+            height: 2
+            length: 2
+            offsetX: 1
+        }
+        blueprint: [
+            {
+                time: 10
+                item: 6xminecraft:iron_ingot
+            }
+        ]
+    }
+}
