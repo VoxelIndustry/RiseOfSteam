@@ -17,24 +17,25 @@
         blueprint: [
             {
                 time: 15
-                items: [
-                    16x(plateIron)
-                    qbar:gearbox
-                    qbar:logicbox
-                ]
+                item: 15xminecraft:iron_ingot
+            }
+            {
+                time: 20
+                item: 10x(plateBronze)
             }
             {
                 time: 10
                 items: [
-                    10xqbar:steampipe
-                    qbar:belt
+                    3xqbar:steampipe
+                    qbar:logicbox
                 ]
             }
         ]
         crafter: {
+            category: qbar.sortingmachine
             speed: 1.0
             itemInput: 1
-            itemOutput: 1
+            itemOutput: 4
         }
     }
 }

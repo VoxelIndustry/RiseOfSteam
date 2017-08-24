@@ -1,0 +1,13 @@
+{
+    tier: 1
+    type: LOGISTIC
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 3
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+    }
+}

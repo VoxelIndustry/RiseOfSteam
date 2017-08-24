@@ -36,8 +36,6 @@
             speed: 1.0
             itemInput: 1
             itemOutput: 1
-            tankInput: 1
-            tankOutput: 1
         }
     }
 }

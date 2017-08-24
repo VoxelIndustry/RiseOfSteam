@@ -11,27 +11,25 @@
         }
         multiblock: {
             width: 1
-            height: 2
-            length: 2
+            height: 1
+            length: 3
+            offsetZ: 1
         }
         blueprint: [
             {
-                time: 15
-                items: [
-                    16x(plateIron)
-                    qbar:gearbox
-                    qbar:logicbox
-                ]
+                time: 20
+                item: 9xminecraft:brick_block
             }
             {
-                time: 10
+                time: 15
                 items: [
-                    10xqbar:steampipe
-                    qbar:belt
+                    2xqbar:steampipe
+                    2xqbar:belt
                 ]
             }
         ]
         crafter: {
+            category: qbar.furnace
             speed: 1.0
             itemInput: 1
             itemOutput: 1

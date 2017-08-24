@@ -12,26 +12,29 @@
         multiblock: {
             width: 1
             height: 2
-            length: 2
+            length: 3
+            offsetZ: 1
         }
         blueprint: [
             {
-                time: 15
-                items: [
-                    16x(plateIron)
-                    qbar:gearbox
-                    qbar:logicbox
-                ]
+                time: 10
+                item: 10xminecraft:iron_ingot
+            }
+            {
+                time: 10
+                item: 10x(plateBronze)
             }
             {
                 time: 10
                 items: [
-                    10xqbar:steampipe
-                    qbar:belt
+                    qbar:gearbox
+                    qbar:steampipe
+                    3xqbar:belt
                 ]
             }
         ]
         crafter: {
+            category: qbar.sawmill
             speed: 1.0
             itemInput: 1
             itemOutput: 1
