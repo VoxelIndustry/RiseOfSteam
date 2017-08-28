@@ -9,6 +9,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
@@ -43,7 +44,9 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return null;
+        return new ContainerBuilder("blueprintprinter", player).player(player.inventory)
+                .inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this).addInventory().create();
     }
 
     @Override

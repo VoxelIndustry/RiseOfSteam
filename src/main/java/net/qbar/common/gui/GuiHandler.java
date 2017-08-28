@@ -7,7 +7,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.*;
 import net.qbar.common.container.IContainerProvider;
-import net.qbar.common.tile.machine.TileEngineerStorage;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.*;
 import org.yggard.brokkgui.wrapper.BrokkGuiManager;
@@ -75,6 +74,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiSawMill(player, (TileSawMill) tile);
             case ENGINEERSTORAGE:
                 return new GuiEngineerStorage(player, (TileEngineerStorage) tile);
+            case BLUEPRINTPRINTER:
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
             default:
                 break;
         }
