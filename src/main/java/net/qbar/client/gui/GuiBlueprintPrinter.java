@@ -1,19 +1,24 @@
 package net.qbar.client.gui;
 
+import fr.ourten.teabeans.value.BaseProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.machine.EMachineType;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.tile.machine.TileBlueprintPrinter;
+import org.yggard.brokkgui.control.GuiToggleGroup;
+import org.yggard.brokkgui.element.GuiCheckbox;
+import org.yggard.brokkgui.element.GuiRadioButton;
 import org.yggard.brokkgui.paint.Background;
-import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
+import org.yggard.brokkgui.skin.GuiBehaviorSkinBase;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
@@ -31,7 +36,8 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
 
     private final TileBlueprintPrinter blueprintPrinter;
 
-    private final GuiAbsolutePane blueprintPane;
+    private final GuiAbsolutePane            blueprintPane;
+    private       BaseProperty<EMachineType> selectedType;
 
     public GuiBlueprintPrinter(final EntityPlayer player, final TileBlueprintPrinter blueprintPrinter)
     {
@@ -57,7 +63,29 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         this.blueprintPane.setHeight(83);
         body.addChild(this.blueprintPane, 0, 0);
 
+        this.initButtons();
         this.initBlueprints(blueprintPane);
+    }
+
+    private void initButtons()
+    {
+        this.selectedType = new BaseProperty<>(null, "machineTypeProperty");
+
+        GuiToggleGroup toggleGroup = new GuiToggleGroup();
+        toggleGroup.setAllowNothing(true);
+
+        int i = 0;
+        for (EMachineType type : EMachineType.values())
+        {
+            GuiRadioButton button = new GuiRadioButton();
+            button.setToggleGroup(toggleGroup);
+            button.setTextColor();
+
+            this.blueprintPane.addChild(button, 7 + 18 * i, 0);
+            i++;
+        }
+        toggleGroup.getSelectedButtonProperty().addListener(obs -> this.selectedType.setValue(
+                EMachineType.values()[toggleGroup.getButtonList().indexOf(toggleGroup.getSelectedButton())]));
     }
 
     private void initBlueprints(GuiAbsolutePane mainPane)
@@ -79,7 +107,8 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
             tierPane.setHeight(18 * (int) Math.ceil(tierElements / 9D));
 
             List<MachineDescriptor> collect = blueprintList.stream().filter(descriptor ->
-                    descriptor.getTier().ordinal() == currentTier).collect(Collectors.toList());
+                    descriptor.getTier().ordinal() == currentTier)
+                    .sorted(Comparator.comparing(MachineDescriptor::getType)).collect(Collectors.toList());
             for (int j = 0; j < collect.size(); j++)
             {
                 MachineDescriptor machineDescriptor = collect.get(j);
@@ -89,6 +118,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 itemStack.setHeight(18);
                 itemStack.setTooltip(true);
                 itemStack.setAlternateString("");
+                ((GuiBehaviorSkinBase) itemStack.getSkin()).setBackground(new Background(machineDescriptor.getType().getColor()));
 
                 tierPane.addChild(itemStack, 7 + 18 * (j % 9), 18 * (j / 9));
             }
