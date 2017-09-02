@@ -110,8 +110,7 @@ public class RenderStructureOverlay
             GlStateManager.translate(0.2, 0.15, -.02);
             GlStateManager.scale(0.625f / 48, 0.625f / 48, 0.625f / 48);
 
-            System.out.println(state.getStepStacks() + " " + state.getCurrentStacks().get(stack) + " "
-                    + state.getStepStacks().get(stack));
+
             String count = state.getCurrentStacks().get(stack).getCount() - 1 + "/"
                     + state.getStepStacks().get(stack).getCount();
             int color;

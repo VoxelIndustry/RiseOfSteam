@@ -153,7 +153,6 @@ public class ClientProxy extends CommonProxy
                     && Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty()
                     && container.getSlotUnderMouse().getStack().getItem() == QBarItems.MULTIBLOCK_BOX)
             {
-                System.out.println(container.getSlotUnderMouse().getStack());
                 new MultiblockBoxPacket(container.getSlotUnderMouse().slotNumber).sendToServer();
                 event.setCanceled(true);
             }
