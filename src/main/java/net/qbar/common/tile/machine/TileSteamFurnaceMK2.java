@@ -10,8 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -28,11 +26,9 @@ import net.qbar.common.tile.TileCraftingMachineBase;
 
 public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 {
-    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
+    private float     currentHeat, maxHeat;
 
-    private float              currentHeat, maxHeat;
-
-    private ItemStack          cachedStack;
+    private ItemStack cachedStack;
 
     public TileSteamFurnaceMK2()
     {
@@ -55,8 +51,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
         {
             if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), orientation))
             {
-                this.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false),
-                        orientation);
+                this.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), orientation);
                 this.sync();
             }
         }
@@ -162,7 +157,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
             if (side.getPos().getX() == 1 && side.getPos().getY() == 1 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
-                return (T) this.inventoryHandler;
+                return (T) this.getInventoryWrapper(facing);
         }
         return null;
     }

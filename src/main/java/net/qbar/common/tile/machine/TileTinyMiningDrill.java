@@ -33,7 +33,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 {
     @Getter
     @Setter
-    private float progress;
+    private float                   progress;
 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
@@ -53,7 +53,8 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
         {
             if (this.getProgress() < 1)
                 this.world.spawnParticle(EnumParticleTypes.BLOCK_DUST,
-                        this.getPos().getX() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F, this.getPos().getY(),
+                        this.getPos().getX() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F,
+                        this.getPos().getY(),
                         this.getPos().getZ() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F,
                         (this.world.rand.nextFloat() / 4.0F) - 0.125F, 0.25D,
                         (this.world.rand.nextFloat() / 4.0F) - 0.125F,
@@ -176,7 +177,8 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     @Override
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN && from.getY() == 1)
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN
+                && from.getY() == 1)
             return true;
         return super.hasCapability(capability, facing);
     }
@@ -185,8 +187,9 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     @Override
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN && from.getY() == 1)
-            return (T) this.inventoryHandler;
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN
+                && from.getY() == 1)
+            return (T) this.getInventoryWrapper(facing);
         return super.getCapability(capability, facing);
     }
 
@@ -199,7 +202,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -214,13 +217,13 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
-        return new int[]{0, 1};
+        return new int[] { 0, 1 };
     }
 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
     {
-        if (index == 1) //TODO: Add steam item capability check
+        if (index == 1) // TODO: Add steam item capability check
             return true;
         return false;
     }

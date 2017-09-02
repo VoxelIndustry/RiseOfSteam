@@ -7,8 +7,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -26,8 +24,6 @@ import net.qbar.common.util.FluidUtils;
 
 public class TileOreWasher extends TileCraftingMachineBase
 {
-    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-
     public TileOreWasher()
     {
         super(QBarMachines.ORE_WASHER);
@@ -56,7 +52,7 @@ public class TileOreWasher extends TileCraftingMachineBase
 
             if (belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
             {
-                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), true);
+                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), true);
                 this.sync();
             }
         }
@@ -67,8 +63,8 @@ public class TileOreWasher extends TileCraftingMachineBase
 
             if (trashBelt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
             {
-                trashBelt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[1], 1, false),
-                        true);
+                trashBelt.insert(this.getInventoryWrapper(EnumFacing.DOWN)
+                        .extractItem(this.getDescriptor().getOutputs()[1], 1, false), true);
                 this.sync();
             }
         }
@@ -170,7 +166,7 @@ public class TileOreWasher extends TileCraftingMachineBase
         else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getPos().getX() == 0
                 && side.getPos().getY() == 1 && side.getPos().getZ() == -1 && side.getFacing() == EnumFacing.NORTH)
         {
-            return (T) this.inventoryHandler;
+            return (T) this.getInventoryWrapper(facing);
         }
         return null;
     }

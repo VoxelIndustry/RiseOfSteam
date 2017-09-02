@@ -76,7 +76,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) this.inventoryHandler;
+            return (T) this.getInventoryWrapper(facing);
         return null;
     }
 

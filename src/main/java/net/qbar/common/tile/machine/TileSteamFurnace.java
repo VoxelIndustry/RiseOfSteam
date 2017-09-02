@@ -1,5 +1,7 @@
 package net.qbar.common.tile.machine;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -7,8 +9,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -20,12 +20,9 @@ import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class TileSteamFurnace extends TileCraftingMachineBase
 {
-    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-
     public TileSteamFurnace()
     {
         super(QBarMachines.FURNACE_MK1);
@@ -44,8 +41,7 @@ public class TileSteamFurnace extends TileCraftingMachineBase
         {
             if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), orientation))
             {
-                this.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false),
-                        orientation);
+                this.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), orientation);
                 this.sync();
             }
         }
@@ -96,7 +92,7 @@ public class TileSteamFurnace extends TileCraftingMachineBase
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
                 && facing.getAxis() == orientation.getAxis())
         {
-            return (T) this.inventoryHandler;
+            return (T) this.getInventoryWrapper(facing);
         }
         return null;
     }
@@ -116,7 +112,7 @@ public class TileSteamFurnace extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

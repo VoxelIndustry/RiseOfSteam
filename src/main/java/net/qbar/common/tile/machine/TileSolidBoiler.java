@@ -10,6 +10,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -77,7 +78,7 @@ public class TileSolidBoiler extends TileBoilerBase
                 else if (this.heat < this.getMinimumTemp())
                     this.heat = this.getMinimumTemp();
             }
-            //this.sync();
+            // this.sync();
         }
     }
 
@@ -135,8 +136,8 @@ public class TileSolidBoiler extends TileBoilerBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class).worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
@@ -150,14 +151,16 @@ public class TileSolidBoiler extends TileBoilerBase
                     && side.getPos().getZ() == 0)
                 return true;
         }
+        else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return true;
         return false;
     }
 
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class).worldSideToMultiblockSide(new MultiblockSide(from, facing),
-                this.getFacing());
+        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class)
+                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
@@ -171,12 +174,14 @@ public class TileSolidBoiler extends TileBoilerBase
                     && side.getPos().getZ() == 0)
                 return (T) this.getWaterTank();
         }
+        else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) this.getInventoryWrapper(facing);
         return null;
     }
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -204,7 +209,7 @@ public class TileSolidBoiler extends TileBoilerBase
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
-        return new int[]{0};
+        return new int[] { 0 };
     }
 
     @Override

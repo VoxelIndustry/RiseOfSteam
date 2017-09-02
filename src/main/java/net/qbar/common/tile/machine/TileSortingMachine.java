@@ -7,8 +7,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -26,8 +24,6 @@ import net.qbar.common.tile.TileCraftingMachineBase;
 
 public class TileSortingMachine extends TileCraftingMachineBase
 {
-    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-
     public TileSortingMachine()
     {
         super(QBarMachines.SORTING_MACHINE);
@@ -57,25 +53,28 @@ public class TileSortingMachine extends TileCraftingMachineBase
             if (!this.getStackInSlot(this.getDescriptor().getOutputs()[0]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
             {
-                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), true);
+                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), true);
                 this.sync();
             }
             else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[1]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
             {
-                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[1], 1, false), true);
+                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(this.getDescriptor().getOutputs()[1],
+                        1, false), true);
                 this.sync();
             }
             else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[2]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[2]), false))
             {
-                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[2], 1, false), true);
+                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(this.getDescriptor().getOutputs()[2],
+                        1, false), true);
                 this.sync();
             }
             else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[3]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[3]), false))
             {
-                belt.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[3], 1, false), true);
+                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(this.getDescriptor().getOutputs()[3],
+                        1, false), true);
                 this.sync();
             }
         }
@@ -129,7 +128,7 @@ public class TileSortingMachine extends TileCraftingMachineBase
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.NORTH
                 && side.getPos().getX() == 0 && side.getPos().getY() == 1 && side.getPos().getZ() == 0)
         {
-            return (T) this.inventoryHandler;
+            return (T) this.getInventoryWrapper(facing);
         }
         else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
                 && side.getPos().getX() == 0 && side.getPos().getY() == 0 && side.getPos().getZ() == 1)

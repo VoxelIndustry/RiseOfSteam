@@ -322,7 +322,7 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
                 return (T) this.steamTank;
         }
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
-            return (T) this.inventoryHandler;
+            return (T) this.getInventoryWrapper(facing);
         return super.getCapability(capability, facing);
     }
 

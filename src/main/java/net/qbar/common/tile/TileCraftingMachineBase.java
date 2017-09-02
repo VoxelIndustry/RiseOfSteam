@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.machine.CraftingComponent;
@@ -25,27 +26,30 @@ import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.ItemUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class TileCraftingMachineBase extends TileInventoryBase
         implements ITileMultiblockCore, ITickable, ISidedInventory, IContainerProvider
 {
-    private final MachineDescriptor descriptor;
-    private final CraftingComponent crafter;
-    private final SteamComponent steamMachine;
+    private final MachineDescriptor                    descriptor;
+    private final CraftingComponent                    crafter;
+    private final SteamComponent                       steamMachine;
 
     @Getter
     @Setter
-    private float      currentProgress;
+    private float                                      currentProgress;
     @Getter
     @Setter
-    private float      maxProgress;
-    private QBarRecipe currentRecipe;
+    private float                                      maxProgress;
+    private QBarRecipe                                 currentRecipe;
 
-    private final SteamTank steamTank;
+    private final SteamTank                            steamTank;
 
-    private final FluidTank[] inputTanks, outputTanks, bufferTanks;
+    private final FluidTank[]                          inputTanks, outputTanks, bufferTanks;
+
+    private final EnumMap<EnumFacing, SidedInvWrapper> inventoryWrapperCache;
 
     public TileCraftingMachineBase(final MachineDescriptor descriptor)
     {
@@ -54,6 +58,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         this.descriptor = descriptor;
         this.crafter = descriptor.get(CraftingComponent.class);
         this.steamMachine = descriptor.get(SteamComponent.class);
+        this.inventoryWrapperCache = new EnumMap<>(EnumFacing.class);
 
         this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(), steamMachine.getMaxPressureCapacity());
 
@@ -113,8 +118,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                     for (int i = 0; i < this.crafter.getInputTanks().length; i++)
                         ingredients[this.crafter.getInputTanks().length + i] = this.getInputFluidStack(i);
                     for (int i = 0; i < this.getCustomData().length; i++)
-                        ingredients[this.crafter.getInputs().length + this.crafter.getInputTanks().length
-                                + i] = this.getCustomData()[i];
+                        ingredients[this.crafter.getInputs().length + this.crafter.getInputTanks().length + i] = this
+                                .getCustomData()[i];
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.crafter.getRecipeCategory(),
                             ingredients);
@@ -153,8 +158,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                     for (int i = 0; i < this.crafter.getBufferTanks().length; i++)
                         ingredients[this.crafter.getBufferTanks().length + i] = this.getBufferFluidStack(i);
                     for (int i = 0; i < this.getCustomData().length; i++)
-                        ingredients[this.crafter.getBuffers().length + this.crafter.getBufferTanks().length
-                                + i] = this.getCustomData()[i];
+                        ingredients[this.crafter.getBuffers().length + this.crafter.getBufferTanks().length + i] = this
+                                .getCustomData()[i];
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.crafter.getRecipeCategory(),
                             ingredients);
@@ -325,6 +330,13 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         }
     }
 
+    protected SidedInvWrapper getInventoryWrapper(EnumFacing side)
+    {
+        if (!this.inventoryWrapperCache.containsKey(side))
+            this.inventoryWrapperCache.put(side, new SidedInvWrapper(this, side));
+        return this.inventoryWrapperCache.get(side);
+    }
+
     @Override
     public void breakCore()
     {
@@ -340,7 +352,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     @Override
     public boolean isItemValidForSlot(final int index, final ItemStack stack)
     {
-        return QBarRecipeHandler.inputMatchWithoutCount(this.crafter.getRecipeCategory(), index, stack);
+        return index < this.crafter.getInputs().length
+                && QBarRecipeHandler.inputMatchWithoutCount(this.crafter.getRecipeCategory(), index, stack);
     }
 
     @Override

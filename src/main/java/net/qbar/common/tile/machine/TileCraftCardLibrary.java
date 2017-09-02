@@ -73,13 +73,13 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) this.inventoryHandler;
+            return (T) this.getInventoryWrapper(facing);
         return null;
     }
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+            final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;

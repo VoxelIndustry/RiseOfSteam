@@ -11,8 +11,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.QBar;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
@@ -29,8 +27,7 @@ import net.qbar.common.tile.TileCraftingMachineBase;
 
 public class TileRollingMill extends TileCraftingMachineBase
 {
-    private final IItemHandler inventoryHandler = new SidedInvWrapper(this, EnumFacing.NORTH);
-    private ItemStack          cachedStack;
+    private ItemStack cachedStack;
 
     public TileRollingMill()
     {
@@ -54,7 +51,7 @@ public class TileRollingMill extends TileCraftingMachineBase
 
         final EnumFacing orientation = this.getFacing();
 
-        BlockPos search = null;
+        BlockPos search;
         switch (orientation)
         {
             case NORTH:
@@ -77,7 +74,7 @@ public class TileRollingMill extends TileCraftingMachineBase
         {
             if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), search))
             {
-                this.insert(this.inventoryHandler.extractItem(this.getDescriptor().getOutputs()[0], 1, false), search);
+                this.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), search);
                 this.sync();
             }
         }
@@ -160,9 +157,9 @@ public class TileRollingMill extends TileCraftingMachineBase
         {
             if (side.getFacing() == EnumFacing.SOUTH && side.getPos().getX() == 0 && side.getPos().getY() == 1
                     && side.getPos().getZ() == 1)
-                return (T) this.inventoryHandler;
+                return (T) this.getInventoryWrapper(facing);
             else if (side.getFacing() == EnumFacing.NORTH && side.getPos().equals(BlockPos.ORIGIN))
-                return (T) this.inventoryHandler;
+                return (T) this.getInventoryWrapper(facing);
         }
         else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
         {
