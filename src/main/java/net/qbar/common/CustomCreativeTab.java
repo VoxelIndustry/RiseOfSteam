@@ -1,8 +1,8 @@
 package net.qbar.common;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.qbar.common.init.QBarBlocks;
 
 public class CustomCreativeTab extends CreativeTabs
 {
@@ -14,6 +14,6 @@ public class CustomCreativeTab extends CreativeTabs
     @Override
     public ItemStack getTabIconItem()
     {
-        return new ItemStack(Blocks.PISTON, 1, 0);
+        return new ItemStack(QBarBlocks.BELT);
     }
 }
