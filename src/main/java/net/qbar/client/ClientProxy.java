@@ -149,7 +149,8 @@ public class ClientProxy extends CommonProxy
         if (event.getGui() instanceof GuiContainer && Mouse.isButtonDown(1))
         {
             GuiContainer container = (GuiContainer) event.getGui();
-            if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty()
+            if (container.getSlotUnderMouse() != null
+                    && Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty()
                     && container.getSlotUnderMouse().getStack().getItem() == QBarItems.MULTIBLOCK_BOX)
             {
                 System.out.println(container.getSlotUnderMouse().getStack());
