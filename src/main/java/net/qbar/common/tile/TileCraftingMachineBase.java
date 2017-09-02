@@ -314,13 +314,15 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     @Override
     public int[] getSlotsForFace(final EnumFacing side)
     {
-        if (side != EnumFacing.DOWN)
+        switch(side)
         {
-            if (side == EnumFacing.UP)
+            case DOWN:
+                return this.crafter.getOutputs();
+            case UP:
                 return this.crafter.getInputs();
-            return this.crafter.getIoUnion();
+            default:
+                return this.crafter.getIoUnion();
         }
-        return this.crafter.getOutputs();
     }
 
     @Override
