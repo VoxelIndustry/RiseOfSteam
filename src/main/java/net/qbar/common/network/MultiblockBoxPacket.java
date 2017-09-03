@@ -37,7 +37,7 @@ public class MultiblockBoxPacket extends Message
     {
         if (sender.inventoryContainer != null)
         {
-            ItemStack stack = sender.inventoryContainer.getSlot(slotID).getStack();
+            ItemStack stack = sender.openContainer.getSlot(slotID).getStack();
 
             if (stack.getItem() == QBarItems.MULTIBLOCK_BOX && stack.hasTagCompound())
             {
