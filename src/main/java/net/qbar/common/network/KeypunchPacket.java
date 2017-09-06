@@ -4,6 +4,7 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,18 +24,18 @@ public class KeypunchPacket extends Message
     private EKeypunchPacketType type;
 
     @MarshalledAs("u8")
-    private int currentTab;
+    private int                 currentTab;
 
     @MarshalledAs("u8")
-    private int slot;
+    private int                 slot;
 
     @MarshalledAs("stack")
-    private ItemStack stack;
+    private ItemStack           stack;
 
     @MarshalledAs("blockpos")
-    private BlockPos pos;
+    private BlockPos            pos;
     @MarshalledAs("i32")
-    private int      dimensionID;
+    private int                 dimensionID;
 
     public KeypunchPacket(final NetworkContext ctx)
     {
@@ -83,6 +84,7 @@ public class KeypunchPacket extends Message
     protected void handle(final EntityPlayer sender)
     {
         if (sender.getEntityWorld().provider.getDimension() == this.dimensionID
+                && sender.getEntityWorld().isBlockLoaded(this.pos)
                 && sender.getEntityWorld().getTileEntity(this.pos) != null
                 && sender.getEntityWorld().getTileEntity(this.pos) instanceof TileKeypunch)
         {

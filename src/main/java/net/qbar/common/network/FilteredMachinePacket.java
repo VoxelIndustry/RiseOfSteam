@@ -4,6 +4,7 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -19,9 +20,9 @@ public class FilteredMachinePacket extends Message
     private boolean    whitelist;
 
     @MarshalledAs("blockpos")
-    private BlockPos pos;
+    private BlockPos   pos;
     @MarshalledAs("i32")
-    private int      dimensionID;
+    private int        dimensionID;
 
     public FilteredMachinePacket(final NetworkContext ctx)
     {
@@ -42,6 +43,7 @@ public class FilteredMachinePacket extends Message
     protected void handle(final EntityPlayer sender)
     {
         if (sender.getEntityWorld().provider.getDimension() == this.dimensionID
+                && sender.getEntityWorld().isBlockLoaded(this.pos)
                 && sender.getEntityWorld().getTileEntity(this.pos) != null
                 && sender.getEntityWorld().getTileEntity(this.pos) instanceof IFilteredMachine)
         {

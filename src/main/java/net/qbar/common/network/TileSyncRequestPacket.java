@@ -4,6 +4,7 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +44,7 @@ public class TileSyncRequestPacket extends Message
     {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
         if (sender.getEntityWorld().provider.getDimension() == this.dimensionId
-                && sender.getEntityWorld().getTileEntity(pos) != null
+                && sender.getEntityWorld().isBlockLoaded(pos) && sender.getEntityWorld().getTileEntity(pos) != null
                 && sender.getEntityWorld().getTileEntity(pos) instanceof QBarTileBase)
             NetworkHandler.sendTileToPlayer((QBarTileBase) sender.getEntityWorld().getTileEntity(pos),
                     (EntityPlayerMP) sender);
