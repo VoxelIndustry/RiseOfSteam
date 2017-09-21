@@ -16,7 +16,6 @@ import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.element.GuiLabel;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Color;
-import org.yggard.brokkgui.paint.GuiPaint;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
@@ -41,9 +40,6 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
     private final List<GuiAbsolutePane> filterPane;
     private final List<GuiButton>       whitelist;
 
-    private final GuiPaint whitelistBackground, whitelistHoveredBackground, blacklistBackground,
-            blacklistHoveredBackground;
-
     public GuiSplitter(final EntityPlayer player, final TileSplitter splitter)
     {
         super(splitter.createContainer(player));
@@ -52,6 +48,7 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
+        this.addStylesheet("/assets/qbar/css/splitter.css");
         this.splitter = splitter;
 
         final GuiRelativePane mainPanel = new GuiRelativePane();
@@ -86,47 +83,34 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         ((ListenerSlot) this.getContainer().getSlot(37)).setOnChange(stack -> this.refreshSlots(stack, 1));
         ((ListenerSlot) this.getContainer().getSlot(38)).setOnChange(stack -> this.refreshSlots(stack, 2));
 
-        this.whitelistBackground = Color.fromHex("#FAFAFA");
-        this.whitelistHoveredBackground = Color.fromHex("#F5F5F5");
-
-        this.blacklistBackground = Color.fromHex("#424242");
-        this.blacklistHoveredBackground = Color.fromHex("#616161");
-
         this.whitelist = new ArrayList<>();
 
         final GuiButton whitelist1 = new GuiButton("WHITELIST");
-        this.splitter.getWhitelistProperty().addListener((obs) -> this.refreshWhitelists());
+        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         whitelist1.setOnActionEvent(e -> new FilteredMachinePacket(splitter, this.splitter.getFacing().rotateY(),
                 !this.splitter.getWhitelistProperty().get(0)).sendToServer());
-        ((GuiButtonSkin) whitelist1.getSkin()).setBackground(new Background((Color) this.whitelistBackground));
-        ((GuiButtonSkin) whitelist1.getSkin())
-                .setHoveredBackground(new Background((Color) this.whitelistHoveredBackground));
         whitelist1.setWidth(55);
         whitelist1.setHeight(15);
         this.whitelist.add(whitelist1);
 
         final GuiButton whitelist2 = new GuiButton("WHITELIST");
-        this.splitter.getWhitelistProperty().addListener((obs) -> this.refreshWhitelists());
+        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         whitelist2.setOnActionEvent(e -> new FilteredMachinePacket(splitter, this.splitter.getFacing().getOpposite(),
                 !this.splitter.getWhitelistProperty().get(1)).sendToServer());
-        ((GuiButtonSkin) whitelist2.getSkin()).setBackground(new Background((Color) this.whitelistBackground));
-        ((GuiButtonSkin) whitelist2.getSkin())
-                .setHoveredBackground(new Background((Color) this.whitelistHoveredBackground));
         whitelist2.setWidth(55);
         whitelist2.setHeight(15);
         this.whitelist.add(whitelist2);
 
         final GuiButton whitelist3 = new GuiButton("WHITELIST");
-        this.splitter.getWhitelistProperty().addListener((obs) -> this.refreshWhitelists());
+        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         whitelist3.setOnActionEvent(
                 e -> new FilteredMachinePacket(splitter, this.splitter.getFacing().rotateY().getOpposite(),
                         !this.splitter.getWhitelistProperty().get(2)).sendToServer());
-        ((GuiButtonSkin) whitelist3.getSkin()).setBackground(new Background((Color) this.whitelistBackground));
-        ((GuiButtonSkin) whitelist3.getSkin())
-                .setHoveredBackground(new Background((Color) this.whitelistHoveredBackground));
         whitelist3.setWidth(55);
         whitelist3.setHeight(15);
         this.whitelist.add(whitelist3);
+
+        this.refreshWhitelists();
     }
 
     private void refreshSlots(final ItemStack stack, final int filter)
@@ -156,21 +140,17 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
     {
         for (int i = 0; i < 3; i++)
         {
-            this.whitelist.get(i).setText(this.splitter.getWhitelistProperty().get(i) ? "WHITELIST" : "BLACKLIST");
-
             if (this.splitter.getWhitelistProperty().get(i))
             {
-                ((GuiButtonSkin) this.whitelist.get(i).getSkin()).getBackground().setFill(this.whitelistBackground);
-                ((GuiButtonSkin) this.whitelist.get(i).getSkin()).getHoveredBackground()
-                        .setFill(this.whitelistHoveredBackground);
-                this.whitelist.get(i).setTextColor(Color.fromHex("#000000", 0.87f));
+                this.whitelist.get(i).setText("WHITELIST");
+                this.whitelist.get(i).getStyleClass().remove("blacklist");
+                this.whitelist.get(i).getStyleClass().add("whitelist");
             }
             else
             {
-                ((GuiButtonSkin) this.whitelist.get(i).getSkin()).getBackground().setFill(this.blacklistBackground);
-                ((GuiButtonSkin) this.whitelist.get(i).getSkin()).getHoveredBackground()
-                        .setFill(this.blacklistHoveredBackground);
-                this.whitelist.get(i).setTextColor(Color.fromHex("#ffffff", 0.87f));
+                this.whitelist.get(i).setText("BLACKLIST");
+                this.whitelist.get(i).getStyleClass().remove("whitelist");
+                this.whitelist.get(i).getStyleClass().add("blacklist");
             }
         }
     }
