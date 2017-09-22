@@ -33,6 +33,7 @@ public class CommonProxy
         QBar.network.register(PipeUpdatePacket.class);
         QBar.network.register(WrenchPacket.class);
         QBar.network.register(MultiblockBoxPacket.class);
+        QBar.network.register(BlueprintPrinterPacket.class);
 
         CapabilitySteamHandler.register();
 

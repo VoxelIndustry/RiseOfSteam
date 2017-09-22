@@ -10,6 +10,7 @@ import net.qbar.common.machine.EMachineType;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.blueprint.Blueprint;
+import net.qbar.common.network.BlueprintPrinterPacket;
 import net.qbar.common.tile.machine.TileBlueprintPrinter;
 import org.yggard.brokkgui.control.GuiToggleGroup;
 import org.yggard.brokkgui.element.GuiRadioButton;
@@ -28,16 +29,16 @@ import java.util.stream.Collectors;
 
 public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int           xSize      = 176, ySize = 166;
+    private static final int xSize = 176, ySize = 166;
 
-    private static final Texture       BACKGROUND = new Texture(QBar.MODID + ":textures/gui/blueprintprinter.png", 0, 0,
+    private static final Texture BACKGROUND = new Texture(QBar.MODID + ":textures/gui/blueprintprinter.png", 0, 0,
             xSize / 256.0f, ySize / 256.0f);
 
     private final TileBlueprintPrinter blueprintPrinter;
 
-    private final GuiAbsolutePane      blueprintPane;
-    private final GuiAbsolutePane      buttonPane;
-    private BaseProperty<EMachineType> selectedType;
+    private final GuiAbsolutePane            blueprintPane;
+    private final GuiAbsolutePane            buttonPane;
+    private       BaseProperty<EMachineType> selectedType;
 
     public GuiBlueprintPrinter(final EntityPlayer player, final TileBlueprintPrinter blueprintPrinter)
     {
@@ -113,7 +114,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
             tierPane.setWidth(176);
             tierPane.setHeight(18 * (int) Math.ceil(tierElements / 9D));
 
-            List<MachineDescriptor> collect = null;
+            List<MachineDescriptor> collect;
             if (this.selectedType.getValue() == null)
                 collect = blueprintList.stream().filter(descriptor -> descriptor.getTier().ordinal() == currentTier)
                         .sorted(Comparator.comparing(MachineDescriptor::getType)).collect(Collectors.toList());
@@ -131,6 +132,8 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 itemStack.setAlternateString("");
                 ((GuiBehaviorSkinBase) itemStack.getSkin())
                         .setBackground(new Background(machineDescriptor.getType().getColor()));
+                itemStack.setOnClickEvent(e ->
+                        new BlueprintPrinterPacket(this.blueprintPrinter, machineDescriptor.getName()).sendToServer());
 
                 tierPane.addChild(itemStack, 7 + 18 * (j % 9), 18 * (j / 9));
             }
