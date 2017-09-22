@@ -76,6 +76,8 @@ public class GuiHandler implements IGuiHandler
                 return new GuiEngineerStorage(player, (TileEngineerStorage) tile);
             case BLUEPRINTPRINTER:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
+            case CRAFTCARDLIBRARY:
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiCraftCardLibrary(player, (TileCraftCardLibrary) tile));
             default:
                 break;
         }

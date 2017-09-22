@@ -29,6 +29,19 @@ public class ContainerTileInventoryBuilder
         this.rangeStart = parent.slots.size();
     }
 
+    public ContainerTileInventoryBuilder filterSlotLine(int indexStart, int x, int y, int quantity,
+                                                        EnumFacing.Axis axis, Predicate<ItemStack> filter)
+    {
+        for (int i = 0; i < quantity; i++)
+        {
+            if (axis.isHorizontal())
+                this.filterSlot(indexStart + i, x + (i * 18), y, filter);
+            else
+                this.filterSlot(indexStart + i, x, y + (i * 18), filter);
+        }
+        return this;
+    }
+
     public ContainerTileInventoryBuilder slotLine(int indexStart, int x, int y, int quantity, EnumFacing.Axis axis)
     {
         for (int i = 0; i < quantity; i++)
@@ -54,7 +67,7 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
-            final int x, final int y)
+                                                    final int x, final int y)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
                 .setFilter(stack -> QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
@@ -62,7 +75,7 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
-            final int x, final int y, final Predicate<Integer> predicate)
+                                                    final int x, final int y, final Predicate<Integer> predicate)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(stack -> predicate.test(index)
                 && QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
@@ -70,7 +83,7 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder filterSlot(final int index, final int x, final int y,
-            final Predicate<ItemStack> filter)
+                                                    final Predicate<ItemStack> filter)
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(filter));
         return this;
@@ -97,14 +110,14 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder syncBooleanValue(final Supplier<Boolean> supplier,
-            final Consumer<Boolean> setter)
+                                                          final Consumer<Boolean> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableBoolean(supplier, setter));
         return this;
     }
 
     public ContainerTileInventoryBuilder syncIntegerValue(final Supplier<Integer> supplier,
-            final Consumer<Integer> setter)
+                                                          final Consumer<Integer> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableInteger(supplier, setter));
         return this;
@@ -123,14 +136,14 @@ public class ContainerTileInventoryBuilder
     }
 
     public ContainerTileInventoryBuilder syncFluidValue(final Supplier<FluidStack> supplier,
-            final Consumer<FluidStack> setter)
+                                                        final Consumer<FluidStack> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableFluid(supplier, setter));
         return this;
     }
 
     public ContainerTileInventoryBuilder syncItemValue(final Supplier<ItemStack> supplier,
-            final Consumer<ItemStack> setter)
+                                                       final Consumer<ItemStack> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableItem(supplier, setter));
         return this;
