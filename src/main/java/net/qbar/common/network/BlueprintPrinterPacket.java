@@ -2,7 +2,9 @@ package net.qbar.common.network;
 
 import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
+import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,6 +19,7 @@ import net.qbar.common.tile.machine.TileBlueprintPrinter;
 @ReceivedOn(Side.SERVER)
 public class BlueprintPrinterPacket extends Message
 {
+    @MarshalledAs("i32")
     private int      dimensionID;
     private BlockPos pos;
     private String   blueprintName;
