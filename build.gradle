@@ -2,78 +2,169 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url= "http://maven.ferenyr.info/artifactory/opmcorp"}
+        maven { url = "http://maven.ferenyr.info/artifactory/opmcorp" }
     }
     dependencies {
-        classpath ('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT') {
+        classpath('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT') {
             exclude module: 'commons-io'
         }
-        classpath 'net.opmcorp:craftystates:0.1.0'
+        classpath 'net.opmcorp:craftystates:0.1.1'
     }
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
     id 'org.hidetake.ssh' version '2.8.0'
-    id 'io.franzbecker.gradle-lombok' version '1.8'
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'net.opmcorp.craftystates'
+allprojects {
+    apply plugin: 'net.minecraftforge.gradle.forge'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
-statesTranspiling {
-    blockstatesPath = "src/main/resources/assets/qbar/blockstates/"
-    prettyPrinting = true
-}
+    version = "0.1.0" + "-" + (System.env.TRAVIS_BRANCH == null ? "local" : System.env.TRAVIS_BRANCH.replaceAll("/", "-")) + "-r" + System.env.TRAVIS_BUILD_NUMBER
+    group = "net.qbar"
+    archivesBaseName = "qbar"
 
-version = "0.1.0" + "-" + (System.env.TRAVIS_BRANCH == null ? "local" : System.env.TRAVIS_BRANCH.replaceAll("/", "-")) + "-r" + System.env.TRAVIS_BUILD_NUMBER
-group = "net.qbar"
-archivesBaseName = "qbar"
-
-compileJava.options.encoding = 'UTF-8'
-sourceCompatibility = targetCompatibility = "1.8"
-compileJava {
+    compileJava.options.encoding = 'UTF-8'
     sourceCompatibility = targetCompatibility = "1.8"
+    compileJava {
+        sourceCompatibility = targetCompatibility = "1.8"
+    }
+
+    minecraft {
+        version = "1.12.2-14.23.0.2487"
+        runDir = "run"
+
+        mappings = "snapshot_20170624"
+    }
+
+    repositories {
+        maven { // TOP
+            name 'tterrag maven'
+            url "http://maven.tterrag.com/"
+        }
+
+        maven { // JEI
+            name = 'progwml6 maven'
+            url = "http://dvs1.progwml6.com/files/maven"
+        }
+        maven { // Concrete
+            name = 'elytradev'
+            url = "http://repo.elytradev.com"
+        }
+        maven { // TeaBeans
+            name = 'ourten'
+            url = 'http://maven.ferenyr.info/artifactory/ourten'
+        }
+        maven { // BrokkGUI
+            name = 'yggard'
+            url = 'http://maven.ferenyr.info/artifactory/yggard'
+        }
+        maven { // RedstoneFlux
+            name = "CoFH Maven"
+            url = "http://maven.covers1624.net"
+        }
+    }
+
+    jar {
+        classifier = 'slim'
+    }
+
+    shadowJar {
+        classifier = 'fat'
+        relocate 'com.elytradev.concrete', 'net.qbar.com.elytradev.concrete'
+        configurations = [project.configurations.shadow]
+        dependencies {
+            exclude(dependency {
+                it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' || it.moduleGroup == "com.google.code.findbugs"
+            })
+        }
+    }
+
+    reobf {
+        shadowJar { mappingType = 'SEARGE' }
+    }
+
+    tasks.build.dependsOn reobfShadowJar
+
+    artifacts {
+        archives shadowJar
+    }
+
+    processResources {
+        inputs.property "version", project.version
+        inputs.property "mcversion", project.minecraft.version
+
+        from(sourceSets.main.resources.srcDirs) {
+            include 'mcmod.info'
+            expand 'version': project.version, 'mcversion': project.minecraft.version
+        }
+        from(sourceSets.main.resources.srcDirs) {
+            exclude 'mcmod.info'
+        }
+    }
 }
 
-minecraft {
-    version = "1.12.2-14.23.0.2487"
-    runDir = "run"
+project('core') {
+    apply plugin: 'net.opmcorp.craftystates'
 
-    mappings = "snapshot_20170624"
-}
-
-repositories {
-    maven { // TOP
-        name 'tterrag maven'
-        url "http://maven.tterrag.com/"
+    statesTranspiling {
+        blockstatesPath = "src/main/resources/assets/qbar/blockstates/"
+        prettyPrinting = true
     }
 
-    maven { // JEI
-        name = 'progwml6 maven'
-        url = "http://dvs1.progwml6.com/files/maven"
-    }
-    maven { // Concrete
-        name = 'elytradev'
-        url = "http://repo.elytradev.com"
-    }
-    maven { // TeaBeans
-        name = 'ourten'
-        url = 'http://maven.ferenyr.info/artifactory/ourten'
-    }
-    maven { // BrokkGUI
-        name = 'yggard'
-        url = 'http://maven.ferenyr.info/artifactory/yggard'
-    }
-    maven { // RedstoneFlux
-        name = "CoFH Maven"
-        url = "http://maven.covers1624.net"
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.16.18'
+
+        deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.18-10'
+        deobfCompile 'mezz.jei:jei_1.12.2:4.7.10.97'
+
+        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
+        compile 'fr.ourten:teabeans:0.5.3'
+        compile 'org.hjson:hjson:1.0.0'
+
+        compile 'com.elytradev:concrete:0.3.1:common'
+        compile 'com.elytradev:concrete:0.3.1:reflect'
+        compile 'com.elytradev:concrete:0.3.1:network'
+
+        testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
+        testCompile 'junit:junit:4.12'
+        testCompile 'org.mockito:mockito-core:2.8.47'
     }
 }
 
-jar {
-    classifier = 'slim'
+project('compat') {
+    dependencies {
+        compile project(':core')
+    }
 }
+
+project('content:logistic') {
+    dependencies {
+    }
+}
+
+project('content:machine') {
+    dependencies {
+    }
+}
+
+project('content:world') {
+    dependencies {
+    }
+}
+
+dependencies {
+    shadow 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
+    shadow 'fr.ourten:teabeans:0.5.3'
+    shadow 'org.hjson:hjson:1.0.0'
+    shadow 'com.elytradev:concrete:0.3.1:network'
+    shadow 'com.elytradev:concrete:0.3.1:common'
+    shadow 'com.elytradev:concrete:0.3.1:reflect'
+}
+
+subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
+shadowJar.dependsOn subprojects.tasks['classes']
 
 shadowJar {
     classifier = 'fat'
@@ -84,58 +175,11 @@ shadowJar {
             it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' || it.moduleGroup == "com.google.code.findbugs"
         })
     }
+    subprojects.each { subproject ->
+        from subproject.sourceSets.main.output.classesDir
+        from subproject.sourceSets.main.output.resourcesDir
+    }
 }
-
-reobf {
-    shadowJar { mappingType = 'SEARGE' }
-}
-
-tasks.build.dependsOn reobfShadowJar
-
-artifacts {
-    archives shadowJar
-}
-
-dependencies {
-    deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.18-10'
-    deobfCompile 'mezz.jei:jei_1.12.2:4.7.10.97'
-
-    compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
-    shadow 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
-
-    compile 'fr.ourten:teabeans:0.5.3'
-    shadow 'fr.ourten:teabeans:0.5.3'
-
-    compile 'org.hjson:hjson:1.0.0'
-    shadow 'org.hjson:hjson:1.0.0'
-
-    compile 'com.elytradev:concrete:0.3.1:common'
-    shadow 'com.elytradev:concrete:0.3.1:common'
-
-    compile 'com.elytradev:concrete:0.3.1:reflect'
-    shadow 'com.elytradev:concrete:0.3.1:reflect'
-
-    compile 'com.elytradev:concrete:0.3.1:network'
-    shadow 'com.elytradev:concrete:0.3.1:network'
-
-    testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.8.47'
-}
-
-processResources
-        {
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
-
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
 
 apply plugin: 'org.hidetake.ssh'
 
@@ -156,14 +200,5 @@ task deploy(dependsOn: "build") << {
         session(remotes.prodServer) {
             put from: file('build/libs/'), into: '/home/games/minecraft/dev/'
         }
-    }
-}
-
-apply plugin: "jacoco"
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled true
     }
 }
