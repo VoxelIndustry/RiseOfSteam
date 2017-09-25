@@ -57,7 +57,7 @@ public class BeltGrid extends CableGrid
             this.getTank().fillInternal(((BeltGrid) grid).getTank().getSteam(), true);
         if (this.lastWorkingState != ((BeltGrid) grid).getLastWorkingState())
         {
-            ((BeltGrid) grid).getCables().forEach(cable ->
+            grid.getCables().forEach(cable ->
             {
                 ((IBelt) cable).setWorking(this.lastWorkingState);
                 ((IBelt) cable).itemUpdate();

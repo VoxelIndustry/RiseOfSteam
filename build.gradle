@@ -103,6 +103,55 @@ allprojects {
             exclude 'mcmod.info'
         }
     }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.16.18'
+
+        testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
+        testCompile 'junit:junit:4.12'
+        testCompile 'org.mockito:mockito-core:2.8.47'
+    }
+}
+
+project('common') {
+    dependencies {
+        deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.18-10'
+        deobfCompile 'mezz.jei:jei_1.12.2:4.7.10.97'
+
+        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
+        compile 'fr.ourten:teabeans:0.5.3'
+        compile 'org.hjson:hjson:1.0.0'
+
+        compile 'com.elytradev:concrete:0.3.1:common'
+        compile 'com.elytradev:concrete:0.3.1:reflect'
+        compile 'com.elytradev:concrete:0.3.1:network'
+    }
+}
+
+project('compat') {
+    dependencies {
+        compile project(':content:logistic')
+        compile project(':content:machine')
+        compile project(':content:world')
+    }
+}
+
+project('content:logistic') {
+    dependencies {
+        compile project(':common')
+    }
+}
+
+project('content:machine') {
+    dependencies {
+        compile project(':common')
+    }
+}
+
+project('content:world') {
+    dependencies {
+        compile project(':common')
+    }
 }
 
 project('core') {
@@ -114,43 +163,11 @@ project('core') {
     }
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok:1.16.18'
-
-        deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.18-10'
-        deobfCompile 'mezz.jei:jei_1.12.2:4.7.10.97'
-
-        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
-        compile 'fr.ourten:teabeans:0.5.3'
-        compile 'org.hjson:hjson:1.0.0'
-
-        compile 'com.elytradev:concrete:0.3.1:common'
-        compile 'com.elytradev:concrete:0.3.1:reflect'
-        compile 'com.elytradev:concrete:0.3.1:network'
-
-        testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
-        testCompile 'junit:junit:4.12'
-        testCompile 'org.mockito:mockito-core:2.8.47'
-    }
-}
-
-project('compat') {
-    dependencies {
-        compile project(':core')
-    }
-}
-
-project('content:logistic') {
-    dependencies {
-    }
-}
-
-project('content:machine') {
-    dependencies {
-    }
-}
-
-project('content:world') {
-    dependencies {
+        compile project(':common')
+        compile project(':compat')
+        compile project(':content:logistic')
+        compile project(':content:machine')
+        compile project(':content:world')
     }
 }
 
@@ -172,7 +189,8 @@ shadowJar {
     configurations = [project.configurations.shadow]
     dependencies {
         exclude(dependency {
-            it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' || it.moduleGroup == "com.google.code.findbugs"
+            it.moduleGroup == 'com.google.guava' || it.moduleGroup == 'org.apache.commons' ||
+                    it.moduleGroup == "com.google.code.findbugs" || it.moduleGroup == "commons-io"
         })
     }
     subprojects.each { subproject ->

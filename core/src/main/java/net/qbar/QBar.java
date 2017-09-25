@@ -1,7 +1,6 @@
 package net.qbar;
 
 import com.elytradev.concrete.network.NetworkContext;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -10,29 +9,25 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.CustomCreativeTab;
+import net.qbar.common.QBarConstants;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = QBar.MODID, version = QBar.VERSION, name = QBar.MODNAME)
+@Mod(modid = QBarConstants.MODID, version = QBarConstants.VERSION, name = QBarConstants.MODNAME)
 public class QBar
 {
     static
     {
         FluidRegistry.enableUniversalBucket();
+        QBarConstants.TAB_ALL = new CustomCreativeTab("QBar");
     }
-
-    public static final String MODID   = "qbar";
-    public static final String VERSION = "0.1";
-    public static final String MODNAME = "QBar";
 
     @SidedProxy(clientSide = "net.qbar.client.ClientProxy", serverSide = "net.qbar.server.ServerProxy")
     public static CommonProxy proxy;
 
-    @Instance(QBar.MODID)
+    @Instance(QBarConstants.MODID)
     public static QBar instance;
 
     public static Logger logger;
-
-    public static final CreativeTabs TAB_ALL = new CustomCreativeTab("QBar");
 
     public static NetworkContext network;
 

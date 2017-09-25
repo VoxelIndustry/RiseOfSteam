@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.chunk.Chunk;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.tile.QBarTileBase;
 
 public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockContainer implements INamedBlock
@@ -21,9 +21,9 @@ public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockCont
         super(material);
 
         this.name = name;
-        this.setRegistryName(QBar.MODID, name);
+        this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
-        this.setCreativeTab(QBar.TAB_ALL);
+        this.setCreativeTab(QBarConstants.TAB_ALL);
         this.tileClass = tileClass;
     }
 

@@ -2,7 +2,7 @@ package net.qbar.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 
 public class BlockBase extends Block implements INamedBlock
 {
@@ -12,9 +12,9 @@ public class BlockBase extends Block implements INamedBlock
     {
         super(material);
         this.name = name;
-        this.setRegistryName(QBar.MODID, name);
+        this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
-        this.setCreativeTab(QBar.TAB_ALL);
+        this.setCreativeTab(QBarConstants.TAB_ALL);
     }
 
     @Override
