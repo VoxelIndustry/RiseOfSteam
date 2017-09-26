@@ -35,6 +35,7 @@ public class QBar
     public void preInit(final FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
+        QBarConstants.MODINSTANCE = instance;
         QBar.proxy.preInit(event);
     }
 

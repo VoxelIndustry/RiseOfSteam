@@ -1,4 +1,4 @@
-package net.qbar.common.tile.machine;
+package net.qbar.common.tile;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;

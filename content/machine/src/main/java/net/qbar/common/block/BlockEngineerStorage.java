@@ -8,7 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.gui.EGui;
 import net.qbar.common.tile.machine.TileEngineerStorage;
 
@@ -22,20 +22,19 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     }
 
     @Override
-    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player,
-                                    final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-                                    final float hitZ)
+    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state, final EntityPlayer
+            player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
     {
         if (player.isSneaking())
             return false;
-        player.openGui(QBar.instance, EGui.ENGINEERSTORAGE.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, EGui.ENGINEERSTORAGE.ordinal(), w, pos.getX(), pos.getY(), pos.getZ
+                ());
         return true;
     }
 
-
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public TileEntity createNewTileEntity(World world, int meta)
     {
         return new TileEngineerStorage();
     }
