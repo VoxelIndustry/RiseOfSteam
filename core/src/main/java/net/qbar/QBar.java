@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.*;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.CustomCreativeTab;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.recipe.category.QBarRecipeCategory;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = QBarConstants.MODID, version = QBarConstants.VERSION, name = QBarConstants.MODNAME)
@@ -27,14 +28,12 @@ public class QBar
     @Instance(QBarConstants.MODID)
     public static QBar instance;
 
-    public static Logger logger;
-
     public static NetworkContext network;
 
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event)
     {
-        logger = event.getModLog();
+        QBarConstants.LOGGER = event.getModLog();
         QBarConstants.MODINSTANCE = instance;
         QBar.proxy.preInit(event);
     }

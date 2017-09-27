@@ -9,7 +9,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
@@ -44,7 +44,7 @@ public class QBarOBJModel extends OBJModel
             if (this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getResourcePath()
                     .startsWith("#"))
             {
-                QBar.logger.error("QBarOBJLoader: Unresolved texture '%s' for obj model '%s' "
+                QBarConstants.LOGGER.error("QBarOBJLoader: Unresolved texture '%s' for obj model '%s' "
                         + this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getResourcePath()
                         + " " + this.modelLocation);
                 builder.put(materialKey, missing);
@@ -67,7 +67,8 @@ public class QBarOBJModel extends OBJModel
     @Override
     public IModel retexture(ImmutableMap<String, String> textures)
     {
-        QBarOBJModel ret = new QBarOBJModel(this.getMatLib().makeLibWithReplacements(textures), getResourceLocation(), getCustomData());
+        QBarOBJModel ret = new QBarOBJModel(this.getMatLib().makeLibWithReplacements(textures), getResourceLocation()
+                , getCustomData());
         return ret;
     }
 

@@ -12,7 +12,6 @@ public class CraftCard implements IPunchedCard
 {
     private final int ID;
     public ItemStack[] recipe = new ItemStack[9];
-    private ItemStack[] cachedCombine;
     public ItemStack result = ItemStack.EMPTY;
 
     public CraftCard(final int ID)

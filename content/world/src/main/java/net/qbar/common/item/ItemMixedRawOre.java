@@ -1,8 +1,8 @@
 package net.qbar.common.item;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,7 +40,7 @@ public class ItemMixedRawOre extends ItemBase
                 tooltip.add(QBarOres.getMineralFromName(stack.getTagCompound().getString("ore" + i)).get()
                         .getRarity().rarityColor
                         + StringUtils.capitalize(stack.getTagCompound().getString("density" + i)) + " "
-                        + I18n.translateToLocal(stack.getTagCompound().getString("ore" + i)));
+                        + I18n.format(stack.getTagCompound().getString("ore" + i)));
         }
     }
 }

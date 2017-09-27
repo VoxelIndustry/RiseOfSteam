@@ -8,7 +8,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public enum QBarOBJLoader implements ICustomModelLoader
     public void addDomain(String domain)
     {
         enabledDomains.add(domain.toLowerCase());
-        QBar.logger.info("Domain registered for QBarOBJLoader: " + domain.toLowerCase());
+        QBarConstants.LOGGER.info("Domain registered for QBarOBJLoader: " + domain.toLowerCase());
     }
 
     public void addRetexturedModel(String modelName, ResourceLocation sourceModel, String[] matKeys, String[] textures)

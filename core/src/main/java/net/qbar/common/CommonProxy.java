@@ -11,9 +11,7 @@ import net.qbar.common.compat.CompatManager;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.gui.GuiHandler;
-import net.qbar.common.init.QBarBlocks;
-import net.qbar.common.init.QBarFluids;
-import net.qbar.common.init.QBarItems;
+import net.qbar.common.init.*;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarMaterials;
@@ -25,7 +23,7 @@ public class CommonProxy
 {
     public void preInit(final FMLPreInitializationEvent e)
     {
-        QBar.network = NetworkContext.forChannel(QBar.MODID);
+        QBar.network = NetworkContext.forChannel(QBarConstants.MODID);
         QBar.network.register(ContainerUpdatePacket.class);
         QBar.network.register(TileSyncRequestPacket.class);
         QBar.network.register(KeypunchPacket.class);
@@ -38,9 +36,18 @@ public class CommonProxy
         CapabilitySteamHandler.register();
 
         QBarMaterials.initMaterials();
+
         QBarBlocks.init();
+        LogisticBlocks.init();
+        MachineBlocks.init();
+        WorldBlocks.init();
+
         QBarFluids.registerFluids();
+
         QBarItems.init();
+        LogisticItems.init();
+        WorldItems.init();
+        MachineItems.init();
 
         MinecraftForge.EVENT_BUS.register(new QBarBlocks());
         MinecraftForge.EVENT_BUS.register(new QBarItems());

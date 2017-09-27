@@ -5,7 +5,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.qbar.QBar;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
 
@@ -21,6 +23,7 @@ public class ItemPunchedCard extends ItemBase
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
         if (stack.hasTagCompound())
@@ -38,8 +41,8 @@ public class ItemPunchedCard extends ItemBase
     @Override
     public void registerVariants()
     {
-        this.addVariant("empty", new ModelResourceLocation(QBar.MODID + ":punched_card", "inventory"));
-        this.addVariant("used", new ModelResourceLocation(QBar.MODID + ":punched_card_used", "inventory"));
+        this.addVariant("empty", new ModelResourceLocation(QBarConstants.MODID + ":punched_card", "inventory"));
+        this.addVariant("used", new ModelResourceLocation(QBarConstants.MODID + ":punched_card_used", "inventory"));
         super.registerVariants();
     }
 

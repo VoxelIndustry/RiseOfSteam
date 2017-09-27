@@ -1,12 +1,12 @@
 package net.qbar.common.item;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,7 +32,7 @@ public class ItemRawOre extends ItemBase
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ore"))
         {
             QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).ifPresent(mineral ->
-                    tooltip.add(mineral.getRarity().rarityColor + I18n.translateToLocal(stack.getTagCompound().getString("ore"))));
+                    tooltip.add(mineral.getRarity().rarityColor + I18n.format(stack.getTagCompound().getString("ore"))));
         }
     }
 

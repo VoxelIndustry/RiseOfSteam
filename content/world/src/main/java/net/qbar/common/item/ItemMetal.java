@@ -6,7 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.recipe.QBarMaterials;
 
 import java.util.List;
@@ -63,14 +63,16 @@ public class ItemMetal extends ItemBase
     @Override
     public void registerVariants()
     {
-        this.metals.forEach(metal -> this.addVariant(metal, new ModelResourceLocation(QBar.MODID + ":" + type + "_" + metal, "inventory")));
+        this.metals.forEach(metal -> this.addVariant(metal, new ModelResourceLocation(QBarConstants.MODID + ":"
+                + type + "_" + metal, "inventory")));
         super.registerVariants();
     }
 
     @Override
     public void registerModels()
     {
-        ModelLoader.setCustomMeshDefinition(this, stack -> this.getVariantModel(QBarMaterials.metals.get(stack.getMetadata())));
+        ModelLoader.setCustomMeshDefinition(this, stack ->
+                this.getVariantModel(QBarMaterials.metals.get(stack.getMetadata())));
         super.registerModels();
     }
 

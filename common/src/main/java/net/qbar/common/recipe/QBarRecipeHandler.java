@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockMetal;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
@@ -27,12 +28,12 @@ import java.util.Optional;
 
 public class QBarRecipeHandler
 {
-    public static final String ROLLINGMILL_UID     = QBar.MODID + ".rollingmill";
-    public static final String FURNACE_UID         = QBar.MODID + ".furnace";
-    public static final String LIQUIDBOILER_UID    = QBar.MODID + ".liquidboiler";
-    public static final String ORE_WASHER_UID      = QBar.MODID + ".orewasher";
-    public static final String SORTING_MACHINE_UID = QBar.MODID + ".sortingmachine";
-    public static final String SAW_MILL_UID        = QBar.MODID + ".sawmill";
+    public static final String ROLLINGMILL_UID     = QBarConstants.MODID + ".rollingmill";
+    public static final String FURNACE_UID         = QBarConstants.MODID + ".furnace";
+    public static final String LIQUIDBOILER_UID    = QBarConstants.MODID + ".liquidboiler";
+    public static final String ORE_WASHER_UID      = QBarConstants.MODID + ".orewasher";
+    public static final String SORTING_MACHINE_UID = QBarConstants.MODID + ".sortingmachine";
+    public static final String SAW_MILL_UID        = QBarConstants.MODID + ".sawmill";
 
     public static final HashMap<String, QBarRecipeCategory> RECIPES = new HashMap<>();
 
@@ -76,7 +77,7 @@ public class QBarRecipeHandler
         QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG2, 1, BlockPlanks.EnumType.DARK_OAK.getMetadata() - 4),
                 new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.DARK_OAK.getMetadata()));
 
-        CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBar.MODID, "compressedsludge")));
+        CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBarConstants.MODID, "compressedsludge")));
     }
 
     public static void registerOreDict()

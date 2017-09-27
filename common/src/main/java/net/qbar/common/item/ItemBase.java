@@ -3,7 +3,7 @@ package net.qbar.common.item;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +17,9 @@ public class ItemBase extends Item implements IItemModelProvider
     public ItemBase(String name)
     {
         this.name = name;
-        this.setRegistryName(QBar.MODID, name);
+        this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
-        this.setCreativeTab(QBar.TAB_ALL);
+        this.setCreativeTab(QBarConstants.TAB_ALL);
 
         this.variants = new HashMap<>();
     }

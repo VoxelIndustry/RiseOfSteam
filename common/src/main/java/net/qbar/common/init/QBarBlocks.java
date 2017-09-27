@@ -10,12 +10,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.block.INamedBlock;
-import net.qbar.common.block.item.ItemBlockMetadata;
-import net.qbar.common.block.item.ItemBlockVeinOre;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ItemBlockMultiblockBase;
-import net.qbar.common.ore.QBarOres;
-import net.qbar.common.recipe.QBarMaterials;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -111,38 +107,6 @@ public class QBarBlocks
     public static void init()
     {
         BLOCKS = new LinkedHashMap<>();
-
-
-        registerBlock(new BlockVeinOre.Builder("ironnickelore").addContent(QBarOres.PENTLANDITE)
-                .addContent(QBarOres.GARNIERITE).addContent(QBarOres.LATERITE).create(), ItemBlockVeinOre::new);
-        registerBlock(
-                new BlockVeinOre.Builder("ironcopperore").addContent(QBarOres.CHALCOPYRITE)
-                        .addContent(QBarOres.TETRAHEDRITE).addContent(QBarOres.MALACHITE).create(),
-                ItemBlockVeinOre::new);
-        registerBlock(new BlockVeinOre.Builder("tinore").addContent(QBarOres.CASSITERITE).addContent(QBarOres.TEALLITE)
-                .create(), ItemBlockVeinOre::new);
-        registerBlock(new BlockVeinOre.Builder("ironzincore").addContent(QBarOres.SPHALERITE).create(),
-                ItemBlockVeinOre::new);
-        registerBlock(new BlockVeinOre.Builder("goldore").addContent(QBarOres.GOLD_ORE).create(),
-                ItemBlockVeinOre::new);
-        registerBlock(new BlockVeinOre.Builder("redstoneore").addContent(QBarOres.REDSTONE_ORE).create(),
-                ItemBlockVeinOre::new);
-
-        registerBlock(new BlockOreSand("oresand"),
-                block -> new ItemBlockMetadata(block, "copper_sand", "tin_sand").setFirstVariation(true));
-        registerBlock(new BlockOreDirt("oredirt"),
-                block -> new ItemBlockMetadata(block, "iron_dirt").setFirstVariation(true));
-        registerBlock(new BlockOreClay("oreclay"),
-                block -> new ItemBlockMetadata(block, "tin_clay").setFirstVariation(true));
-        registerBlock(new BlockOreStone("orestone"),
-                block -> new ItemBlockMetadata(block, "gold_rock").setFirstVariation(true));
-        registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"),
-                block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
-
-        registerBlock(new BlockMetal(),
-                block -> new ItemBlockMetadata(block,
-                        QBarMaterials.metals.toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()]))
-                        .setFirstVariation(true));
     }
 
     @SubscribeEvent

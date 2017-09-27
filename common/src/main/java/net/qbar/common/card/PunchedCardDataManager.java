@@ -42,7 +42,7 @@ public class PunchedCardDataManager
         private int          ID;
         private IPunchedCard data;
 
-        private ECardType(final int id, final IPunchedCard data)
+        ECardType(final int id, final IPunchedCard data)
         {
             this.ID = id;
             this.data = data;

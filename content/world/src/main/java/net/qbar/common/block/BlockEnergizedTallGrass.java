@@ -10,7 +10,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 
 import java.util.Random;
 
@@ -24,9 +24,9 @@ public class BlockEnergizedTallGrass extends BlockTallGrass implements INamedBlo
         this.name = name;
         this.setSoundType(SoundType.PLANT);
 
-        this.setRegistryName(QBar.MODID, name);
+        this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
-        this.setCreativeTab(QBar.TAB_ALL);
+        this.setCreativeTab(QBarConstants.TAB_ALL);
     }
 
     @Override
