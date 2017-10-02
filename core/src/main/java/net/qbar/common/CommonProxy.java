@@ -23,15 +23,15 @@ public class CommonProxy
 {
     public void preInit(final FMLPreInitializationEvent e)
     {
-        QBar.network = NetworkContext.forChannel(QBarConstants.MODID);
-        QBar.network.register(ContainerUpdatePacket.class);
-        QBar.network.register(TileSyncRequestPacket.class);
-        QBar.network.register(KeypunchPacket.class);
-        QBar.network.register(FilteredMachinePacket.class);
-        QBar.network.register(PipeUpdatePacket.class);
-        QBar.network.register(WrenchPacket.class);
-        QBar.network.register(MultiblockBoxPacket.class);
-        QBar.network.register(BlueprintPrinterPacket.class);
+        QBarConstants.network = NetworkContext.forChannel(QBarConstants.MODID);
+        QBarConstants.network.register(ContainerUpdatePacket.class);
+        QBarConstants.network.register(TileSyncRequestPacket.class);
+        QBarConstants.network.register(KeypunchPacket.class);
+        QBarConstants.network.register(FilteredMachinePacket.class);
+        QBarConstants.network.register(PipeUpdatePacket.class);
+        QBarConstants.network.register(WrenchPacket.class);
+        QBarConstants.network.register(MultiblockBoxPacket.class);
+        QBarConstants.network.register(BlueprintPrinterPacket.class);
 
         CapabilitySteamHandler.register();
 

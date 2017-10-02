@@ -8,7 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 
 import java.io.IOException;
@@ -91,7 +91,8 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
             NonNullList<ItemStack> ores = OreDictionary.getOres(stack);
             if (ores.isEmpty())
             {
-                QBar.logger.error("Unknown oredict entry detected while reading a blueprint step (" + stack + ")!");
+                QBarConstants.LOGGER.error("Unknown oredict entry detected while reading a blueprint step (" + stack
+                        + ")!");
                 return ItemStack.EMPTY;
             }
             item = ores.get(0).getItem();
@@ -101,7 +102,7 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
 
         if (item == null || item == Items.AIR)
         {
-            QBar.logger.error("Unknown item detected while reading a blueprint step (" + stack + ")!");
+            QBarConstants.LOGGER.error("Unknown item detected while reading a blueprint step (" + stack + ")!");
             return ItemStack.EMPTY;
         }
         return new ItemStack(item, quantity);

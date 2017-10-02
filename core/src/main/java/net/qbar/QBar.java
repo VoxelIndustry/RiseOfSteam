@@ -28,8 +28,6 @@ public class QBar
     @Instance(QBarConstants.MODID)
     public static QBar instance;
 
-    public static NetworkContext network;
-
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event)
     {

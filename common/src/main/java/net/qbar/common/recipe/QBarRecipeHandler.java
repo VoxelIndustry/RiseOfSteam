@@ -9,12 +9,11 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import net.qbar.QBar;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockMetal;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.item.ItemMetal;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
@@ -58,7 +57,7 @@ public class QBarRecipeHandler
                 QBarRecipeHelper.addBlockToIngotRecipe(metalName);
                 QBarRecipeHelper.addIngotToBlockRecipe(metalName);
             }
-            if (QBarItems.METALGEAR.hasMetalVariant(metalName))
+            if (((ItemMetal) QBarItems.METALGEAR).hasMetalVariant(metalName))
                 QBarRecipeHelper.addIngotToGearRecipe(metalName);
         });
 
@@ -74,33 +73,36 @@ public class QBarRecipeHandler
                 new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.JUNGLE.getMetadata()));
         QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG2, 1, BlockPlanks.EnumType.ACACIA.getMetadata() - 4),
                 new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.ACACIA.getMetadata()));
-        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG2, 1, BlockPlanks.EnumType.DARK_OAK.getMetadata() - 4),
+        QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG2, 1, BlockPlanks.EnumType.DARK_OAK.getMetadata() -
+                        4),
                 new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.DARK_OAK.getMetadata()));
 
-        CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBarConstants.MODID, "compressedsludge")));
+        CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBarConstants.MODID,
+                "compressedsludge")));
     }
 
     public static void registerOreDict()
     {
-        QBarItems.METALGEAR.getMetals().forEach(metal -> {
-
+        ((ItemMetal) QBarItems.METALGEAR).getMetals().forEach(metal ->
+        {
             ItemStack gear = new ItemStack(QBarItems.METALGEAR, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("gear" + StringUtils.capitalize(metal), gear);
         });
 
-        QBarItems.METALPLATE.getMetals().forEach(metal -> {
-
+        ((ItemMetal) QBarItems.METALPLATE).getMetals().forEach(metal ->
+        {
             ItemStack gear = new ItemStack(QBarItems.METALPLATE, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), gear);
         });
 
-        QBarItems.METALINGOT.getMetals().forEach(metal -> {
-
+        ((ItemMetal) QBarItems.METALINGOT).getMetals().forEach(metal ->
+        {
             ItemStack gear = new ItemStack(QBarItems.METALINGOT, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), gear);
         });
 
-        BlockMetal.VARIANTS.getAllowedValues().forEach(metal -> OreDictionary.registerOre("block" + StringUtils.capitalize(metal),
+        BlockMetal.VARIANTS.getAllowedValues().forEach(metal -> OreDictionary.registerOre("block" + StringUtils
+                        .capitalize(metal),
                 new ItemStack(QBarBlocks.METALBLOCK, 1, QBarMaterials.metals.indexOf(metal))));
     }
 

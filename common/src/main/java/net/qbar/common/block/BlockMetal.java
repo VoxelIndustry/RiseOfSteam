@@ -13,7 +13,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.block.property.PropertyString;
 import net.qbar.common.recipe.QBarMaterials;
 import org.apache.commons.lang3.StringUtils;
@@ -52,11 +52,12 @@ public class BlockMetal extends BlockBase implements IModelProvider
     @SideOnly(Side.CLIENT)
     public BiConsumer<Integer, Block> registerItemModels()
     {
-        return (i, block) -> {
+        return (i, block) ->
+        {
             int index = QBarMaterials.metals.indexOf(VARIANTS.getByIndex(i));
 
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), index, new ModelResourceLocation(
-                    QBar.MODID + ":" + ((INamedBlock) block).getName(), this.getItemModelByIndex(index)));
+                    QBarConstants.MODID + ":" + ((INamedBlock) block).getName(), this.getItemModelByIndex(index)));
         };
     }
 

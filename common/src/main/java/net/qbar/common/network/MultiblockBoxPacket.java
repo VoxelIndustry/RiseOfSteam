@@ -4,13 +4,12 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.util.ItemUtils;
 
@@ -27,7 +26,7 @@ public class MultiblockBoxPacket extends Message
 
     public MultiblockBoxPacket(final int slotID)
     {
-        this(QBar.network);
+        this(QBarConstants.network);
 
         this.slotID = slotID;
     }

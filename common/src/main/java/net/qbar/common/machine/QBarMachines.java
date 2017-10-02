@@ -2,7 +2,7 @@ package net.qbar.common.machine;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.machine.typeadapter.MachineDescriptorTypeAdapter;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import org.apache.commons.io.IOUtils;
@@ -92,7 +92,7 @@ public class QBarMachines
         FURNACE_MK2 = loadMachine("steamfurnacemk2");
         TINY_MINING_DRILL = loadMachine("tinyminingdrill");
 
-        if(!isPreloading())
+        if (!isPreloading())
             getAllByComponent(Blueprint.class).forEach(new BlueprintLoader());
     }
 
@@ -133,7 +133,7 @@ public class QBarMachines
     {
         MachineDescriptor descriptor = null;
         final InputStream stream = QBarMachines.class
-                .getResourceAsStream("/assets/" + QBar.MODID + "/machines/" + name + ".hjson");
+                .getResourceAsStream("/assets/" + QBarConstants.MODID + "/machines/" + name + ".hjson");
         try
         {
             descriptor = GSON.fromJson(JsonValue.readHjson(IOUtils.toString(stream, StandardCharsets.UTF_8)).toString(),

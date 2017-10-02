@@ -7,7 +7,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
@@ -42,10 +42,10 @@ public class QBarRecipeHelper
     {
         ItemStack gearStack = new ItemStack(QBarItems.METALGEAR, 1, QBarMaterials.metals.indexOf(metalName));
 
-        QBarRecipeHandler.CRAFTING_RECIPES.add(new ShapedOreRecipe(new ResourceLocation(QBar.MODID, "gear" + metalName),
-                gearStack, " X ", "XOX", " X ", 'X', new OreIngredient("ingot" + StringUtils.capitalize(metalName)),
-                'O', new ItemStack(Items.IRON_INGOT))
-                .setRegistryName(new ResourceLocation(QBar.MODID, "gear" + metalName)));
+        QBarRecipeHandler.CRAFTING_RECIPES.add(new ShapedOreRecipe(new ResourceLocation(QBarConstants.MODID, "gear" +
+                metalName), gearStack, " X ", "XOX", " X ", 'X',
+                new OreIngredient("ingot" + StringUtils.capitalize(metalName)), 'O', new ItemStack(Items.IRON_INGOT))
+                .setRegistryName(new ResourceLocation(QBarConstants.MODID, "gear" + metalName)));
     }
 
     public static void addBlockToIngotRecipe(String metalName)
@@ -53,9 +53,9 @@ public class QBarRecipeHelper
         ItemStack ingotStack = new ItemStack(QBarItems.METALINGOT, 9, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.CRAFTING_RECIPES
-                .add(new ShapelessOreRecipe(new ResourceLocation(QBar.MODID, "block" + metalName), ingotStack,
+                .add(new ShapelessOreRecipe(new ResourceLocation(QBarConstants.MODID, "block" + metalName), ingotStack,
                         new OreIngredient("block" + StringUtils.capitalize(metalName)))
-                        .setRegistryName(new ResourceLocation(QBar.MODID, "block" + metalName)));
+                        .setRegistryName(new ResourceLocation(QBarConstants.MODID, "block" + metalName)));
     }
 
     public static void addIngotToBlockRecipe(String metalName)
@@ -63,9 +63,10 @@ public class QBarRecipeHelper
         ItemStack blockStack = new ItemStack(QBarBlocks.METALBLOCK, 1, QBarMaterials.metals.indexOf(metalName));
 
         QBarRecipeHandler.CRAFTING_RECIPES
-                .add(new ShapedOreRecipe(new ResourceLocation(QBar.MODID, "block_ingot" + metalName), blockStack,
-                        "XXX", "XXX", "XXX", 'X', new OreIngredient("ingot" + StringUtils.capitalize(metalName)))
-                        .setRegistryName(new ResourceLocation(QBar.MODID, "block_ingot" + metalName)));
+                .add(new ShapedOreRecipe(new ResourceLocation(QBarConstants.MODID, "block_ingot" + metalName),
+                        blockStack, "XXX", "XXX", "XXX", 'X',
+                        new OreIngredient("ingot" + StringUtils.capitalize(metalName)))
+                        .setRegistryName(new ResourceLocation(QBarConstants.MODID, "block_ingot" + metalName)));
     }
 
     public static void addLiquidBoilerRecipe(Fluid fuel, int heatPerMb, int timePerBucket)

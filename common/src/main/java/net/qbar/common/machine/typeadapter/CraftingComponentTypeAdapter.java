@@ -3,7 +3,7 @@ package net.qbar.common.machine.typeadapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.machine.CraftingComponent;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,7 +46,8 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
                     if (QBarRecipeHandler.RECIPES.containsKey(category))
                         component.setRecipeCategory(category);
                     else
-                        QBar.logger.error("Unknown recipe category detected while parsing crafter (" + category + ")");
+                        QBarConstants.LOGGER.error("Unknown recipe category detected while parsing crafter (" +
+                                category + ")");
                     break;
                 case "inventorySize":
                     inventorySize = in.nextInt();

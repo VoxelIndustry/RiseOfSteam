@@ -1,7 +1,7 @@
 package net.qbar.common.machine;
 
 import com.google.common.collect.Lists;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.multiblock.blueprint.MultiblockStep;
 import org.apache.commons.io.IOUtils;
@@ -20,7 +20,7 @@ public class BlueprintLoader implements Consumer<MachineDescriptor>
     {
         try
         {
-            String path = "/assets/" + QBar.MODID + "/multiblock/" + blueprint.getName() + ".hjson";
+            String path = "/assets/" + QBarConstants.MODID + "/multiblock/" + blueprint.getName() + ".hjson";
             if (QBarMachines.class.getResource(path) != null)
             {
                 InputStream stream = QBarMachines.class.getResourceAsStream(path);
@@ -38,7 +38,7 @@ public class BlueprintLoader implements Consumer<MachineDescriptor>
                 blueprint.get(Blueprint.class).setMultiblockSteps(steps);
             }
             else
-                QBar.logger.warn("Could not find a blueprint matching the name {}", blueprint.getName());
+                QBarConstants.LOGGER.warn("Could not find a blueprint matching the name {}", blueprint.getName());
         } catch (final Exception e)
         {
             e.printStackTrace();
