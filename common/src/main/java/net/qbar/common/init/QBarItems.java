@@ -51,7 +51,7 @@ public class QBarItems
     @ObjectHolder("multiblockbox")
     public static final ItemBase MULTIBLOCK_BOX = null;
 
-    protected static List<Item> ITEMS;
+    public static List<Item> ITEMS;
 
     public static void init()
     {

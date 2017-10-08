@@ -17,13 +17,13 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.SteamComponent;
@@ -351,7 +351,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
             return true;
         }
 
-        player.openGui(QBar.instance, EGui.SMALLMININGDRILL.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.SMALLMININGDRILL.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

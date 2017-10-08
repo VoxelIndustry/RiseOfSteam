@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.BlockStructure;
+import net.qbar.common.block.BlockStructure;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.multiblock.blueprint.Blueprint;

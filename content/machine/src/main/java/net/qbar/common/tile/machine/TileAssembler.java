@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.PunchedCardDataManager;
@@ -23,7 +23,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.CraftingComponent;
 import net.qbar.common.machine.MachineDescriptor;
@@ -277,7 +277,7 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBar.instance, EGui.ASSEMBLER.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.ASSEMBLER.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

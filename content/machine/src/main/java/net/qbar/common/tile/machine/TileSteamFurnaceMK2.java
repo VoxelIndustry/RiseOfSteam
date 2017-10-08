@@ -1,7 +1,5 @@
 package net.qbar.common.tile.machine;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,11 +8,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
@@ -23,6 +21,7 @@ import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
 {
@@ -186,7 +185,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBar.instance, EGui.STEAMFURNACEMK2.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.STEAMFURNACEMK2.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

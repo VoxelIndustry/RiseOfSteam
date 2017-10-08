@@ -14,11 +14,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
@@ -198,7 +198,7 @@ public class TileKeypunch extends TileMultiblockInventoryBase
         if (player.isSneaking())
             return false;
 
-        player.openGui(QBar.instance, EGui.KEYPUNCH.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.KEYPUNCH.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

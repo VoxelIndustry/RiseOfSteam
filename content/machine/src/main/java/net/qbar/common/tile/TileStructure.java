@@ -17,9 +17,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.QBar;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
@@ -223,7 +223,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         if (this.quadsCache == null || this.previousStep != this.getBlueprintState().getCurrentStep())
         {
             final IBlockState state = Block
-                    .getBlockFromName(QBar.MODID + ":" + this.getBlueprint().getDescriptor().getName())
+                    .getBlockFromName(QBarConstants.MODID + ":" + this.getBlueprint().getDescriptor().getName())
                     .getStateFromMeta(this.getMeta());
 
             final IBakedModel model = RenderStructure.blockRender.getModelForState(state);

@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 
 public class BlockOreSand extends BlockFalling implements INamedBlock, IModelProvider
 {
@@ -31,9 +31,9 @@ public class BlockOreSand extends BlockFalling implements INamedBlock, IModelPro
         this.setSoundType(SoundType.SAND);
 
         this.name = name;
-        this.setRegistryName(QBar.MODID, name);
+        this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
-        this.setCreativeTab(QBar.TAB_ALL);
+        this.setCreativeTab(QBarConstants.TAB_ALL);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.COPPER_SAND));
     }

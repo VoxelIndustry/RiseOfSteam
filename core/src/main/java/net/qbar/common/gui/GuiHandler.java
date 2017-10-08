@@ -13,13 +13,16 @@ import org.yggard.brokkgui.wrapper.BrokkGuiManager;
 
 public class GuiHandler implements IGuiHandler
 {
-    public static final int BOILER_ID = 0;
-
     @Override
     public Object getServerGuiElement(final int ID, final EntityPlayer player, final World world, final int x,
                                       final int y, final int z)
     {
-        final EGui gui = EGui.values()[ID];
+        IGuiReference gui;
+        if (ID < 100)
+            gui = LogisticGui.values()[ID];
+        else
+            gui = MachineGui.values()[ID - 100];
+
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
         if (gui.useContainerBuilder() && tile != null)
@@ -37,17 +40,28 @@ public class GuiHandler implements IGuiHandler
         if (tile instanceof TileStructure)
             return null;
 
-        final EGui gui = EGui.values()[ID];
+        if(ID < 100)
+        {
+            LogisticGui gui = LogisticGui.values()[ID];
+
+            switch(gui)
+            {
+                case EXTRACTOR:
+                    return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
+                case SPLITTER:
+                    return BrokkGuiManager.getBrokkGuiContainer(new GuiSplitter(player, (TileSplitter) tile));
+                default:
+                    return null;
+            }
+        }
+
+        final MachineGui gui = MachineGui.values()[ID - 100];
         switch (gui)
         {
             case BOILER:
                 return new GuiBoiler(player, (TileSolidBoiler) tile);
-            case EXTRACTOR:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
             case KEYPUNCH:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiKeypunch(player, (TileKeypunch) tile));
-            case SPLITTER:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiSplitter(player, (TileSplitter) tile));
             case ROLLINGMILL:
                 return new GuiRollingMill(player, (TileRollingMill) tile);
             case FLUIDTANK:
@@ -75,9 +89,11 @@ public class GuiHandler implements IGuiHandler
             case ENGINEERSTORAGE:
                 return new GuiEngineerStorage(player, (TileEngineerStorage) tile);
             case BLUEPRINTPRINTER:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiBlueprintPrinter(player, (TileBlueprintPrinter)
+                        tile));
             case CRAFTCARDLIBRARY:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiCraftCardLibrary(player, (TileCraftCardLibrary) tile));
+                return BrokkGuiManager.getBrokkGuiContainer(new GuiCraftCardLibrary(player, (TileCraftCardLibrary)
+                        tile));
             default:
                 break;
         }

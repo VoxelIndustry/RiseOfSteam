@@ -28,6 +28,7 @@ import net.qbar.client.render.tile.RenderRollingMill;
 import net.qbar.client.render.tile.RenderSteamFurnaceMK2;
 import net.qbar.client.render.tile.RenderStructure;
 import net.qbar.common.CommonProxy;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.block.IModelProvider;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarFluids;
@@ -47,22 +48,22 @@ public class ClientProxy extends CommonProxy
     @Override
     public void preInit(final FMLPreInitializationEvent e)
     {
-        OBJLoader.INSTANCE.addDomain(QBar.MODID);
+        OBJLoader.INSTANCE.addDomain(QBarConstants.MODID);
         ModelLoaderRegistry.registerLoader(QBarOBJLoader.INSTANCE);
-        QBarOBJLoader.INSTANCE.addDomain(QBar.MODID);
+        QBarOBJLoader.INSTANCE.addDomain(QBarConstants.MODID);
 
         MinecraftForge.EVENT_BUS.register(this);
         super.preInit(e);
 
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
-                new ResourceLocation(QBar.MODID + ":block/belt.mwm"), new String[] { "Top" },
-                new String[] { "qbar:blocks/belt_top_anim" });
+                new ResourceLocation(QBarConstants.MODID + ":block/belt.mwm"), new String[]{"Top"},
+                new String[]{"qbar:blocks/belt_top_anim"});
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_animated.mwm",
-                new ResourceLocation(QBar.MODID + ":block/belt_slope.mwm"), new String[] { "None" },
-                new String[] { "qbar:blocks/belt_slope_anim" });
+                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope.mwm"), new String[]{"None"},
+                new String[]{"qbar:blocks/belt_slope_anim"});
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope2_animated.mwm",
-                new ResourceLocation(QBar.MODID + ":block/belt_slope2.mwm"), new String[] { "None" },
-                new String[] { "qbar:blocks/belt_slope_anim" });
+                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope2.mwm"), new String[]{"None"},
+                new String[]{"qbar:blocks/belt_slope_anim"});
 
         ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
@@ -87,12 +88,13 @@ public class ClientProxy extends CommonProxy
     public void registerItemRenderer(final Item item, final int meta, final String id)
     {
         ModelLoader.setCustomModelResourceLocation(item, meta,
-                new ModelResourceLocation(QBar.MODID + ":" + id, "inventory"));
+                new ModelResourceLocation(QBarConstants.MODID + ":" + id, "inventory"));
     }
 
     public static final void registerFluidsClient()
     {
-        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBar.MODID + ":" + "blockfluidsteam",
+        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBarConstants.MODID + ":" +
+                "blockfluidsteam",
                 "steam");
         ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
         {
@@ -111,7 +113,8 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public void onModelBake(final ModelBakeEvent evt)
     {
-        final ModelResourceLocation key = new ModelResourceLocation(QBar.MODID + ":" + QBarItems.BLUEPRINT.name,
+        final ModelResourceLocation key = new ModelResourceLocation(QBarConstants.MODID + ":" + QBarItems.BLUEPRINT
+                .name,
                 "inventory");
         final IBakedModel originalModel = evt.getModelRegistry().getObject(key);
         evt.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
@@ -125,13 +128,13 @@ public class ClientProxy extends CommonProxy
         }
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
-                new ModelResourceLocation(QBar.MODID + ":fluidpipe", "inventoryvalve"));
+                new ModelResourceLocation(QBarConstants.MODID + ":fluidpipe", "inventoryvalve"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:steampipe"), 1,
-                new ModelResourceLocation(QBar.MODID + ":steampipe", "inventoryvalve"));
+                new ModelResourceLocation(QBarConstants.MODID + ":steampipe", "inventoryvalve"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
-                new ModelResourceLocation(QBar.MODID + ":itemextractor", "facing=down,filter=true"));
+                new ModelResourceLocation(QBarConstants.MODID + ":itemextractor", "facing=down,filter=true"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemsplitter"), 1,
-                new ModelResourceLocation(QBar.MODID + ":itemsplitter", "facing=up,filter=true"));
+                new ModelResourceLocation(QBarConstants.MODID + ":itemsplitter", "facing=up,filter=true"));
 
         QBarBlocks.BLOCKS.keySet().stream().filter(IModelProvider.class::isInstance).forEach(block ->
         {

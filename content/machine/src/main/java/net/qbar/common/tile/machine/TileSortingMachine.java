@@ -7,11 +7,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.grid.IBelt;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
@@ -158,7 +158,7 @@ public class TileSortingMachine extends TileCraftingMachineBase
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBar.instance, EGui.SORTINGMACHINE.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.SORTINGMACHINE.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

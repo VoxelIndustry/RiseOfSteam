@@ -7,10 +7,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
@@ -89,7 +89,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBar.instance, EGui.BLUEPRINTPRINTER.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BLUEPRINTPRINTER.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

@@ -11,11 +11,11 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.slot.SlotFuel;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.MultiblockComponent;
@@ -194,7 +194,7 @@ public class TileSolidBoiler extends TileBoilerBase
             this.markDirty();
             return true;
         }
-        player.openGui(QBar.instance, EGui.BOILER.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BOILER.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

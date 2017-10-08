@@ -25,8 +25,8 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
-import net.qbar.QBar;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.QBarConstants;
+import net.qbar.common.gui.LogisticGui;
 import net.qbar.common.tile.machine.TileExtractor;
 
 import javax.annotation.Nullable;
@@ -69,7 +69,7 @@ public class BlockExtractor extends BlockMachineBase<TileExtractor>
         final TileExtractor extractor = (TileExtractor) w.getTileEntity(pos);
         if (extractor != null && extractor.hasFilter())
         {
-            player.openGui(QBar.instance, EGui.EXTRACTOR.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(QBarConstants.MODINSTANCE, LogisticGui.EXTRACTOR.getUniqueID(), w, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
 

@@ -8,15 +8,15 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.qbar.QBar;
 import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
@@ -225,7 +225,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
             this.markDirty();
             return true;
         }
-        player.openGui(QBar.instance, EGui.FLUIDTANK.ordinal(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.FLUIDTANK.getUniqueID(), this.world, this.pos.getX(),this.pos.getY(),
                 this.pos.getZ());
         return false;
     }

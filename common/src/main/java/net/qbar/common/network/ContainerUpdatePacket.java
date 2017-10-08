@@ -7,7 +7,7 @@ import com.elytradev.concrete.network.annotation.type.ReceivedOn;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 
 @ReceivedOn(Side.CLIENT)
@@ -27,7 +27,7 @@ public class ContainerUpdatePacket extends Message
 
     public ContainerUpdatePacket(final int windowID, final int property, final NBTTagCompound value)
     {
-        this(QBar.network);
+        this(QBarConstants.network);
 
         this.windowId = windowID;
         this.property = property;

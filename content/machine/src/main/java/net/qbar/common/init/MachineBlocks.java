@@ -4,7 +4,7 @@ import net.minecraft.block.material.Material;
 import net.minecraftforge.fluids.Fluid;
 import net.qbar.common.block.*;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
-import net.qbar.common.multiblock.BlockStructure;
+import net.qbar.common.block.BlockStructure;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;

@@ -18,8 +18,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.qbar.QBar;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.QBarConstants;
+import net.qbar.common.gui.LogisticGui;
 import net.qbar.common.tile.machine.TileSplitter;
 
 public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
@@ -50,7 +50,8 @@ public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
 
     @Override
     public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-                                    final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+                                    final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final
+                                        float hitX, final float hitY,
                                     final float hitZ)
     {
         if (player.isSneaking())
@@ -58,7 +59,8 @@ public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
         final TileSplitter splitter = (TileSplitter) w.getTileEntity(pos);
         if (splitter != null && splitter.hasFilter())
         {
-            player.openGui(QBar.instance, EGui.SPLITTER.ordinal(), w, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(QBarConstants.MODINSTANCE, LogisticGui.SPLITTER.getUniqueID(), w, pos.getX(), pos.getY(),
+                    pos.getZ());
             return true;
         }
 
@@ -109,7 +111,8 @@ public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta,
+                                            final EntityLivingBase placer)
     {
         return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer)
                 .withProperty(BlockSplitter.FILTER, meta == 1);

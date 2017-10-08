@@ -11,14 +11,14 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.qbar.QBar;
 import net.qbar.client.render.tile.VisibilityModelState;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.grid.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.MultiblockComponent;
@@ -258,7 +258,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
                 return true;
             }
         }
-        player.openGui(QBar.instance, EGui.LIQUIDBOILER.ordinal(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.LIQUIDBOILER.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

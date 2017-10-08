@@ -4,12 +4,11 @@ import com.elytradev.concrete.network.Message;
 import com.elytradev.concrete.network.NetworkContext;
 import com.elytradev.concrete.network.annotation.field.MarshalledAs;
 import com.elytradev.concrete.network.annotation.type.ReceivedOn;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
-import net.qbar.QBar;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.tile.QBarTileBase;
 
 @ReceivedOn(Side.SERVER)
@@ -31,7 +30,7 @@ public class TileSyncRequestPacket extends Message
 
     public TileSyncRequestPacket(final int dimensionID, final int x, final int y, final int z)
     {
-        this(QBar.network);
+        this(QBarConstants.network);
 
         this.dimensionId = dimensionID;
         this.x = x;

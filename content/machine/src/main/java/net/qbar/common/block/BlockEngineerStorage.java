@@ -9,7 +9,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.gui.EGui;
+import net.qbar.common.gui.MachineGui;
 import net.qbar.common.tile.machine.TileEngineerStorage;
 
 import javax.annotation.Nullable;
@@ -27,8 +27,8 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     {
         if (player.isSneaking())
             return false;
-        player.openGui(QBarConstants.MODINSTANCE, EGui.ENGINEERSTORAGE.ordinal(), w, pos.getX(), pos.getY(), pos.getZ
-                ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.ENGINEERSTORAGE.getUniqueID(), w, pos.getX(), pos.getY(),
+                pos.getZ());
         return true;
     }
 

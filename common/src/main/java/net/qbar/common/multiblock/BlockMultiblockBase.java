@@ -27,6 +27,7 @@ import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.block.BlockMachineBase;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.item.ItemMultiblockBox;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.tile.QBarTileBase;
@@ -39,7 +40,7 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     public static final PropertyBool      MULTIBLOCK_GAG = PropertyBool.create("multiblockgag");
     public static final PropertyDirection FACING         = BlockHorizontal.FACING;
 
-    private MultiblockComponent           multiblock;
+    private MultiblockComponent multiblock;
 
     public BlockMultiblockBase(final String name, final Material material, Class<T> tileClass)
     {
@@ -114,8 +115,8 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     public BlockStateContainer createBlockState()
     {
         return new ExtendedBlockState(this,
-                new IProperty[] { BlockMultiblockBase.MULTIBLOCK_GAG, BlockMultiblockBase.FACING },
-                new IUnlistedProperty[] { Properties.AnimationProperty });
+                new IProperty[]{BlockMultiblockBase.MULTIBLOCK_GAG, BlockMultiblockBase.FACING},
+                new IUnlistedProperty[]{Properties.AnimationProperty});
     }
 
     @Override
@@ -146,9 +147,10 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-            final EntityLivingBase placer, final ItemStack stack)
+                                final EntityLivingBase placer, final ItemStack stack)
     {
-        final Iterable<BlockPos> searchables = this.getMultiblock().getAllInBox(pos, BlockMultiblockBase.getFacing(state));
+        final Iterable<BlockPos> searchables = this.getMultiblock().getAllInBox(pos, BlockMultiblockBase.getFacing
+                (state));
 
         for (final BlockPos current : searchables)
         {
@@ -197,8 +199,9 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
 
     @Override
     public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
-            final float hitZ)
+                                    final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final
+                                        float hitX, final float hitY,
+                                    final float hitZ)
     {
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
 
@@ -221,7 +224,8 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta,
+                                            final EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, false)
                 .withProperty(BlockMultiblockBase.FACING, placer.getHorizontalFacing().getOpposite());
@@ -229,7 +233,7 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
 
     @Override
     public boolean onWrench(final EntityPlayer player, final World world, final BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final IBlockState state, ItemStack wrench)
+                            final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         if (player.isSneaking())
             this.getWorldTile(world, pos).breakCore();
@@ -242,7 +246,8 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
         if (this.getWorldTile(world, pos).isCore())
         {
             if (QBarMachines.contains(Blueprint.class, this.getMultiblock().getDescriptor().getName()))
-                drops.add(QBarItems.MULTIBLOCK_BOX.getBox(this.getMultiblock().getDescriptor().get(Blueprint.class)));
+                drops.add(((ItemMultiblockBox) QBarItems.MULTIBLOCK_BOX).getBox(this.getMultiblock().getDescriptor()
+                        .get(Blueprint.class)));
             else
                 drops.add(new ItemStack(this));
         }
