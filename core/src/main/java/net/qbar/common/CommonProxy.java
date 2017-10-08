@@ -15,7 +15,7 @@ import net.qbar.common.init.*;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarMaterials;
-import net.qbar.common.recipe.QBarRecipeHandler;
+import net.qbar.common.recipe.QBarRecipes;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.world.QBarOreGenerator;
 
@@ -51,7 +51,7 @@ public class CommonProxy
 
         MinecraftForge.EVENT_BUS.register(new QBarBlocks());
         MinecraftForge.EVENT_BUS.register(new QBarItems());
-        MinecraftForge.EVENT_BUS.register(new QBarRecipeHandler());
+        MinecraftForge.EVENT_BUS.register(new QBarRecipes());
 
         MinecraftForge.EVENT_BUS.register(new TickHandler());
         CompatManager.preInit(e);
