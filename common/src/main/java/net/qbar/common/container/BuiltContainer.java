@@ -33,7 +33,7 @@ public class BuiltContainer extends Container
 
     private final List<IInventory> inventories;
 
-    public BuiltContainer(final String name, final EntityPlayer player, final List<IInventory> inventories,
+    BuiltContainer(final String name, final EntityPlayer player, final List<IInventory> inventories,
                           final Predicate<EntityPlayer> canInteract, final List<Range<Integer>> playerSlotRange,
                           final List<Range<Integer>> tileSlotRange)
     {
