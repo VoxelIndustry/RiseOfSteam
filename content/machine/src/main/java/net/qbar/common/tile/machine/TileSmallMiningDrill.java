@@ -203,7 +203,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
 
     private int getMinimumTemp()
     {
-        return (int) (this.world.getBiome(this.getPos()).getFloatTemperature(this.pos) * 200);
+        return (int) (this.world.getBiome(this.getPos()).getTemperature(this.pos) * 200);
     }
 
     private boolean tryInsertSludge(final EnumFacing facing)

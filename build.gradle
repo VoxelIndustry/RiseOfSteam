@@ -32,10 +32,10 @@ allprojects {
     }
 
     minecraft {
-        version = "1.12.2-14.23.0.2487"
+        version = "1.12.2-14.23.0.2512"
         runDir = "run"
 
-        mappings = "snapshot_20170624"
+        mappings = "snapshot_20171010"
     }
 
     repositories {
@@ -116,7 +116,7 @@ allprojects {
 project('common') {
     dependencies {
         deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.18-10'
-        deobfCompile 'mezz.jei:jei_1.12.2:4.7.10.97'
+        deobfCompile 'mezz.jei:jei_1.12.2:4.8.0.106'
 
         compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-SNAPSHOT'
         compile 'fr.ourten:teabeans:0.5.3'
