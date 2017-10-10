@@ -27,7 +27,6 @@ import java.util.function.Predicate;
  */
 public class ContainerBuilder
 {
-
     private final String name;
 
     private final EntityPlayer player;

@@ -8,7 +8,6 @@ import org.apache.commons.lang3.Range;
 
 public final class ContainerPlayerInventoryBuilder
 {
-
     private final InventoryPlayer  player;
     private final ContainerBuilder parent;
     private       Range<Integer>   main;
@@ -21,6 +20,14 @@ public final class ContainerPlayerInventoryBuilder
         this.parent = parent;
     }
 
+    /**
+     * Utility method to add the entire main inventory of a player to the slot list.
+     * Note that this does not include the hotbar nor the armor slots.
+     *
+     * @param xStart the horizontal position at which the inventory begins
+     * @param yStart the vertical position at which the inventory begins
+     * @return a reference to this {@code ContainerPlayerInventoryBuilder} to resume the "Builder" pattern
+     */
     public ContainerPlayerInventoryBuilder inventory(final int xStart, final int yStart)
     {
         final int startIndex = this.parent.slots.size();
@@ -31,6 +38,13 @@ public final class ContainerPlayerInventoryBuilder
         return this;
     }
 
+    /**
+     * Utility method to add the entire hotbar of a player to the slot list.
+     *
+     * @param xStart the horizontal position at which the inventory begins
+     * @param yStart the vertical position at which the inventory begins
+     * @return a reference to this {@code ContainerPlayerInventoryBuilder} to resume the "Builder" pattern
+     */
     public ContainerPlayerInventoryBuilder hotbar(final int xStart, final int yStart)
     {
         final int startIndex = this.parent.slots.size();
@@ -40,21 +54,50 @@ public final class ContainerPlayerInventoryBuilder
         return this;
     }
 
+    /**
+     * Utility method to add the entire main inventory of a player to the slot list.
+     * Note that this does not include the hotbar nor the armor slots.
+     * <p>
+     * This method will use commonly used default values to position the slots.
+     *
+     * @return a reference to this {@code ContainerPlayerInventoryBuilder} to resume the "Builder" pattern
+     */
     public ContainerPlayerInventoryBuilder inventory()
     {
         return this.inventory(8, 94);
     }
 
+    /**
+     * Utility method to add the entire hotbar of a player to the slot list.
+     * <p>
+     * This method will use commonly used default values to position the slots.
+     *
+     * @return a reference to this {@code ContainerPlayerInventoryBuilder} to resume the "Builder" pattern
+     */
     public ContainerPlayerInventoryBuilder hotbar()
     {
         return this.hotbar(8, 152);
     }
 
+    /**
+     * Begin the construction of a {@link ContainerPlayerArmorInventoryBuilder} builder.
+     * Only one should be used per {@code ContainerPlayerInventoryBuilder}
+     *
+     * @return a {@link ContainerPlayerArmorInventoryBuilder} marked as child of this builder
+     */
     public ContainerPlayerArmorInventoryBuilder armor()
     {
         return new ContainerPlayerArmorInventoryBuilder(this);
     }
 
+    /**
+     * Close this builder and add the slot list to the current {@link BuiltContainer} construction.
+     * <p>
+     * A special case has been implemented with armor slots, they are considered as a tile slot range. Allowing
+     * shift-insert from a player inventory.
+     *
+     * @return the parent {@link ContainerBuilder} to resume the "Builder" pattern
+     */
     public ContainerBuilder addInventory()
     {
         if (this.hotbar != null)
