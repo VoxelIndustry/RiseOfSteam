@@ -1,0 +1,11 @@
+include 'core'
+include 'common'
+include 'compat'
+include 'content'
+
+include 'content:machine'
+project(':content:machine').name = 'machine'
+include 'content:logistic'
+project(':content:logistic').name = 'logistic'
+include 'content:world'
+project(':content:world').name = 'world'
