@@ -4,5 +4,5 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface IActionReceiver
 {
-    void handle(String actionID, NBTTagCompound payload);
+    void handle(ActionSender sender, String actionID, NBTTagCompound payload);
 }

@@ -3,6 +3,7 @@ package net.qbar.common.tile.machine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -12,11 +13,15 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.multiblock.blueprint.Blueprint;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import javax.annotation.Nullable;
 
-public class TileBlueprintPrinter extends TileMultiblockInventoryBase
+public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements IActionReceiver
 {
     public TileBlueprintPrinter()
     {
@@ -89,8 +94,35 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BLUEPRINTPRINTER.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BLUEPRINTPRINTER.getUniqueID(), this.world,
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("PRINT".equals(actionID))
+        {
+            if (this.getStackInSlot(0).getCount() > 0 &&
+                    QBarMachines.contains(Blueprint.class, payload.getString("blueprint")))
+            {
+                ItemStack blueprint = new ItemStack(QBarItems.BLUEPRINT);
+                NBTTagCompound tag = new NBTTagCompound();
+                blueprint.setTagCompound(tag);
+
+                tag.setString("blueprint", payload.getString("blueprint"));
+
+                if (sender.getPlayer().inventory.getItemStack().isEmpty())
+                {
+                    sender.getPlayer().inventory.setItemStack(blueprint);
+                    sender.answer().send();
+                }
+                else
+                    sender.getPlayer().addItemStackToInventory(blueprint);
+
+                this.decrStackSize(0, 1);
+            }
+        }
     }
 }

@@ -1,16 +1,19 @@
 package net.qbar.client.gui;
 
 import fr.ourten.teabeans.value.BaseProperty;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.EMachineType;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.blueprint.Blueprint;
-import net.qbar.common.network.BlueprintPrinterPacket;
+import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileBlueprintPrinter;
 import org.yggard.brokkgui.control.GuiToggleGroup;
 import org.yggard.brokkgui.element.GuiRadioButton;
@@ -31,7 +34,8 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
 {
     private static final int xSize = 176, ySize = 166;
 
-    private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/blueprintprinter.png", 0, 0,
+    private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/blueprintprinter.png",
+            0, 0,
             xSize / 256.0f, ySize / 256.0f);
 
     private final TileBlueprintPrinter blueprintPrinter;
@@ -133,7 +137,19 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 ((GuiBehaviorSkinBase) itemStack.getSkin())
                         .setBackground(new Background(machineDescriptor.getType().getColor()));
                 itemStack.setOnClickEvent(e ->
-                        new BlueprintPrinterPacket(this.blueprintPrinter, machineDescriptor.getName()).sendToServer());
+                {
+                    new ServerActionBuilder("PRINT").toTile(this.blueprintPrinter)
+                            .withString("blueprint", machineDescriptor.getName()).then(response ->
+                    {
+                        ItemStack blueprint = new ItemStack(QBarItems.BLUEPRINT);
+                        NBTTagCompound tag = new NBTTagCompound();
+                        blueprint.setTagCompound(tag);
+
+                        tag.setString("blueprint", machineDescriptor.getName());
+
+                        Minecraft.getMinecraft().player.inventory.setItemStack(blueprint);
+                    }).send();
+                });
 
                 tierPane.addChild(itemStack, 7 + 18 * (j % 9), 18 * (j / 9));
             }

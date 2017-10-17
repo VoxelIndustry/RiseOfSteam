@@ -31,7 +31,8 @@ public class CommonProxy
         QBarConstants.network.register(PipeUpdatePacket.class);
         QBarConstants.network.register(WrenchPacket.class);
         QBarConstants.network.register(MultiblockBoxPacket.class);
-        QBarConstants.network.register(BlueprintPrinterPacket.class);
+        QBarConstants.network.register(ServerActionHolderPacket.class);
+        QBarConstants.network.register(ClientActionHolderPacket.class);
 
         CapabilitySteamHandler.register();
 

@@ -1,10 +1,8 @@
 package net.qbar.common.network.action;
 
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ActionManager
 {
@@ -17,20 +15,23 @@ public class ActionManager
         return INSTANCE;
     }
 
-    private Map<String, Pair<ActionTargetType, ActionPattern>> actionTypes;
+    private HashMap<Short, IActionCallback> callbackMap;
 
     private ActionManager()
     {
-        this.actionTypes = new HashMap<>();
+        this.callbackMap = new HashMap<>();
     }
 
-    public void registerAction(String actionKey, ActionTargetType target, ActionPattern pattern)
+    void addCallback(Short actionID, IActionCallback callback)
     {
-        this.actionTypes.put(actionKey, Pair.of(target, pattern));
+        this.callbackMap.put(actionID, callback);
     }
 
-    public ActionBuilder dispatchAction(String actionKey)
+    public void triggerCallback(Short actionID, NBTTagCompound payload)
     {
-        return new ActionBuilder(actionKey);
+        if(!this.callbackMap.containsKey(actionID))
+            return;
+        this.callbackMap.get(actionID).call(payload);
+        this.callbackMap.remove(actionID);
     }
 }
