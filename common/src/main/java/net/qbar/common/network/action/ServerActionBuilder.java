@@ -73,6 +73,7 @@ public class ServerActionBuilder
     public ServerActionBuilder then(IActionCallback callback)
     {
         ActionManager.getInstance().addCallback(this.packet.getActionID(), callback);
+        this.packet.setExpectAnswer(true);
         return this;
     }
 

@@ -116,7 +116,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
                 if (sender.getPlayer().inventory.getItemStack().isEmpty())
                 {
                     sender.getPlayer().inventory.setItemStack(blueprint);
-                    sender.answer().send();
+                    sender.answer().withBoolean("blueprint", true).send();
                 }
                 else
                     sender.getPlayer().addItemStackToInventory(blueprint);

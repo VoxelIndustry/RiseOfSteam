@@ -12,9 +12,9 @@ public class ClientActionBuilder
     private TileEntity sender;
     private EntityPlayer     player;
     private NBTTagCompound payload;
-    private short replyID;
+    private int replyID;
 
-    public ClientActionBuilder(short replyID, TileEntity sender)
+    public ClientActionBuilder(int replyID, TileEntity sender)
     {
         this.sender = sender;
         this.payload = new NBTTagCompound();

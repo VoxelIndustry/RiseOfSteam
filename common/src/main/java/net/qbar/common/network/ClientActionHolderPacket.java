@@ -28,15 +28,15 @@ public class ClientActionHolderPacket extends Message
     @MarshalledAs("i32")
     private int dimension;
 
-    @MarshalledAs("u16")
-    private short replyID;
+    @MarshalledAs("short")
+    private int replyID;
 
     public ClientActionHolderPacket(NetworkContext ctx)
     {
         super(ctx);
     }
 
-    public ClientActionHolderPacket(Short replyID, TileEntity from, NBTTagCompound payload)
+    public ClientActionHolderPacket(int replyID, TileEntity from, NBTTagCompound payload)
     {
         this(QBarConstants.network);
 

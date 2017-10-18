@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ReceivedOn(Side.SERVER)
 public class ServerActionHolderPacket extends Message
 {
-    public static AtomicInteger previousActionID;
+    public static AtomicInteger previousActionID = new AtomicInteger();
 
     private String actionName;
 
@@ -35,8 +35,11 @@ public class ServerActionHolderPacket extends Message
     private int dimension;
 
     @Getter
-    @MarshalledAs("u16")
-    private short actionID;
+    @MarshalledAs("short")
+    private int actionID;
+
+    @Setter
+    boolean expectAnswer;
 
     public ServerActionHolderPacket(NetworkContext ctx)
     {
@@ -51,7 +54,7 @@ public class ServerActionHolderPacket extends Message
         this.dimension = to.getWorld().provider.getDimension();
         this.pos = to.getPos();
 
-        this.actionID = (short) previousActionID.getAndUpdate(previous -> previous > 32765 ? 0 : previous + 1);
+        this.actionID = previousActionID.getAndUpdate(previous -> previous > 32765 ? 0 : previous + 1);
     }
 
     @Override
@@ -65,8 +68,12 @@ public class ServerActionHolderPacket extends Message
             TileEntity receiver = world.getTileEntity(this.pos);
 
             if (receiver instanceof IActionReceiver)
-                ((IActionReceiver) receiver)
-                        .handle(new ActionSender(sender, receiver, actionID), actionName, actionPayload);
+            {
+                ActionSender actionSender = new ActionSender(sender, receiver, actionID);
+                ((IActionReceiver) receiver).handle(actionSender, actionName, actionPayload);
+                if (this.expectAnswer && !actionSender.isAnswered())
+                    actionSender.answer().send();
+            }
         }
     }
 }

@@ -136,11 +136,14 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 itemStack.setAlternateString("");
                 ((GuiBehaviorSkinBase) itemStack.getSkin())
                         .setBackground(new Background(machineDescriptor.getType().getColor()));
+
                 itemStack.setOnClickEvent(e ->
                 {
                     new ServerActionBuilder("PRINT").toTile(this.blueprintPrinter)
                             .withString("blueprint", machineDescriptor.getName()).then(response ->
                     {
+                        if (!response.hasKey("blueprint"))
+                            return;
                         ItemStack blueprint = new ItemStack(QBarItems.BLUEPRINT);
                         NBTTagCompound tag = new NBTTagCompound();
                         blueprint.setTagCompound(tag);

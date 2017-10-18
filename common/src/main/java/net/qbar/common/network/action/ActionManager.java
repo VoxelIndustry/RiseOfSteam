@@ -15,19 +15,19 @@ public class ActionManager
         return INSTANCE;
     }
 
-    private HashMap<Short, IActionCallback> callbackMap;
+    private HashMap<Integer, IActionCallback> callbackMap;
 
     private ActionManager()
     {
         this.callbackMap = new HashMap<>();
     }
 
-    void addCallback(Short actionID, IActionCallback callback)
+    void addCallback(Integer actionID, IActionCallback callback)
     {
         this.callbackMap.put(actionID, callback);
     }
 
-    public void triggerCallback(Short actionID, NBTTagCompound payload)
+    public void triggerCallback(int actionID, NBTTagCompound payload)
     {
         if(!this.callbackMap.containsKey(actionID))
             return;
