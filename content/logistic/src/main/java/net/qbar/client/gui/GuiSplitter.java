@@ -9,7 +9,7 @@ import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
-import net.qbar.common.network.FilteredMachinePacket;
+import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileSplitter;
 import org.yggard.brokkgui.data.EAlignment;
 import org.yggard.brokkgui.element.GuiButton;
@@ -85,25 +85,27 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 
         final GuiButton whitelist1 = new GuiButton("WHITELIST");
         this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
-        whitelist1.setOnActionEvent(e -> new FilteredMachinePacket(splitter, this.splitter.getFacing().rotateY(),
-                !this.splitter.getWhitelistProperty().get(0)).sendToServer());
+        whitelist1.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
+                .withInt("facing", this.splitter.getFacing().rotateY().ordinal())
+                .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(0)).send());
         whitelist1.setWidth(55);
         whitelist1.setHeight(15);
         this.whitelist.add(whitelist1);
 
         final GuiButton whitelist2 = new GuiButton("WHITELIST");
         this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
-        whitelist2.setOnActionEvent(e -> new FilteredMachinePacket(splitter, this.splitter.getFacing().getOpposite(),
-                !this.splitter.getWhitelistProperty().get(1)).sendToServer());
+        whitelist2.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
+                .withInt("facing", this.splitter.getFacing().getOpposite().ordinal())
+                .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(1)).send());
         whitelist2.setWidth(55);
         whitelist2.setHeight(15);
         this.whitelist.add(whitelist2);
 
         final GuiButton whitelist3 = new GuiButton("WHITELIST");
         this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
-        whitelist3.setOnActionEvent(
-                e -> new FilteredMachinePacket(splitter, this.splitter.getFacing().rotateY().getOpposite(),
-                        !this.splitter.getWhitelistProperty().get(2)).sendToServer());
+        whitelist3.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
+                .withInt("facing", this.splitter.getFacing().rotateYCCW().ordinal())
+                .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(2)).send());
         whitelist3.setWidth(55);
         whitelist3.setHeight(15);
         this.whitelist.add(whitelist3);

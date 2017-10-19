@@ -14,7 +14,7 @@ import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.network.KeypunchPacket;
+import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.util.ItemUtils;
 import org.yggard.brokkgui.element.GuiButton;
@@ -30,17 +30,17 @@ import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int      xSize      = 176, ySize = 166;
+    private static final int xSize = 176, ySize = 166;
 
-    private static final Texture  BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/keypunch.png", 0, 0,
+    private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/keypunch.png", 0, 0,
             GuiKeypunch.xSize / 256.0f, GuiKeypunch.ySize / 256.0f);
-    private static final Texture  SLOT       = new Texture(QBarConstants.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
+    private static final Texture SLOT       = new Texture(QBarConstants.MODID + ":textures/gui/slot.png", 0, 0, 1, 1);
 
-    private final TileKeypunch    keypunch;
+    private final TileKeypunch keypunch;
 
     private final GuiRelativePane header, body;
 
-    private final GuiButton       assemble;
+    private final GuiButton assemble;
 
     final GuiAbsolutePane filterPane, craftPane;
 
@@ -104,7 +104,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         craftTab.setOnActionEvent(e ->
         {
             this.keypunch.getCraftTabProperty().setValue(true);
-            new KeypunchPacket(keypunch, 0).sendToServer();
+            new ServerActionBuilder("SET_TAB").toTile(keypunch).withInt("tab", 0).send();
         });
 
         ((GuiButtonSkin) filterTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
@@ -115,7 +115,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         filterTab.setOnActionEvent(e ->
         {
             this.keypunch.getCraftTabProperty().setValue(false);
-            new KeypunchPacket(keypunch, 1).sendToServer();
+            new ServerActionBuilder("SET_TAB").toTile(keypunch).withInt("tab", 1).send();
         });
 
         this.header.addChild(craftTab, 0.25f, 0.5f);
@@ -124,8 +124,9 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.assemble = new GuiButton("PRINT");
         this.assemble.setWidth(56);
         this.assemble.setHeight(16);
-        this.assemble.setOnActionEvent(
-                e -> new KeypunchPacket(keypunch, !this.assemble.getText().equals("PRINT")).sendToServer());
+        this.assemble.setOnActionEvent(e ->
+                new ServerActionBuilder(this.assemble.getText().equals("PRINT") ? "PRINT_CARD" : "LOAD_CARD")
+                        .toTile(keypunch).send());
 
         ((GuiButtonSkin) this.assemble.getSkin()).setBackground(new Background(Color.fromHex("#03A9F4")));
         ((GuiButtonSkin) this.assemble.getSkin()).setHoveredBackground(new Background(Color.fromHex("#4FC3F7")));
@@ -169,7 +170,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 if (click.getKey() == 1)
                 {
                     this.keypunch.getCraftStacks().set(index, ItemStack.EMPTY);
-                    new KeypunchPacket(this.keypunch, index, ItemStack.EMPTY).sendToServer();
+                    new ServerActionBuilder("SET_STACK").toTile(keypunch).withInt("slot", index)
+                            .withItemStack("itemStack", ItemStack.EMPTY).send();
                 }
                 else
                 {
@@ -178,11 +180,12 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                         final ItemStack copy = player.inventory.getItemStack().copy();
                         copy.setCount(1);
                         this.keypunch.getCraftStacks().set(index, copy);
-                        new KeypunchPacket(this.keypunch, index, copy).sendToServer();
+                        new ServerActionBuilder("SET_STACK").toTile(keypunch).withInt("slot", index)
+                                .withItemStack("itemStack", copy).send();
                     }
                 }
             });
-            this.craftPane.addChild(view, 25 + 18 * (i % 3), 3  + 18 * (i / 3));
+            this.craftPane.addChild(view, 25 + 18 * (i % 3), 3 + 18 * (i / 3));
         }
 
         final InventoryCrafting fakeInv = new InventoryCrafting(this.getContainer(), 3, 3);
@@ -195,7 +198,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         resultView.setHeight(22);
         resultView.setTooltip(true);
         ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
-        this.craftPane.addChild(resultView, 25 + (18*4), 3 + 18);
+        this.craftPane.addChild(resultView, 25 + (18 * 4), 3 + 18);
 
         this.keypunch.getCraftStacks()
                 .addListener((ListValueChangeListener<? super ItemStack>) (obs, oldStack, currentStack) ->
@@ -231,7 +234,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 if (click.getKey() == 1)
                 {
                     this.keypunch.getFilterStacks().set(index, ItemStack.EMPTY);
-                    new KeypunchPacket(this.keypunch, index, ItemStack.EMPTY).sendToServer();
+                    new ServerActionBuilder("SET_STACK").toTile(keypunch).withInt("slot", index)
+                            .withItemStack("itemStack", ItemStack.EMPTY).send();
                 }
                 else
                 {
@@ -240,11 +244,12 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                         final ItemStack copy = player.inventory.getItemStack().copy();
                         copy.setCount(1);
                         this.keypunch.getFilterStacks().set(index, copy);
-                        new KeypunchPacket(this.keypunch, index, copy).sendToServer();
+                        new ServerActionBuilder("SET_STACK").toTile(keypunch).withInt("slot", index)
+                                .withItemStack("itemStack", copy).send();
                     }
                 }
             });
-            this.filterPane.addChild(view, 25 + 18 * (i % 3), 3  + 18 * (i / 3));
+            this.filterPane.addChild(view, 25 + 18 * (i % 3), 3 + 18 * (i / 3));
         }
         this.keypunch.getFilterStacks().addListener(obs ->
         {
@@ -300,9 +305,9 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 this.assemble.setText("LOAD");
                 if (this.keypunch.getCraftTabProperty().getValue()
                         && stack.getTagCompound().getInteger("cardTypeID") == PunchedCardDataManager.ECardType.CRAFT
-                                .getID()
+                        .getID()
                         || !this.keypunch.getCraftTabProperty().getValue() && stack.getTagCompound()
-                                .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.FILTER.getID())
+                        .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.FILTER.getID())
                     this.assemble.setDisabled(false);
                 else
                     this.assemble.setDisabled(true);

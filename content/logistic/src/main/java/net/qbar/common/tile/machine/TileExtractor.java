@@ -19,13 +19,14 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.tile.IFilteredMachine;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
 import java.util.List;
 
-public class TileExtractor extends TileInventoryBase implements IContainerProvider, ITickable, IFilteredMachine
+public class TileExtractor extends TileInventoryBase implements IContainerProvider, ITickable, IActionReceiver
 {
     private EnumFacing facing;
 
@@ -212,19 +213,16 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
         return this.whitelistProperty;
     }
 
-    @Override
     public boolean isWhitelist(final EnumFacing facing)
     {
         return this.getWhitelistProperty().getValue();
     }
 
-    @Override
     public void setWhitelist(final EnumFacing facing, final boolean isWhitelist)
     {
         this.getWhitelistProperty().setValue(isWhitelist);
     }
 
-    @Override
     public FilterCard getFilter(final EnumFacing facing)
     {
         return this.filter;
@@ -255,5 +253,16 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("WHITELIST".equals(actionID))
+        {
+            this.setWhitelist(EnumFacing.values()[payload.getInteger("facing")],
+                    payload.getBoolean("whitelist"));
+            this.markDirty();
+        }
     }
 }

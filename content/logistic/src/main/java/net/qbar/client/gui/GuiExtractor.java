@@ -10,7 +10,7 @@ import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.card.PunchedCardDataManager.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
-import net.qbar.common.network.FilteredMachinePacket;
+import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileExtractor;
 import org.yggard.brokkgui.data.EAlignment;
 import org.yggard.brokkgui.element.GuiButton;
@@ -88,8 +88,9 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
                 this.whitelist.setTextColor(Color.fromHex("#ffffff", 0.87f));
             }
         });
-        this.whitelist.setOnActionEvent(e -> new FilteredMachinePacket(extractor, EnumFacing.UP,
-                !this.extractor.getWhitelistProperty().getValue()).sendToServer());
+        this.whitelist.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(extractor)
+                .withInt("facing", EnumFacing.UP.ordinal())
+                .withBoolean("whitelist", !this.extractor.getWhitelistProperty().getValue()).send());
 
         ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
         ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
