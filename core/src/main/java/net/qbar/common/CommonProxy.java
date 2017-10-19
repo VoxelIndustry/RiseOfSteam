@@ -26,12 +26,11 @@ public class CommonProxy
         QBarConstants.network = NetworkContext.forChannel(QBarConstants.MODID);
         QBarConstants.network.register(ContainerUpdatePacket.class);
         QBarConstants.network.register(TileSyncRequestPacket.class);
-        QBarConstants.network.register(KeypunchPacket.class);
-        QBarConstants.network.register(FilteredMachinePacket.class);
         QBarConstants.network.register(PipeUpdatePacket.class);
         QBarConstants.network.register(WrenchPacket.class);
         QBarConstants.network.register(MultiblockBoxPacket.class);
-        QBarConstants.network.register(BlueprintPrinterPacket.class);
+        QBarConstants.network.register(ServerActionHolderPacket.class);
+        QBarConstants.network.register(ClientActionHolderPacket.class);
 
         CapabilitySteamHandler.register();
 

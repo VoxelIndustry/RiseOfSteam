@@ -22,7 +22,8 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IBelt;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.tile.IFilteredMachine;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
@@ -30,7 +31,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class TileSplitter extends TileInventoryBase
-        implements IContainerProvider, ITickable, IFilteredMachine, ISidedInventory
+        implements IContainerProvider, ITickable, ISidedInventory, IActionReceiver
 {
     private EnumFacing facing;
 
@@ -273,14 +274,12 @@ public class TileSplitter extends TileInventoryBase
         return this.whitelistProperty;
     }
 
-    @Override
     public boolean isWhitelist(final EnumFacing facing)
     {
         return this.getWhitelistProperty()
                 .get(facing == this.getFacing().getOpposite() ? 1 : facing == this.getFacing().rotateY() ? 0 : 2);
     }
 
-    @Override
     public void setWhitelist(final EnumFacing facing, final boolean isWhitelist)
     {
         this.getWhitelistProperty().set(
@@ -288,7 +287,6 @@ public class TileSplitter extends TileInventoryBase
                 isWhitelist);
     }
 
-    @Override
     public FilterCard getFilter(final EnumFacing facing)
     {
         if (facing == this.facing.getOpposite())
@@ -345,5 +343,16 @@ public class TileSplitter extends TileInventoryBase
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == this.getFacing())
             return true;
         return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("WHITELIST".equals(actionID))
+        {
+            this.setWhitelist(EnumFacing.values()[payload.getInteger("facing")],
+                    payload.getBoolean("whitelist"));
+            this.markDirty();
+        }
     }
 }

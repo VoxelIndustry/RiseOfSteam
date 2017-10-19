@@ -15,24 +15,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CraftCard;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
-public class TileKeypunch extends TileMultiblockInventoryBase
+public class TileKeypunch extends TileMultiblockInventoryBase implements IActionReceiver
 {
-    private final int[]                       INPUT   = new int[] { 0 };
-    private final int[]                       OUTPUT  = new int[] { 1 };
+    private final int[] INPUT  = new int[]{0};
+    private final int[] OUTPUT = new int[]{1};
 
     private final BaseListProperty<ItemStack> craftStacks;
     private final BaseListProperty<ItemStack> filterStacks;
 
-    private final BaseProperty<Boolean>       isCraftTabProperty, canPrintProperty;
+    private final BaseProperty<Boolean> isCraftTabProperty, canPrintProperty;
 
-    private final InventoryCrafting           fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
+    private final InventoryCrafting fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
 
     public TileKeypunch()
     {
@@ -193,13 +198,95 @@ public class TileKeypunch extends TileMultiblockInventoryBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.KEYPUNCH.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.KEYPUNCH.getUniqueID(), this.getWorld(), this.pos.getX()
+                , this.pos.getY(),
                 this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        switch (actionID)
+        {
+            case "SET_TAB":
+                this.getCraftTabProperty().setValue(payload.getInteger("tab") == 0);
+                this.markDirty();
+                break;
+            case "SET_STACK":
+                if (this.getCraftTabProperty().getValue())
+                    this.getCraftStacks().set(payload.getInteger("slot"),
+                            new ItemStack(payload.getCompoundTag("itemStack")));
+                else
+                    this.getFilterStacks().set(payload.getInteger("slot"),
+                            new ItemStack(payload.getCompoundTag("itemStack")));
+                this.markDirty();
+                break;
+            case "LOAD_CARD":
+                if (this.getCraftTabProperty().getValue())
+                {
+                    if (this.getStackInSlot(0).hasTagCompound() && this.getStackInSlot(0).getTagCompound()
+                            .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.CRAFT.getID())
+                    {
+                        final CraftCard card = (CraftCard) PunchedCardDataManager.getInstance()
+                                .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                        for (int i = 0; i < card.recipe.length; i++)
+                            this.getCraftStacks().set(i, card.recipe[i]);
+                        this.markDirty();
+
+                    }
+                }
+                else
+                {
+                    if (this.getStackInSlot(0).hasTagCompound() && this.getStackInSlot(0).getTagCompound()
+                            .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.FILTER.getID())
+                    {
+                        final FilterCard card = (FilterCard) PunchedCardDataManager.getInstance()
+                                .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                        for (int i = 0; i < card.stacks.length; i++)
+                            this.getFilterStacks().set(i, card.stacks[i]);
+                        this.markDirty();
+                    }
+                }
+                break;
+            case "PRINT_CARD":
+                if (this.getCraftTabProperty().getValue())
+                {
+                    if (this.getCanPrintProperty().getValue())
+                    {
+                        final ItemStack punched = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
+                        punched.setTagCompound(new NBTTagCompound());
+                        final CraftCard card = new CraftCard(PunchedCardDataManager.ECardType.CRAFT.getID());
+                        for (int i = 0; i < this.getCraftStacks().size(); i++)
+                            card.recipe[i] = this.getCraftStacks().get(i);
+                        card.result = this.getRecipeResult();
+                        PunchedCardDataManager.getInstance().writeToNBT(punched.getTagCompound(), card);
+                        this.decrStackSize(0, 1);
+                        this.setInventorySlotContents(1, punched);
+                        this.markDirty();
+                    }
+                }
+                else
+                {
+                    final ItemStack punched = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
+                    punched.setTagCompound(new NBTTagCompound());
+                    final FilterCard card = new FilterCard(PunchedCardDataManager.ECardType.FILTER.getID());
+                    for (int i = 0; i < this.getFilterStacks().size(); i++)
+                        card.stacks[i] = this.getFilterStacks().get(i);
+                    PunchedCardDataManager.getInstance().writeToNBT(punched.getTagCompound(), card);
+                    this.decrStackSize(0, 1);
+                    this.setInventorySlotContents(1, punched);
+                    this.markDirty();
+                }
+                break;
+            default:
+                QBarConstants.LOGGER.warn("Unknown action {} has been sent to TileKeypunch at {}", actionID, this.pos);
+                break;
+        }
     }
 }
