@@ -35,8 +35,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
     private static final int xSize = 176, ySize = 166;
 
     private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/blueprintprinter.png",
-            0, 0,
-            xSize / 256.0f, ySize / 256.0f);
+            0, 0, xSize / 256.0f, ySize / 256.0f);
 
     private final TileBlueprintPrinter blueprintPrinter;
 
