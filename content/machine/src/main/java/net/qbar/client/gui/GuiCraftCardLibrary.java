@@ -61,7 +61,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
             this.cards[x] = new CraftCard[8];
             for (int y = 0; y < 8; y++)
             {
-                this.setupView(body,x,y);
+                this.setupView(body, x, y);
                 int finalX = x;
                 int finalY = y;
                 ((ListenerSlot) this.getContainer().getSlot(y * 8 + x)).setOnChange(stack ->
@@ -70,7 +70,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
         }
     }
 
-    private void setupView(GuiAbsolutePane body, int x,int y)
+    private void setupView(GuiAbsolutePane body, int x, int y)
     {
         ItemStack card = this.getContainer().inventorySlots.get(y * 8 + x).getStack();
 
@@ -82,6 +82,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
             this.views[x][y].setWidth(18);
             this.views[x][y].setHeight(18);
             this.views[x][y].setTooltip(true);
+            this.views[x][y].setzLevel(250);
             body.addChild(this.views[x][y], x * 18, y * 18);
         }
     }
