@@ -17,7 +17,7 @@ import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
 public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int xSize = 176, ySize = 166;
+    private static final int xSize = 176, ySize = 246;
 
     private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/craftcardlibrary.png",
             0, 0,
@@ -52,10 +52,10 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
 
     private void setupViews(GuiAbsolutePane body)
     {
-        this.views = new ItemStackView[8][];
-        this.cards = new CraftCard[8][];
+        this.views = new ItemStackView[9][];
+        this.cards = new CraftCard[9][];
 
-        for (int x = 0; x < 8; x++)
+        for (int x = 0; x < 9; x++)
         {
             this.views[x] = new ItemStackView[8];
             this.cards[x] = new CraftCard[8];
@@ -64,7 +64,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
                 this.setupView(body, x, y);
                 int finalX = x;
                 int finalY = y;
-                ((ListenerSlot) this.getContainer().getSlot(y * 8 + x)).setOnChange(stack ->
+                ((ListenerSlot) this.getContainer().getSlot(y * 9 + x + 36)).setOnChange(stack ->
                         this.setupView(body, finalX, finalY));
             }
         }
@@ -72,8 +72,14 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
 
     private void setupView(GuiAbsolutePane body, int x, int y)
     {
-        ItemStack card = this.getContainer().inventorySlots.get(y * 8 + x).getStack();
+        ItemStack card = this.getContainer().inventorySlots.get(y * 9 + x + 36).getStack();
 
+        if (this.views[x][y] != null)
+        {
+            body.removeChild(this.views[x][y]);
+            this.cards[x][y] = null;
+            this.views[x][y] = null;
+        }
         if (card.hasTagCompound() && card.getTagCompound().hasKey("cardTypeID"))
         {
             this.cards[x][y] = ((CraftCard) PunchedCardDataManager.getInstance()
@@ -82,8 +88,8 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
             this.views[x][y].setWidth(18);
             this.views[x][y].setHeight(18);
             this.views[x][y].setTooltip(true);
-            this.views[x][y].setzLevel(250);
-            body.addChild(this.views[x][y], x * 18, y * 18);
+            this.views[x][y].setzLevel(310);
+            body.addChild(this.views[x][y], x * 18 + 7, y * 18 + 14);
         }
     }
 }

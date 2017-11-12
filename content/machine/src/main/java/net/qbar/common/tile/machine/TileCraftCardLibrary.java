@@ -22,25 +22,25 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase
 {
     public TileCraftCardLibrary()
     {
-        super("craftcardlibrary", 64);
+        super("craftcardlibrary", 72);
     }
 
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
-        return IntStream.range(0, 64).toArray();
+        return IntStream.range(0, 72).toArray();
     }
 
     @Override
     public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
     {
-        return index >= 0 && index <= 63;
+        return index >= 0 && index <= 71;
     }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
     {
-        return index >= 0 && index <= 63;
+        return index >= 0 && index <= 71;
     }
 
     @Override
@@ -51,16 +51,16 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase
                 .getID() == PunchedCardDataManager.ECardType.CRAFT.getID();
 
         return new ContainerBuilder("craftcardlibrary", player).player(player.inventory)
-                .inventory(8, 162).hotbar(8, 220).addInventory()
+                .inventory(8, 123).hotbar(8, 181).addInventory()
                 .tile(this)
-                .filterSlotLine(0, 8, 7, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(7, 8, 25, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(15, 8, 43, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(23, 8, 61, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(31, 8, 79, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(39, 8, 97, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(47, 8, 115, 8, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(55, 8, 133, 8, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(0, 8, -25, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(9, 8, -7, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(18, 8, 11, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(27, 8, 29, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(36, 8, 47, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(45, 8, 65, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(54, 8, 83, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(63, 8, 101, 9, EnumFacing.Axis.X, cardFilter)
                 .addInventory().create();
     }
 
