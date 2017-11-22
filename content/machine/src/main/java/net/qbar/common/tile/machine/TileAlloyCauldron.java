@@ -8,8 +8,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.fluid.MultiFluidTank;
+import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.type.MeltRecipe;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
@@ -19,19 +23,19 @@ import java.util.List;
 
 public class TileAlloyCauldron extends TileMultiblockInventoryBase implements ITickable
 {
-    private final List<FluidTank> tanks;
+    private final MultiFluidTank tanks;
 
     private final float maxHeat;
     private       float heat;
     private       float remainingHeat;
 
     private MeltRecipe currentRecipe;
-    private float      remainingMeltTime;
+    private float      meltProgress;
 
     public TileAlloyCauldron()
     {
         super("alloycauldron", 5);
-        this.tanks = new ArrayList<>(2);
+        this.tanks = new MultiFluidTank(16* Fluid.BUCKET_VOLUME);
         this.maxHeat = 1500;
     }
 
@@ -75,18 +79,38 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         {
             this.setInventorySlotContents(1, this.decrStackSize(0, 1));
 
+            QBarRecipeHandler.getRecipe(QBarRecipeHandler.MELTING_UID,
+                    this.getStackInSlot(1))
+                    .ifPresent(qBarRecipe -> this.currentRecipe = (MeltRecipe) qBarRecipe);
         }
 
-        // TODO : Melt recipes
+        if (this.currentRecipe != null)
+        {
+            float efficiency = (this.currentRecipe.getHighMeltingPoint() - this.currentRecipe.getLowMeltingPoint()) /
+                    (this.heat - this.currentRecipe.getLowMeltingPoint());
+            this.meltProgress += (1 / this.currentRecipe.getTime()) * efficiency;
+
+            if (this.meltProgress > 1 && this.fillTanks(this.currentRecipe.getOutput().copy()))
+            {
+                this.currentRecipe = null;
+                this.meltProgress = 0;
+            }
+        }
     }
 
     private void alloyLogic()
     {
-        if (this.tanks.size() < 2)
+        if (this.tanks.getFluids().size() < 2)
             return;
     }
 
-    public int getMinimumTemp()
+    private boolean fillTanks(FluidStack fluid)
+    {
+        // TODO: Multi tank filling
+        return false;
+    }
+
+    private int getMinimumTemp()
     {
         return (int) (this.world.getBiome(this.getPos()).getTemperature(this.pos) * 200);
     }
@@ -111,13 +135,13 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    public boolean canInsertItem(int index, ItemStack stack, EnumFacing side)
     {
         return false;
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing side)
     {
         return false;
     }

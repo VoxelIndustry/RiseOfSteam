@@ -26,4 +26,9 @@ public class MeltRecipe extends QBarRecipe
         this.highMeltingPoint = highMeltingPoint;
         this.time = baseMeltingTime;
     }
+
+    public FluidStack getOutput()
+    {
+        return this.getRecipeOutputs(FluidStack.class).get(0).getRawIngredient();
+    }
 }
