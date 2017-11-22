@@ -4,14 +4,17 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
 import net.qbar.common.recipe.type.LiquidBoilerRecipe;
+import net.qbar.common.recipe.type.MeltRecipe;
 import net.qbar.common.recipe.type.RollingMillRecipe;
 import net.qbar.common.recipe.type.SawMillRecipe;
 import org.apache.commons.lang3.StringUtils;
@@ -79,5 +82,26 @@ public class QBarRecipeHelper
     {
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.SAW_MILL_UID).add(
                 new SawMillRecipe(new ItemStackRecipeIngredient(input), new ItemStackRecipeIngredient(output)));
+    }
+
+    public static void addMeltingRecipe(String metalName, float lowMeltingPoint, float hightMeltingPoint, int
+            baseMeltingTime)
+    {
+        QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
+                new MeltRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + StringUtils.capitalize
+                                (metalName), 144)), lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+        );
+
+        QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
+                new MeltRecipe(new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metalName), 1),
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + StringUtils.capitalize
+                                (metalName), 1296)), lowMeltingPoint, hightMeltingPoint, baseMeltingTime));
+
+        QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
+                new MeltRecipe(new ItemStackRecipeIngredient("plate" + StringUtils.capitalize(metalName), 1),
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + StringUtils.capitalize
+                                (metalName), 144)), lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+        );
     }
 }

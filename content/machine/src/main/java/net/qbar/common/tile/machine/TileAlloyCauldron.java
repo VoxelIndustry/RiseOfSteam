@@ -73,8 +73,8 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
 
         if (!this.getStackInSlot(0).isEmpty() && this.getStackInSlot(1).isEmpty())
         {
-            this.setInventorySlotContents(1, this.getStackInSlot(0));
-            this.setInventorySlotContents(0, ItemStack.EMPTY);
+            this.setInventorySlotContents(1, this.decrStackSize(0, 1));
+
         }
 
         // TODO : Melt recipes
