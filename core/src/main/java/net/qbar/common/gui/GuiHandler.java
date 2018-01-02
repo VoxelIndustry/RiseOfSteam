@@ -94,6 +94,8 @@ public class GuiHandler implements IGuiHandler
             case CRAFTCARDLIBRARY:
                 return BrokkGuiManager.getBrokkGuiContainer(new GuiCraftCardLibrary(player, (TileCraftCardLibrary)
                         tile));
+            case ALLOYCAULDRON:
+                return new GuiAlloyCauldron(player, (TileAlloyCauldron) tile);
             default:
                 break;
         }

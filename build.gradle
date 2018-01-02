@@ -5,9 +5,7 @@ buildscript {
         maven { url = "http://maven.ferenyr.info/artifactory/opmcorp" }
     }
     dependencies {
-        classpath('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT') {
-            exclude module: 'commons-io'
-        }
+        classpath('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT')
         classpath 'net.opmcorp:craftystates:0.1.1'
     }
 }
@@ -32,7 +30,7 @@ allprojects {
     }
 
     minecraft {
-        version = "1.12.2-14.23.0.2529"
+        version = "1.12.2-14.23.1.2582"
         runDir = "run"
 
         mappings = "snapshot_20171010"

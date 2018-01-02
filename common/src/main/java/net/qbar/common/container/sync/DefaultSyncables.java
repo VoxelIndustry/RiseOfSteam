@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 

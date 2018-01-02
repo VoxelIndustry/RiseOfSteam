@@ -89,19 +89,19 @@ public class QBarRecipeHelper
     {
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
                 new MeltRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + StringUtils.capitalize
-                                (metalName), 144)), lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 144)),
+                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
         );
 
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
                 new MeltRecipe(new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + StringUtils.capitalize
-                                (metalName), 1296)), lowMeltingPoint, hightMeltingPoint, baseMeltingTime));
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 1296)),
+                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime));
 
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
                 new MeltRecipe(new ItemStackRecipeIngredient("plate" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + StringUtils.capitalize
-                                (metalName), 144)), lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 144)),
+                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
         );
     }
 }

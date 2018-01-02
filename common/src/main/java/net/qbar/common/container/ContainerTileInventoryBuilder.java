@@ -11,6 +11,7 @@ import net.qbar.common.container.sync.DefaultSyncables;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import org.apache.commons.lang3.Range;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;

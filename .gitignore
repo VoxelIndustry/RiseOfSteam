@@ -78,7 +78,7 @@ eclipse/*
 *.dat
 screenshots/*
 run/*
-
+*/run/*
 
 # Created by https://www.gitignore.io/api/jetbrains
 

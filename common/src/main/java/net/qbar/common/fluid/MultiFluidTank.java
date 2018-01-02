@@ -1,9 +1,8 @@
 package net.qbar.common.fluid;
 
 import lombok.Getter;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -16,11 +15,13 @@ import java.util.List;
 public class MultiFluidTank implements IFluidTank, IFluidHandler
 {
     private int              capacity;
+    private int              tankCount;
     private List<FluidStack> fluids;
 
-    public MultiFluidTank(int capacity)
+    public MultiFluidTank(int capacity, int tankCount)
     {
         this.capacity = capacity;
+        this.tankCount = tankCount;
         this.fluids = new ArrayList<>();
     }
 
@@ -74,7 +75,26 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
     @Override
     public int fill(FluidStack resource, boolean doFill)
     {
-        return 0;
+        int filled = 0;
+        for (FluidStack fluid : fluids)
+        {
+            if (fluid.equals(resource))
+            {
+                filled += Math.min(this.capacity - fluid.amount, resource.amount - filled);
+                if (doFill)
+                    fluid.amount += filled;
+                break;
+            }
+        }
+
+        if (filled < resource.amount && this.fluids.size() < this.tankCount)
+        {
+            int leftover = Math.min(resource.amount - filled, this.capacity);
+            filled += leftover;
+            if (doFill)
+                this.fluids.add(new FluidStack(resource, leftover));
+        }
+        return filled;
     }
 
     @Nullable
@@ -89,5 +109,33 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
     public FluidStack drain(int maxDrain, boolean doDrain)
     {
         return null;
+    }
+
+    public MultiFluidTank readFromNBT(NBTTagCompound nbt)
+    {
+        this.fluids.clear();
+        if (!nbt.hasKey("Empty"))
+        {
+            for (int i = 0; i < nbt.getInteger("tankCount"); i++)
+                this.fluids.add(FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("fluid" + i)));
+        }
+        return this;
+    }
+
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+    {
+        if (!this.fluids.isEmpty())
+        {
+            int i = 0;
+            for (FluidStack fluid : this.fluids)
+            {
+                nbt.setTag("fluid" + i, fluid.writeToNBT(new NBTTagCompound()));
+                i++;
+            }
+            nbt.setInteger("tankCount", i);
+        }
+        else
+            nbt.setString("Empty", "");
+        return nbt;
     }
 }

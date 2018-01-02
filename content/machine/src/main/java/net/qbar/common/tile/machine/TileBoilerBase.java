@@ -27,7 +27,6 @@ public abstract class TileBoilerBase extends TileMultiblockInventoryBase impleme
 
     @Setter
     protected     float heat;
-    @Setter
     private final float maxHeat;
 
     public TileBoilerBase(String name, int inventorySize, int maxHeat, int steamCapacity, int steamMaxPressure,

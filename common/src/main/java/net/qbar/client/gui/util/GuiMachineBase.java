@@ -12,6 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.common.container.IContainerProvider;
+import net.qbar.common.fluid.MultiFluidTank;
 import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.tile.TileInventoryBase;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,6 +41,8 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     private final List<Pair<IFluidTank, GuiSpace>> fluidtanks;
     private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
 
+    private final List<Pair<MultiFluidTank, GuiSpace>> multiFluidTanks;
+
     private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
     private final List<Pair<GuiSpace, Supplier<List<String>>>>        tooltips;
 
@@ -53,6 +56,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         this.background = background;
         this.fluidtanks = new ArrayList<>();
         this.steamtanks = new ArrayList<>();
+        this.multiFluidTanks = new ArrayList<>();
         this.animatedSprites = new ArrayList<>();
         this.tooltips = new ArrayList<>();
 
@@ -67,6 +71,11 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     protected void addSteamTank(ISteamTank steamTank, int x, int y, int width, int height)
     {
         this.steamtanks.add(Pair.of(steamTank, new GuiSpace(x, y, width, height)));
+    }
+
+    protected void addMultiFluidTank(MultiFluidTank multiFluidTank, int x, int y, int width, int height)
+    {
+        this.multiFluidTanks.add(Pair.of(multiFluidTank, new GuiSpace(x, y, width, height)));
     }
 
     protected void addAnimatedSprite(Function<Integer, Integer> stateSupplier, int x, int y, int width, int height,
@@ -160,6 +169,25 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
+        for (Pair<MultiFluidTank, GuiSpace> multiFluidTank : multiFluidTanks)
+        {
+            if (multiFluidTank.getValue().isMouseInside(mouseX - x, mouseY - y))
+            {
+                final List<String> lines = new ArrayList<>();
+                if (multiFluidTank.getKey().getFluids().isEmpty())
+                    lines.add("Empty");
+                else
+                {
+                    for (FluidStack fluidStack : multiFluidTank.getKey().getFluids())
+                    {
+                        lines.add(TextFormatting.GOLD + fluidStack.getLocalizedName());
+                        lines.add(TextFormatting.GOLD + "" + fluidStack.amount + " mB");
+                    }
+                    lines.add(TextFormatting.GOLD + "Capacity: " + multiFluidTank.getKey().getCapacity());
+                }
+                GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
+            }
+        }
         for (Pair<GuiSpace, Supplier<List<String>>> tooltip : this.tooltips)
         {
             if (mouseX > x + tooltip.getKey().getX() && mouseX < x + tooltip.getKey().getEndX() &&
@@ -247,18 +275,40 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                         steamTank.getValue().getHeight(),
                         (int) (steamTank.getKey().getCapacity() * steamTank.getKey().getMaxPressure()));
         }
+
+        for (Pair<MultiFluidTank, GuiSpace> multiFluidTank : multiFluidTanks)
+        {
+            if (!multiFluidTank.getKey().getFluids().isEmpty())
+            {
+                int pixels = 0;
+                for (FluidStack fluidStack : multiFluidTank.getKey().getFluids())
+                {
+                    int fluidHeight = (int) ((float) fluidStack.amount / multiFluidTank.getKey().getCapacity() *
+                            multiFluidTank.getValue().getHeight());
+                    pixels += fluidHeight;
+                    this.drawFluid(fluidStack, x + multiFluidTank.getValue().getX(),
+                            y + multiFluidTank.getValue().getY() + multiFluidTank.getValue().getHeight() - pixels,
+                            multiFluidTank.getValue().getWidth(), fluidHeight);
+                }
+            }
+        }
     }
 
     protected void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
                              final int maxCapacity)
     {
+        int offsetHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
+        this.drawFluid(fluid, x, y + height - offsetHeight, width, offsetHeight);
+    }
+
+    protected void drawFluid(FluidStack fluid, int x, int y, int width, int height)
+    {
         this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         final ResourceLocation still = fluid.getFluid().getStill(fluid);
         final TextureAtlasSprite sprite = this.mc.getTextureMapBlocks().getAtlasSprite(still.toString());
 
-        final int drawHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
         final int iconHeight = sprite.getIconHeight();
-        int offsetHeight = drawHeight;
+        int offsetHeight = height;
 
         int iteration = 0;
         while (offsetHeight != 0)
