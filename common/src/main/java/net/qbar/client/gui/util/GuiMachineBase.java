@@ -110,8 +110,8 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
 
     protected String getHeatTooltip(Supplier<Float> heatSupplier, Supplier<Float> maxHeatSupplier)
     {
-        return TextFormatting.GOLD + "" + heatFormat.format(heatSupplier.get() / 10) + " / "
-                + maxHeatSupplier.get() / 10 + " °C";
+        return TextFormatting.GOLD + "" + heatFormat.format(heatSupplier.get()) + " / "
+                + maxHeatSupplier.get() + " °C";
     }
 
     @Override

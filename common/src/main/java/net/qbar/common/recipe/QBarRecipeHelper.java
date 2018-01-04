@@ -13,10 +13,7 @@ import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
-import net.qbar.common.recipe.type.LiquidBoilerRecipe;
-import net.qbar.common.recipe.type.MeltRecipe;
-import net.qbar.common.recipe.type.RollingMillRecipe;
-import net.qbar.common.recipe.type.SawMillRecipe;
+import net.qbar.common.recipe.type.*;
 import org.apache.commons.lang3.StringUtils;
 
 public class QBarRecipeHelper
@@ -102,6 +99,17 @@ public class QBarRecipeHelper
                 new MeltRecipe(new ItemStackRecipeIngredient("plate" + StringUtils.capitalize(metalName), 1),
                         new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 144)),
                         lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+        );
+    }
+
+    public static void addAlloyRecipe(String firstMetal, String secondMetal, int secondCount, String resultMetal)
+    {
+        QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.ALLOY_UID).add(
+                new AlloyRecipe(new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + firstMetal, 1)),
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + secondMetal,
+                                secondCount)),
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + resultMetal, 1 +
+                                secondCount)))
         );
     }
 }

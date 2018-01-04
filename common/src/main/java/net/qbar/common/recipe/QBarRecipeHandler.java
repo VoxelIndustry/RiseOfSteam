@@ -16,7 +16,8 @@ public class QBarRecipeHandler
     public static final String ORE_WASHER_UID      = QBarConstants.MODID + ".orewasher";
     public static final String SORTING_MACHINE_UID = QBarConstants.MODID + ".sortingmachine";
     public static final String SAW_MILL_UID        = QBarConstants.MODID + ".sawmill";
-    public static final String MELTING_UID        = QBarConstants.MODID + ".melting";
+    public static final String MELTING_UID         = QBarConstants.MODID + ".melting";
+    public static final String ALLOY_UID           = QBarConstants.MODID + ".alloying";
 
     public static final HashMap<String, QBarRecipeCategory> RECIPES = new HashMap<>();
 

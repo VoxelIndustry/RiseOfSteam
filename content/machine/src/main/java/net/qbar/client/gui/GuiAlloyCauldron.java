@@ -21,14 +21,14 @@ public class GuiAlloyCauldron extends GuiMachineBase<TileAlloyCauldron>
         super(player, alloyCauldron, BACKGROUND);
 
         this.addAnimatedSprite(this.getMachine()::getBurnTimeScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(81).y(38).width(14).height(13).u(176).v(12)
-                        .s(190).t(25).build()).direction(GuiProgress.StartDirection.TOP).revert(false).build());
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(18).y(54).width(14).height(13).u(217).v(12)
+                        .s(217 + 14).t(25).build()).direction(GuiProgress.StartDirection.TOP).revert(false).build());
         this.addAnimatedSprite(this.getMachine()::getHeatScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(4).y(79).width(12).height(78).u(176).v(102)
-                        .s(176 + 12).t(102 + 79).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(4).y(76).width(12).height(71).u(176).v(102)
+                        .s(176 + 12).t(102 + 71).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
                         .build());
         this.addAnimatedSprite(this.getMachine()::getMeltProgressScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(79).y(34).width(25).height(16).u(176).v(14).s
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(38).y(21).width(25).height(16).u(176).v(14).s
                         (176 + 25).t(14 + 16).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
                         .build());
 

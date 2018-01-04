@@ -25,20 +25,22 @@ public class QBarRecipes
 {
     public void registerRecipes()
     {
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID, new QBarRecipeCategory(QBarRecipeHandler
-                .ROLLINGMILL_UID));
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.LIQUIDBOILER_UID, new QBarRecipeCategory(QBarRecipeHandler
-                .LIQUIDBOILER_UID));
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ORE_WASHER_UID, new OreWasherRecipeCategory(QBarRecipeHandler
-                .ORE_WASHER_UID));
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.FURNACE_UID, new FurnaceRecipeCategory(QBarRecipeHandler
-                .FURNACE_UID));
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.SORTING_MACHINE_UID, new SortingMachineRecipeCategory
-                (QBarRecipeHandler.SORTING_MACHINE_UID));
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.SAW_MILL_UID, new QBarRecipeCategory(QBarRecipeHandler
-                .SAW_MILL_UID));
-        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.MELTING_UID, new QBarRecipeCategory(QBarRecipeHandler
-                .MELTING_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ROLLINGMILL_UID,
+                new QBarRecipeCategory(QBarRecipeHandler.ROLLINGMILL_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.LIQUIDBOILER_UID,
+                new QBarRecipeCategory(QBarRecipeHandler.LIQUIDBOILER_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ORE_WASHER_UID,
+                new OreWasherRecipeCategory(QBarRecipeHandler.ORE_WASHER_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.FURNACE_UID,
+                new FurnaceRecipeCategory(QBarRecipeHandler.FURNACE_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.SORTING_MACHINE_UID,
+                new SortingMachineRecipeCategory(QBarRecipeHandler.SORTING_MACHINE_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.SAW_MILL_UID,
+                new QBarRecipeCategory(QBarRecipeHandler.SAW_MILL_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.MELTING_UID,
+                new QBarRecipeCategory(QBarRecipeHandler.MELTING_UID));
+        QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ALLOY_UID,
+                new QBarRecipeCategory(QBarRecipeHandler.ALLOY_UID));
 
         QBarMaterials.metals.forEach(metalName ->
         {
@@ -84,6 +86,9 @@ public class QBarRecipes
         QBarRecipeHelper.addMeltingRecipe("nickel", 1455, 1455 * 1.25f, 40);
         QBarRecipeHelper.addMeltingRecipe("lead", 327, 327 * 1.25f, 15);
         QBarRecipeHelper.addMeltingRecipe("steel", 1371, 1371 * 1.25f, 35);
+
+        QBarRecipeHelper.addAlloyRecipe("tin", "copper", 3, "bronze");
+        QBarRecipeHelper.addAlloyRecipe("zinc", "copper", 3, "brass");
     }
 
     public void registerOreDict()

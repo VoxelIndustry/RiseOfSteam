@@ -22,8 +22,8 @@ public class GuiSteamFurnaceMK2 extends GuiMachineBase<TileSteamFurnaceMK2>
         this.addSteamTank(steamfurnace.getSteamTank(), 151, 7, 18, 73);
 
         this.addAnimatedSprite(this::getHeatScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(10).y(79).width(12).height(78).u(176).v(102)
-                        .s(176 + 12).t(102 + 79).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(10).y(79).width(12).height(71).u(176).v(102)
+                        .s(176 + 12).t(102 + 71).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
                         .build());
         this.addAnimatedSprite(this.getMachine()::getProgressScaled,
                 GuiProgress.builder().space(GuiTexturedSpace.builder().x(79).y(34).width(25).height(16).u(176).v(14).s

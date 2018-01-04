@@ -19,14 +19,19 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.fluid.MultiFluidTank;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import net.qbar.common.recipe.QBarRecipeHelper;
+import net.qbar.common.recipe.type.AlloyRecipe;
 import net.qbar.common.recipe.type.MeltRecipe;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 import net.qbar.common.util.ItemUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 public class TileAlloyCauldron extends TileMultiblockInventoryBase implements ITickable
@@ -125,10 +130,26 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         }
     }
 
+    private AlloyRecipe cachedAlloyRecipe;
+    private MutablePair<FluidStack, FluidStack> cachedAlloyIngredients = new MutablePair<>();
+
     private void alloyLogic()
     {
         if (this.tanks.getFluids().size() < 2)
             return;
+
+        if (this.cachedAlloyRecipe == null)
+        {
+            Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(QBarRecipeHandler.ALLOY_UID, this.tanks
+                            .getFluids().get(0),
+                    this.tanks.getFluids().get(1));
+            if(recipe.isPresent())
+            {
+                cachedAlloyRecipe = (AlloyRecipe) recipe.get();
+                cachedAlloyIngredients.setLeft(this.tanks.getFluids().get(0).copy());
+                cachedAlloyIngredients.setRight(this.tanks.getFluids().get(1).copy());
+            }
+        }
     }
 
     private boolean fillTanks(FluidStack fluid)
