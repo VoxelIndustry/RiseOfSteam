@@ -14,6 +14,7 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -48,6 +49,12 @@ public class BlockExtractor extends BlockMachineBase<TileExtractor>
         super("itemextractor", Material.IRON, TileExtractor.class);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BlockExtractor.FACING, EnumFacing.UP)
                 .withProperty(BlockExtractor.FILTER, false));
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

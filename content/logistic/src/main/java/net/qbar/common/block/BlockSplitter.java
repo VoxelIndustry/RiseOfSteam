@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -33,6 +34,12 @@ public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
         this.setDefaultState(
                 this.blockState.getBaseState().withProperty(BlockOrientableMachine.FACING, EnumFacing.NORTH)
                         .withProperty(BlockSplitter.FILTER, false));
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
