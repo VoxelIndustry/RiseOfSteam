@@ -7,6 +7,7 @@ import net.qbar.common.recipe.ingredient.RecipeIngredient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 public class QBarRecipeCategory
@@ -45,6 +46,7 @@ public class QBarRecipeCategory
         });
     }
 
+    @SuppressWarnings("unchecked")
     public Optional<QBarRecipe> getRecipe(Object... inputs)
     {
         return this.recipes.stream().filter(recipe ->
@@ -62,6 +64,23 @@ public class QBarRecipeCategory
             }
             return true;
         }).findFirst();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<QBarRecipe> getRecipesLike(Object... inputs)
+    {
+        return this.recipes.stream().filter(recipe ->
+        {
+            for (Object ingredient : inputs)
+            {
+                if (!recipe.hasInputType(ingredient.getClass()))
+                    break;
+                if (recipe.getRecipeInputs(ingredient.getClass()).stream().noneMatch(recipeIngredient ->
+                        ((RecipeIngredient<Object>) recipeIngredient).match(ingredient)))
+                    return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
     }
 
     public void add(QBarRecipe recipe)

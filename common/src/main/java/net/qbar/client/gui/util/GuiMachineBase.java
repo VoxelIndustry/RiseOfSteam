@@ -1,11 +1,13 @@
 package net.qbar.client.gui.util;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,6 +20,7 @@ import net.qbar.common.tile.TileInventoryBase;
 import org.apache.commons.lang3.tuple.Pair;
 import org.yggard.brokkgui.wrapper.GuiRenderer;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,8 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
     private final List<Pair<GuiSpace, Supplier<List<String>>>>        tooltips;
 
+    private final List<Pair<GuiSpace, Runnable>> buttons;
+
     private final GuiRenderer renderer;
 
     public GuiMachineBase(EntityPlayer player, T tile, ResourceLocation background)
@@ -59,6 +64,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         this.multiFluidTanks = new ArrayList<>();
         this.animatedSprites = new ArrayList<>();
         this.tooltips = new ArrayList<>();
+        this.buttons = new ArrayList<>();
 
         this.renderer = new GuiRenderer(Tessellator.getInstance());
     }
@@ -112,6 +118,11 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     {
         return TextFormatting.GOLD + "" + heatFormat.format(heatSupplier.get()) + " / "
                 + maxHeatSupplier.get() + " °C";
+    }
+
+    protected void addSimpleButton(GuiSpace space, Runnable action)
+    {
+        this.buttons.add(Pair.of(space, action));
     }
 
     @Override
@@ -291,6 +302,25 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
                             multiFluidTank.getValue().getWidth(), fluidHeight);
                 }
             }
+        }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (mouseButton == 0)
+        {
+            this.buttons.forEach(button ->
+            {
+                if (button.getKey().isMouseInside(mouseX - this.guiLeft, mouseY - this.guiTop))
+                {
+                    button.getValue().run();
+                    this.mc.getSoundHandler().playSound(
+                            PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                }
+            });
         }
     }
 

@@ -4,9 +4,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 public class QBarRecipeHandler
 {
@@ -84,5 +82,12 @@ public class QBarRecipeHandler
         if (QBarRecipeHandler.RECIPES.containsKey(recipeID))
             return QBarRecipeHandler.RECIPES.get(recipeID).getRecipe(inputs);
         return Optional.empty();
+    }
+
+    public static List<QBarRecipe> getRecipesLike(String recipeID, Object... inputs)
+    {
+        if(QBarRecipeHandler.RECIPES.containsKey(recipeID))
+            return QBarRecipeHandler.RECIPES.get(recipeID).getRecipesLike(inputs);
+        return Collections.emptyList();
     }
 }

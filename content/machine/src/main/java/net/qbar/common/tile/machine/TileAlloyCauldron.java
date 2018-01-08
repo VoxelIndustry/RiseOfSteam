@@ -16,12 +16,12 @@ import net.minecraftforge.fluids.FluidTank;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.fluid.MultiFluidTank;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.recipe.QBarRecipeHelper;
 import net.qbar.common.recipe.type.AlloyRecipe;
 import net.qbar.common.recipe.type.MeltRecipe;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
@@ -29,14 +29,16 @@ import net.qbar.common.util.ItemUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Getter
-public class TileAlloyCauldron extends TileMultiblockInventoryBase implements ITickable
+public class TileAlloyCauldron extends TileMultiblockInventoryBase implements ITickable, IActionReceiver
 {
-    private final MultiFluidTank tanks;
+    private final FluidTank inputTankLeft;
+    private final FluidTank inputTankRight;
+    private final FluidTank outputTank;
 
     private final float maxHeat;
     @Setter
@@ -53,7 +55,9 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
     public TileAlloyCauldron()
     {
         super("alloycauldron", 6);
-        this.tanks = new MultiFluidTank(16 * Fluid.BUCKET_VOLUME, 3);
+        this.inputTankLeft = new FluidTank(12 * Fluid.BUCKET_VOLUME);
+        this.inputTankRight = new FluidTank(12 * Fluid.BUCKET_VOLUME);
+        this.outputTank = new FluidTank(24 * Fluid.BUCKET_VOLUME);
         this.maxHeat = 1500;
     }
 
@@ -65,7 +69,6 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
 
         this.heatLogic();
         this.meltLogic();
-        this.alloyLogic();
     }
 
     private void heatLogic()
@@ -104,12 +107,14 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
             QBarRecipeHandler.getRecipe(QBarRecipeHandler.MELTING_UID, this.getStackInSlot(0))
                     .ifPresent(recipe ->
                     {
-                        this.currentRecipe = (MeltRecipe) recipe;
-                        this.cachedIngredient = this.getStackInSlot(0).copy();
+                        if (this.acceptMelt((MeltRecipe) recipe))
+                            this.currentRecipe = (MeltRecipe) recipe;
                     });
+            this.cachedIngredient = this.getStackInSlot(0).copy();
         }
 
-        if (this.currentRecipe != null && this.currentRecipe.getLowMeltingPoint() <= this.heat)
+        if (this.currentRecipe != null && this.currentRecipe.getLowMeltingPoint() <= this.heat &&
+                fillTanks(this.currentRecipe.getOutput(), false))
         {
             if (this.getStackInSlot(1).isEmpty())
             {
@@ -120,8 +125,9 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
                     (this.currentRecipe.getHighMeltingPoint() - this.currentRecipe.getLowMeltingPoint());
             this.meltProgress += ((float) 1 / this.currentRecipe.getTime()) * efficiency;
 
-            if (this.meltProgress > 1 && this.fillTanks(this.currentRecipe.getOutput().copy()))
+            if (this.meltProgress > 1)
             {
+                this.fillTanks(this.currentRecipe.getOutput(), true);
                 this.currentRecipe = null;
                 this.setInventorySlotContents(1, ItemStack.EMPTY);
                 this.meltProgress = 0;
@@ -135,29 +141,102 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
 
     private void alloyLogic()
     {
-        if (this.tanks.getFluids().size() < 2)
+        if (this.inputTankLeft.getFluidAmount() == 0 || this.inputTankRight.getFluidAmount() == 0)
             return;
 
-        if (this.cachedAlloyRecipe == null)
+        if (this.cachedAlloyRecipe == null &&
+                (!this.inputTankLeft.getFluid().isFluidStackIdentical(cachedAlloyIngredients.getLeft()) ||
+                        !this.inputTankRight.getFluid().isFluidStackIdentical(cachedAlloyIngredients.getRight())))
         {
-            Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(QBarRecipeHandler.ALLOY_UID, this.tanks
-                            .getFluids().get(0),
-                    this.tanks.getFluids().get(1));
-            if(recipe.isPresent())
+            Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(QBarRecipeHandler.ALLOY_UID,
+                    this.inputTankLeft.getFluid(), this.inputTankRight.getFluid());
+            if (!recipe.isPresent())
+                recipe = QBarRecipeHandler.getRecipe(QBarRecipeHandler.ALLOY_UID,
+                        this.inputTankRight.getFluid(), this.inputTankLeft.getFluid());
+
+            recipe.ifPresent(qBarRecipe -> cachedAlloyRecipe = (AlloyRecipe) qBarRecipe);
+
+            cachedAlloyIngredients.setLeft(this.inputTankLeft.getFluid().copy());
+            cachedAlloyIngredients.setRight(this.inputTankRight.getFluid().copy());
+        }
+
+        if (cachedAlloyRecipe != null)
+        {
+            int alloyAmount = this.cachedAlloyRecipe.getInputs().get(0).match(this.inputTankLeft.getFluid()) ?
+                    this.inputTankLeft.getFluidAmount() / this.cachedAlloyRecipe.getInputs().get(0).getQuantity() :
+                    this.inputTankRight.getFluidAmount() / this.cachedAlloyRecipe.getInputs().get(0).getQuantity();
+
+            alloyAmount = Math.min(alloyAmount,
+                    this.cachedAlloyRecipe.getInputs().get(1).match(this.inputTankLeft.getFluid()) ?
+                            this.inputTankLeft.getFluidAmount() /
+                                    this.cachedAlloyRecipe.getInputs().get(1).getQuantity() :
+                            this.inputTankRight.getFluidAmount() /
+                                    this.cachedAlloyRecipe.getInputs().get(1).getQuantity());
+            alloyAmount = Math.min(alloyAmount, this.outputTank.fill(
+                    new FluidStack(this.cachedAlloyRecipe.getOutput(), this.outputTank.getCapacity()), false)
+                    / this.cachedAlloyRecipe.getOutput().amount);
+
+            if (alloyAmount > 0)
             {
-                cachedAlloyRecipe = (AlloyRecipe) recipe.get();
-                cachedAlloyIngredients.setLeft(this.tanks.getFluids().get(0).copy());
-                cachedAlloyIngredients.setRight(this.tanks.getFluids().get(1).copy());
+                if (this.cachedAlloyRecipe.getInputs().get(0).match(this.inputTankLeft.getFluid()))
+                {
+                    this.inputTankLeft.drain(this.cachedAlloyRecipe.getInputs().get(0).getQuantity() * alloyAmount,
+                            true);
+                    this.inputTankRight.drain(this.cachedAlloyRecipe.getInputs().get(1).getQuantity() * alloyAmount,
+                            true);
+                }
+                else
+                {
+                    this.inputTankLeft.drain(this.cachedAlloyRecipe.getInputs().get(1).getQuantity() * alloyAmount,
+                            true);
+                    this.inputTankRight.drain(this.cachedAlloyRecipe.getInputs().get(0).getQuantity() * alloyAmount,
+                            true);
+                }
+                this.outputTank.fill(new FluidStack(this.cachedAlloyRecipe.getOutput(),
+                        alloyAmount * this.cachedAlloyRecipe.getOutput().amount), true);
             }
+            this.cachedAlloyRecipe = null;
         }
     }
 
-    private boolean fillTanks(FluidStack fluid)
+    private boolean acceptMelt(MeltRecipe recipe)
     {
-        if (this.tanks.fill(fluid, false) < fluid.amount)
+        if (this.inputTankLeft.getFluidAmount() == 0 && this.inputTankRight.getFluidAmount() == 0)
+            return true;
+        if (recipe.getOutput().isFluidEqual(this.inputTankLeft.getFluid()) ||
+                recipe.getOutput().isFluidEqual(this.inputTankRight.getFluid()))
+            return true;
+        if (this.inputTankLeft.getFluidAmount() != 0 && this.inputTankRight.getFluidAmount() != 0)
             return false;
-        this.tanks.fill(fluid, true);
-        return true;
+
+        List<QBarRecipe> recipes = Collections.emptyList();
+        if (this.inputTankLeft.getFluidAmount() > 0)
+            recipes = QBarRecipeHandler.getRecipesLike(QBarRecipeHandler.ALLOY_UID, recipe.getOutput(),
+                    this.inputTankLeft.getFluid());
+        else if (this.inputTankRight.getFluidAmount() > 0)
+            recipes = QBarRecipeHandler.getRecipesLike(QBarRecipeHandler.ALLOY_UID, recipe.getOutput(),
+                    this.inputTankRight.getFluid());
+
+        if (!recipes.isEmpty())
+        {
+            if (this.outputTank.getFluidAmount() != 0 && recipes.stream().anyMatch(alloyRecipe -> alloyRecipe
+                    .getRecipeOutputs(FluidStack.class).get(0).match(this.outputTank.getFluid())))
+                return true;
+            else return this.outputTank.getFluidAmount() == 0;
+        }
+        return false;
+    }
+
+    private boolean fillTanks(FluidStack fluid, boolean doFill)
+    {
+        if (fluid.isFluidEqual(this.inputTankLeft.getFluid()))
+            return this.inputTankLeft.fill(fluid, doFill) == fluid.amount;
+        else if (fluid.isFluidEqual(this.inputTankRight.getFluid()))
+            return this.inputTankRight.fill(fluid, doFill) == fluid.amount;
+        else if (this.inputTankLeft.getFluidAmount() == 0)
+            return this.inputTankLeft.fill(fluid, doFill) == fluid.amount;
+        else
+            return this.inputTankRight.fill(fluid, doFill) == fluid.amount;
     }
 
     private int getMinimumTemp()
@@ -192,7 +271,9 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         tag.setFloat("maxBurnTime", this.maxBurnTime);
         tag.setFloat("meltProgress", this.meltProgress);
 
-        tag.setTag("multiFluidTank", this.tanks.writeToNBT(new NBTTagCompound()));
+        tag.setTag("inputTankLeft", this.inputTankLeft.writeToNBT(new NBTTagCompound()));
+        tag.setTag("inputTankRight", this.inputTankRight.writeToNBT(new NBTTagCompound()));
+        tag.setTag("outputTank", this.outputTank.writeToNBT(new NBTTagCompound()));
 
         return super.writeToNBT(tag);
     }
@@ -207,7 +288,9 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         this.maxBurnTime = tag.getFloat("maxBurnTime");
         this.meltProgress = tag.getFloat("meltProgress");
 
-        this.tanks.readFromNBT(tag.getCompoundTag("multiFluidTank"));
+        this.inputTankLeft.readFromNBT(tag.getCompoundTag("inputTankLeft"));
+        this.inputTankRight.readFromNBT(tag.getCompoundTag("inputTankRight"));
+        this.outputTank.readFromNBT(tag.getCompoundTag("outputTank"));
     }
 
     @Override
@@ -231,17 +314,50 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return new ContainerBuilder("alloycauldron", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+        return new ContainerBuilder("alloycauldron", player).player(player.inventory).inventory(21, 113).hotbar(21, 171)
                 .addInventory().tile(this)
-                .recipeSlot(0, QBarRecipeHandler.MELTING_UID, 0, 18, 20)
+                .recipeSlot(0, QBarRecipeHandler.MELTING_UID, 0, 18, 37)
                 .displaySlot(1, -1000, 0)
-                .outputSlot(2, 148, 36)
-                .fuelSlot(4, 18, 59)
+                .outputSlot(2, 175, 53)
+                .fuelSlot(4, 18, 76)
                 .syncFloatValue(this::getHeat, this::setHeat)
                 .syncFloatValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncFloatValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncFloatValue(this::getMeltProgress, this::setMeltProgress)
+                .syncFluidValue(this::getInputFluidLeft, this::setInputFluidLeft)
+                .syncFluidValue(this::getInputFluidRight, this::setInputFluidRight)
+                .syncFluidValue(this::getOutputFluid, this::setOutputFluid)
                 .addInventory().create();
+    }
+
+    public FluidStack getInputFluidLeft()
+    {
+        return this.inputTankLeft.getFluid();
+    }
+
+    public void setInputFluidLeft(FluidStack fluid)
+    {
+        this.inputTankLeft.setFluid(fluid);
+    }
+
+    public FluidStack getInputFluidRight()
+    {
+        return this.inputTankRight.getFluid();
+    }
+
+    public void setInputFluidRight(FluidStack fluid)
+    {
+        this.inputTankRight.setFluid(fluid);
+    }
+
+    public FluidStack getOutputFluid()
+    {
+        return this.outputTank.getFluid();
+    }
+
+    public void setOutputFluid(FluidStack fluid)
+    {
+        this.outputTank.setFluid(fluid);
     }
 
     @Override
@@ -269,5 +385,35 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         player.openGui(QBarConstants.MODINSTANCE, MachineGui.ALLOYCAULDRON.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        switch (actionID)
+        {
+            case "LEFT_TANK_VOID":
+                if(this.inputTankLeft.getFluidAmount() != 0 && (this.outputTank.getFluidAmount() == 0 || this.inputTankLeft.getFluid().isFluidEqual(this.outputTank.getFluid())))
+                {
+                    int toFill = this.outputTank.fill(this.inputTankLeft.drain(this.inputTankLeft.getFluidAmount(), false),false);
+
+                    this.outputTank.fill(this.inputTankLeft.drain(toFill, true), true);
+                }
+                break;
+            case "RIGHT_TANK_VOID":
+                if(this.inputTankRight.getFluidAmount() != 0 && (this.outputTank.getFluidAmount() == 0 || this.inputTankRight.getFluid().isFluidEqual(this.outputTank.getFluid())))
+                {
+                    int toFill = this.outputTank.fill(this.inputTankRight.drain(this.inputTankRight.getFluidAmount(), false),false);
+
+                    this.outputTank.fill(this.inputTankRight.drain(toFill, true), true);
+                }
+                break;
+            case "OUTPUT_TANK_VOID":
+                this.outputTank.setFluid(null);
+                break;
+            case "ALLOY":
+                this.alloyLogic();
+                break;
+        }
     }
 }

@@ -2,11 +2,13 @@ package net.qbar.client.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.qbar.client.gui.util.GuiMachineBase;
 import net.qbar.client.gui.util.GuiProgress;
 import net.qbar.client.gui.util.GuiSpace;
 import net.qbar.client.gui.util.GuiTexturedSpace;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileAlloyCauldron;
 
 import java.util.Collections;
@@ -20,22 +22,43 @@ public class GuiAlloyCauldron extends GuiMachineBase<TileAlloyCauldron>
     {
         super(player, alloyCauldron, BACKGROUND);
 
+        this.xSize = 202;
+        this.ySize = 195;
+
         this.addAnimatedSprite(this.getMachine()::getBurnTimeScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(18).y(54).width(14).height(13).u(217).v(12)
-                        .s(217 + 14).t(25).build()).direction(GuiProgress.StartDirection.TOP).revert(false).build());
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(18).y(70).width(13).height(13).u(243).v(12)
+                        .s(243 + 13).t(25).build()).direction(GuiProgress.StartDirection.TOP).revert(false).build());
         this.addAnimatedSprite(this.getMachine()::getHeatScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(4).y(76).width(12).height(71).u(176).v(102)
-                        .s(176 + 12).t(102 + 71).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(4).y(94).width(12).height(71).u(202).v(102)
+                        .s(202 + 12).t(102 + 71).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
                         .build());
         this.addAnimatedSprite(this.getMachine()::getMeltProgressScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(38).y(21).width(25).height(16).u(176).v(14).s
-                        (176 + 25).t(14 + 16).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(38).y(21).width(25).height(16).u(202).v(14).s
+                        (202 + 25).t(14 + 16).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
                         .build());
 
-        this.addMultiFluidTank(alloyCauldron.getTanks(), 61, 7, 36, 73);
-
-        this.addTooltip(new GuiSpace(4, 8, 12, 71), () ->
+        this.addTooltip(new GuiSpace(4, 21, 12, 71), () ->
                 Collections.singletonList(this.getHeatTooltip(this.getMachine()::getHeat,
                         this.getMachine()::getMaxHeat)));
+
+        this.addTooltip(new GuiSpace(61, 97, 18, 12), () ->
+                Collections.singletonList("To exit tank"));
+        this.addTooltip(new GuiSpace(80, 97, 18, 12), () ->
+                Collections.singletonList("To exit tank"));
+        this.addTooltip(new GuiSpace(105, 97, 18, 12), () ->
+                Collections.singletonList(TextFormatting.RED + "Void tank"));
+
+        this.addFluidTank(this.getMachine().getInputTankLeft(), 61, 24, 18, 73);
+        this.addFluidTank(this.getMachine().getInputTankRight(), 80, 24, 18, 73);
+        this.addFluidTank(this.getMachine().getOutputTank(), 105, 24, 18, 73);
+
+        this.addSimpleButton(new GuiSpace(61, 97, 18, 12), () ->
+                new ServerActionBuilder("LEFT_TANK_VOID").toTile(this.getMachine()).send());
+        this.addSimpleButton(new GuiSpace(80, 97, 18, 12), () ->
+                new ServerActionBuilder("RIGHT_TANK_VOID").toTile(this.getMachine()).send());
+        this.addSimpleButton(new GuiSpace(105, 97, 18, 12), () ->
+                new ServerActionBuilder("OUTPUT_TANK_VOID").toTile(this.getMachine()).send());
+        this.addSimpleButton(new GuiSpace(61, 6, 37, 18), () ->
+                new ServerActionBuilder("ALLOY").toTile(this.getMachine()).send());
     }
 }

@@ -2,7 +2,9 @@ package net.qbar.common.fluid;
 
 import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -101,6 +103,25 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
     @Override
     public FluidStack drain(FluidStack resource, boolean doDrain)
     {
+        int drained = 0;
+        FluidStack toRemove = null;
+        for (FluidStack fluid : fluids)
+        {
+            if (fluid.equals(resource))
+            {
+                drained = Math.min(resource.amount, fluid.amount);
+                if (doDrain)
+                {
+                    fluid.amount -= drained;
+                    if (fluid.amount <= 0)
+                        toRemove = fluid;
+                }
+            }
+        }
+        if (toRemove != null)
+            this.getFluids().remove(toRemove);
+        if (drained != 0)
+            return new FluidStack(resource, drained);
         return null;
     }
 
