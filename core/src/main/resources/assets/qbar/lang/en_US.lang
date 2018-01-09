@@ -39,6 +39,10 @@ tile.tinyminingdrill.name=Tiny Mining Drill
 
 tile.alloycauldron.name=Alloy Cauldron
 tile.sawmill.name=Saw Mill
+tile.engineerworkbench.name=Engineer Workbench
+tile.craftcardlibrary.name=Craft Card Library
+tile.blueprintprinter.name=Blueprint Printer
+tile.engineerstorage.name=Engineer Storage
 
 #Blocks
 tile.blockmetal.copper.name=Copper Block
@@ -98,16 +102,27 @@ item.multiblockbox.name=Multiblock Box
 
 #Fluids
 fluid.steam=Steam
-tile.blockfluidsteam.name=Steam Source
 fluid.molteniron=Molten Iron
 fluid.moltengold=Molten Gold
 fluid.moltencopper=Molten Copper
 fluid.moltenbronze=Molten Bronze
+fluid.moltenbrass=Molten Brass
 fluid.moltentin=Molten Tin
 fluid.moltenzinc=Molten Zinc
 fluid.moltennickel=Molten Nickel
 fluid.moltenlead=Molten Lead
 fluid.moltensteel=Molten Steel
+tile.blockfluidsteam.name=Steam Source
+tile.blockmolteniron.name=Molten Iron Source
+tile.blockmoltengold.name=Molten Gold Source
+tile.blockmoltencopper.name=Molten Copper Source
+tile.blockmoltenbronze.name=Molten Bronze Source
+tile.blockmoltenbrass.name=Molten Brass Source
+tile.blockmoltentin.name=Molten Tin Source
+tile.blockmoltenzinc.name=Molten Zinc Source
+tile.blockmoltennickel.name=Molten Nickel Source
+tile.blockmoltenlead.name=Molten Lead Source
+tile.blockmoltensteel.name=Molten Steel Source
 
 #Gui
 gui.rollingmill.name=Rolling Mill

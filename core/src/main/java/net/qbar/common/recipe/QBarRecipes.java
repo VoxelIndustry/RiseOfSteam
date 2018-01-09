@@ -13,7 +13,6 @@ import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockMetal;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.item.ItemMetal;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
@@ -52,7 +51,7 @@ public class QBarRecipes
                 QBarRecipeHelper.addBlockToIngotRecipe(metalName);
                 QBarRecipeHelper.addIngotToBlockRecipe(metalName);
             }
-            if (((ItemMetal) QBarItems.METALGEAR).hasMetalVariant(metalName))
+            if (QBarItems.METALGEAR.hasMetalVariant(metalName))
                 QBarRecipeHelper.addIngotToGearRecipe(metalName);
         });
 
@@ -93,19 +92,19 @@ public class QBarRecipes
 
     public void registerOreDict()
     {
-        ((ItemMetal) QBarItems.METALGEAR).getMetals().forEach(metal ->
+        QBarItems.METALGEAR.getMetals().forEach(metal ->
         {
             ItemStack gear = new ItemStack(QBarItems.METALGEAR, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("gear" + StringUtils.capitalize(metal), gear);
         });
 
-        ((ItemMetal) QBarItems.METALPLATE).getMetals().forEach(metal ->
+        QBarItems.METALPLATE.getMetals().forEach(metal ->
         {
             ItemStack gear = new ItemStack(QBarItems.METALPLATE, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), gear);
         });
 
-        ((ItemMetal) QBarItems.METALINGOT).getMetals().forEach(metal ->
+        QBarItems.METALINGOT.getMetals().forEach(metal ->
         {
             ItemStack gear = new ItemStack(QBarItems.METALINGOT, 1, QBarMaterials.metals.indexOf(metal));
             OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), gear);

@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "inventory": {
+      "model": "forge:fluid",
+      "custom": {
+        "fluid": "moltentin"
+      }
+    },
+    "steam": {
+      "model": "forge:fluid",
+      "custom": {
+        "fluid": "moltentin"
+      }
+    }
+  }
+}

@@ -3,7 +3,6 @@ package net.qbar.common.machine.typeadapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -77,7 +76,7 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
 
     private ItemStack parseItem(String stack)
     {
-        Item item;
+        ItemStack item;
         int quantity = 1;
 
         if (Character.isDigit(stack.charAt(0)))
@@ -95,16 +94,17 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
                         + ")!");
                 return ItemStack.EMPTY;
             }
-            item = ores.get(0).getItem();
+            item = ores.get(0);
         }
         else
-            item = Item.getByNameOrId(stack);
+            item = new ItemStack(Item.getByNameOrId(stack));
 
-        if (item == null || item == Items.AIR)
+        if (item.isEmpty())
         {
             QBarConstants.LOGGER.error("Unknown item detected while reading a blueprint step (" + stack + ")!");
             return ItemStack.EMPTY;
         }
-        return new ItemStack(item, quantity);
+        item.setCount(quantity);
+        return item;
     }
 }

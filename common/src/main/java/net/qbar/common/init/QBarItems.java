@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.item.ItemBase;
+import net.qbar.common.item.ItemMetal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +21,17 @@ public class QBarItems
     public static final ItemBase WRENCH = null;
 
     @ObjectHolder("blueprint")
-    public static final ItemBase BLUEPRINT       = null;
+    public static final ItemBase  BLUEPRINT       = null;
     @ObjectHolder("ironrod")
-    public static final ItemBase IRON_ROD        = null;
+    public static final ItemBase  IRON_ROD        = null;
     @ObjectHolder("metalplate")
-    public static final ItemBase METALPLATE      = null;
+    public static final ItemMetal  METALPLATE      = null;
     @ObjectHolder("metalgear")
-    public static final ItemBase METALGEAR       = null;
+    public static final ItemMetal METALGEAR       = null;
     @ObjectHolder("metalingot")
-    public static final ItemBase METALINGOT      = null;
+    public static final ItemMetal  METALINGOT      = null;
     @ObjectHolder("solarreflector")
-    public static final ItemBase SOLAR_REFLECTOR = null;
+    public static final ItemBase  SOLAR_REFLECTOR = null;
 
     @ObjectHolder("mineralsludge")
     public static final ItemBase MINERAL_SLUDGE            = null;

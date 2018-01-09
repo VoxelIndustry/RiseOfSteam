@@ -9,6 +9,7 @@ import net.qbar.client.gui.util.GuiSpace;
 import net.qbar.client.gui.util.GuiTexturedSpace;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.network.action.ServerActionBuilder;
+import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.tile.machine.TileAlloyCauldron;
 
 import java.util.Collections;
@@ -33,8 +34,12 @@ public class GuiAlloyCauldron extends GuiMachineBase<TileAlloyCauldron>
                         .s(202 + 12).t(102 + 71).build()).direction(GuiProgress.StartDirection.TOP).revert(false)
                         .build());
         this.addAnimatedSprite(this.getMachine()::getMeltProgressScaled,
-                GuiProgress.builder().space(GuiTexturedSpace.builder().x(38).y(21).width(25).height(16).u(202).v(14).s
-                        (202 + 25).t(14 + 16).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(37).y(38).width(25).height(16).u(202).v(14).s
+                        (202 + 24).t(14 + 17).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
+                        .build());
+        this.addAnimatedSprite(this.getMachine()::getCastProgressScaled,
+                GuiProgress.builder().space(GuiTexturedSpace.builder().x(135).y(52).width(25).height(16).u(202).v(14).s
+                        (202 + 24).t(14 + 17).build()).direction(GuiProgress.StartDirection.RIGHT).revert(true)
                         .build());
 
         this.addTooltip(new GuiSpace(4, 21, 12, 71), () ->
@@ -60,5 +65,20 @@ public class GuiAlloyCauldron extends GuiMachineBase<TileAlloyCauldron>
                 new ServerActionBuilder("OUTPUT_TANK_VOID").toTile(this.getMachine()).send());
         this.addSimpleButton(new GuiSpace(61, 6, 37, 18), () ->
                 new ServerActionBuilder("ALLOY").toTile(this.getMachine()).send());
+        this.addSimpleButton(new GuiSpace(127, 69, 13, 13), () ->
+                new ServerActionBuilder("CAST_INGOT").toTile(this.getMachine()).send());
+        this.addSimpleButton(new GuiSpace(141, 69, 13, 13), () ->
+                new ServerActionBuilder("CAST_PLATE").toTile(this.getMachine()).send());
+        this.addSimpleButton(new GuiSpace(155, 69, 13, 13), () ->
+                new ServerActionBuilder("CAST_BLOCK").toTile(this.getMachine()).send());
+
+        this.addLabel(65, 12, "ALLOY");
+
+        this.addItemStack(new GuiSpace(127, 69, 13, 13),
+                QBarMaterials.getIngotFromMetal(QBarMaterials.IRON));
+        this.addItemStack(new GuiSpace(141, 69, 13, 13),
+                QBarMaterials.getPlateFromMetal(QBarMaterials.IRON));
+        this.addItemStack(new GuiSpace(155, 69, 13, 13),
+                QBarMaterials.getBlockFromMetal(QBarMaterials.IRON));
     }
 }

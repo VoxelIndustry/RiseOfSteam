@@ -20,6 +20,7 @@ import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
+import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.type.AlloyRecipe;
@@ -51,10 +52,20 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
     private MeltRecipe currentRecipe;
     @Setter
     private float      meltProgress;
+    @Setter
+    private float      castProgress;
+    private float      castSpeed;
 
+    /*
+     * 0 = Input slot
+     * 1 = Buffer slot
+     * 2 = Output Buffer slot
+     * 3 = Output Slot
+     * 4 = Fuel slot
+     */
     public TileAlloyCauldron()
     {
-        super("alloycauldron", 6);
+        super("alloycauldron", 5);
         this.inputTankLeft = new FluidTank(12 * Fluid.BUCKET_VOLUME);
         this.inputTankRight = new FluidTank(12 * Fluid.BUCKET_VOLUME);
         this.outputTank = new FluidTank(24 * Fluid.BUCKET_VOLUME);
@@ -69,12 +80,15 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
 
         this.heatLogic();
         this.meltLogic();
+        this.castLogic();
     }
 
     private void heatLogic()
     {
         if (this.heat > this.getMinimumTemp())
             this.heat -= 0.5f;
+        if (this.heat < this.getMinimumTemp())
+            this.heat = this.getMinimumTemp();
         if (this.heat >= this.maxHeat)
             return;
 
@@ -199,6 +213,53 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         }
     }
 
+    private void startCasting(QBarMaterials.MaterialShape shape)
+    {
+        if (this.outputTank.getFluidAmount() > 0 && this.getStackInSlot(2).isEmpty())
+        {
+            QBarMaterials.getMetalFromFluid(this.outputTank.getFluid()).ifPresent(metal ->
+            {
+                ItemStack toFill = ItemStack.EMPTY;
+                if ((shape == QBarMaterials.MaterialShape.PLATE || shape == QBarMaterials.MaterialShape.INGOT) &&
+                        this.outputTank.getFluidAmount() >= 144)
+                {
+                    toFill = shape == QBarMaterials.MaterialShape.PLATE ?
+                            QBarMaterials.getPlateFromMetal(metal).copy() :
+                            QBarMaterials.getIngotFromMetal(metal).copy();
+                    this.outputTank.drain(144, true);
+                    this.castSpeed = 1 / (144 / 6F);
+                }
+                else if (shape == QBarMaterials.MaterialShape.BLOCK && this.outputTank.getFluidAmount() >= 1296)
+                {
+                    toFill = QBarMaterials.getBlockFromMetal(metal).copy();
+                    this.outputTank.drain(1296, true);
+                    this.castSpeed = 1 / (1296 / 6F);
+                }
+                if (this.getStackInSlot(3).isEmpty() || ItemUtils.deepEquals(this.getStackInSlot(3), toFill))
+                    this.setInventorySlotContents(2, toFill);
+            });
+        }
+    }
+
+    private void castLogic()
+    {
+        if (this.getStackInSlot(2).isEmpty())
+            return;
+        if (this.castProgress >= 1)
+        {
+            if (this.getStackInSlot(3).isEmpty())
+                this.setInventorySlotContents(3, this.decrStackSize(2, 1));
+            else
+            {
+                this.decrStackSize(2, 1);
+                this.getStackInSlot(3).grow(1);
+            }
+            this.castProgress = 0;
+        }
+        else
+            this.castProgress += this.castSpeed;
+    }
+
     private boolean acceptMelt(MeltRecipe recipe)
     {
         if (this.inputTankLeft.getFluidAmount() == 0 && this.inputTankRight.getFluidAmount() == 0)
@@ -241,7 +302,7 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
 
     private int getMinimumTemp()
     {
-        return (int) (this.world.getBiome(this.getPos()).getTemperature(this.pos) * 200);
+        return (int) (this.world.getBiome(this.getPos()).getTemperature(this.pos) * 20);
     }
 
     public int getBurnTimeScaled(final int scale)
@@ -263,6 +324,11 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         return (int) (scale * this.meltProgress);
     }
 
+    public int getCastProgressScaled(final int scale)
+    {
+        return (int) (scale * this.castProgress);
+    }
+
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
@@ -270,6 +336,8 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         tag.setFloat("currentBurnTime", this.currentBurnTime);
         tag.setFloat("maxBurnTime", this.maxBurnTime);
         tag.setFloat("meltProgress", this.meltProgress);
+        tag.setFloat("castProgress", this.castProgress);
+        tag.setFloat("castSpeed", this.castSpeed);
 
         tag.setTag("inputTankLeft", this.inputTankLeft.writeToNBT(new NBTTagCompound()));
         tag.setTag("inputTankRight", this.inputTankRight.writeToNBT(new NBTTagCompound()));
@@ -287,6 +355,8 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         this.currentBurnTime = tag.getFloat("currentBurnTime");
         this.maxBurnTime = tag.getFloat("maxBurnTime");
         this.meltProgress = tag.getFloat("meltProgress");
+        this.castProgress = tag.getFloat("castProgress");
+        this.castSpeed = tag.getFloat("castSpeed");
 
         this.inputTankLeft.readFromNBT(tag.getCompoundTag("inputTankLeft"));
         this.inputTankRight.readFromNBT(tag.getCompoundTag("inputTankRight"));
@@ -318,44 +388,46 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
                 .addInventory().tile(this)
                 .recipeSlot(0, QBarRecipeHandler.MELTING_UID, 0, 18, 37)
                 .displaySlot(1, -1000, 0)
-                .outputSlot(2, 175, 53)
+                .displaySlot(2, -1000, 0)
+                .outputSlot(3, 175, 53)
                 .fuelSlot(4, 18, 76)
                 .syncFloatValue(this::getHeat, this::setHeat)
                 .syncFloatValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncFloatValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncFloatValue(this::getMeltProgress, this::setMeltProgress)
+                .syncFloatValue(this::getCastProgress, this::setCastProgress)
                 .syncFluidValue(this::getInputFluidLeft, this::setInputFluidLeft)
                 .syncFluidValue(this::getInputFluidRight, this::setInputFluidRight)
                 .syncFluidValue(this::getOutputFluid, this::setOutputFluid)
                 .addInventory().create();
     }
 
-    public FluidStack getInputFluidLeft()
+    private FluidStack getInputFluidLeft()
     {
         return this.inputTankLeft.getFluid();
     }
 
-    public void setInputFluidLeft(FluidStack fluid)
+    private void setInputFluidLeft(FluidStack fluid)
     {
         this.inputTankLeft.setFluid(fluid);
     }
 
-    public FluidStack getInputFluidRight()
+    private FluidStack getInputFluidRight()
     {
         return this.inputTankRight.getFluid();
     }
 
-    public void setInputFluidRight(FluidStack fluid)
+    private void setInputFluidRight(FluidStack fluid)
     {
         this.inputTankRight.setFluid(fluid);
     }
 
-    public FluidStack getOutputFluid()
+    private FluidStack getOutputFluid()
     {
         return this.outputTank.getFluid();
     }
 
-    public void setOutputFluid(FluidStack fluid)
+    private void setOutputFluid(FluidStack fluid)
     {
         this.outputTank.setFluid(fluid);
     }
@@ -393,17 +465,21 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         switch (actionID)
         {
             case "LEFT_TANK_VOID":
-                if(this.inputTankLeft.getFluidAmount() != 0 && (this.outputTank.getFluidAmount() == 0 || this.inputTankLeft.getFluid().isFluidEqual(this.outputTank.getFluid())))
+                if (this.inputTankLeft.getFluidAmount() != 0 && (this.outputTank.getFluidAmount() == 0 ||
+                        this.inputTankLeft.getFluid().isFluidEqual(this.outputTank.getFluid())))
                 {
-                    int toFill = this.outputTank.fill(this.inputTankLeft.drain(this.inputTankLeft.getFluidAmount(), false),false);
+                    int toFill = this.outputTank.fill(this.inputTankLeft.drain(this.inputTankLeft.getFluidAmount(),
+                            false), false);
 
                     this.outputTank.fill(this.inputTankLeft.drain(toFill, true), true);
                 }
                 break;
             case "RIGHT_TANK_VOID":
-                if(this.inputTankRight.getFluidAmount() != 0 && (this.outputTank.getFluidAmount() == 0 || this.inputTankRight.getFluid().isFluidEqual(this.outputTank.getFluid())))
+                if (this.inputTankRight.getFluidAmount() != 0 && (this.outputTank.getFluidAmount() == 0 ||
+                        this.inputTankRight.getFluid().isFluidEqual(this.outputTank.getFluid())))
                 {
-                    int toFill = this.outputTank.fill(this.inputTankRight.drain(this.inputTankRight.getFluidAmount(), false),false);
+                    int toFill = this.outputTank.fill(this.inputTankRight.drain(this.inputTankRight.getFluidAmount(),
+                            false), false);
 
                     this.outputTank.fill(this.inputTankRight.drain(toFill, true), true);
                 }
@@ -413,6 +489,15 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
                 break;
             case "ALLOY":
                 this.alloyLogic();
+                break;
+            case "CAST_INGOT":
+                this.startCasting(QBarMaterials.MaterialShape.INGOT);
+                break;
+            case "CAST_PLATE":
+                this.startCasting(QBarMaterials.MaterialShape.PLATE);
+                break;
+            case "CAST_BLOCK":
+                this.startCasting(QBarMaterials.MaterialShape.BLOCK);
                 break;
         }
     }

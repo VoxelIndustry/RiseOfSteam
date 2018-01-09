@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,6 +19,10 @@ import net.qbar.common.fluid.MultiFluidTank;
 import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.tile.TileInventoryBase;
 import org.apache.commons.lang3.tuple.Pair;
+import org.yggard.brokkgui.BrokkGuiPlatform;
+import org.yggard.brokkgui.data.Vector2i;
+import org.yggard.brokkgui.paint.Color;
+import org.yggard.brokkgui.wrapper.GuiHelper;
 import org.yggard.brokkgui.wrapper.GuiRenderer;
 
 import java.io.IOException;
@@ -49,7 +54,9 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     private final List<Pair<Function<Integer, Integer>, GuiProgress>> animatedSprites;
     private final List<Pair<GuiSpace, Supplier<List<String>>>>        tooltips;
 
-    private final List<Pair<GuiSpace, Runnable>> buttons;
+    private final List<Pair<GuiSpace, Runnable>>  buttons;
+    private final List<Pair<Vector2i, String>>    labels;
+    private final List<Pair<GuiSpace, ItemStack>> itemStacks;
 
     private final GuiRenderer renderer;
 
@@ -65,6 +72,8 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
         this.animatedSprites = new ArrayList<>();
         this.tooltips = new ArrayList<>();
         this.buttons = new ArrayList<>();
+        this.labels = new ArrayList<>();
+        this.itemStacks = new ArrayList<>();
 
         this.renderer = new GuiRenderer(Tessellator.getInstance());
     }
@@ -123,6 +132,16 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
     protected void addSimpleButton(GuiSpace space, Runnable action)
     {
         this.buttons.add(Pair.of(space, action));
+    }
+
+    protected void addLabel(int x, int y, String text)
+    {
+        this.labels.add(Pair.of(new Vector2i(x, y), text));
+    }
+
+    protected void addItemStack(GuiSpace space, ItemStack stack)
+    {
+        this.itemStacks.add(Pair.of(space, stack));
     }
 
     @Override
@@ -209,6 +228,18 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
             }
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
+
+        for (Pair<Vector2i, String> label : this.labels)
+        {
+            this.fontRenderer.drawString(label.getValue(), label.getKey().getX(), label.getKey().getY(), 4210752);
+        }
+        for (Pair<GuiSpace, ItemStack> itemStack : this.itemStacks)
+        {
+            ((GuiHelper) BrokkGuiPlatform.getInstance().getGuiHelper()).drawItemStack(this.renderer,
+                    itemStack.getKey().getX() + itemStack.getKey().getWidth() / 2,
+                    itemStack.getKey().getY() + itemStack.getKey().getHeight() / 2, itemStack.getKey().getWidth(),
+                    itemStack.getKey().getHeight(), 0, itemStack.getValue(), Color.WHITE);
+        }
     }
 
     @Override

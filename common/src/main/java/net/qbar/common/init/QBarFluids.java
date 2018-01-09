@@ -7,7 +7,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.fluid.BlockQBarFluid;
 import net.qbar.common.recipe.QBarMaterials;
-import org.apache.commons.lang3.StringUtils;
 
 public class QBarFluids
 {
@@ -26,15 +25,16 @@ public class QBarFluids
         QBarFluids.blockFluidSteam = new BlockQBarFluid(QBarFluids.fluidSteam, Material.WATER, "blockfluidsteam");
         QBarBlocks.registerBlock(QBarFluids.blockFluidSteam);
 
-        QBarMaterials.metals.stream().filter(metal -> !FluidRegistry.isFluidRegistered("molten"+metal)).forEach(metal ->
-        {
-            Fluid moltenMetal = new Fluid("molten" + metal,
-                    new ResourceLocation(QBarConstants.MODID + ":blocks/fluid/" + metal + "_still"),
-                    new ResourceLocation(QBarConstants.MODID + ":blocks/fluid/" + metal + "_flow"));
-            FluidRegistry.registerFluid(moltenMetal);
-            FluidRegistry.addBucketForFluid(moltenMetal);
+        QBarMaterials.metals.stream().filter(metal -> !FluidRegistry.isFluidRegistered("molten" + metal))
+                .forEach(metal ->
+                {
+                    Fluid moltenMetal = new Fluid("molten" + metal,
+                            new ResourceLocation(QBarConstants.MODID + ":blocks/fluid/" + metal + "_still"),
+                            new ResourceLocation(QBarConstants.MODID + ":blocks/fluid/" + metal + "_flow"));
+                    FluidRegistry.registerFluid(moltenMetal);
+                    FluidRegistry.addBucketForFluid(moltenMetal);
 
-            QBarBlocks.registerBlock(new BlockQBarFluid(moltenMetal, Material.LAVA, "blockmolten" + metal));
-        });
+                    QBarBlocks.registerBlock(new BlockQBarFluid(moltenMetal, Material.LAVA, "blockmolten" + metal));
+                });
     }
 }
