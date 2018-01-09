@@ -3,7 +3,7 @@
   "defaults": {
     "textures": {
     },
-    "model": "qbar:blueprintprinter.obj",
+    "model": "qbar:blueprint_printer.obj",
     "custom": {
       "flip-v": true
     }
@@ -31,7 +31,7 @@
       "false": {}
     },
     "inventory": {
-      "model": "qbar:blueprintprinter.obj",
+      "model": "qbar:blueprint_printer.obj",
       "transform": {
         "scale": 0.23,
         "rotation": [

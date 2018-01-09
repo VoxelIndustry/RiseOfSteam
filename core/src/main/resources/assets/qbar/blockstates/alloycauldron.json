@@ -3,7 +3,7 @@
   "defaults": {
     "textures": {
     },
-    "model": "qbar:solar_mirror.obj",
+    "model": "qbar:alloy_cauldron.obj",
     "custom": {
       "flip-v": true
     }
@@ -29,8 +29,23 @@
       "false": {}
     },
     "inventory": {
-      "transform": "forge:default-block",
-      "model": "qbar:solar_mirror.obj"
+      "model": "qbar:alloy_cauldron.obj",
+      "transform": {
+        "scale": 0.23,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.3,
+          0
+        ]
+      }
     }
   }
 }

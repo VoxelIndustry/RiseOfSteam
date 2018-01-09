@@ -4,7 +4,7 @@
     components: {
         multiblock: {
             width: 2
-            height: 1
+            height: 2
             length: 1
         }
     }

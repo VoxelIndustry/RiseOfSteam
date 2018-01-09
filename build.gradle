@@ -30,7 +30,7 @@ allprojects {
     }
 
     minecraft {
-        version = "1.12.2-14.23.1.2582"
+        version = "1.12.2-14.23.1.2584"
         runDir = "run"
 
         mappings = "snapshot_20171010"

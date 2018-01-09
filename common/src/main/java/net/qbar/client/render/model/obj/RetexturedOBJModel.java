@@ -66,10 +66,4 @@ public class RetexturedOBJModel implements IModel
         }
         return null;
     }
-
-    @Override
-    public IModelState getDefaultState()
-    {
-        return null;
-    }
 }
