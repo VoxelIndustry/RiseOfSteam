@@ -1,5 +1,7 @@
 package net.qbar.common.tile;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,10 +22,12 @@ import java.util.Map.Entry;
 public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
     protected final EnumSet<EnumFacing> renderConnections;
-
-    protected final EnumMap<EnumFacing, ITileCable<G>> connections;
+    @Getter
+    protected final EnumMap<EnumFacing, ITileCable<G>> connectionsMap;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;
     protected final Capability<H>                      capability;
+    @Getter
+    @Setter
     protected       int                                grid;
 
     protected int transferCapacity;
@@ -33,7 +37,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.transferCapacity = transferCapacity;
         this.capability = capability;
 
-        this.connections = new EnumMap<>(EnumFacing.class);
+        this.connectionsMap = new EnumMap<>(EnumFacing.class);
         this.adjacentHandler = new EnumMap<>(EnumFacing.class);
         this.grid = -1;
 
@@ -57,18 +61,12 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
             this.addSpecificInfo(lines);
         else
             lines.add("Errored grid!");
-        this.connections.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
+        this.connectionsMap.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
         this.adjacentHandler.forEach((facing, handler) -> lines.add("Handler " + facing + ": " + (handler != null)));
     }
 
     public void addSpecificInfo(final List<String> lines)
     {
-    }
-
-    @Override
-    public EnumFacing[] getConnections()
-    {
-        return this.connections.keySet().toArray(new EnumFacing[this.connections.size()]);
     }
 
     public Collection<H> getConnectedHandlers()
@@ -77,27 +75,9 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     }
 
     @Override
-    public ITileCable<G> getConnected(final EnumFacing facing)
-    {
-        return this.connections.get(facing);
-    }
-
-    @Override
-    public int getGrid()
-    {
-        return this.grid;
-    }
-
-    @Override
-    public void connect(final EnumFacing facing, final ITileCable<G> to)
-    {
-        this.connections.put(facing, to);
-    }
-
-    @Override
     public void disconnect(final EnumFacing facing)
     {
-        this.connections.remove(facing);
+        this.connectionsMap.remove(facing);
         this.updateState();
     }
 
@@ -188,7 +168,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
 
         if (this.isServer())
         {
-            for (final Entry<EnumFacing, ITileCable<G>> entry : this.connections.entrySet())
+            for (final Entry<EnumFacing, ITileCable<G>> entry : this.connectionsMap.entrySet())
                 tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
             for (final Entry<EnumFacing, H> entry : this.adjacentHandler.entrySet())
                 tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
@@ -327,7 +307,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
 
     public NBTTagCompound writeRenderConnections(NBTTagCompound tag)
     {
-        for (final Entry<EnumFacing, ITileCable<G>> entry : this.connections.entrySet())
+        for (final Entry<EnumFacing, ITileCable<G>> entry : this.connectionsMap.entrySet())
             tag.setBoolean("connected" + entry.getKey().ordinal(), true);
         for (final Entry<EnumFacing, H> entry : this.adjacentHandler.entrySet())
             tag.setBoolean("connected" + entry.getKey().ordinal(), true);
@@ -360,12 +340,6 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
             }
         }
         new PipeUpdatePacket(this, adjacents).sendToAllIn(this.getWorld());
-    }
-
-    @Override
-    public void setGrid(final int gridIdentifier)
-    {
-
     }
 
     @Override

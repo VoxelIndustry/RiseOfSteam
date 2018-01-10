@@ -31,9 +31,7 @@ public abstract class CableGrid
 
     boolean canMerge(final CableGrid grid)
     {
-        if (grid.getIdentifier() != this.getIdentifier())
-            return true;
-        return false;
+        return grid.getIdentifier() != this.getIdentifier();
     }
 
     /**

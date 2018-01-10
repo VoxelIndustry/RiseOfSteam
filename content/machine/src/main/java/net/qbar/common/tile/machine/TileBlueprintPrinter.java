@@ -1,16 +1,24 @@
 package net.qbar.common.tile.machine;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.event.TickHandler;
+import net.qbar.common.grid.ITileCable;
+import net.qbar.common.grid.ITileWorkshop;
+import net.qbar.common.grid.WorkshopGrid;
+import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
@@ -20,12 +28,35 @@ import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.List;
 
-public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements IActionReceiver
+@Getter
+public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements IActionReceiver, ITileWorkshop
 {
+    private final EnumMap<EnumFacing, ITileCable<WorkshopGrid>> connectionsMap;
+    @Setter
+    private       int                                           grid;
+
     public TileBlueprintPrinter()
     {
         super("blueprintprinter", 1);
+
+        this.connectionsMap = new EnumMap<>(EnumFacing.class);
+        this.grid = -1;
+    }
+
+    @Override
+    public void addInfo(final List<String> lines)
+    {
+        lines.add("Grid: " + this.getGrid());
+
+        if (this.getGrid() != -1 && this.getGridObject() != null)
+        {
+            lines.add("Contains: " + this.getGridObject().getCables().size());
+        }
+        else
+            lines.add("Errored grid!");
     }
 
     @Override
@@ -123,6 +154,43 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
 
                 this.decrStackSize(0, 1);
             }
+        }
+    }
+
+    @Override
+    public BlockPos getBlockPos()
+    {
+        return this.getCorePos();
+    }
+
+    @Override
+    public World getBlockWorld()
+    {
+        return this.world;
+    }
+
+    @Override
+    public WorkshopMachine getType()
+    {
+        return WorkshopMachine.PRINTER;
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        this.disconnectItself();
+    }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        if (this.isServer() && this.getGrid() == -1)
+            TickHandler.loadables.add(this);
+        if (this.isClient())
+        {
+            this.forceSync();
+            this.updateState();
         }
     }
 }

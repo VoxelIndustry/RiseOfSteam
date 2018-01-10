@@ -73,6 +73,12 @@ public class ITileCableTestImpl implements ITileCable
     }
 
     @Override
+    public EnumMap<EnumFacing, ITileCable> getConnectionsMap()
+    {
+        return this.connecteds;
+    }
+
+    @Override
     public void updateState()
     {
 

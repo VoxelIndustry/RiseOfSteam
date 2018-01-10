@@ -32,6 +32,13 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
         return true;
     }
 
+    @Override
+    public void breakBlock(final World w, final BlockPos pos, final IBlockState state)
+    {
+        this.getWorldTile(w, pos).disconnectItself();
+        super.breakBlock(w, pos, state);
+    }
+
     @Nullable
     @Override
     public TileEntity createNewTileEntity(World world, int meta)

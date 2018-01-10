@@ -5,19 +5,19 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.tile.machine.TileEngineerWorkbench;
+import net.qbar.common.tile.machine.TileKeypunch;
 
-public class BlockEngineerWorkbench extends BlockMultiblockBase<TileEngineerWorkbench>
+public class BlockKeypunch extends BlockMultiblockBase<TileKeypunch>
 {
-    public BlockEngineerWorkbench()
+    public BlockKeypunch()
     {
-        super("engineerworkbench", Material.WOOD, TileEngineerWorkbench.class);
+        super("keypunch", Material.WOOD, TileKeypunch.class);
     }
 
     @Override
-    public TileEngineerWorkbench getTile(World w, IBlockState state)
+    public TileKeypunch getTile(World w, IBlockState state)
     {
-        return new TileEngineerWorkbench();
+        return new TileKeypunch();
     }
 
     @Override

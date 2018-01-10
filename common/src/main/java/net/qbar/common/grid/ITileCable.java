@@ -6,14 +6,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.EnumMap;
 
 public interface ITileCable<T extends CableGrid>
 {
     BlockPos getBlockPos();
-
-    EnumFacing[] getConnections();
-
-    ITileCable<T> getConnected(EnumFacing facing);
 
     int getGrid();
 
@@ -21,13 +18,11 @@ public interface ITileCable<T extends CableGrid>
 
     boolean canConnect(ITileCable<?> to);
 
-    void connect(EnumFacing facing, ITileCable<T> to);
-
-    void disconnect(EnumFacing facing);
-
     World getBlockWorld();
 
     T createGrid(int nextID);
+
+    EnumMap<EnumFacing, ITileCable<T>> getConnectionsMap();
 
     @Nullable
     default T getGridObject()
@@ -45,7 +40,10 @@ public interface ITileCable<T extends CableGrid>
         return null;
     }
 
-    void updateState();
+    default void updateState()
+    {
+
+    }
 
     default void adjacentConnect()
     {
@@ -64,5 +62,30 @@ public interface ITileCable<T extends CableGrid>
     default BlockPos getAdjacentPos(final EnumFacing facing)
     {
         return this.getBlockPos().offset(facing);
+    }
+
+    default  boolean hasGrid()
+    {
+        return this.getGrid() == -1;
+    }
+
+    default EnumFacing[] getConnections()
+    {
+        return this.getConnectionsMap().keySet().toArray(new EnumFacing[0]);
+    }
+
+    default ITileCable<T> getConnected(EnumFacing facing)
+    {
+        return this.getConnectionsMap().get(facing);
+    }
+
+    default void connect(EnumFacing facing, ITileCable<T> to)
+    {
+        this.getConnectionsMap().put(facing, to);
+    }
+
+    default void disconnect(EnumFacing facing)
+    {
+        this.getConnectionsMap().remove(facing);
     }
 }

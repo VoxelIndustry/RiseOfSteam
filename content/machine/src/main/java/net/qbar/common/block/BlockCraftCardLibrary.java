@@ -5,19 +5,19 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.tile.machine.TileEngineerWorkbench;
+import net.qbar.common.tile.machine.TileCraftCardLibrary;
 
-public class BlockEngineerWorkbench extends BlockMultiblockBase<TileEngineerWorkbench>
+public class BlockCraftCardLibrary extends BlockMultiblockBase<TileCraftCardLibrary>
 {
-    public BlockEngineerWorkbench()
+    public BlockCraftCardLibrary()
     {
-        super("engineerworkbench", Material.WOOD, TileEngineerWorkbench.class);
+        super("craftcardlibrary", Material.WOOD, TileCraftCardLibrary.class);
     }
 
     @Override
-    public TileEngineerWorkbench getTile(World w, IBlockState state)
+    public TileCraftCardLibrary getTile(World w, IBlockState state)
     {
-        return new TileEngineerWorkbench();
+        return new TileCraftCardLibrary();
     }
 
     @Override

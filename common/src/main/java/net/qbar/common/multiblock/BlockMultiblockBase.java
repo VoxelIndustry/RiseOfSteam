@@ -17,8 +17,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -200,7 +202,7 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     @Override
     public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
                                     final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final
-                                        float hitX, final float hitY,
+                                    float hitX, final float hitY,
                                     final float hitZ)
     {
         final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
@@ -269,5 +271,14 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
         if (this.multiblock == null)
             this.multiblock = QBarMachines.getComponent(MultiblockComponent.class, this.name);
         return this.multiblock;
+    }
+
+    public boolean isWordTileCore(IBlockAccess world, BlockPos pos)
+    {
+        if (world instanceof ChunkCache)
+            return ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK)
+                    instanceof ITileMultiblockCore;
+        else
+            return world.getTileEntity(pos) instanceof ITileMultiblockCore;
     }
 }

@@ -16,7 +16,6 @@ import java.util.List;
 
 public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> implements IFluidPipe
 {
-
     private FluidStack coldStorage;
 
     public TileFluidPipe(final int transferCapacity)

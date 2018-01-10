@@ -2,6 +2,8 @@ package net.qbar.common.tile.machine;
 
 import fr.ourten.teabeans.value.BaseListProperty;
 import fr.ourten.teabeans.value.BaseProperty;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.ItemStackHelper;
@@ -12,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
@@ -21,13 +24,21 @@ import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
+import net.qbar.common.event.TickHandler;
+import net.qbar.common.grid.ITileCable;
+import net.qbar.common.grid.ITileWorkshop;
+import net.qbar.common.grid.WorkshopGrid;
+import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
-public class TileKeypunch extends TileMultiblockInventoryBase implements IActionReceiver
+import java.util.EnumMap;
+import java.util.List;
+
+public class TileKeypunch extends TileMultiblockInventoryBase implements IActionReceiver, ITileWorkshop
 {
     private final int[] INPUT  = new int[]{0};
     private final int[] OUTPUT = new int[]{1};
@@ -38,6 +49,12 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
     private final BaseProperty<Boolean> isCraftTabProperty, canPrintProperty;
 
     private final InventoryCrafting fakeInv = new InventoryCrafting(new EmptyContainer(), 3, 3);
+
+    @Getter
+    @Setter
+    private       int grid;
+    @Getter
+    private final EnumMap<EnumFacing, ITileCable<WorkshopGrid>> connectionsMap = new EnumMap<>(EnumFacing.class);
 
     public TileKeypunch()
     {
@@ -61,6 +78,21 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
             if (this.isCraftTabProperty.getValue())
                 this.canPrintProperty.setValue(!this.getRecipeResult().isEmpty());
         });
+
+        this.grid = -1;
+    }
+
+    @Override
+    public void addInfo(final List<String> lines)
+    {
+        lines.add("Grid: " + this.getGrid());
+
+        if (this.getGrid() != -1 && this.getGridObject() != null)
+        {
+            lines.add("Contains: " + this.getGridObject().getCables().size());
+        }
+        else
+            lines.add("Errored grid!");
     }
 
     @Override
@@ -287,6 +319,43 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
             default:
                 QBarConstants.LOGGER.warn("Unknown action {} has been sent to TileKeypunch at {}", actionID, this.pos);
                 break;
+        }
+    }
+
+    @Override
+    public BlockPos getBlockPos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public World getBlockWorld()
+    {
+        return this.world;
+    }
+
+    @Override
+    public WorkshopMachine getType()
+    {
+        return WorkshopMachine.KEYPUNCH;
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        this.disconnectItself();
+    }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        if (this.isServer() && this.getGrid() == -1)
+            TickHandler.loadables.add(this);
+        if (this.isClient())
+        {
+            this.forceSync();
+            this.updateState();
         }
     }
 }

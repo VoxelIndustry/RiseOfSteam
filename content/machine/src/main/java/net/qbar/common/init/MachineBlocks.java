@@ -14,8 +14,7 @@ public class MachineBlocks
 {
     public static void init()
     {
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("keypunch", Material.IRON, TileKeypunch::new,
-                TileKeypunch.class));
+        QBarBlocks.registerBlock(new BlockKeypunch());
         QBarBlocks.registerBlock(new BlockTank("fluidtank_small", Fluid.BUCKET_VOLUME * 48, 0));
         QBarBlocks.registerBlock(new BlockTank("fluidtank_medium", Fluid.BUCKET_VOLUME * 128, 1));
         QBarBlocks.registerBlock(new BlockTank("fluidtank_big", Fluid.BUCKET_VOLUME * 432, 2));
@@ -48,10 +47,8 @@ public class MachineBlocks
 
         QBarBlocks.registerBlock(new BlockEngineerStorage());
         QBarBlocks.registerBlock(new BlockEngineerWorkbench());
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("blueprintprinter", Material.WOOD,
-                TileBlueprintPrinter::new, TileBlueprintPrinter.class));
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("craftcardlibrary", Material.WOOD,
-                TileCraftCardLibrary::new, TileCraftCardLibrary.class));
+        QBarBlocks.registerBlock(new BlockCraftCardLibrary());
+        QBarBlocks.registerBlock(new BlockBlueprintPrinter());
 
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
