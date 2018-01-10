@@ -64,9 +64,9 @@ public interface ITileCable<T extends CableGrid>
         return this.getBlockPos().offset(facing);
     }
 
-    default  boolean hasGrid()
+    default boolean hasGrid()
     {
-        return this.getGrid() == -1;
+        return this.getGrid() != -1;
     }
 
     default EnumFacing[] getConnections()
