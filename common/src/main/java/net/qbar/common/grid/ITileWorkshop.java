@@ -36,7 +36,7 @@ public interface ITileWorkshop extends ITileCable<WorkshopGrid>, ILoadable
     }
 
     @Override
-    default boolean canConnect(ITileCable<?> to)
+    default boolean canConnect(ITileNode<?> to)
     {
         return to instanceof ITileWorkshop && ((ITileWorkshop) to).getType() != this.getType() &&
                 (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(((ITileWorkshop) to).getType()) ||

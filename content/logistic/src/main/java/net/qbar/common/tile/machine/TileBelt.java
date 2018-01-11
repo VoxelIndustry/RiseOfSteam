@@ -206,7 +206,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public boolean canConnect(final ITileCable<?> to)
+    public boolean canConnect(final ITileNode<?> to)
     {
         if (to instanceof TileBelt)
         {

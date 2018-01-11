@@ -8,7 +8,7 @@ import java.util.EnumMap;
 @Getter
 public class WorkshopGrid extends CableGrid
 {
-    private final EnumMap<WorkshopMachine, ITileCable<?>> machines;
+    private final EnumMap<WorkshopMachine, ITileNode<?>> machines;
 
     public WorkshopGrid(int identifier)
     {
@@ -18,7 +18,7 @@ public class WorkshopGrid extends CableGrid
     }
 
     @Override
-    public void addCable(@Nonnull final ITileCable<?> cable)
+    public void addCable(@Nonnull final ITileNode<?> cable)
     {
         super.addCable(cable);
 
@@ -26,7 +26,7 @@ public class WorkshopGrid extends CableGrid
     }
 
     @Override
-    public boolean removeCable(ITileCable<?> cable)
+    public boolean removeCable(ITileNode<?> cable)
     {
         machines.remove(((ITileWorkshop) cable).getType());
         return super.removeCable(cable);

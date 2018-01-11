@@ -10,10 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.model.obj.QBarOBJState;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.CableGrid;
-import net.qbar.common.grid.GridManager;
-import net.qbar.common.grid.IConnectionAware;
-import net.qbar.common.grid.ITileCable;
+import net.qbar.common.grid.*;
 import net.qbar.common.network.PipeUpdatePacket;
 
 import java.util.*;
@@ -343,7 +340,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     }
 
     @Override
-    public boolean canConnect(final ITileCable<?> to)
+    public boolean canConnect(final ITileNode<?> to)
     {
         return false;
     }

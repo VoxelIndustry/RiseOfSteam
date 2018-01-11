@@ -81,7 +81,7 @@ public class GridManagerTest
 
         ITileCable cable = mock(ITileCable.class);
         when(cable.getGrid()).thenReturn(-1);
-        when(cable.getConnections()).thenReturn(new EnumFacing[0]);
+        when(cable.getConnections()).thenReturn(new int[0]);
         when(cable.createGrid(anyInt())).then(answer -> new CableGrid(answer.getArgument(0))
         {
             @Override
@@ -97,7 +97,7 @@ public class GridManagerTest
 
         GridManager.getInstance().getGrid(0).addCable(upperCable);
         GridManager.getInstance().getGrid(0).removeCable(cable);
-        when(cable.getConnections()).thenReturn(new EnumFacing[]{EnumFacing.UP});
+        when(cable.getConnections()).thenReturn(new int[]{EnumFacing.UP.ordinal()});
         when(cable.getConnected(EnumFacing.UP)).thenReturn(upperCable);
         when(upperCable.getGrid()).thenReturn(0);
 
@@ -114,7 +114,7 @@ public class GridManagerTest
         ITileCable left = spy(ITileCableTestImpl.class);
         ITileCable right = spy(ITileCableTestImpl.class);
 
-        when(center.getConnections()).thenReturn(new EnumFacing[]{EnumFacing.WEST, EnumFacing.EAST});
+        when(center.getConnections()).thenReturn(new int[]{EnumFacing.WEST.ordinal(), EnumFacing.EAST.ordinal()});
         when(center.getConnected(EnumFacing.WEST)).thenReturn(left);
         when(center.getConnected(EnumFacing.EAST)).thenReturn(right);
 
@@ -185,7 +185,7 @@ public class GridManagerTest
         cable.setGrid(0);
         neighbor.setGrid(0);
 
-        when(cable.getConnections()).thenReturn(new EnumFacing[]{EnumFacing.UP});
+        when(cable.getConnections()).thenReturn(new int[]{EnumFacing.UP.ordinal()});
         when(cable.getConnected(EnumFacing.UP)).thenReturn(neighbor);
 
         GridManager.getInstance().disconnectCable(cable);

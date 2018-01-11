@@ -81,7 +81,7 @@ public class BeltGrid extends CableGrid
 
         final boolean currentWorkingState = this.getTank().getSteam() > 0;
 
-        for (final ITileCable<?> cable : this.getCables())
+        for (final ITileNode<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
@@ -233,7 +233,7 @@ public class BeltGrid extends CableGrid
             }
         }
 
-        for (final ITileCable<?> cable : this.getCables())
+        for (final ITileNode<?> cable : this.getCables())
         {
             final IBelt belt = (IBelt) cable;
 
@@ -259,7 +259,7 @@ public class BeltGrid extends CableGrid
     }
 
     @Override
-    public void addCable(@Nonnull final ITileCable cable)
+    public void addCable(@Nonnull final ITileNode cable)
     {
         super.addCable(cable);
         this.getTank().setCapacity(this.getSteamCapacity());
@@ -269,7 +269,7 @@ public class BeltGrid extends CableGrid
     }
 
     @Override
-    public boolean removeCable(final ITileCable cable)
+    public boolean removeCable(final ITileNode cable)
     {
         if (super.removeCable(cable))
         {

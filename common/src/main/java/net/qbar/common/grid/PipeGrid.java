@@ -25,14 +25,14 @@ public class PipeGrid extends CableGrid
     }
 
     @Override
-    public void addCable(@Nonnull final ITileCable cable)
+    public void addCable(@Nonnull final ITileNode cable)
     {
         super.addCable(cable);
         this.getTank().setCapacity(this.getCapacity());
     }
 
     @Override
-    public boolean removeCable(final ITileCable cable)
+    public boolean removeCable(final ITileNode cable)
     {
         if (super.removeCable(cable))
         {

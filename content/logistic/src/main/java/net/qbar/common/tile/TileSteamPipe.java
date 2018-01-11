@@ -6,7 +6,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.grid.ISteamPipe;
-import net.qbar.common.grid.ITileCable;
+import net.qbar.common.grid.ITileNode;
 import net.qbar.common.grid.SteamGrid;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
@@ -86,7 +86,7 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     }
 
     @Override
-    public boolean canConnect(final ITileCable<?> to)
+    public boolean canConnect(final ITileNode<?> to)
     {
         if (to instanceof TileSteamPipe)
             return true;

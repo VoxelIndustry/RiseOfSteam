@@ -13,7 +13,7 @@ public abstract class CableGrid
 {
     private final int identifier;
 
-    private final HashSet<ITileCable<?>> cables;
+    private final HashSet<ITileNode<?>> cables;
 
     public CableGrid(final int identifier)
     {
@@ -37,7 +37,7 @@ public abstract class CableGrid
     /**
      * Called on the destination grid after the merging has occurred.
      *
-     * @param the source grid
+     * @param grid the source grid
      */
     void onMerge(final CableGrid grid)
     {
@@ -48,24 +48,24 @@ public abstract class CableGrid
      * Called after a grid splitting has occurred, each new fragment will
      * receive this event.
      *
-     * @param the grid source grid before splitting.
+     * @param grid the grid source grid before splitting.
      */
     void onSplit(final CableGrid grid)
     {
 
     }
 
-    public void addCable(@Nonnull final ITileCable<?> cable)
+    public void addCable(@Nonnull final ITileNode<?> cable)
     {
         this.cables.add(cable);
     }
 
-    public void addCables(final Collection<ITileCable<?>> cables)
+    public void addCables(final Collection<ITileNode<?>> cables)
     {
         cables.forEach(this::addCable);
     }
 
-    public boolean removeCable(final ITileCable<?> cable)
+    public boolean removeCable(final ITileNode<?> cable)
     {
         if (this.cables.remove(cable))
         {
@@ -76,12 +76,12 @@ public abstract class CableGrid
         return false;
     }
 
-    public void removeCables(final Collection<ITileCable<?>> cables)
+    public void removeCables(final Collection<ITileNode<?>> cables)
     {
         cables.forEach(this::removeCable);
     }
 
-    public boolean hasCable(final ITileCable<?> cable)
+    public boolean hasCable(final ITileNode<?> cable)
     {
         return this.cables.contains(cable);
     }
@@ -91,7 +91,7 @@ public abstract class CableGrid
         return this.identifier;
     }
 
-    public HashSet<ITileCable<?>> getCables()
+    public HashSet<ITileNode<?>> getCables()
     {
         return this.cables;
     }

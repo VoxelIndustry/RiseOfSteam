@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.grid.IFluidPipe;
-import net.qbar.common.grid.ITileCable;
+import net.qbar.common.grid.ITileNode;
 import net.qbar.common.grid.PipeGrid;
 
 import java.util.List;
@@ -89,7 +89,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public boolean canConnect(final ITileCable<?> to)
+    public boolean canConnect(final ITileNode<?> to)
     {
         if (to instanceof TileFluidPipe)
         {

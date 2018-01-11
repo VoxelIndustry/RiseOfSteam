@@ -1,7 +1,5 @@
 package net.qbar.common.grid;
 
-import net.minecraft.util.EnumFacing;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,12 +67,13 @@ public class GridManager
             cableGrid.next().tick();
     }
 
-    public <T extends CableGrid> void connectCable(final ITileCable<T> added)
+    public <T extends CableGrid> void connectCable(final ITileNode<T> added)
     {
         added.adjacentConnect();
-        for (final EnumFacing facing : added.getConnections())
+
+        for (int edge : added.getConnections())
         {
-            final ITileCable<T> adjacent = added.getConnected(facing);
+            final ITileNode<T> adjacent = added.getConnected(edge);
 
             if (adjacent.getGrid() != -1)
             {
@@ -96,14 +95,14 @@ public class GridManager
         }
     }
 
-    public <T extends CableGrid> void disconnectCable(final ITileCable<T> removed)
+    public <T extends CableGrid> void disconnectCable(final ITileNode<T> removed)
     {
         if (removed.getGrid() != -1)
         {
             if (removed.getConnections().length != 0)
             {
-                for (final EnumFacing facing : removed.getConnections())
-                    removed.getConnected(facing).disconnect(facing.getOpposite());
+                for (int edge : removed.getConnections())
+                    removed.getConnected(edge).disconnect(removed.invertEdge(edge));
 
                 if (removed.getConnections().length == 1)
                     this.getGrid(removed.getGrid()).removeCable(removed);
@@ -112,16 +111,16 @@ public class GridManager
                     this.getGrid(removed.getGrid()).removeCable(removed);
                     if (!this.getOrphans(this.getGrid(removed.getGrid()), removed).isEmpty())
                     {
-                        for (final EnumFacing facing : removed.getConnections())
-                            removed.getConnected(facing).setGrid(-1);
+                        for (int edge : removed.getConnections())
+                            removed.getConnected(edge).setGrid(-1);
                         final CableGrid old = this.removeGrid(removed.getGrid());
-                        for (final EnumFacing facing : removed.getConnections())
+                        for (int edge : removed.getConnections())
                         {
-                            if (removed.getConnected(facing).getGrid() == -1)
+                            if (removed.getConnected(edge).getGrid() == -1)
                             {
                                 final CableGrid newGrid = this.addGrid(old.copy(this.getNextID()));
 
-                                this.exploreGrid(newGrid, removed.getConnected(facing));
+                                this.exploreGrid(newGrid, removed.getConnected(edge));
                                 newGrid.onSplit(old);
                             }
                         }
@@ -142,26 +141,26 @@ public class GridManager
         destination.onMerge(source);
     }
 
-    <T extends CableGrid> List<ITileCable<T>> getOrphans(final CableGrid grid, final ITileCable<T> cable)
+    <T extends CableGrid> List<ITileNode<T>> getOrphans(final CableGrid grid, final ITileNode<T> cable)
     {
-        final List<ITileCable<T>> toScan = new ArrayList<>();
+        final List<ITileNode<T>> toScan = new ArrayList<>();
         // Only here to calm down javac
-        grid.getCables().forEach(cable2 -> toScan.add((ITileCable<T>) cable2));
+        grid.getCables().forEach(cable2 -> toScan.add((ITileNode<T>) cable2));
 
-        final List<ITileCable<T>> openset = new ArrayList<>();
-        final List<ITileCable<T>> frontier = new ArrayList<>();
+        final List<ITileNode<T>> openset = new ArrayList<>();
+        final List<ITileNode<T>> frontier = new ArrayList<>();
 
         frontier.add(cable.getConnected(cable.getConnections()[0]));
         while (!frontier.isEmpty())
         {
-            final List<ITileCable<T>> frontierCpy = new ArrayList<>(frontier);
-            for (final ITileCable<T> current : frontierCpy)
+            final List<ITileNode<T>> frontierCpy = new ArrayList<>(frontier);
+            for (final ITileNode<T> current : frontierCpy)
             {
                 openset.add(current);
                 toScan.remove(current);
-                for (final EnumFacing facing : current.getConnections())
+                for (int edge : current.getConnections())
                 {
-                    final ITileCable<T> facingCable = current.getConnected(facing);
+                    final ITileNode<T> facingCable = current.getConnected(edge);
                     if (!openset.contains(facingCable) && !frontier.contains(facingCable))
                         frontier.add(facingCable);
                 }
@@ -171,25 +170,25 @@ public class GridManager
         return toScan;
     }
 
-    private <T extends CableGrid> void exploreGrid(final CableGrid grid, final ITileCable<T> cable)
+    private <T extends CableGrid> void exploreGrid(final CableGrid grid, final ITileNode<T> cable)
     {
-        final List<ITileCable<T>> openset = new ArrayList<>();
+        final List<ITileNode<T>> openset = new ArrayList<>();
 
-        final List<ITileCable<T>> frontier = new ArrayList<>();
+        final List<ITileNode<T>> frontier = new ArrayList<>();
 
         frontier.add(cable);
         while (!frontier.isEmpty())
         {
-            final List<ITileCable<T>> frontierCpy = new ArrayList<>(frontier);
-            for (final ITileCable<T> current : frontierCpy)
+            final List<ITileNode<T>> frontierCpy = new ArrayList<>(frontier);
+            for (final ITileNode<T> current : frontierCpy)
             {
 
                 openset.add(current);
                 current.setGrid(grid.getIdentifier());
                 grid.addCable(current);
-                for (final EnumFacing facing : current.getConnections())
+                for (int edge : current.getConnections())
                 {
-                    final ITileCable<T> facingCable = current.getConnected(facing);
+                    final ITileNode<T> facingCable = current.getConnected(edge);
                     if (!openset.contains(facingCable) && !frontier.contains(facingCable))
                         frontier.add(facingCable);
                 }

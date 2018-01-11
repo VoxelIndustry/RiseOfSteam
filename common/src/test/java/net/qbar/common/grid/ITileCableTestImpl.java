@@ -19,9 +19,9 @@ public class ITileCableTestImpl implements ITileCable
     }
 
     @Override
-    public EnumFacing[] getConnections()
+    public int[] getConnections()
     {
-        return this.connecteds.keySet().stream().toArray(EnumFacing[]::new);
+        return this.connecteds.keySet().stream().mapToInt(EnumFacing::ordinal).toArray();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ITileCableTestImpl implements ITileCable
     }
 
     @Override
-    public boolean canConnect(ITileCable to)
+    public boolean canConnect(ITileNode to)
     {
         return true;
     }
