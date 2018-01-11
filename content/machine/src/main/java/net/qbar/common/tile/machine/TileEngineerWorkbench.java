@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
+import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.ITileCable;
@@ -55,7 +56,9 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return null;
+        return new ContainerBuilder("engineerworkbench", player)
+                .player(player.inventory).inventory(8, 102).hotbar(8, 160)
+                .addInventory().create();
     }
 
     @Override

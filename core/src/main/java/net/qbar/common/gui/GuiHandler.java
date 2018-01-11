@@ -40,11 +40,11 @@ public class GuiHandler implements IGuiHandler
         if (tile instanceof TileStructure)
             return null;
 
-        if(ID < 100)
+        if (ID < 100)
         {
             LogisticGui gui = LogisticGui.values()[ID];
 
-            switch(gui)
+            switch (gui)
             {
                 case EXTRACTOR:
                     return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
@@ -89,13 +89,16 @@ public class GuiHandler implements IGuiHandler
             case ENGINEERSTORAGE:
                 return new GuiEngineerStorage(player, (TileEngineerStorage) tile);
             case BLUEPRINTPRINTER:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiBlueprintPrinter(player, (TileBlueprintPrinter)
-                        tile));
+                return BrokkGuiManager.getBrokkGuiContainer(
+                        new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
             case CRAFTCARDLIBRARY:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiCraftCardLibrary(player, (TileCraftCardLibrary)
-                        tile));
+                return BrokkGuiManager.getBrokkGuiContainer(
+                        new GuiCraftCardLibrary(player, (TileCraftCardLibrary) tile));
             case ALLOYCAULDRON:
                 return new GuiAlloyCauldron(player, (TileAlloyCauldron) tile);
+            case ENGINEERWORKBENCH:
+                return BrokkGuiManager.getBrokkGuiContainer(
+                        new GuiEngineerWorkbench(player, (TileEngineerWorkbench) tile));
             default:
                 break;
         }
