@@ -123,6 +123,8 @@ project('common') {
         compile 'com.elytradev:concrete:0.3.1:common'
         compile 'com.elytradev:concrete:0.3.1:reflect'
         compile 'com.elytradev:concrete:0.3.1:network'
+    
+        compile project(':debug')
     }
 }
 
@@ -166,6 +168,11 @@ project('core') {
         compile project(':content:logistic')
         compile project(':content:machine')
         compile project(':content:world')
+    }
+}
+
+project('debug') {
+    dependencies {
     }
 }
 

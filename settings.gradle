@@ -2,6 +2,7 @@ include 'core'
 include 'common'
 include 'compat'
 include 'content'
+include 'debug'
 
 include 'content:machine'
 project(':content:machine').name = 'machine'
