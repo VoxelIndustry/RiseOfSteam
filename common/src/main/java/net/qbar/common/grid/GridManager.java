@@ -1,9 +1,6 @@
 package net.qbar.common.grid;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GridManager
 {
@@ -172,17 +169,15 @@ public class GridManager
 
     private <T extends CableGrid> void exploreGrid(final CableGrid grid, final ITileNode<T> cable)
     {
-        final List<ITileNode<T>> openset = new ArrayList<>();
-
-        final List<ITileNode<T>> frontier = new ArrayList<>();
+        final Set<ITileNode<T>> openset = new HashSet<>();
+        final Set<ITileNode<T>> frontier = new HashSet<>();
 
         frontier.add(cable);
         while (!frontier.isEmpty())
         {
-            final List<ITileNode<T>> frontierCpy = new ArrayList<>(frontier);
+            final Set<ITileNode<T>> frontierCpy = new HashSet<>(frontier);
             for (final ITileNode<T> current : frontierCpy)
             {
-
                 openset.add(current);
                 current.setGrid(grid.getIdentifier());
                 grid.addCable(current);

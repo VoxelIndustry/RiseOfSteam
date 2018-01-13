@@ -1,5 +1,6 @@
 package net.qbar.common.tile.machine;
 
+import com.google.common.collect.LinkedListMultimap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,9 +13,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.ITileWorkshop;
-import net.qbar.common.grid.WorkshopGrid;
 import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
@@ -23,20 +22,18 @@ import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
 
 import javax.annotation.Nullable;
-import java.util.EnumMap;
 import java.util.List;
 
 @Getter
 public class TileEngineerWorkbench extends QBarTileBase implements IContainerProvider, ITileMultiblockCore,
         ILoadable, ITileWorkshop
 {
-    private final EnumMap<EnumFacing, ITileCable<WorkshopGrid>> connectionsMap;
+    private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
     private       int                                           grid;
 
     public TileEngineerWorkbench()
     {
-        this.connectionsMap = new EnumMap<>(EnumFacing.class);
         this.grid = -1;
     }
 

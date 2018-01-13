@@ -1,5 +1,6 @@
 package net.qbar.common.tile.machine;
 
+import com.google.common.collect.LinkedListMultimap;
 import fr.ourten.teabeans.value.BaseListProperty;
 import fr.ourten.teabeans.value.BaseProperty;
 import lombok.Getter;
@@ -25,9 +26,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.ITileWorkshop;
-import net.qbar.common.grid.WorkshopGrid;
 import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
@@ -35,7 +34,6 @@ import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
-import java.util.EnumMap;
 import java.util.List;
 
 public class TileKeypunch extends TileMultiblockInventoryBase implements IActionReceiver, ITileWorkshop
@@ -54,7 +52,7 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
     @Setter
     private       int grid;
     @Getter
-    private final EnumMap<EnumFacing, ITileCable<WorkshopGrid>> connectionsMap = new EnumMap<>(EnumFacing.class);
+    private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
 
     public TileKeypunch()
     {

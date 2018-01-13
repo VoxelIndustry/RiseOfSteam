@@ -98,7 +98,7 @@ public class GridManagerTest
         GridManager.getInstance().getGrid(0).addCable(upperCable);
         GridManager.getInstance().getGrid(0).removeCable(cable);
         when(cable.getConnections()).thenReturn(new int[]{EnumFacing.UP.ordinal()});
-        when(cable.getConnected(EnumFacing.UP)).thenReturn(upperCable);
+        when(cable.getConnected(EnumFacing.UP.ordinal())).thenReturn(upperCable);
         when(upperCable.getGrid()).thenReturn(0);
 
         GridManager.getInstance().connectCable(cable);
@@ -191,7 +191,7 @@ public class GridManagerTest
         GridManager.getInstance().disconnectCable(cable);
 
         assertThat(GridManager.getInstance().cableGrids).hasSize(1);
-        verify(neighbor, times(1)).disconnect(EnumFacing.DOWN);
+        verify(neighbor, times(1)).disconnect(EnumFacing.DOWN.ordinal());
     }
 
     @Test

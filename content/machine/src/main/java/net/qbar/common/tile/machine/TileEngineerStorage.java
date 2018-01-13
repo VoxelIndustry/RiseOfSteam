@@ -1,5 +1,6 @@
 package net.qbar.common.tile.machine;
 
+import com.google.common.collect.LinkedListMultimap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,9 +16,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.ITileCable;
 import net.qbar.common.grid.ITileWorkshop;
-import net.qbar.common.grid.WorkshopGrid;
 import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.tile.TileInventoryBase;
 
@@ -30,7 +29,7 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
 {
     private final EnumMap<EnumFacing, SidedInvWrapper>          inventoryWrapperCache;
     @Getter
-    private final EnumMap<EnumFacing, ITileCable<WorkshopGrid>> connectionsMap;
+    private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Getter
     @Setter
     private       int                                           grid;
@@ -40,8 +39,6 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
         super("engineerstorage", 32);
 
         this.inventoryWrapperCache = new EnumMap<>(EnumFacing.class);
-        this.connectionsMap = new EnumMap<>(EnumFacing.class);
-
         this.grid = -1;
     }
 

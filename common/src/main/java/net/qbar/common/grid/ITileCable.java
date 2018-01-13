@@ -29,17 +29,6 @@ public interface ITileCable<T extends CableGrid> extends ITileNode<T>
         return this.getBlockPos().offset(facing);
     }
 
-    @Override
-    default BlockPos getAdjacentPos(final int edge)
-    {
-        return this.getAdjacentPos(EnumFacing.VALUES[edge]);
-    }
-
-    default boolean hasGrid()
-    {
-        return this.getGrid() != -1;
-    }
-
     default int[] getConnections()
     {
         return this.getConnectionsMap().keySet().stream().mapToInt(EnumFacing::ordinal).toArray();
@@ -58,12 +47,6 @@ public interface ITileCable<T extends CableGrid> extends ITileNode<T>
     default void connect(EnumFacing facing, ITileCable<T> to)
     {
         this.getConnectionsMap().put(facing, to);
-    }
-
-    @Override
-    default void connect(int edge, ITileNode<T> to)
-    {
-        this.connect(EnumFacing.VALUES[edge], (ITileCable<T>) to);
     }
 
     default void disconnect(EnumFacing facing)

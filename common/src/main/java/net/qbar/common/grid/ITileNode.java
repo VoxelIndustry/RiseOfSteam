@@ -42,8 +42,6 @@ public interface ITileNode<T extends CableGrid>
 
     void adjacentConnect();
 
-    BlockPos getAdjacentPos(final int edge);
-
     default boolean hasGrid()
     {
         return this.getGrid() != -1;
@@ -52,8 +50,6 @@ public interface ITileNode<T extends CableGrid>
     int[] getConnections();
 
     ITileNode<T> getConnected(int edge);
-
-    void connect(int edge, ITileNode<T> to);
 
     void disconnect(int edge);
 
