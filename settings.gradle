@@ -10,9 +10,3 @@ include 'content:logistic'
 project(':content:logistic').name = 'logistic'
 include 'content:world'
 project(':content:world').name = 'world'
-
-includeBuild('../../Libraries/BrokkGui') {
-    dependencySubstitution {
-        substitute module('org.yggard:brokkgui-binding-mc1.12') with project(':1.12')
-    }
-}
