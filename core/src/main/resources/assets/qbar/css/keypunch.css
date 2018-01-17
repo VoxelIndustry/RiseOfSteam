@@ -1,0 +1,23 @@
+.tab-button {
+    -background-color: #9E9E9E 12%;
+}
+
+.tab-button:hover {
+    -background-color: #BDBDBD 50%;
+}
+
+.tab-button:disabled {
+    -background-color: #9E9E9E;
+}
+
+#assemble {
+    -background-color: #03A9F4;
+}
+
+#assemble:hover {
+    -background-color: #4FC3F7;
+}
+
+#assemble:disabled {
+    -background-color: #9E9E9E 50%;
+}

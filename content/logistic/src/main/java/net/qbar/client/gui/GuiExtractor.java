@@ -19,10 +19,8 @@ import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiRelativePane;
-import org.yggard.brokkgui.skin.GuiButtonSkin;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
-import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
 {
@@ -77,14 +75,15 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
 
             if (newValue)
             {
-                ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
-                ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
+                //    ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
+                //  ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
                 this.whitelist.setTextColor(Color.fromHex("#000000", 0.87f));
             }
             else
             {
-                ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.blacklistBackground);
-                ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.blacklistHoveredBackground);
+                //    ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.blacklistBackground);
+                //      ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this
+                // .blacklistHoveredBackground);
                 this.whitelist.setTextColor(Color.fromHex("#ffffff", 0.87f));
             }
         });
@@ -92,8 +91,8 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
                 .withInt("facing", EnumFacing.UP.ordinal())
                 .withBoolean("whitelist", !this.extractor.getWhitelistProperty().getValue()).send());
 
-        ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
-        ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
+        //((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
+        // ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
         this.whitelist.setWidth(60);
         this.whitelist.setHeight(15);
     }
@@ -112,7 +111,7 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
                     final ItemStackView view = new ItemStackView(((FilterCard) card).stacks[index]);
                     view.setWidth(18);
                     view.setHeight(18);
-                    ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiExtractor.SLOT));
+                    view.setBackground(new Background(GuiExtractor.SLOT));
                     this.filterPane.addChild(view, 0.7f + 0.104f * (i / 3), 0.25f + 0.22f * (i % 3));
                 }
                 this.filterPane.addChild(this.whitelist, 0.5f, 0.9f);

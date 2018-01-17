@@ -4,6 +4,7 @@ import com.google.common.collect.LinkedListMultimap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,6 +19,9 @@ import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.ClientActionBuilder;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
 
@@ -26,11 +30,11 @@ import java.util.List;
 
 @Getter
 public class TileEngineerWorkbench extends QBarTileBase implements IContainerProvider, ITileMultiblockCore,
-        ILoadable, ITileWorkshop
+        ILoadable, ITileWorkshop, IActionReceiver
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
-    private       int                                           grid;
+    private int grid;
 
     public TileEngineerWorkbench()
     {
@@ -132,6 +136,20 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
         {
             this.forceSync();
             this.updateState();
+        }
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("MACHINES_LOAD".equals(actionID) && this.hasGrid())
+        {
+            ClientActionBuilder builder = sender.answer();
+
+            this.getGridObject().getMachines().forEach((machine, node) ->
+                    builder.withLong(machine.name(), node.getBlockPos().toLong()));
+
+            builder.send();
         }
     }
 }

@@ -19,14 +19,11 @@ import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.util.ItemUtils;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.paint.Background;
-import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
-import org.yggard.brokkgui.skin.GuiButtonSkin;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
-import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
@@ -51,6 +48,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.setHeight(GuiKeypunch.ySize + 18);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
+
+        this.addStylesheet("/assets/qbar/css/keypunch.css");
 
         this.keypunch = keypunch;
 
@@ -96,9 +95,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             }
         });
 
-        ((GuiButtonSkin) craftTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
-        ((GuiButtonSkin) craftTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD", 0.5f)));
-        ((GuiButtonSkin) craftTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E")));
+        craftTab.addStyleClass("tab-button");
         craftTab.setWidthRatio(0.5f);
         craftTab.setHeightRatio(1);
         craftTab.setOnActionEvent(e ->
@@ -107,9 +104,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             new ServerActionBuilder("SET_TAB").toTile(keypunch).withInt("tab", 0).send();
         });
 
-        ((GuiButtonSkin) filterTab.getSkin()).setBackground(new Background(Color.fromHex("#9E9E9E", 0.12f)));
-        ((GuiButtonSkin) filterTab.getSkin()).setHoveredBackground(new Background(Color.fromHex("#BDBDBD", 0.5f)));
-        ((GuiButtonSkin) filterTab.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E")));
+        filterTab.addStyleClass("tab-button");
         filterTab.setWidthRatio(0.5f);
         filterTab.setHeightRatio(1);
         filterTab.setOnActionEvent(e ->
@@ -122,15 +117,13 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.header.addChild(filterTab, 0.75f, 0.5f);
 
         this.assemble = new GuiButton("PRINT");
+        this.assemble.setID("assemble");
         this.assemble.setWidth(56);
         this.assemble.setHeight(16);
         this.assemble.setOnActionEvent(e ->
                 new ServerActionBuilder(this.assemble.getText().equals("PRINT") ? "PRINT_CARD" : "LOAD_CARD")
                         .toTile(keypunch).send());
-
-        ((GuiButtonSkin) this.assemble.getSkin()).setBackground(new Background(Color.fromHex("#03A9F4")));
-        ((GuiButtonSkin) this.assemble.getSkin()).setHoveredBackground(new Background(Color.fromHex("#4FC3F7")));
-        ((GuiButtonSkin) this.assemble.getSkin()).setDisabledBackground(new Background(Color.fromHex("#9E9E9E", 0.5f)));
+        this.body.addChild(this.assemble, 0.5f, 0.415f);
 
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshMessage);
         ((ListenerSlot) this.getContainer().getSlot(37))
@@ -164,7 +157,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             view.setWidth(18);
             view.setHeight(18);
             view.setTooltip(true);
-            ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+            view.setBackground(new Background(GuiKeypunch.SLOT));
             view.setOnClickEvent(click ->
             {
                 if (click.getKey() == 1)
@@ -197,7 +190,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         resultView.setWidth(22);
         resultView.setHeight(22);
         resultView.setTooltip(true);
-        ((ItemStackViewSkin) resultView.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+        resultView.setBackground(new Background(GuiKeypunch.SLOT));
         this.craftPane.addChild(resultView, 25 + (18 * 4), 3 + 18);
 
         this.keypunch.getCraftStacks()
@@ -228,7 +221,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             view.setWidth(18);
             view.setHeight(18);
             view.setTooltip(true);
-            ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiKeypunch.SLOT));
+            view.setBackground(new Background(GuiKeypunch.SLOT));
             view.setOnClickEvent(click ->
             {
                 if (click.getKey() == 1)
@@ -263,8 +256,6 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
     {
         if (!stack.isEmpty())
         {
-            if (!this.body.hasChild(this.assemble))
-                this.body.addChild(this.assemble, 0.5f, 0.415f);
             if (stack.getTagCompound() == null)
             {
                 this.assemble.setText("PRINT");
@@ -313,7 +304,5 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                     this.assemble.setDisabled(true);
             }
         }
-        else if (stack.isEmpty() && this.body.hasChild(this.assemble))
-            this.body.removeChild(this.assemble);
     }
 }

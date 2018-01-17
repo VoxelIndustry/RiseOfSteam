@@ -20,7 +20,6 @@ import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
-import org.yggard.brokkgui.wrapper.container.ItemStackViewSkin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +127,7 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
                     view.setWidth(18);
                     view.setHeight(18);
                     view.setTooltip(true);
-                    ((ItemStackViewSkin) view.getSkin()).setBackground(new Background(GuiSplitter.SLOT));
+                    view.setStyle("-background-texture: url(\"" + QBarConstants.MODID + ":textures/gui/slot.png\");");
                     this.filterPane.get(filter).addChild(view, 82 + 18 * (i % 5), i > 4 ? 18 : 0);
                 }
                 this.filterPane.get(filter).addChild(this.whitelist.get(filter), 26, 1);
@@ -138,20 +137,25 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 
     private void refreshWhitelists()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             if (this.splitter.getWhitelistProperty().get(i))
             {
                 this.whitelist.get(i).setText("WHITELIST");
                 this.whitelist.get(i).getStyleClass().remove("blacklist");
+                System.out.println("BLACK LIST REMOVED");
                 this.whitelist.get(i).getStyleClass().add("whitelist");
+                System.out.println("WHITE LIST ADDED");
             }
             else
             {
                 this.whitelist.get(i).setText("BLACKLIST");
                 this.whitelist.get(i).getStyleClass().remove("whitelist");
+                System.out.println("WHITE LIST REMOVED");
                 this.whitelist.get(i).getStyleClass().add("blacklist");
+                System.out.println("BLACK LIST ADDED");
             }
+            this.whitelist.get(i).refreshStyle();
         }
     }
 }

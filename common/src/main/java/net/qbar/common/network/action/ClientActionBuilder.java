@@ -33,6 +33,12 @@ public class ClientActionBuilder
         return this;
     }
 
+    public ClientActionBuilder withLong(String key, Long value)
+    {
+        this.payload.setLong(key, value);
+        return this;
+    }
+
     public ClientActionBuilder withString(String key, String value)
     {
         this.payload.setString(key, value);

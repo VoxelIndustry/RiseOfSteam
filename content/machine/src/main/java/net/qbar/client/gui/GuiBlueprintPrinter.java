@@ -21,7 +21,6 @@ import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
-import org.yggard.brokkgui.skin.GuiBehaviorSkinBase;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
@@ -133,8 +132,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 itemStack.setHeight(18);
                 itemStack.setTooltip(true);
                 itemStack.setAlternateString("");
-                ((GuiBehaviorSkinBase) itemStack.getSkin())
-                        .setBackground(new Background(machineDescriptor.getType().getColor()));
+                itemStack.setBackground(new Background(machineDescriptor.getType().getColor()));
 
                 itemStack.setOnClickEvent(e ->
                 {
