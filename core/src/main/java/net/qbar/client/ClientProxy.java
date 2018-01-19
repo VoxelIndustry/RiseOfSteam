@@ -58,12 +58,15 @@ public class ClientProxy extends CommonProxy
         QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
                 new ResourceLocation(QBarConstants.MODID + ":block/belt.mwm"), new String[]{"Top"},
                 new String[]{"qbar:blocks/belt_top_anim"});
-        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_animated.mwm",
-                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope.mwm"), new String[]{"None"},
-                new String[]{"qbar:blocks/belt_slope_anim"});
-        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope2_animated.mwm",
-                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope2.mwm"), new String[]{"None"},
-                new String[]{"qbar:blocks/belt_slope_anim"});
+        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down.mwm",
+                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
+                new String[]{"qbar:blocks/belt_slope_down"});
+        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_up_animated.mwm",
+                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
+                new String[]{"qbar:blocks/belt_slope_up_anim"});
+        QBarOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down_animated.mwm",
+                new ResourceLocation(QBarConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
+                new String[]{"qbar:blocks/belt_slope_down_anim"});
 
         ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
