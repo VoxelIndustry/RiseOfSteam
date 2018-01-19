@@ -15,16 +15,16 @@ import java.util.Optional;
 public class QBarMaterials
 {
     public static final ArrayList<String> metals = new ArrayList<>();
-    public static final String IRON = "iron";
-    public static final String GOLD = "gold";
-    public static final String COPPER = "copper";
-    public static final String BRONZE = "bronze";
-    public static final String BRASS = "brass";
-    public static final String TIN = "tin";
-    public static final String ZINC = "zinc";
-    public static final String NICKEL = "nickel";
-    public static final String LEAD = "lead";
-    public static final String STEEL = "steel";
+    public static final String            IRON   = "iron";
+    public static final String            GOLD   = "gold";
+    public static final String            COPPER = "copper";
+    public static final String            BRONZE = "bronze";
+    public static final String            BRASS  = "brass";
+    public static final String            TIN    = "tin";
+    public static final String            ZINC   = "zinc";
+    public static final String            NICKEL = "nickel";
+    public static final String            LEAD   = "lead";
+    public static final String            STEEL  = "steel";
 
     private static final Table<String, MaterialShape, ItemStack> cachedMetalVariants = HashBasedTable.create();
 
@@ -53,8 +53,11 @@ public class QBarMaterials
         if (!metals.contains(metal))
             return ItemStack.EMPTY;
         if (!cachedMetalVariants.contains(metal, MaterialShape.PLATE))
-            cachedMetalVariants.put(metal, MaterialShape.PLATE,
-                    OreDictionary.getOres("plate" + StringUtils.capitalize(metal)).get(0));
+        {
+            ItemStack stack = OreDictionary.getOres("plate" + StringUtils.capitalize(metal)).get(0).copy();
+            stack.setCount(1);
+            cachedMetalVariants.put(metal, MaterialShape.PLATE, stack);
+        }
         return cachedMetalVariants.get(metal, MaterialShape.PLATE);
     }
 
@@ -63,8 +66,11 @@ public class QBarMaterials
         if (!metals.contains(metal))
             return ItemStack.EMPTY;
         if (!cachedMetalVariants.contains(metal, MaterialShape.GEAR))
-            cachedMetalVariants.put(metal, MaterialShape.GEAR,
-                    OreDictionary.getOres("gear" + StringUtils.capitalize(metal)).get(0));
+        {
+            ItemStack stack = OreDictionary.getOres("gear" + StringUtils.capitalize(metal)).get(0).copy();
+            stack.setCount(1);
+            cachedMetalVariants.put(metal, MaterialShape.GEAR, stack);
+        }
         return cachedMetalVariants.get(metal, MaterialShape.GEAR);
     }
 
@@ -73,8 +79,11 @@ public class QBarMaterials
         if (!metals.contains(metal))
             return ItemStack.EMPTY;
         if (!cachedMetalVariants.contains(metal, MaterialShape.INGOT))
-            cachedMetalVariants.put(metal, MaterialShape.INGOT,
-                    OreDictionary.getOres("ingot" + StringUtils.capitalize(metal)).get(0));
+        {
+            ItemStack stack = OreDictionary.getOres("ingot" + StringUtils.capitalize(metal)).get(0).copy();
+            stack.setCount(1);
+            cachedMetalVariants.put(metal, MaterialShape.INGOT, stack);
+        }
         return cachedMetalVariants.get(metal, MaterialShape.INGOT);
     }
 
@@ -83,8 +92,11 @@ public class QBarMaterials
         if (!metals.contains(metal))
             return ItemStack.EMPTY;
         if (!cachedMetalVariants.contains(metal, MaterialShape.BLOCK))
-            cachedMetalVariants.put(metal, MaterialShape.BLOCK,
-                    OreDictionary.getOres("block" + StringUtils.capitalize(metal)).get(0));
+        {
+            ItemStack stack = OreDictionary.getOres("block" + StringUtils.capitalize(metal)).get(0).copy();
+            stack.setCount(1);
+            cachedMetalVariants.put(metal, MaterialShape.BLOCK, stack);
+        }
         return cachedMetalVariants.get(metal, MaterialShape.BLOCK);
     }
 

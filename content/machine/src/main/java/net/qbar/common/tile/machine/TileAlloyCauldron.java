@@ -219,6 +219,7 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         {
             QBarMaterials.getMetalFromFluid(this.outputTank.getFluid()).ifPresent(metal ->
             {
+                int toDrain = 0;
                 ItemStack toFill = ItemStack.EMPTY;
                 if ((shape == QBarMaterials.MaterialShape.PLATE || shape == QBarMaterials.MaterialShape.INGOT) &&
                         this.outputTank.getFluidAmount() >= 144)
@@ -226,17 +227,20 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
                     toFill = shape == QBarMaterials.MaterialShape.PLATE ?
                             QBarMaterials.getPlateFromMetal(metal).copy() :
                             QBarMaterials.getIngotFromMetal(metal).copy();
-                    this.outputTank.drain(144, true);
+                    toDrain = 144;
                     this.castSpeed = 1 / (144 / 6F);
                 }
                 else if (shape == QBarMaterials.MaterialShape.BLOCK && this.outputTank.getFluidAmount() >= 1296)
                 {
                     toFill = QBarMaterials.getBlockFromMetal(metal).copy();
-                    this.outputTank.drain(1296, true);
+                    toDrain = 1496;
                     this.castSpeed = 1 / (1296 / 6F);
                 }
                 if (this.getStackInSlot(3).isEmpty() || ItemUtils.deepEquals(this.getStackInSlot(3), toFill))
+                {
+                    this.outputTank.drain(toDrain, true);
                     this.setInventorySlotContents(2, toFill);
+                }
             });
         }
     }
