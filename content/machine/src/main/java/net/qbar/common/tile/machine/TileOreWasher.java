@@ -64,7 +64,7 @@ public class TileOreWasher extends TileCraftingMachineBase
             if (trashBelt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
             {
                 trashBelt.insert(this.getInventoryWrapper(EnumFacing.DOWN)
-                        .extractItem(this.getDescriptor().getOutputs()[1], 1, false), true);
+                        .extractItem(1, 1, false), true);
                 this.sync();
             }
         }

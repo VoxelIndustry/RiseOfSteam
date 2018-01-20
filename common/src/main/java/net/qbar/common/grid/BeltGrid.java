@@ -286,7 +286,7 @@ public class BeltGrid extends CableGrid
             boolean enoughSpace = true;
             for (final ItemBelt item : belt.getItems())
             {
-                if (item.getPos().y < 13 / 32F)
+                if (!item.getStack().isEmpty() && item.getPos().y < 13 / 32F)
                 {
                     enoughSpace = false;
                     break;
@@ -294,7 +294,7 @@ public class BeltGrid extends CableGrid
             }
             if (!enoughSpace)
                 return false;
-            if (doInsert)
+            if (doInsert && !stack.isEmpty())
             {
                 belt.getItems().add(new ItemBelt(stack, new Vector2f(this.BELT_MIDDLE, 0)));
                 belt.itemUpdate();
