@@ -32,7 +32,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
     public TileSolarBoiler()
     {
-        super("solarboiler", 0, 3000, Fluid.BUCKET_VOLUME * 128, SteamUtil.BASE_PRESSURE * 2,
+        super("solarboiler", 0, 300, Fluid.BUCKET_VOLUME * 128, SteamUtil.BASE_PRESSURE * 2,
                 Fluid.BUCKET_VOLUME * 144);
 
         this.mirrors = new EnumMap<>(EnumFacing.class);
@@ -47,8 +47,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
             return;
         float sunValue = getSunValue();
 
-        int totalMirrorCount = this.mirrors.values().stream().mapToInt(mirror -> mirror.getMirrorCount()).sum();
-        float producedHeat = (0.01f * totalMirrorCount) * sunValue;
+        int totalMirrorCount = this.mirrors.values().stream().mapToInt(TileSolarMirror::getMirrorCount).sum();
+        float producedHeat = (0.001f * totalMirrorCount) * sunValue;
 
         if (this.heat < this.getMaxHeat())
         {
@@ -60,9 +60,9 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
                 this.heat = this.getMinimumTemp();
         }
 
-        if (this.heat >= 900)
+        if (this.heat >= 90)
         {
-            int toProduce = (int) (1 / Math.E * (this.heat / 100));
+            int toProduce = (int) (1 / Math.E * (this.heat / 10));
             final FluidStack drained = this.getWaterTank().drain(toProduce, true);
             if (drained != null)
                 toProduce = drained.amount;
@@ -70,7 +70,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
                 toProduce = 0;
             this.getSteamTank().fillSteam(toProduce, true);
             if (toProduce != 0 && this.world.getTotalWorldTime() % 5 == 0)
-                this.heat--;
+                this.heat -= 0.1f;
             this.sync();
         }
     }
@@ -121,7 +121,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
             if (side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
-                return (T) this.getSteamTank();
+                return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getSteamTank());
         }
         else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
@@ -130,7 +130,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
             if (side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
-                return (T) this.getWaterTank();
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
         }
         return null;
     }
@@ -146,7 +146,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -159,7 +159,8 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
             this.markDirty();
             return true;
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.SOLARBOILER.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.SOLARBOILER.getUniqueID(), this.getWorld(), this.pos
+                        .getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

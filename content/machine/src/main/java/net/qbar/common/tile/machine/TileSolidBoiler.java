@@ -31,7 +31,7 @@ public class TileSolidBoiler extends TileBoilerBase
 
     public TileSolidBoiler()
     {
-        super("TileSolidBoiler", 1, 3000, 4000, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
+        super("TileSolidBoiler", 1, 300, 4000, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TileSolidBoiler extends TileBoilerBase
             if (this.currentBurnTime < this.maxBurnTime)
             {
                 this.currentBurnTime++;
-                this.heat++;
+                this.heat += 0.1f;
             }
             else
             {
@@ -58,9 +58,9 @@ public class TileSolidBoiler extends TileBoilerBase
                 this.maxBurnTime = 0;
             }
 
-            if (this.heat >= 900)
+            if (this.heat >= 90)
             {
-                int toProduce = (int) (1 / Math.E * (this.heat / 100));
+                int toProduce = (int) (1 / Math.E * (this.heat / 10));
                 final FluidStack drained = this.getWaterTank().drain(toProduce, true);
                 if (drained != null)
                     toProduce = drained.amount;
@@ -68,17 +68,17 @@ public class TileSolidBoiler extends TileBoilerBase
                     toProduce = 0;
                 this.getSteamTank().fillSteam(toProduce, true);
                 if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
-                    this.heat--;
+                    this.heat -= 0.1f;
             }
 
             if (this.world.getTotalWorldTime() % 5 == 0)
             {
                 if (this.heat > this.getMinimumTemp())
-                    this.heat--;
+                    this.heat -= 0.1f;
                 else if (this.heat < this.getMinimumTemp())
                     this.heat = this.getMinimumTemp();
+                this.sync();
             }
-            // this.sync();
         }
     }
 
@@ -166,22 +166,22 @@ public class TileSolidBoiler extends TileBoilerBase
         {
             if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
                     && side.getPos().getZ() == 1)
-                return (T) this.getSteamTank();
+                return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getSteamTank());
         }
         else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
             if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
                     && side.getPos().getZ() == 0)
-                return (T) this.getWaterTank();
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
         }
         else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) this.getInventoryWrapper(facing);
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.getInventoryWrapper(facing));
         return null;
     }
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -194,7 +194,8 @@ public class TileSolidBoiler extends TileBoilerBase
             this.markDirty();
             return true;
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BOILER.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BOILER.getUniqueID(), this.getWorld(), this.pos.getX(),
+                this.pos.getY(),
                 this.pos.getZ());
         return true;
     }
@@ -209,7 +210,7 @@ public class TileSolidBoiler extends TileBoilerBase
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
-        return new int[] { 0 };
+        return new int[]{0};
     }
 
     @Override

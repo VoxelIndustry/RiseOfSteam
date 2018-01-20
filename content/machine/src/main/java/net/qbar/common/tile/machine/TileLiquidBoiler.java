@@ -36,13 +36,13 @@ import java.util.Optional;
 
 public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 {
-    private final FluidTank                 fuelTank;
+    private final FluidTank fuelTank;
 
     private final ArrayList<MultiblockSide> connections;
 
     public TileLiquidBoiler()
     {
-        super("liquidboiler", 0, 3000, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 64);
+        super("liquidboiler", 0, 300, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 64);
 
         this.fuelTank = new FilteredFluidTank(Fluid.BUCKET_VOLUME * 48,
                 fluidStack -> fluidStack != null && fluidStack.getFluid() != (FluidRegistry.WATER));
@@ -51,7 +51,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     private Fluid              cachedFluid;
     private LiquidBoilerRecipe recipe;
-    private double             pendingFuel = 0;
+    private double pendingFuel = 0;
 
     @Override
     public void update()
@@ -66,8 +66,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
                 Optional<QBarRecipe> recipeSearched = QBarRecipeHandler.getRecipe(QBarRecipeHandler.LIQUIDBOILER_UID,
                         this.getFuel());
 
-                if (recipeSearched.isPresent())
-                    recipe = (LiquidBoilerRecipe) recipeSearched.get();
+                recipeSearched.ifPresent(qBarRecipe -> recipe = (LiquidBoilerRecipe) qBarRecipe);
                 this.cachedFluid = this.getFuel().getFluid();
             }
 
@@ -84,9 +83,9 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
                 this.pendingFuel -= toConsume;
             }
 
-            if (this.heat >= 900)
+            if (this.heat >= 90)
             {
-                int toProduce = (int) (1 / Math.E * (this.heat / 100));
+                int toProduce = (int) (1 / Math.E * (this.heat / 10));
                 final FluidStack drained = this.getWaterTank().drain(toProduce, true);
                 if (drained != null)
                     toProduce = drained.amount;
@@ -101,9 +100,10 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
             if (this.world.getTotalWorldTime() % 5 == 0)
             {
                 if (this.heat > this.getMinimumTemp())
-                    this.heat--;
+                    this.heat -= 0.1f;
                 else if (this.heat < this.getMinimumTemp())
                     this.heat = this.getMinimumTemp();
+                this.sync();
             }
         }
     }
@@ -169,7 +169,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     {
         if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2
                 && facing == EnumFacing.UP)
-            return (T) this.getSteamTank();
+            return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getSteamTank());
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
         {
             MultiblockSide side = QBarMachines.LIQUID_BOILER.get(MultiblockComponent.class)
@@ -177,30 +177,30 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
             if (side.getFacing() == EnumFacing.NORTH)
             {
                 if (side.getPos().equals(BlockPos.ORIGIN))
-                    return (T) this.getWaterTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
                 else if (side.getPos().getX() == 1 && side.getPos().getZ() == 0)
-                    return (T) this.getFuelTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
             }
             else if (side.getFacing() == EnumFacing.WEST)
             {
                 if (side.getPos().getX() == 0 && side.getPos().getZ() == 1)
-                    return (T) this.getWaterTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
                 else if (side.getPos().equals(BlockPos.ORIGIN))
-                    return (T) this.getFuelTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
             }
             else if (side.getFacing() == EnumFacing.SOUTH)
             {
                 if (side.getPos().getX() == 1 && side.getPos().getZ() == 1)
-                    return (T) this.getWaterTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
                 else if (side.getPos().getX() == 0 && side.getPos().getZ() == 1)
-                    return (T) this.getFuelTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
             }
             else if (side.getFacing() == EnumFacing.EAST)
             {
                 if (side.getPos().getX() == 1 && side.getPos().getZ() == 0)
-                    return (T) this.getWaterTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
                 else if (side.getPos().getX() == 1 && side.getPos().getZ() == 1)
-                    return (T) this.getFuelTank();
+                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
             }
         }
         return null;
@@ -233,7 +233,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -258,7 +258,8 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
                 return true;
             }
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.LIQUIDBOILER.getUniqueID(), this.getWorld(), this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.LIQUIDBOILER.getUniqueID(), this.getWorld(), this.pos
+                        .getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }
