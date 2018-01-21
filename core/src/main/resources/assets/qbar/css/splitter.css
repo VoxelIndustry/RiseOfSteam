@@ -1,6 +1,6 @@
 .whitelist {
     -background-color: #FAFAFA;
-    -text-color: rgba(0, 0, 0, 0.87);
+    -text-color: #000000 87%;
 }
 
 .whitelist:hover {
@@ -9,7 +9,7 @@
 
 .blacklist {
     -background-color: #424242;
-    -text-color: rgba(1, 1, 1, 0.87);
+    -text-color: #FFFFFF 87%;
 }
 
 .blacklist:hover {

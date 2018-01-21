@@ -16,7 +16,6 @@ import org.yggard.brokkgui.data.EAlignment;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.element.GuiLabel;
 import org.yggard.brokkgui.paint.Background;
-import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
@@ -35,9 +34,6 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
     private final GuiRelativePane filterPane;
     private final GuiButton       whitelist;
 
-    private final Background whitelistBackground, whitelistHoveredBackground, blacklistBackground,
-            blacklistHoveredBackground;
-
     public GuiExtractor(final EntityPlayer player, final TileExtractor extractor)
     {
         super(extractor.createContainer(player));
@@ -45,6 +41,8 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
         this.setHeight(GuiExtractor.ySize);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
+
+        this.addStylesheet("/assets/qbar/css/splitter.css");
 
         this.extractor = extractor;
 
@@ -62,37 +60,20 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
         mainPanel.addChild(this.filterPane, 0.5f, 0.25f);
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshSlots);
 
-        this.whitelistBackground = new Background(Color.fromHex("#FAFAFA"));
-        this.whitelistHoveredBackground = new Background(Color.fromHex("#F5F5F5"));
-
-        this.blacklistBackground = new Background(Color.fromHex("#424242"));
-        this.blacklistHoveredBackground = new Background(Color.fromHex("#616161"));
-
         this.whitelist = new GuiButton("WHITELIST");
         this.extractor.getWhitelistProperty().addListener((obs, oldValue, newValue) ->
         {
             this.whitelist.setText(newValue ? "WHITELIST" : "BLACKLIST");
 
             if (newValue)
-            {
-                //    ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
-                //  ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
-                this.whitelist.setTextColor(Color.fromHex("#000000", 0.87f));
-            }
+                this.whitelist.getStyleClass().replace("blacklist", "whitelist");
             else
-            {
-                //    ((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.blacklistBackground);
-                //      ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this
-                // .blacklistHoveredBackground);
-                this.whitelist.setTextColor(Color.fromHex("#ffffff", 0.87f));
-            }
+                this.whitelist.getStyleClass().replace("whitelist", "blacklist");
         });
         this.whitelist.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(extractor)
                 .withInt("facing", EnumFacing.UP.ordinal())
                 .withBoolean("whitelist", !this.extractor.getWhitelistProperty().getValue()).send());
 
-        //((GuiButtonSkin) this.whitelist.getSkin()).setBackground(this.whitelistBackground);
-        // ((GuiButtonSkin) this.whitelist.getSkin()).setHoveredBackground(this.whitelistHoveredBackground);
         this.whitelist.setWidth(60);
         this.whitelist.setHeight(15);
     }

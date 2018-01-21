@@ -83,7 +83,6 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.whitelist = new ArrayList<>();
 
         final GuiButton whitelist1 = new GuiButton("WHITELIST");
-        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         whitelist1.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
                 .withInt("facing", this.splitter.getFacing().rotateY().ordinal())
                 .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(0)).send());
@@ -92,7 +91,6 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.whitelist.add(whitelist1);
 
         final GuiButton whitelist2 = new GuiButton("WHITELIST");
-        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         whitelist2.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
                 .withInt("facing", this.splitter.getFacing().getOpposite().ordinal())
                 .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(1)).send());
@@ -101,7 +99,6 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.whitelist.add(whitelist2);
 
         final GuiButton whitelist3 = new GuiButton("WHITELIST");
-        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         whitelist3.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
                 .withInt("facing", this.splitter.getFacing().rotateYCCW().ordinal())
                 .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(2)).send());
@@ -109,6 +106,7 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         whitelist3.setHeight(15);
         this.whitelist.add(whitelist3);
 
+        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
         this.refreshWhitelists();
     }
 
@@ -137,23 +135,17 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 
     private void refreshWhitelists()
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 3; i++)
         {
             if (this.splitter.getWhitelistProperty().get(i))
             {
                 this.whitelist.get(i).setText("WHITELIST");
-                this.whitelist.get(i).getStyleClass().remove("blacklist");
-                System.out.println("BLACK LIST REMOVED");
-                this.whitelist.get(i).getStyleClass().add("whitelist");
-                System.out.println("WHITE LIST ADDED");
+                this.whitelist.get(i).getStyleClass().replace("blacklist", "whitelist");
             }
             else
             {
                 this.whitelist.get(i).setText("BLACKLIST");
-                this.whitelist.get(i).getStyleClass().remove("whitelist");
-                System.out.println("WHITE LIST REMOVED");
-                this.whitelist.get(i).getStyleClass().add("blacklist");
-                System.out.println("BLACK LIST ADDED");
+                this.whitelist.get(i).getStyleClass().replace("whitelist", "blacklist");
             }
             this.whitelist.get(i).refreshStyle();
         }
