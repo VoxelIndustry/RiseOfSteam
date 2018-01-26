@@ -17,6 +17,7 @@ import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.element.GuiLabel;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
+import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
@@ -31,7 +32,7 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
 
     private final TileExtractor extractor;
 
-    private final GuiRelativePane filterPane;
+    private final GuiAbsolutePane filterPane;
     private final GuiButton       whitelist;
 
     public GuiExtractor(final EntityPlayer player, final TileExtractor extractor)
@@ -54,28 +55,32 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
         title.setTextAlignment(EAlignment.LEFT_CENTER);
         mainPanel.addChild(title, 0.03f, 0.05f);
 
-        this.filterPane = new GuiRelativePane();
+        this.filterPane = new GuiAbsolutePane();
         this.filterPane.setWidthRatio(1);
         this.filterPane.setHeightRatio(0.5f);
         mainPanel.addChild(this.filterPane, 0.5f, 0.25f);
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshSlots);
 
         this.whitelist = new GuiButton("WHITELIST");
-        this.extractor.getWhitelistProperty().addListener((obs, oldValue, newValue) ->
-        {
-            this.whitelist.setText(newValue ? "WHITELIST" : "BLACKLIST");
+        this.extractor.getWhitelistProperty().addListener((obs, oldValue, newValue) -> this.refreshWhitelist(newValue));
+        this.refreshWhitelist(this.extractor.getWhitelistProperty().getValue());
 
-            if (newValue)
-                this.whitelist.getStyleClass().replace("blacklist", "whitelist");
-            else
-                this.whitelist.getStyleClass().replace("whitelist", "blacklist");
-        });
         this.whitelist.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(extractor)
                 .withInt("facing", EnumFacing.UP.ordinal())
                 .withBoolean("whitelist", !this.extractor.getWhitelistProperty().getValue()).send());
 
         this.whitelist.setWidth(60);
         this.whitelist.setHeight(15);
+    }
+
+    private void refreshWhitelist(boolean whitelist)
+    {
+        this.whitelist.setText(whitelist ? "WHITELIST" : "BLACKLIST");
+
+        if (whitelist)
+            this.whitelist.getStyleClass().replace("blacklist", "whitelist");
+        else
+            this.whitelist.getStyleClass().replace("whitelist", "blacklist");
     }
 
     private void refreshSlots(final ItemStack stack)
@@ -88,14 +93,14 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
             {
                 for (int i = 0; i < 9; i++)
                 {
-                    final int index = i;
-                    final ItemStackView view = new ItemStackView(((FilterCard) card).stacks[index]);
+                    final ItemStackView view = new ItemStackView(((FilterCard) card).stacks[i]);
                     view.setWidth(18);
                     view.setHeight(18);
                     view.setBackground(new Background(GuiExtractor.SLOT));
-                    this.filterPane.addChild(view, 0.7f + 0.104f * (i / 3), 0.25f + 0.22f * (i % 3));
+                    view.setTooltip(true);
+                    this.filterPane.addChild(view, 115 + 18 * (i / 3), 10+18 * (i % 3));
                 }
-                this.filterPane.addChild(this.whitelist, 0.5f, 0.9f);
+                this.filterPane.addChild(this.whitelist, 58, 65);
             }
         }
     }
