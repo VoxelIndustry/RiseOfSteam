@@ -57,7 +57,7 @@ public interface ITileCable<T extends CableGrid> extends ITileNode<T>
     @Override
     default void disconnect(int edge)
     {
-        this.getConnectionsMap().remove(EnumFacing.VALUES[edge]);
+        this.disconnect(EnumFacing.VALUES[edge]);
     }
 
     @Override
