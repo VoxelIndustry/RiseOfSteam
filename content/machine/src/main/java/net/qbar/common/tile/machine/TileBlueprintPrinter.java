@@ -23,6 +23,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
@@ -34,7 +35,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
-    private       int                                           grid;
+    private int grid;
 
     public TileBlueprintPrinter()
     {
@@ -78,8 +79,8 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("blueprintprinter", player).player(player.inventory)
-                .inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this).filterSlot(0, 0, 0, stack -> stack.getItem() == Items.PAPER).addInventory().create();
+                .inventory(19, 84).hotbar(19, 142).addInventory()
+                .tile(this).filterSlot(0, 11, 0, stack -> stack.getItem() == Items.PAPER).addInventory().create();
     }
 
     @Override
@@ -151,6 +152,15 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
 
                 this.decrStackSize(0, 1);
             }
+        }
+        else if ("MACHINES_LOAD".equals(actionID) && this.hasGrid())
+        {
+            ClientActionBuilder builder = sender.answer();
+
+            this.getGridObject().getMachines().forEach((machine, node) ->
+                    builder.withLong(machine.name(), node.getBlockPos().toLong()));
+
+            builder.send();
         }
     }
 

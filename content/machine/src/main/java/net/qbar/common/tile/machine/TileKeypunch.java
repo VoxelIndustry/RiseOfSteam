@@ -31,6 +31,7 @@ import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
@@ -50,7 +51,7 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
 
     @Getter
     @Setter
-    private       int grid;
+    private int grid;
     @Getter
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
 
@@ -134,10 +135,10 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("keypunch", player).player(player.inventory).inventory(8, 93).hotbar(8, 151)
+        return new ContainerBuilder("keypunch", player).player(player.inventory).inventory(19, 93).hotbar(19, 151)
                 .addInventory().tile(this)
-                .filterSlot(0, 26, 70, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
-                .outputSlot(1, 134, 70)
+                .filterSlot(0, 37, 70, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .outputSlot(1, 145, 70)
                 .syncBooleanValue(this.isCraftTabProperty::getValue, this.isCraftTabProperty::setValue)
                 .syncBooleanValue(this.getCanPrintProperty()::getValue, this.getCanPrintProperty()::setValue)
                 .syncItemValue(() -> this.getCraftStacks().get(0), stack -> this.getCraftStacks().set(0, stack))
@@ -312,6 +313,17 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                     this.decrStackSize(0, 1);
                     this.setInventorySlotContents(1, punched);
                     this.markDirty();
+                }
+                break;
+            case "MACHINES_LOAD":
+                if (this.hasGrid())
+                {
+                    ClientActionBuilder builder = sender.answer();
+
+                    this.getGridObject().getMachines().forEach((machine, node) ->
+                            builder.withLong(machine.name(), node.getBlockPos().toLong()));
+
+                    builder.send();
                 }
                 break;
             default:

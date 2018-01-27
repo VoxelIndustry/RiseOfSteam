@@ -87,7 +87,8 @@ public class GuiHandler implements IGuiHandler
             case SAWMILL:
                 return new GuiSawMill(player, (TileSawMill) tile);
             case ENGINEERSTORAGE:
-                return new GuiEngineerStorage(player, (TileEngineerStorage) tile);
+                return BrokkGuiManager.getBrokkGuiContainer(
+                        new GuiEngineerStorage(player, (TileEngineerStorage) tile));
             case BLUEPRINTPRINTER:
                 return BrokkGuiManager.getBrokkGuiContainer(
                         new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));

@@ -11,7 +11,6 @@ import net.qbar.common.tile.machine.TileCraftCardLibrary;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
@@ -23,7 +22,6 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
             0, 0,
             xSize / 256.0f, ySize / 256.0f);
 
-    private final TileCraftCardLibrary craftCardLibrary;
 
     private ItemStackView[][] views;
     private CraftCard[][]     cards;
@@ -31,21 +29,23 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
     public GuiCraftCardLibrary(final EntityPlayer player, final TileCraftCardLibrary craftCardLibrary)
     {
         super(craftCardLibrary.createContainer(player));
-        this.setWidth(xSize);
+        this.setWidth(xSize+24);
         this.setHeight(ySize);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
-        this.craftCardLibrary = craftCardLibrary;
+        this.addStylesheet("/assets/qbar/css/engineer_workshop.css");
 
-        GuiRelativePane mainPanel = new GuiRelativePane();
+        GuiAbsolutePane mainPanel = new GuiAbsolutePane();
         this.setMainPanel(mainPanel);
 
         GuiAbsolutePane body = new GuiAbsolutePane();
-        body.setWidthRatio(1);
+        body.setWidth(xSize);
         body.setHeightRatio(1);
         body.setBackground(new Background(BACKGROUND));
-        mainPanel.addChild(body, 0.5f, 0.5f);
+
+        mainPanel.addChild(body, 23, 0);
+        mainPanel.addChild(new EngineerTabPane(craftCardLibrary, craftCardLibrary.getType()), 0, 0);
 
         this.setupViews(body);
     }

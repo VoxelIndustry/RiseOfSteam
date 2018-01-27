@@ -62,7 +62,6 @@ public class ServerActionHolderPacket extends Message
     {
         World world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(this.dimension);
 
-
         if (world.isBlockLoaded(this.pos))
         {
             TileEntity receiver = world.getTileEntity(this.pos);

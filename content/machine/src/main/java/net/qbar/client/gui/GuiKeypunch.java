@@ -44,28 +44,31 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
     public GuiKeypunch(final EntityPlayer player, final TileKeypunch keypunch)
     {
         super(keypunch.createContainer(player));
-        this.setWidth(GuiKeypunch.xSize);
+        this.setWidth(GuiKeypunch.xSize+24);
         this.setHeight(GuiKeypunch.ySize + 18);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
         this.addStylesheet("/assets/qbar/css/keypunch.css");
+        this.addStylesheet("/assets/qbar/css/engineer_workshop.css");
 
         this.keypunch = keypunch;
 
-        final GuiRelativePane mainPanel = new GuiRelativePane();
+        final GuiAbsolutePane mainPanel = new GuiAbsolutePane();
         this.setMainPanel(mainPanel);
 
         this.header = new GuiRelativePane();
-        this.header.setWidthRatio(1);
-        this.header.setHeightRatio(0.1f);
-        mainPanel.addChild(this.header, 0.5f, 0.05f);
+        this.header.setWidth(xSize);
+        this.header.setHeight(18);
 
         this.body = new GuiRelativePane();
-        this.body.setWidthRatio(1);
-        this.body.setHeightRatio(0.9f);
+        this.body.setWidth(xSize);
+        this.body.setHeight(ySize);
         this.body.setBackground(new Background(GuiKeypunch.BACKGROUND));
-        mainPanel.addChild(this.body, 0.5f, 0.55f);
+
+        mainPanel.addChild(this.header, 23, 0);
+        mainPanel.addChild(this.body, 23, 18);
+        mainPanel.addChild(new EngineerTabPane(keypunch, keypunch.getType()), 0, 18);
 
         this.craftPane = new GuiAbsolutePane();
         this.filterPane = new GuiAbsolutePane();

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,6 +20,9 @@ import net.qbar.common.grid.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.ClientActionBuilder;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import javax.annotation.Nullable;
@@ -27,7 +31,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 @Getter
-public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements ITileWorkshop
+public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements ITileWorkshop, IActionReceiver
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
@@ -78,16 +82,16 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
                 .getID() == PunchedCardDataManager.ECardType.CRAFT.getID();
 
         return new ContainerBuilder("craftcardlibrary", player).player(player.inventory)
-                .inventory(8, 123).hotbar(8, 181).addInventory()
+                .inventory(19, 123).hotbar(19, 181).addInventory()
                 .tile(this)
-                .filterSlotLine(0, 8, -25, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(9, 8, -7, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(18, 8, 11, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(27, 8, 29, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(36, 8, 47, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(45, 8, 65, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(54, 8, 83, 9, EnumFacing.Axis.X, cardFilter)
-                .filterSlotLine(63, 8, 101, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(0, 19, -25, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(9, 19, -7, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(18, 19, 11, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(27, 19, 29, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(36, 19, 47, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(45, 19, 65, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(54, 19, 83, 9, EnumFacing.Axis.X, cardFilter)
+                .filterSlotLine(63, 19, 101, 9, EnumFacing.Axis.X, cardFilter)
                 .addInventory().create();
     }
 
@@ -171,6 +175,20 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
         {
             this.forceSync();
             this.updateState();
+        }
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("MACHINES_LOAD".equals(actionID) && this.hasGrid())
+        {
+            ClientActionBuilder builder = sender.answer();
+
+            this.getGridObject().getMachines().forEach((machine, node) ->
+                    builder.withLong(machine.name(), node.getBlockPos().toLong()));
+
+            builder.send();
         }
     }
 }

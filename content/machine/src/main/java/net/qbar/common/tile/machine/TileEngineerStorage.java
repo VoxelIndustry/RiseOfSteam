@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,6 +19,9 @@ import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.ClientActionBuilder;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.TileInventoryBase;
 
 import javax.annotation.Nullable;
@@ -25,7 +29,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class TileEngineerStorage extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileWorkshop
+public class TileEngineerStorage extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileWorkshop, IActionReceiver
 {
     private final EnumMap<EnumFacing, SidedInvWrapper>          inventoryWrapperCache;
     @Getter
@@ -77,10 +81,13 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("engineerstorage", player)
-                .player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).slotLine(0, 16, 8, 8, EnumFacing.Axis.X)
-                .slotLine(8, 16, 26, 8, EnumFacing.Axis.X).slotLine(16, 16, 44, 8, EnumFacing.Axis.X)
-                .slotLine(24, 16, 62, 8, EnumFacing.Axis.X).addInventory().create();
+                .player(player.inventory).inventory(19, 84).hotbar(19, 142)
+                .addInventory().tile(this)
+                .slotLine(0, 27, 8, 8, EnumFacing.Axis.X)
+                .slotLine(8, 27, 26, 8, EnumFacing.Axis.X)
+                .slotLine(16, 27, 44, 8, EnumFacing.Axis.X)
+                .slotLine(24, 27, 62, 8, EnumFacing.Axis.X)
+                .addInventory().create();
     }
 
     @Override
@@ -141,6 +148,20 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
         {
             this.forceSync();
             this.updateState();
+        }
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("MACHINES_LOAD".equals(actionID) && this.hasGrid())
+        {
+            ClientActionBuilder builder = sender.answer();
+
+            this.getGridObject().getMachines().forEach((machine, node) ->
+                    builder.withLong(machine.name(), node.getBlockPos().toLong()));
+
+            builder.send();
         }
     }
 }

@@ -77,6 +77,6 @@ public class ClientActionBuilder
 
     public void send()
     {
-        new ClientActionHolderPacket(this.replyID, this.sender, this.payload).sendTo(this.player);
+        new ClientActionHolderPacket(this.replyID, this.payload).sendTo(this.player);
     }
 }

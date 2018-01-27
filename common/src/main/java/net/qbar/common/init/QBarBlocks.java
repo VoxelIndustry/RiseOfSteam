@@ -101,6 +101,14 @@ public class QBarBlocks
     public static final BlockMachineBase SAWMILL       = null;
     @ObjectHolder("alloycauldron")
     public static final BlockMachineBase ALLOYCAULDRON = null;
+    @ObjectHolder("engineerworkbench")
+    public static final BlockMachineBase ENGINEER_WORKBENCH = null;
+    @ObjectHolder("engineerstorage")
+    public static final BlockMachineBase ENGINEER_STORAGE = null;
+    @ObjectHolder("craftcardlibrary")
+    public static final BlockMachineBase CRAFT_CARD_LIBRARY = null;
+    @ObjectHolder("blueprintprinter")
+    public static final BlockMachineBase BLUEPRINT_PRINTER = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 

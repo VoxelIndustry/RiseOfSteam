@@ -20,7 +20,6 @@ import org.yggard.brokkgui.element.GuiRadioButton;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
@@ -45,21 +44,25 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
     public GuiBlueprintPrinter(final EntityPlayer player, final TileBlueprintPrinter blueprintPrinter)
     {
         super(blueprintPrinter.createContainer(player));
-        this.setWidth(xSize);
+        this.setWidth(xSize + 24);
         this.setHeight(ySize);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
+        this.addStylesheet("/assets/qbar/css/engineer_workshop.css");
+
         this.blueprintPrinter = blueprintPrinter;
 
-        GuiRelativePane mainPanel = new GuiRelativePane();
+        GuiAbsolutePane mainPanel = new GuiAbsolutePane();
         this.setMainPanel(mainPanel);
 
         GuiAbsolutePane body = new GuiAbsolutePane();
-        body.setWidthRatio(1);
+        body.setWidth(xSize);
         body.setHeightRatio(1);
         body.setBackground(new Background(BACKGROUND));
-        mainPanel.addChild(body, 0.5f, 0.5f);
+
+        mainPanel.addChild(body, 23, 0);
+        mainPanel.addChild(new EngineerTabPane(blueprintPrinter, blueprintPrinter.getType()), 0, 0);
 
         this.blueprintPane = new GuiAbsolutePane();
         this.blueprintPane.setWidth(176);
