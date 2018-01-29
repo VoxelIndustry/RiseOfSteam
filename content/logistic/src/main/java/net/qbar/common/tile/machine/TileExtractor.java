@@ -12,8 +12,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.card.CardDataStorage;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -62,8 +62,8 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
             this.cached = this.getStackInSlot(0).copy();
             if (this.cached.hasTagCompound())
             {
-                final IPunchedCard card = PunchedCardDataManager.getInstance()
-                        .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                final IPunchedCard card = CardDataStorage.instance()
+                        .read(this.getStackInSlot(0).getTagCompound());
                 if (card.getID() == ECardType.FILTER.getID())
                     this.filter = (FilterCard) card;
             }

@@ -1,5 +1,6 @@
 package net.qbar.common.tile;
 
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -13,6 +14,7 @@ import net.qbar.common.util.ItemUtils;
 
 import javax.annotation.Nonnull;
 
+@Getter
 public abstract class TileInventoryBase extends QBarTileBase implements IInventory
 {
     private final NonNullList<ItemStack> stacks;
@@ -39,12 +41,6 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
         super.readFromNBT(tag);
 
         ItemUtils.loadAllItems(tag, this.stacks);
-    }
-
-    @Override
-    public String getName()
-    {
-        return this.name;
     }
 
     @Override

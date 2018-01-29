@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.event.TickHandler;
@@ -41,6 +41,23 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
     {
         super("craftcardlibrary", 72);
         this.grid = -1;
+    }
+
+    private void reloadWorkbench()
+    {
+        if (this.isClient())
+            return;
+        if (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(WorkshopMachine.WORKBENCH))
+            return;
+
+        ((TileEngineerWorkbench) this.getGridObject().getMachines().get(WorkshopMachine.WORKBENCH)).rebuildCraftables();
+    }
+
+    @Override
+    public void markDirty()
+    {
+        super.markDirty();
+        this.reloadWorkbench();
     }
 
     @Override
@@ -75,11 +92,17 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
     }
 
     @Override
+    public int getInventoryStackLimit()
+    {
+        return 1;
+    }
+
+    @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
         Predicate<ItemStack> cardFilter = stack -> stack.getItem() == QBarItems.PUNCHED_CARD &&
-                stack.hasTagCompound() && PunchedCardDataManager.getInstance().readFromNBT(stack.getTagCompound())
-                .getID() == PunchedCardDataManager.ECardType.CRAFT.getID();
+                stack.hasTagCompound() && CardDataStorage.instance().read(stack.getTagCompound())
+                .getID() == CardDataStorage.ECardType.CRAFT.getID();
 
         return new ContainerBuilder("craftcardlibrary", player).player(player.inventory)
                 .inventory(19, 123).hotbar(19, 181).addInventory()

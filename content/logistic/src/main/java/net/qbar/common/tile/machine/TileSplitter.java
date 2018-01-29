@@ -15,8 +15,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.card.CardDataStorage;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -77,8 +77,8 @@ public class TileSplitter extends TileInventoryBase
                     this.cachedWest = this.getStackInSlot(0).copy();
                     if (this.cachedWest.hasTagCompound())
                     {
-                        final IPunchedCard card = PunchedCardDataManager.getInstance()
-                                .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                        final IPunchedCard card = CardDataStorage.instance()
+                                .read(this.getStackInSlot(0).getTagCompound());
                         if (card.getID() == ECardType.FILTER.getID())
                             this.filterWest = (FilterCard) card;
                     }
@@ -89,8 +89,8 @@ public class TileSplitter extends TileInventoryBase
                     this.cachedNorth = this.getStackInSlot(1).copy();
                     if (this.cachedNorth.hasTagCompound())
                     {
-                        final IPunchedCard card = PunchedCardDataManager.getInstance()
-                                .readFromNBT(this.getStackInSlot(1).getTagCompound());
+                        final IPunchedCard card = CardDataStorage.instance()
+                                .read(this.getStackInSlot(1).getTagCompound());
                         if (card.getID() == ECardType.FILTER.getID())
                             this.filterNorth = (FilterCard) card;
                     }
@@ -101,8 +101,8 @@ public class TileSplitter extends TileInventoryBase
                     this.cachedEast = this.getStackInSlot(2).copy();
                     if (this.cachedEast.hasTagCompound())
                     {
-                        final IPunchedCard card = PunchedCardDataManager.getInstance()
-                                .readFromNBT(this.getStackInSlot(2).getTagCompound());
+                        final IPunchedCard card = CardDataStorage.instance()
+                                .read(this.getStackInSlot(2).getTagCompound());
                         if (card.getID() == ECardType.FILTER.getID())
                             this.filterEast = (FilterCard) card;
                     }

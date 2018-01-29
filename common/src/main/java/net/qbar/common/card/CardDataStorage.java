@@ -2,34 +2,39 @@ package net.qbar.common.card;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-public class PunchedCardDataManager
+public class CardDataStorage
 {
-    private static volatile PunchedCardDataManager instance;
+    private static volatile CardDataStorage instance;
 
-    public static PunchedCardDataManager getInstance()
+    public static CardDataStorage instance()
     {
-        if (PunchedCardDataManager.instance == null)
+        if (CardDataStorage.instance == null)
         {
-            synchronized (PunchedCardDataManager.class)
+            synchronized (CardDataStorage.class)
             {
-                if (PunchedCardDataManager.instance == null)
-                    PunchedCardDataManager.instance = new PunchedCardDataManager();
+                if (CardDataStorage.instance == null)
+                    CardDataStorage.instance = new CardDataStorage();
             }
         }
-        return PunchedCardDataManager.instance;
+        return CardDataStorage.instance;
     }
 
-    private PunchedCardDataManager()
+    private CardDataStorage()
     {
     }
 
-    public IPunchedCard readFromNBT(final NBTTagCompound tag)
+    public <T extends IPunchedCard> T read(NBTTagCompound tag, Class<T> cardClass)
+    {
+        return cardClass.cast(this.read(tag));
+    }
+
+    public IPunchedCard read(final NBTTagCompound tag)
     {
         final IPunchedCard data = ECardType.values()[tag.getInteger("cardTypeID")].data;
         return data.readFromNBT(tag);
     }
 
-    public void writeToNBT(final NBTTagCompound tag, final IPunchedCard data)
+    public void write(final NBTTagCompound tag, final IPunchedCard data)
     {
         tag.setInteger("cardTypeID", data.getID());
         data.writeToNBT(tag);

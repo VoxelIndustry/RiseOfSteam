@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.card.CraftCard;
-import net.qbar.common.card.PunchedCardDataManager;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.tile.machine.TileCraftCardLibrary;
@@ -82,12 +82,11 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
         }
         if (card.hasTagCompound() && card.getTagCompound().hasKey("cardTypeID"))
         {
-            this.cards[x][y] = ((CraftCard) PunchedCardDataManager.getInstance()
-                    .readFromNBT(card.getTagCompound()));
-            this.views[x][y] = new ItemStackView(this.cards[x][y].result);
+            this.cards[x][y] = ((CraftCard) CardDataStorage.instance()
+                    .read(card.getTagCompound()));
+            this.views[x][y] = new ItemStackView(this.cards[x][y].getResult());
             this.views[x][y].setWidth(18);
             this.views[x][y].setHeight(18);
-            this.views[x][y].setTooltip(true);
             this.views[x][y].setzLevel(310);
             body.addChild(this.views[x][y], x * 18 + 7, y * 18 + 14);
         }

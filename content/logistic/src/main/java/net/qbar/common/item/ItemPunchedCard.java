@@ -8,8 +8,8 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ItemPunchedCard extends ItemBase
     {
         if (stack.hasTagCompound())
         {
-            final IPunchedCard card = PunchedCardDataManager.getInstance().readFromNBT(stack.getTagCompound());
+            final IPunchedCard card = CardDataStorage.instance().read(stack.getTagCompound());
             if (card.isValid(stack.getTagCompound()))
                 card.addInformation(stack, tooltip, flag);
             else

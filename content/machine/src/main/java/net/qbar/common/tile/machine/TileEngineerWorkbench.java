@@ -1,15 +1,19 @@
 package net.qbar.common.tile.machine;
 
 import com.google.common.collect.LinkedListMultimap;
+import fr.ourten.teabeans.value.BaseProperty;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CardDataStorage;
+import net.qbar.common.card.CraftCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -24,21 +28,150 @@ import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
+import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class TileEngineerWorkbench extends QBarTileBase implements IContainerProvider, ITileMultiblockCore,
         ILoadable, ITileWorkshop, IActionReceiver
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
-    @Setter
     private int grid;
+
+    private NonNullList<ItemStack> craftables;
+    private Integer[]              craftablesCount;
+    private List<CraftCard>        recipes;
+
+    private BaseProperty<Boolean> craftablesDirty;
 
     public TileEngineerWorkbench()
     {
         this.grid = -1;
+        this.craftables = NonNullList.create();
+        this.craftablesDirty = new BaseProperty<>(false);
+    }
+
+    public void rebuildCraftables()
+    {
+        if (this.isClient())
+            return;
+        if (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(WorkshopMachine.CARDLIBRARY))
+            return;
+
+        this.recipes =
+                ((TileInventoryBase) this.getGridObject().getMachines().get(WorkshopMachine.CARDLIBRARY))
+                        .getStacks().stream().filter(card -> !card.isEmpty())
+                        .map(card -> CardDataStorage.instance().read(card.getTagCompound(), CraftCard.class))
+                        .collect(Collectors.toList());
+
+        this.craftables.clear();
+        this.craftables.addAll(recipes.stream().map(card ->
+        {
+            ItemStack result = card.getResult().copy();
+            result.setCount(1);
+            return result;
+        }).collect(Collectors.toList()));
+        this.craftablesCount = new Integer[this.craftables.size()];
+
+        if (this.getGridObject().getMachines().containsKey(WorkshopMachine.STORAGE))
+        {
+            TileInventoryBase storage = (TileInventoryBase) this.getGridObject().getMachines().get(WorkshopMachine
+                    .STORAGE);
+            this.craftables.stream().parallel().forEach(result ->
+            {
+                int count = Integer.MAX_VALUE;
+
+                for (ItemStack ingredient : recipes.get(this.craftables.indexOf(result)).getCompressedRecipe())
+                {
+                    List<ItemStack> ingredientCandidate = storage.getStacks().stream()
+                            .filter(stack -> ItemUtils.deepEquals(stack, ingredient)).collect(Collectors.toList());
+
+                    if (!ingredientCandidate.isEmpty())
+                        count = Math.min(count, ingredientCandidate.stream()
+                                .mapToInt(ItemStack::getCount).sum() / ingredient.getCount());
+                    else
+                    {
+                        count = 0;
+                        break;
+                    }
+                }
+                if (count == Integer.MAX_VALUE)
+                    count = 0;
+                craftablesCount[this.craftables.indexOf(result)] = count *
+                        recipes.get(this.craftables.indexOf(result)).getResult().getCount();
+            });
+        }
+        this.sync();
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
+    {
+        super.readFromNBT(tag);
+
+        if (this.isClient())
+        {
+            this.craftables.clear();
+
+            this.craftablesCount = new Integer[tag.getInteger("itemCount")];
+            for (int i = 0; i < tag.getInteger("itemCount"); i++)
+            {
+                this.craftables.add(new ItemStack(tag.getCompoundTag("item" + i)));
+                this.craftablesCount[i] = tag.getInteger("itemCount" + i);
+            }
+
+            this.craftablesDirty.setValue(true);
+        }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
+    {
+        if (this.isServer())
+        {
+            int index = 0;
+            for (ItemStack stack : this.craftables)
+            {
+                tag.setTag("item" + index, stack.writeToNBT(new NBTTagCompound()));
+                tag.setInteger("itemCount" + index, this.craftablesCount[index]);
+                index++;
+            }
+            tag.setInteger("itemCount", index);
+        }
+
+        return super.writeToNBT(tag);
+    }
+
+    @Override
+    public void setGrid(int gridID)
+    {
+        this.grid = gridID;
+        this.rebuildCraftables();
+    }
+
+    @Override
+    public void connect(BlockPos pos, ITileWorkshop to)
+    {
+        if (this.getConnectionsMap().containsKey(pos))
+            this.getConnectionsMap().get(pos).clear();
+        this.getConnectionsMap().put(pos, to);
+
+        if (to.getType() == WorkshopMachine.STORAGE || to.getType() == WorkshopMachine.CARDLIBRARY)
+            this.rebuildCraftables();
+    }
+
+    @Override
+    public void disconnect(int edge)
+    {
+        ITileWorkshop machine = this.getConnected(edge);
+        this.getConnectionsMap().remove(this.getConnectionsMap().entries().get(edge).getKey(), machine);
+
+        if (machine.getType() == WorkshopMachine.STORAGE || machine.getType() == WorkshopMachine.CARDLIBRARY)
+            this.rebuildCraftables();
     }
 
     @Override
@@ -139,6 +272,17 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
         }
     }
 
+    private boolean canCraft(EntityPlayer player, ItemStack result, int toMake)
+    {
+        if (player.inventory.getItemStack().isEmpty())
+            return true;
+
+        if (ItemUtils.deepEquals(player.inventory.getItemStack(), result) &&
+                player.inventory.getItemStack().getCount() + toMake <= result.getMaxStackSize())
+            return true;
+        return false;
+    }
+
     @Override
     public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
     {
@@ -150,6 +294,62 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
                     builder.withLong(machine.name(), node.getBlockPos().toLong()));
 
             builder.send();
+        }
+        else if ("CRAFT_ITEM".equals(actionID))
+        {
+            int index = payload.getInteger("index");
+
+            if (index >= 0 && index < this.craftables.size())
+            {
+                CraftCard recipe = this.recipes.get(index);
+                int available = this.craftablesCount[index];
+
+                int toMake = payload.getBoolean("stack") ?
+                        Math.min(available, (64 / recipe.getResult().getCount()) * recipe.getResult().getCount()) :
+                        recipe.getResult().getCount();
+
+                if (!payload.getBoolean("stack") && !this.canCraft(sender.getPlayer(), recipe.getResult(), toMake))
+                    return;
+
+                for (ItemStack ingredient : recipe.getCompressedRecipe())
+                {
+                    TileInventoryBase storage = (TileInventoryBase) this.getGridObject().getMachines()
+                            .get(WorkshopMachine.STORAGE);
+
+                    int toConsume = ingredient.getCount() * (toMake / recipe.getResult().getCount());
+                    for (ItemStack stack : storage.getStacks())
+                    {
+                        if (stack.isEmpty() || !ItemUtils.deepEquals(stack, ingredient))
+                            continue;
+                        if (stack.getCount() >= toConsume)
+                        {
+                            stack.shrink(toConsume);
+                            break;
+                        }
+                        else
+                        {
+                            toConsume -= stack.getCount();
+                            stack.setCount(0);
+                        }
+                    }
+                }
+                this.rebuildCraftables();
+
+                ItemStack produced = recipe.getResult().copy();
+                produced.setCount(toMake);
+
+                if (payload.getBoolean("stack"))
+                    sender.getPlayer().addItemStackToInventory(produced);
+                else
+                {
+                    if (sender.getPlayer().inventory.getItemStack().isEmpty())
+                        sender.getPlayer().inventory.setItemStack(produced);
+                    else
+                        sender.getPlayer().inventory.getItemStack().grow(toMake);
+                }
+            }
+            sender.answer().withItemStack("cursor", sender.getPlayer().inventory.getItemStack()).send();
+            this.sync();
         }
     }
 }

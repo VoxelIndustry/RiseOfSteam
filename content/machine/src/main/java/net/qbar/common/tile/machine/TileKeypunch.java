@@ -19,9 +19,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
@@ -262,12 +262,12 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                 if (this.getCraftTabProperty().getValue())
                 {
                     if (this.getStackInSlot(0).hasTagCompound() && this.getStackInSlot(0).getTagCompound()
-                            .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.CRAFT.getID())
+                            .getInteger("cardTypeID") == CardDataStorage.ECardType.CRAFT.getID())
                     {
-                        final CraftCard card = (CraftCard) PunchedCardDataManager.getInstance()
-                                .readFromNBT(this.getStackInSlot(0).getTagCompound());
-                        for (int i = 0; i < card.recipe.length; i++)
-                            this.getCraftStacks().set(i, card.recipe[i]);
+                        final CraftCard card = (CraftCard) CardDataStorage.instance()
+                                .read(this.getStackInSlot(0).getTagCompound());
+                        for (int i = 0; i < card.getRecipe().length; i++)
+                            this.getCraftStacks().set(i, card.getRecipe()[i]);
                         this.markDirty();
 
                     }
@@ -275,10 +275,10 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                 else
                 {
                     if (this.getStackInSlot(0).hasTagCompound() && this.getStackInSlot(0).getTagCompound()
-                            .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.FILTER.getID())
+                            .getInteger("cardTypeID") == CardDataStorage.ECardType.FILTER.getID())
                     {
-                        final FilterCard card = (FilterCard) PunchedCardDataManager.getInstance()
-                                .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                        final FilterCard card = (FilterCard) CardDataStorage.instance()
+                                .read(this.getStackInSlot(0).getTagCompound());
                         for (int i = 0; i < card.stacks.length; i++)
                             this.getFilterStacks().set(i, card.stacks[i]);
                         this.markDirty();
@@ -292,11 +292,11 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                     {
                         final ItemStack punched = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
                         punched.setTagCompound(new NBTTagCompound());
-                        final CraftCard card = new CraftCard(PunchedCardDataManager.ECardType.CRAFT.getID());
+                        final CraftCard card = new CraftCard(CardDataStorage.ECardType.CRAFT.getID());
                         for (int i = 0; i < this.getCraftStacks().size(); i++)
-                            card.recipe[i] = this.getCraftStacks().get(i);
-                        card.result = this.getRecipeResult();
-                        PunchedCardDataManager.getInstance().writeToNBT(punched.getTagCompound(), card);
+                            card.setIngredient(i, this.getCraftStacks().get(i).copy());
+                        card.setResult(this.getRecipeResult().copy());
+                        CardDataStorage.instance().write(punched.getTagCompound(), card);
                         this.decrStackSize(0, 1);
                         this.setInventorySlotContents(1, punched);
                         this.markDirty();
@@ -306,10 +306,10 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                 {
                     final ItemStack punched = new ItemStack(QBarItems.PUNCHED_CARD, 1, 1);
                     punched.setTagCompound(new NBTTagCompound());
-                    final FilterCard card = new FilterCard(PunchedCardDataManager.ECardType.FILTER.getID());
+                    final FilterCard card = new FilterCard(CardDataStorage.ECardType.FILTER.getID());
                     for (int i = 0; i < this.getFilterStacks().size(); i++)
-                        card.stacks[i] = this.getFilterStacks().get(i);
-                    PunchedCardDataManager.getInstance().writeToNBT(punched.getTagCompound(), card);
+                        card.stacks[i] = this.getFilterStacks().get(i).copy();
+                    CardDataStorage.instance().write(punched.getTagCompound(), card);
                     this.decrStackSize(0, 1);
                     this.setInventorySlotContents(1, punched);
                     this.markDirty();

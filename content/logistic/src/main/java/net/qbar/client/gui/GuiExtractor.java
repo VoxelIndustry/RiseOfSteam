@@ -6,8 +6,8 @@ import net.minecraft.util.EnumFacing;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.card.FilterCard;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.card.CardDataStorage;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.action.ServerActionBuilder;
@@ -88,7 +88,7 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
         this.filterPane.clearChilds();
         if (stack.hasTagCompound())
         {
-            final IPunchedCard card = PunchedCardDataManager.getInstance().readFromNBT(stack.getTagCompound());
+            final IPunchedCard card = CardDataStorage.instance().read(stack.getTagCompound());
             if (card != null && card.getID() == ECardType.FILTER.getID())
             {
                 for (int i = 0; i < 9; i++)

@@ -15,10 +15,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
@@ -83,8 +83,8 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
             this.cached = this.getStackInSlot(0).copy();
             if (this.cached.hasTagCompound())
             {
-                final IPunchedCard card = PunchedCardDataManager.getInstance()
-                        .readFromNBT(this.getStackInSlot(0).getTagCompound());
+                final IPunchedCard card = CardDataStorage.instance()
+                        .read(this.getStackInSlot(0).getTagCompound());
                 if (card.getID() == ECardType.CRAFT.getID())
                     this.craft = (CraftCard) card;
             }
@@ -95,14 +95,14 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
             boolean empty = false;
             for (int i = 21; i < 30; i++)
             {
-                if (this.getStackInSlot(i).isEmpty() && !this.craft.recipe[i - 21].isEmpty())
+                if (this.getStackInSlot(i).isEmpty() && !this.craft.getRecipe()[i - 21].isEmpty())
                 {
                     boolean completed = false;
                     for (int j = 1; j < 11; j++)
                     {
                         if (!this.getStackInSlot(j).isEmpty()
-                                && ItemUtils.deepEquals(this.getStackInSlot(j), this.craft.recipe[i - 21])
-                                || OreDictionary.itemMatches(this.getStackInSlot(j), this.craft.recipe[i - 21], true))
+                                && ItemUtils.deepEquals(this.getStackInSlot(j), this.craft.getRecipe()[i - 21])
+                                || OreDictionary.itemMatches(this.getStackInSlot(j), this.craft.getRecipe()[i - 21], true))
                         {
                             this.setInventorySlotContents(i, this.decrStackSize(j, 1));
                             completed = true;

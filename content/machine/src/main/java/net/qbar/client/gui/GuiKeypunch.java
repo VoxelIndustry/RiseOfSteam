@@ -8,9 +8,9 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.init.QBarItems;
@@ -44,7 +44,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
     public GuiKeypunch(final EntityPlayer player, final TileKeypunch keypunch)
     {
         super(keypunch.createContainer(player));
-        this.setWidth(GuiKeypunch.xSize+24);
+        this.setWidth(GuiKeypunch.xSize + 24);
         this.setHeight(GuiKeypunch.ySize + 18);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
@@ -274,18 +274,18 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 
                         if (this.keypunch.getCraftTabProperty().getValue())
                         {
-                            final CraftCard card = new CraftCard(PunchedCardDataManager.ECardType.CRAFT.getID());
+                            final CraftCard card = new CraftCard(CardDataStorage.ECardType.CRAFT.getID());
                             for (int i = 0; i < this.keypunch.getCraftStacks().size(); i++)
-                                card.recipe[i] = this.keypunch.getCraftStacks().get(i);
-                            card.result = this.keypunch.getRecipeResult();
-                            PunchedCardDataManager.getInstance().writeToNBT(temp.getTagCompound(), card);
+                                card.setIngredient(i, this.keypunch.getCraftStacks().get(i));
+                            card.setResult(this.keypunch.getRecipeResult());
+                            CardDataStorage.instance().write(temp.getTagCompound(), card);
                         }
                         else
                         {
-                            final FilterCard card = new FilterCard(PunchedCardDataManager.ECardType.FILTER.getID());
+                            final FilterCard card = new FilterCard(CardDataStorage.ECardType.FILTER.getID());
                             for (int i = 0; i < this.keypunch.getFilterStacks().size(); i++)
                                 card.stacks[i] = this.keypunch.getFilterStacks().get(i);
-                            PunchedCardDataManager.getInstance().writeToNBT(temp.getTagCompound(), card);
+                            CardDataStorage.instance().write(temp.getTagCompound(), card);
                         }
                         this.assemble.setDisabled(
                                 !ItemUtils.canMergeStacks(temp, this.getContainer().getSlot(37).getStack()));
@@ -298,10 +298,10 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             {
                 this.assemble.setText("LOAD");
                 if (this.keypunch.getCraftTabProperty().getValue()
-                        && stack.getTagCompound().getInteger("cardTypeID") == PunchedCardDataManager.ECardType.CRAFT
+                        && stack.getTagCompound().getInteger("cardTypeID") == CardDataStorage.ECardType.CRAFT
                         .getID()
                         || !this.keypunch.getCraftTabProperty().getValue() && stack.getTagCompound()
-                        .getInteger("cardTypeID") == PunchedCardDataManager.ECardType.FILTER.getID())
+                        .getInteger("cardTypeID") == CardDataStorage.ECardType.FILTER.getID())
                     this.assemble.setDisabled(false);
                 else
                     this.assemble.setDisabled(true);

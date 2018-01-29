@@ -3,9 +3,9 @@ package net.qbar.client.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.PunchedCardDataManager;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.tile.machine.TileAssembler;
@@ -69,13 +69,12 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
         this.craftPane.clearChilds();
         if (stack.hasTagCompound())
         {
-            final IPunchedCard card = PunchedCardDataManager.getInstance().readFromNBT(stack.getTagCompound());
-            if (card != null && card.getID() == PunchedCardDataManager.ECardType.CRAFT.getID())
+            final IPunchedCard card = CardDataStorage.instance().read(stack.getTagCompound());
+            if (card != null && card.getID() == CardDataStorage.ECardType.CRAFT.getID())
             {
                 for (int i = 0; i < 9; i++)
                 {
-                    final int index = i;
-                    final ItemStackView view = new ItemStackView(((CraftCard) card).recipe[index]);
+                    final ItemStackView view = new ItemStackView(((CraftCard) card).getRecipe()[i]);
 
                     view.setWidth(18);
                     view.setHeight(18);
@@ -83,7 +82,7 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
                     view.setColor(new Color(1, 1, 1, 0.5f));
                     this.craftPane.addChild(view, 18 * (i % 3), 18 * (i / 3));
                 }
-                final ItemStackView resultView = new ItemStackView(((CraftCard) card).result);
+                final ItemStackView resultView = new ItemStackView(((CraftCard) card).getResult());
                 resultView.setWidth(18);
                 resultView.setHeight(18);
                 resultView.setTooltip(true);

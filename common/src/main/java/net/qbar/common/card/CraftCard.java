@@ -1,24 +1,50 @@
 package net.qbar.common.card;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CraftCard implements IPunchedCard
 {
     private final int ID;
-    public ItemStack[] recipe = new ItemStack[9];
-    public ItemStack result = ItemStack.EMPTY;
+
+    @Getter
+    private ItemStack[]     recipe           = new ItemStack[9];
+    @Getter
+    private List<ItemStack> compressedRecipe = new ArrayList<>();
+    @Getter
+    @Setter
+    private ItemStack       result           = ItemStack.EMPTY;
 
     public CraftCard(final int ID)
     {
         this.ID = ID;
         for (int i = 0; i < this.recipe.length; i++)
             this.recipe[i] = ItemStack.EMPTY;
+    }
+
+    public void setIngredient(int slot, ItemStack ingredient)
+    {
+        if (!ingredient.isEmpty())
+        {
+            Optional<ItemStack> existing = compressedRecipe.stream()
+                    .filter(stack -> ItemUtils.deepEquals(ingredient, stack)).findAny();
+
+            if (existing.isPresent())
+                existing.get().grow(ingredient.getCount());
+            else
+                this.compressedRecipe.add(ingredient.copy());
+        }
+
+        this.recipe[slot] = ingredient;
     }
 
     @Override
@@ -29,7 +55,7 @@ public class CraftCard implements IPunchedCard
         card.result = new ItemStack((NBTTagCompound) tag.getTag("stack_result"));
 
         for (int i = 0; i < card.recipe.length; i++)
-            card.recipe[i] = new ItemStack((NBTTagCompound) tag.getTag("stack_" + i));
+            card.setIngredient(i, new ItemStack((NBTTagCompound) tag.getTag("stack_" + i)));
         return card;
     }
 
@@ -52,7 +78,7 @@ public class CraftCard implements IPunchedCard
     public void addInformation(final ItemStack stack, final List<String> tooltip, final ITooltipFlag flag)
     {
         tooltip.add("Recipe: ");
-        for (final ItemStack element : this.recipe)
+        for (final ItemStack element : this.compressedRecipe)
         {
             if (!element.isEmpty())
                 tooltip.add(ItemUtils.getPrettyStackName(element));

@@ -3,7 +3,7 @@ package net.qbar.common.card;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.qbar.common.card.PunchedCardDataManager.ECardType;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.util.ItemUtils;
 
 import java.util.List;

@@ -29,14 +29,15 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class TileEngineerStorage extends TileInventoryBase implements IContainerProvider, ISidedInventory, ITileWorkshop, IActionReceiver
+public class TileEngineerStorage extends TileInventoryBase implements IContainerProvider, ISidedInventory,
+        ITileWorkshop, IActionReceiver
 {
-    private final EnumMap<EnumFacing, SidedInvWrapper>          inventoryWrapperCache;
+    private final EnumMap<EnumFacing, SidedInvWrapper> inventoryWrapperCache;
     @Getter
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Getter
     @Setter
-    private       int                                           grid;
+    private int grid;
 
     public TileEngineerStorage()
     {
@@ -44,6 +45,23 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
 
         this.inventoryWrapperCache = new EnumMap<>(EnumFacing.class);
         this.grid = -1;
+    }
+
+    private void reloadWorkbench()
+    {
+        if (this.isClient())
+            return;
+        if (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(WorkshopMachine.WORKBENCH))
+            return;
+
+        ((TileEngineerWorkbench) this.getGridObject().getMachines().get(WorkshopMachine.WORKBENCH)).rebuildCraftables();
+    }
+
+    @Override
+    public void markDirty()
+    {
+        super.markDirty();
+        this.reloadWorkbench();
     }
 
     @Override
