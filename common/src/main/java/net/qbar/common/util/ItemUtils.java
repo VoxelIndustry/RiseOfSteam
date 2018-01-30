@@ -39,7 +39,7 @@ public class ItemUtils
             return true;
 
         return stack1.getCount() + stack2.getCount() <= stack1.getMaxStackSize()
-                && (ItemUtils.deepEquals(stack1, stack2) || OreDictionary.itemMatches(stack1, stack2, true));
+                && ItemUtils.deepEquals(stack1, stack2);
     }
 
     public static int mergeStacks(ItemStack dest, ItemStack from, boolean doMerge)

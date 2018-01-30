@@ -298,7 +298,11 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                         card.setResult(this.getRecipeResult().copy());
                         CardDataStorage.instance().write(punched.getTagCompound(), card);
                         this.decrStackSize(0, 1);
-                        this.setInventorySlotContents(1, punched);
+
+                        if (this.getStackInSlot(1).isEmpty())
+                            this.setInventorySlotContents(1, punched);
+                        else
+                            this.getStackInSlot(1).grow(1);
                         this.markDirty();
                     }
                 }
@@ -311,7 +315,11 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                         card.stacks[i] = this.getFilterStacks().get(i).copy();
                     CardDataStorage.instance().write(punched.getTagCompound(), card);
                     this.decrStackSize(0, 1);
-                    this.setInventorySlotContents(1, punched);
+
+                    if (this.getStackInSlot(1).isEmpty())
+                        this.setInventorySlotContents(1, punched);
+                    else
+                        this.getStackInSlot(1).grow(1);
                     this.markDirty();
                 }
                 break;
