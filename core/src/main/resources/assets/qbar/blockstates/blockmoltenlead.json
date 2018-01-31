@@ -7,7 +7,7 @@
         "fluid": "moltenlead"
       }
     },
-    "steam": {
+    "moltenlead": {
       "model": "forge:fluid",
       "custom": {
         "fluid": "moltenlead"

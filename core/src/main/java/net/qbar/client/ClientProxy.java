@@ -5,13 +5,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -20,6 +20,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.QBar;
 import net.qbar.client.render.BlueprintRender;
 import net.qbar.client.render.model.obj.QBarOBJLoader;
@@ -43,6 +45,7 @@ import org.lwjgl.input.Mouse;
 
 import java.util.function.BiConsumer;
 
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
     @Override
@@ -68,7 +71,6 @@ public class ClientProxy extends CommonProxy
                 new ResourceLocation(QBarConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
                 new String[]{"qbar:blocks/belt_slope_down_anim"});
 
-        ClientProxy.registerFluidsClient();
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
         QBarItems.ITEMS.stream().filter(item -> item instanceof IItemModelProvider)
@@ -94,33 +96,37 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(QBarConstants.MODID + ":" + id, "inventory"));
     }
 
-    public static final void registerFluidsClient()
+    private static void registerFluidsClient()
     {
-        final ModelResourceLocation fluidSteamLocation = new ModelResourceLocation(QBarConstants.MODID + ":" +
-                "blockfluidsteam",
-                "steam");
-        ModelLoader.setCustomStateMapper(QBarFluids.blockFluidSteam, new StateMapperBase()
+        QBarFluids.FLUIDS.forEach((fluid, blockFluid) ->
         {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(final IBlockState state)
+            ModelResourceLocation fluidLocation = new ModelResourceLocation(QBarConstants.MODID + ":" +
+                    blockFluid.getName(), fluid.getName());
+            ModelLoader.setCustomStateMapper(blockFluid, new StateMapperBase()
             {
-                return fluidSteamLocation;
-            }
+                @Override
+                protected ModelResourceLocation getModelResourceLocation(final IBlockState state)
+                {
+                    return fluidLocation;
+                }
+            });
         });
-
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(QBarFluids.blockFluidSteam), fluidSteamLocation);
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(QBarFluids.blockFluidSteam),
-                stack -> fluidSteamLocation);
     }
 
     @SubscribeEvent
-    public void onModelBake(final ModelBakeEvent evt)
+    public void onModelRegistry(ModelRegistryEvent e)
+    {
+        ClientProxy.registerFluidsClient();
+    }
+
+    @SubscribeEvent
+    public void onModelBake(final ModelBakeEvent e)
     {
         final ModelResourceLocation key = new ModelResourceLocation(QBarConstants.MODID + ":" + QBarItems.BLUEPRINT
                 .name,
                 "inventory");
-        final IBakedModel originalModel = evt.getModelRegistry().getObject(key);
-        evt.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
+        final IBakedModel originalModel = e.getModelRegistry().getObject(key);
+        e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
         for (Item item : QBarItems.ITEMS)
         {

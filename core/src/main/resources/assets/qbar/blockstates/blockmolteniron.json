@@ -7,7 +7,7 @@
         "fluid": "molteniron"
       }
     },
-    "steam": {
+    "molteniron": {
       "model": "forge:fluid",
       "custom": {
         "fluid": "molteniron"
