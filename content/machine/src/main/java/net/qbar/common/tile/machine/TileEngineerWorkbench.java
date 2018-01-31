@@ -1,8 +1,10 @@
 package net.qbar.common.tile.machine;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 import fr.ourten.teabeans.value.BaseProperty;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,10 +42,11 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
         ILoadable, ITileWorkshop, IActionReceiver
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
+    @Setter
     private int grid;
 
     private NonNullList<ItemStack> craftables;
-    private Integer[]              craftablesCount;
+    private int[]                  craftablesCount;
     private List<CraftCard>        recipes;
 
     private BaseProperty<Boolean> craftablesDirty;
@@ -55,27 +58,36 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
         this.craftablesDirty = new BaseProperty<>(false);
     }
 
-    public void rebuildCraftables()
+    public void refreshWorkbenchCrafts()
     {
         if (this.isClient())
             return;
-        if (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(WorkshopMachine.CARDLIBRARY))
+        if (!this.hasGrid())
             return;
+        if(!this.getGridObject().getMachines().containsKey(WorkshopMachine.CARDLIBRARY))
+        {
+            if(!this.craftables.isEmpty())
+            {
+                this.craftables.clear();
+                this.sync();
+            }
+            return;
+        }
 
+        this.craftables.clear();
         this.recipes =
                 ((TileInventoryBase) this.getGridObject().getMachines().get(WorkshopMachine.CARDLIBRARY))
                         .getStacks().stream().filter(card -> !card.isEmpty())
                         .map(card -> CardDataStorage.instance().read(card.getTagCompound(), CraftCard.class))
                         .collect(Collectors.toList());
 
-        this.craftables.clear();
         this.craftables.addAll(recipes.stream().map(card ->
         {
             ItemStack result = card.getResult().copy();
             result.setCount(1);
             return result;
         }).collect(Collectors.toList()));
-        this.craftablesCount = new Integer[this.craftables.size()];
+        this.craftablesCount = new int[this.craftables.size()];
 
         if (this.getGridObject().getMachines().containsKey(WorkshopMachine.STORAGE))
         {
@@ -85,9 +97,12 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
             {
                 int count = Integer.MAX_VALUE;
 
+                List<ItemStack> relevantStacks = Lists.newArrayList(storage.getStacks());
+                relevantStacks.removeIf(ItemStack::isEmpty);
+
                 for (ItemStack ingredient : recipes.get(this.craftables.indexOf(result)).getCompressedRecipe())
                 {
-                    List<ItemStack> ingredientCandidate = storage.getStacks().stream()
+                    List<ItemStack> ingredientCandidate = relevantStacks.stream()
                             .filter(stack -> ItemUtils.deepEquals(stack, ingredient)).collect(Collectors.toList());
 
                     if (!ingredientCandidate.isEmpty())
@@ -117,7 +132,7 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
         {
             this.craftables.clear();
 
-            this.craftablesCount = new Integer[tag.getInteger("itemCount")];
+            this.craftablesCount = new int[tag.getInteger("itemCount")];
             for (int i = 0; i < tag.getInteger("itemCount"); i++)
             {
                 this.craftables.add(new ItemStack(tag.getCompoundTag("item" + i)));
@@ -144,34 +159,6 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
         }
 
         return super.writeToNBT(tag);
-    }
-
-    @Override
-    public void setGrid(int gridID)
-    {
-        this.grid = gridID;
-        this.rebuildCraftables();
-    }
-
-    @Override
-    public void connect(BlockPos pos, ITileWorkshop to)
-    {
-        if (this.getConnectionsMap().containsKey(pos))
-            this.getConnectionsMap().get(pos).clear();
-        this.getConnectionsMap().put(pos, to);
-
-        if (to.getType() == WorkshopMachine.STORAGE || to.getType() == WorkshopMachine.CARDLIBRARY)
-            this.rebuildCraftables();
-    }
-
-    @Override
-    public void disconnect(int edge)
-    {
-        ITileWorkshop machine = this.getConnected(edge);
-        this.getConnectionsMap().remove(this.getConnectionsMap().entries().get(edge).getKey(), machine);
-
-        if (machine.getType() == WorkshopMachine.STORAGE || machine.getType() == WorkshopMachine.CARDLIBRARY)
-            this.rebuildCraftables();
     }
 
     @Override
@@ -333,7 +320,7 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
                         }
                     }
                 }
-                this.rebuildCraftables();
+                this.refreshWorkbenchCrafts();
 
                 ItemStack produced = recipe.getResult().copy();
                 produced.setCount(toMake);

@@ -50,7 +50,7 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
         if (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(WorkshopMachine.WORKBENCH))
             return;
 
-        ((TileEngineerWorkbench) this.getGridObject().getMachines().get(WorkshopMachine.WORKBENCH)).rebuildCraftables();
+        this.getGridObject().getMachines().get(WorkshopMachine.WORKBENCH).refreshWorkbenchCrafts();
     }
 
     @Override

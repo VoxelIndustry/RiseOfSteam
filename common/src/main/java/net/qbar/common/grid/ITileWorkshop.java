@@ -120,4 +120,9 @@ public interface ITileWorkshop extends ITileNode<WorkshopGrid>, ILoadable
     {
         this.getConnectionsMap().remove(this.getConnectionsMap().entries().get(edge).getKey(), this.getConnected(edge));
     }
+
+    default void refreshWorkbenchCrafts()
+    {
+
+    }
 }

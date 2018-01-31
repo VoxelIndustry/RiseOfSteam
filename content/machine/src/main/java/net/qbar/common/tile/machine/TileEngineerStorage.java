@@ -54,7 +54,7 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
         if (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(WorkshopMachine.WORKBENCH))
             return;
 
-        ((TileEngineerWorkbench) this.getGridObject().getMachines().get(WorkshopMachine.WORKBENCH)).rebuildCraftables();
+        this.getGridObject().getMachines().get(WorkshopMachine.WORKBENCH).refreshWorkbenchCrafts();
     }
 
     @Override
