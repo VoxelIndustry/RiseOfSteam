@@ -55,7 +55,7 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
         rectangle.setStyle("-texture: url(" + QBarConstants.MODID + ":textures/gui/assembler.png," + (176 / 256f) +
                 "," + (18 / 256f) + "," + ((176 + assembler.getProgressScaled(18)) / 256f) + "," + (35 / 256f));
 
-        this.assembler.getCurrentProgressProperty().addListener(obs ->
+        this.getListeners().attach(assembler.getCurrentProgressProperty(), obs ->
         {
             rectangle.setWidth(assembler.getProgressScaled(18));
             rectangle.setStyle("-texture: url(" + QBarConstants.MODID + ":textures/gui/assembler.png," + (176 / 256f)

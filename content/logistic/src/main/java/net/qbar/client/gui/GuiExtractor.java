@@ -4,10 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CardDataStorage.ECardType;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.action.ServerActionBuilder;
@@ -62,7 +62,8 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshSlots);
 
         this.whitelist = new GuiButton("WHITELIST");
-        this.extractor.getWhitelistProperty().addListener((obs, oldValue, newValue) -> this.refreshWhitelist(newValue));
+        this.getListeners().attach(this.extractor.getWhitelistProperty(),
+                (obs, oldValue, newValue) -> this.refreshWhitelist(newValue));
         this.refreshWhitelist(this.extractor.getWhitelistProperty().getValue());
 
         this.whitelist.setOnActionEvent(e -> new ServerActionBuilder("WHITELIST").toTile(extractor)
@@ -98,7 +99,7 @@ public class GuiExtractor extends BrokkGuiContainer<BuiltContainer>
                     view.setHeight(18);
                     view.setBackground(new Background(GuiExtractor.SLOT));
                     view.setTooltip(true);
-                    this.filterPane.addChild(view, 115 + 18 * (i / 3), 10+18 * (i % 3));
+                    this.filterPane.addChild(view, 115 + 18 * (i / 3), 10 + 18 * (i % 3));
                 }
                 this.filterPane.addChild(this.whitelist, 58, 65);
             }

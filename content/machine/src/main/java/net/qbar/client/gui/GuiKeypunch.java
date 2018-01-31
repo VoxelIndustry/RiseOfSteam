@@ -1,6 +1,7 @@
 package net.qbar.client.gui;
 
 import fr.ourten.teabeans.listener.ListValueChangeListener;
+import fr.ourten.teabeans.listener.ValueInvalidationListener;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -77,7 +78,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         final GuiButton craftTab = new GuiButton("CRAFT");
         final GuiButton filterTab = new GuiButton("FILTER");
 
-        this.keypunch.getCraftTabProperty().addListener((obs) ->
+        this.getListeners().attach(this.keypunch.getCraftTabProperty(), (obs) ->
         {
             craftTab.setDisabled(this.keypunch.getCraftTabProperty().getValue());
             filterTab.setDisabled(!this.keypunch.getCraftTabProperty().getValue());
@@ -96,6 +97,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                 if (this.body.hasChild(this.craftPane))
                     this.body.removeChild(this.craftPane);
             }
+            this.refreshMessage(this.getContainer().getSlot(36).getStack());
         });
 
         craftTab.addStyleClass("tab-button");
@@ -131,10 +133,11 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshMessage);
         ((ListenerSlot) this.getContainer().getSlot(37))
                 .setOnChange(stack -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
-        this.keypunch.getCanPrintProperty()
-                .addListener(obs -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
-        this.keypunch.getFilterStacks()
-                .addListener(obs -> this.refreshMessage(this.getContainer().getSlot(36).getStack()));
+
+        ValueInvalidationListener refreshMessage = obs -> this.refreshMessage(this.getContainer().getSlot(36)
+                .getStack());
+        this.getListeners().attach(this.keypunch.getCraftStacks(), refreshMessage);
+        this.getListeners().attach(this.keypunch.getFilterStacks(), refreshMessage);
         this.refreshMessage(this.getContainer().getSlot(36).getStack());
     }
 
@@ -196,8 +199,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         resultView.setBackground(new Background(GuiKeypunch.SLOT));
         this.craftPane.addChild(resultView, 25 + (18 * 4), 3 + 18);
 
-        this.keypunch.getCraftStacks()
-                .addListener((ListValueChangeListener<? super ItemStack>) (obs, oldStack, currentStack) ->
+        this.getListeners().attach(this.keypunch.getCraftStacks(),
+                (ListValueChangeListener<ItemStack>) (obs, oldStack, currentStack) ->
                 {
                     if ((oldStack == null && currentStack == null) || (oldStack != null && currentStack != null
                             && ItemUtils.deepEquals(oldStack, currentStack)))
@@ -247,7 +250,8 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             });
             this.filterPane.addChild(view, 25 + 18 * (i % 3), 3 + 18 * (i / 3));
         }
-        this.keypunch.getFilterStacks().addListener(obs ->
+
+        this.getListeners().attach(this.keypunch.getFilterStacks(), obs ->
         {
             for (int i = 0; i < 9; i++)
                 ((ItemStackView) this.filterPane.getChildrens().get(i))
@@ -307,5 +311,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                     this.assemble.setDisabled(true);
             }
         }
+        else
+            this.assemble.setDisabled(true);
     }
 }

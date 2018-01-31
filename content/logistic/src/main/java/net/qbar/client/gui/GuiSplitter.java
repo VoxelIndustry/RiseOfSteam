@@ -106,7 +106,7 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         whitelist3.setHeight(15);
         this.whitelist.add(whitelist3);
 
-        this.splitter.getWhitelistProperty().addListener(obs -> this.refreshWhitelists());
+        this.getListeners().attach(this.splitter.getWhitelistProperty(), obs -> this.refreshWhitelists());
         this.refreshWhitelists();
     }
 

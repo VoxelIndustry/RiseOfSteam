@@ -77,7 +77,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         this.initButtons();
         this.initBlueprints(blueprintPane);
 
-        this.selectedType.addListener((obs, oldValue, newValue) -> this.initBlueprints(blueprintPane));
+        this.getListeners().attach(this.selectedType, (obs, oldValue, newValue) -> this.initBlueprints(blueprintPane));
     }
 
     private void initButtons()
@@ -96,8 +96,9 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
             this.buttonPane.addChild(button, 7 + 18 * i, 0);
             i++;
         }
-        toggleGroup.getSelectedButtonProperty().addListener((obs, oldValue, newValue) -> this.selectedType.setValue(
-                newValue != null ? EMachineType.values()[toggleGroup.getButtonList().indexOf(newValue)] : null));
+        this.getListeners().attach(toggleGroup.getSelectedButtonProperty(),
+                (obs, oldValue, newValue) -> this.selectedType.setValue(newValue != null ?
+                        EMachineType.values()[toggleGroup.getButtonList().indexOf(newValue)] : null));
     }
 
     private void initBlueprints(GuiAbsolutePane mainPane)
