@@ -6,6 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.recipe.QBarMaterials;
 
@@ -69,6 +71,7 @@ public class ItemMetal extends ItemBase
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerModels()
     {
         ModelLoader.setCustomMeshDefinition(this, stack ->

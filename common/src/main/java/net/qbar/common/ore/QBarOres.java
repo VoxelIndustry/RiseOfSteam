@@ -47,14 +47,14 @@ public class QBarOres
     {
         MINERALS = new ArrayList<>();
 
-        IRON = new QBarMineral("ore.iron", EnumRarity.COMMON);
-        GOLD = new QBarMineral("ore.gold", EnumRarity.UNCOMMON);
-        REDSTONE = new QBarMineral("ore.redstone", EnumRarity.COMMON);
-        ZINC = new QBarMineral("ore.zinc", EnumRarity.COMMON);
-        COPPER = new QBarMineral("ore.copper", EnumRarity.COMMON);
-        TIN = new QBarMineral("ore.tin", EnumRarity.COMMON);
-        NICKEL = new QBarMineral("ore.nickel", EnumRarity.COMMON);
-        LEAD = new QBarMineral("ore.lead", EnumRarity.COMMON);
+        IRON = new QBarMineral("iron", EnumRarity.COMMON);
+        GOLD = new QBarMineral("gold", EnumRarity.UNCOMMON);
+        REDSTONE = new QBarMineral("redstone", EnumRarity.COMMON);
+        ZINC = new QBarMineral("zinc", EnumRarity.COMMON);
+        COPPER = new QBarMineral("copper", EnumRarity.COMMON);
+        TIN = new QBarMineral("tin", EnumRarity.COMMON);
+        NICKEL = new QBarMineral("nickel", EnumRarity.COMMON);
+        LEAD = new QBarMineral("lead", EnumRarity.COMMON);
 
         MINERALS.addAll(Arrays.asList(IRON, GOLD, REDSTONE, ZINC, COPPER, TIN, NICKEL, LEAD));
 
@@ -94,13 +94,14 @@ public class QBarOres
                 .toolLevel(2).hardness(2.0F).resistance(5.0F)
                 .mineral(REDSTONE, 1f).build();
 
-        ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TETRAHEDRITE, TEALLITE, CASSITERITE, TEALLITE, PENTLANDITE,
-                GARNIERITE, LATERITE, GOLD_ORE, REDSTONE_ORE));
+        ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TETRAHEDRITE, TEALLITE, CASSITERITE, TEALLITE,
+                PENTLANDITE, GARNIERITE, LATERITE, GOLD_ORE, REDSTONE_ORE));
     }
 
     public static Optional<QBarMineral> getMineralFromName(String name)
     {
-        return MINERALS.stream().filter(mineral -> mineral.getName().equalsIgnoreCase(name)).findAny();
+        return MINERALS.stream().filter(mineral -> mineral.getName().equalsIgnoreCase(name) ||
+                mineral.getName().equalsIgnoreCase(name.substring(4))).findAny();
     }
 
     public static Optional<QBarOre> getOreFromState(IBlockState state)

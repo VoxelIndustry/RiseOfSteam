@@ -25,7 +25,9 @@
       },
       "west": {
         "y": 270
-      }
+      },
+      "up": {},
+      "down": {}
     },
     "inventory": {
       "model": "qbar:engineer_storage.obj"

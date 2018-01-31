@@ -1,5 +1,6 @@
 package net.qbar.common.item;
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -8,8 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 
@@ -32,7 +35,8 @@ public class ItemRawOre extends ItemBase
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ore"))
         {
             QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).ifPresent(mineral ->
-                    tooltip.add(mineral.getRarity().rarityColor + I18n.format(stack.getTagCompound().getString("ore"))));
+                    tooltip.add(mineral.getRarity().rarityColor + I18n.format(stack.getTagCompound().getString("ore")
+                    )));
         }
     }
 
@@ -67,5 +71,34 @@ public class ItemRawOre extends ItemBase
                 subItems.add(stack);
             }
         }
+    }
+
+    @Override
+    public void registerVariants()
+    {
+        QBarOres.MINERALS.forEach(mineral -> this.addVariant(mineral.getNameID() + "_poor",
+                new ModelResourceLocation(QBarConstants.MODID + ":raw_" + mineral.getNameID() + "_poor", "inventory")));
+        QBarOres.MINERALS.forEach(mineral -> this.addVariant(mineral.getNameID() + "_normal",
+                new ModelResourceLocation(QBarConstants.MODID + ":raw_" + mineral.getNameID() + "_normal",
+                        "inventory")));
+        QBarOres.MINERALS.forEach(mineral -> this.addVariant(mineral.getNameID() + "_rich",
+                new ModelResourceLocation(QBarConstants.MODID + ":raw_" + mineral.getNameID() + "_rich", "inventory")));
+        super.registerVariants();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerModels()
+    {
+        ModelLoader.setCustomMeshDefinition(this, stack ->
+                this.getVariantModel(stack.getTagCompound().getString("ore").substring(4) + "_" +
+                        stack.getTagCompound().getString("density")));
+        super.registerModels();
+    }
+
+    @Override
+    public boolean hasSpecialModel()
+    {
+        return true;
     }
 }
