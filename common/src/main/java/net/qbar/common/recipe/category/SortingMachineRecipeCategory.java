@@ -4,11 +4,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.ore.MineralDensity;
+import net.qbar.common.ore.QBarOres;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
 
 import java.util.Optional;
-import java.util.Random;
 
 public class SortingMachineRecipeCategory extends QBarRecipeCategory
 {
@@ -46,10 +47,9 @@ public class SortingMachineRecipeCategory extends QBarRecipeCategory
                 NBTTagCompound tag = mixedOre.getTagCompound();
                 for (int i = 0; i < tag.getInteger("oreCount"); i++)
                 {
-                    ItemStack ore = new ItemStack(QBarItems.RAW_ORE);
-                    ore.setTagCompound(new NBTTagCompound());
-                    ore.getTagCompound().setString("ore", tag.getString("ore" + i));
-                    ore.getTagCompound().setString("density", tag.getString("density" + i));
+                    ItemStack ore = QBarOres.getRawMineral(
+                            QBarOres.getMineralFromName(tag.getString("ore" + i)).get(),
+                            MineralDensity.valueOf(tag.getString("density" + i).toUpperCase()));
 
                     recipe.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(ore));
                 }

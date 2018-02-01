@@ -3,7 +3,6 @@ package net.qbar.common.ore;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.init.QBarItems;
 
@@ -116,12 +115,10 @@ public class QBarOres
         return ORES.stream().filter(ore -> ore.getName().equals(name)).findAny();
     }
 
-    public static ItemStack getRawMineral(QBarMineral mineral)
+    public static ItemStack getRawMineral(QBarMineral mineral, MineralDensity density)
     {
         ItemStack rawOre = new ItemStack(QBarItems.RAW_ORE);
-        rawOre.setTagCompound(new NBTTagCompound());
-
-        rawOre.getTagCompound().setString("ore", mineral.getName());
+        rawOre.setItemDamage((MINERALS.indexOf(mineral) * MineralDensity.VALUES.length) + density.ordinal());
         return rawOre;
     }
 }

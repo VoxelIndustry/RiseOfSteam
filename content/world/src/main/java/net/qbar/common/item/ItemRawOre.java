@@ -6,13 +6,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.ore.MineralDensity;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 
@@ -32,29 +32,19 @@ public class ItemRawOre extends ItemBase
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ore"))
-        {
-            QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).ifPresent(mineral ->
-                    tooltip.add(mineral.getRarity().rarityColor + I18n.format(stack.getTagCompound().getString("ore")
-                    )));
-        }
+        tooltip.add(this.getMineral(stack).getRarity().rarityColor + I18n.format(this.getMineral(stack).getName()));
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        if (stack.hasTagCompound())
-            return this.getUnlocalizedName() + "." + stack.getTagCompound().getString("density");
-        else
-            return this.getUnlocalizedName();
+        return this.getUnlocalizedName() + "." + this.getDensity(stack).toString();
     }
 
     @Override
     public EnumRarity getRarity(ItemStack stack)
     {
-        if (stack.hasTagCompound())
-            return QBarOres.getMineralFromName(stack.getTagCompound().getString("ore")).get().getRarity();
-        return EnumRarity.COMMON;
+        return this.getMineral(stack).getRarity();
     }
 
     @Override
@@ -64,11 +54,9 @@ public class ItemRawOre extends ItemBase
         {
             for (QBarMineral ore : QBarOres.MINERALS)
             {
-                ItemStack stack = new ItemStack(this);
-                stack.setTagCompound(new NBTTagCompound());
-                stack.getTagCompound().setString("ore", ore.getName());
-                stack.getTagCompound().setString("density", "normal");
-                subItems.add(stack);
+                subItems.add(QBarOres.getRawMineral(ore, MineralDensity.POOR));
+                subItems.add(QBarOres.getRawMineral(ore, MineralDensity.NORMAL));
+                subItems.add(QBarOres.getRawMineral(ore, MineralDensity.RICH));
             }
         }
     }
@@ -91,8 +79,7 @@ public class ItemRawOre extends ItemBase
     public void registerModels()
     {
         ModelLoader.setCustomMeshDefinition(this, stack ->
-                this.getVariantModel(stack.getTagCompound().getString("ore").substring(4) + "_" +
-                        stack.getTagCompound().getString("density")));
+                this.getVariantModel(this.getMineral(stack).getNameID() + "_" + this.getDensity(stack)));
         super.registerModels();
     }
 
@@ -100,5 +87,15 @@ public class ItemRawOre extends ItemBase
     public boolean hasSpecialModel()
     {
         return true;
+    }
+
+    public QBarMineral getMineral(ItemStack stack)
+    {
+        return QBarOres.MINERALS.get(stack.getItemDamage() / MineralDensity.VALUES.length);
+    }
+
+    public MineralDensity getDensity(ItemStack stack)
+    {
+        return MineralDensity.VALUES[stack.getItemDamage() % MineralDensity.VALUES.length];
     }
 }

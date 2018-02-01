@@ -2,15 +2,20 @@ package net.qbar.common.recipe;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.ore.MineralDensity;
+import net.qbar.common.ore.QBarMineral;
+import net.qbar.common.ore.QBarOres;
 import net.qbar.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.qbar.common.recipe.ingredient.ItemStackRecipeIngredient;
 import net.qbar.common.recipe.type.*;
@@ -88,6 +93,32 @@ public class QBarRecipeHelper
                 .add(new ShapelessOreRecipe(new ResourceLocation(QBarConstants.MODID, "ingot_nugget" + metalName),
                         nuggetStack, new OreIngredient("ingot" + StringUtils.capitalize(metalName)))
                         .setRegistryName(new ResourceLocation(QBarConstants.MODID, "ingot_nugget" + metalName)));
+    }
+
+    public static void addRawOreFurnaceRecipe(QBarMineral mineral)
+    {
+        ItemStack poorOre = QBarOres.getRawMineral(mineral, MineralDensity.POOR);
+        ItemStack normalOre = QBarOres.getRawMineral(mineral, MineralDensity.NORMAL);
+        ItemStack richOre = QBarOres.getRawMineral(mineral, MineralDensity.RICH);
+
+        ItemStack nuggetStack = OreDictionary.getOres("nugget" + StringUtils.capitalize(mineral.getNameID())).get(0)
+                .copy();
+        nuggetStack.setCount(4);
+
+        ItemStack ingotStack = OreDictionary.getOres("ingot" + StringUtils.capitalize(mineral.getNameID())).get(0)
+                .copy();
+        ingotStack.setCount(1);
+
+        FurnaceRecipes.instance().addSmeltingRecipe(poorOre, nuggetStack,
+                0.25f + (0.25f * mineral.getRarity().ordinal()));
+
+        FurnaceRecipes.instance().addSmeltingRecipe(normalOre, ingotStack,
+                0.5f + (0.5f * mineral.getRarity().ordinal()));
+
+        ingotStack = ingotStack.copy();
+        ingotStack.setCount(2);
+        FurnaceRecipes.instance().addSmeltingRecipe(richOre, ingotStack,
+                1f + mineral.getRarity().ordinal());
     }
 
     public static void addLiquidBoilerRecipe(Fluid fuel, int heatPerMb, int timePerBucket)

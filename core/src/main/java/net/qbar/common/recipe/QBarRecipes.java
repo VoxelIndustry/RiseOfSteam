@@ -2,7 +2,9 @@ package net.qbar.common.recipe;
 
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -13,6 +15,8 @@ import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockMetal;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.ore.MineralDensity;
+import net.qbar.common.ore.QBarOres;
 import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
@@ -65,6 +69,15 @@ public class QBarRecipes
                 QBarRecipeHelper.addIngotToGearRecipe(metalName);
         });
 
+        QBarOres.MINERALS.stream().filter(mineral -> mineral != QBarOres.REDSTONE).forEach
+                (QBarRecipeHelper::addRawOreFurnaceRecipe);
+        FurnaceRecipes.instance().addSmeltingRecipe(QBarOres.getRawMineral(QBarOres.REDSTONE, MineralDensity.POOR),
+                new ItemStack(Items.REDSTONE, 3), 0.25f);
+        FurnaceRecipes.instance().addSmeltingRecipe(QBarOres.getRawMineral(QBarOres.REDSTONE, MineralDensity.NORMAL),
+                new ItemStack(Items.REDSTONE, 6), 0.5f);
+        FurnaceRecipes.instance().addSmeltingRecipe(QBarOres.getRawMineral(QBarOres.REDSTONE, MineralDensity.RICH),
+                new ItemStack(Items.REDSTONE, 12), 1f);
+
         QBarRecipeHelper.addLiquidBoilerRecipe(FluidRegistry.LAVA, 2, 1200);
 
         QBarRecipeHelper.addSawMillRecipe(new ItemStack(Blocks.LOG, 1, BlockPlanks.EnumType.OAK.getMetadata()),
@@ -81,9 +94,8 @@ public class QBarRecipes
                         4),
                 new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.DARK_OAK.getMetadata()));
 
-        QBarRecipeHandler.CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(new ResourceLocation(QBarConstants
-                .MODID,
-                "compressedsludge")));
+        QBarRecipeHandler.CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(
+                new ResourceLocation(QBarConstants.MODID, "compressedsludge")));
 
         QBarRecipeHelper.addMeltingRecipe("iron", 1204, 1204 * 1.25f, 35);
         QBarRecipeHelper.addMeltingRecipe("gold", 1064, 1064 * 1.25f, 20);
