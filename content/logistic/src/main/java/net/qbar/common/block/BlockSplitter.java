@@ -64,7 +64,7 @@ public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
         if (player.isSneaking())
             return false;
         final TileSplitter splitter = (TileSplitter) w.getTileEntity(pos);
-        if (splitter != null && splitter.hasFilter())
+        if (splitter != null && splitter.isFiltered())
         {
             player.openGui(QBarConstants.MODINSTANCE, LogisticGui.SPLITTER.getUniqueID(), w, pos.getX(), pos.getY(),
                     pos.getZ());

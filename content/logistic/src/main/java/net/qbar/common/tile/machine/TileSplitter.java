@@ -2,6 +2,8 @@ package net.qbar.common.tile.machine;
 
 import com.google.common.collect.Lists;
 import fr.ourten.teabeans.value.BaseListProperty;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -13,10 +15,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CardDataStorage.ECardType;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -33,19 +35,22 @@ import java.util.List;
 public class TileSplitter extends TileInventoryBase
         implements IContainerProvider, ITickable, ISidedInventory, IActionReceiver
 {
+    @Getter
+    @Setter
     private EnumFacing facing;
 
-    private       boolean                   hasFilter;
+    @Getter
+    private       boolean                   isFiltered;
     private final BaseListProperty<Boolean> whitelistProperty;
 
     private ItemStack cachedWest, cachedNorth, cachedEast;
     private FilterCard filterWest, filterNorth, filterEast;
 
-    public TileSplitter(final boolean hasFilter)
+    public TileSplitter(final boolean isFiltered)
     {
         super("itemsplitter", 4);
 
-        this.hasFilter = hasFilter;
+        this.isFiltered = isFiltered;
 
         this.whitelistProperty = new BaseListProperty<>(null, "whitelistProperty");
         this.whitelistProperty.add(true);
@@ -69,45 +74,7 @@ public class TileSplitter extends TileInventoryBase
     {
         if (this.isServer() && !this.getStackInSlot(3).isEmpty())
         {
-            if (this.hasFilter())
-            {
-                if (!ItemUtils.deepEquals(this.cachedWest, this.getStackInSlot(0)))
-                {
-                    this.filterWest = null;
-                    this.cachedWest = this.getStackInSlot(0).copy();
-                    if (this.cachedWest.hasTagCompound())
-                    {
-                        final IPunchedCard card = CardDataStorage.instance()
-                                .read(this.getStackInSlot(0).getTagCompound());
-                        if (card.getID() == ECardType.FILTER.getID())
-                            this.filterWest = (FilterCard) card;
-                    }
-                }
-                if (!ItemUtils.deepEquals(this.cachedNorth, this.getStackInSlot(1)))
-                {
-                    this.filterNorth = null;
-                    this.cachedNorth = this.getStackInSlot(1).copy();
-                    if (this.cachedNorth.hasTagCompound())
-                    {
-                        final IPunchedCard card = CardDataStorage.instance()
-                                .read(this.getStackInSlot(1).getTagCompound());
-                        if (card.getID() == ECardType.FILTER.getID())
-                            this.filterNorth = (FilterCard) card;
-                    }
-                }
-                if (!ItemUtils.deepEquals(this.cachedEast, this.getStackInSlot(2)))
-                {
-                    this.filterEast = null;
-                    this.cachedEast = this.getStackInSlot(2).copy();
-                    if (this.cachedEast.hasTagCompound())
-                    {
-                        final IPunchedCard card = CardDataStorage.instance()
-                                .read(this.getStackInSlot(2).getTagCompound());
-                        if (card.getID() == ECardType.FILTER.getID())
-                            this.filterEast = (FilterCard) card;
-                    }
-                }
-            }
+            this.setupFilters();
 
             final boolean left = this.hasBelt(this.getFacing().rotateY());
             final boolean front = this.hasBelt(this.getFacing().getOpposite());
@@ -129,7 +96,7 @@ public class TileSplitter extends TileInventoryBase
             if (right && this.checkFilter(this.getFacing().rotateY().getOpposite(), this.getStackInSlot(3)))
             {
                 split++;
-                this.choices.add(this.getFacing().rotateY().getOpposite());
+                this.choices.add(this.getFacing().rotateYCCW());
             }
 
             this.lastSplit += 1;
@@ -149,27 +116,56 @@ public class TileSplitter extends TileInventoryBase
         }
     }
 
+    private void setupFilters()
+    {
+        if (this.isFiltered())
+        {
+            if (!ItemUtils.deepEquals(this.cachedWest, this.getStackInSlot(0)))
+            {
+                this.filterWest = null;
+                this.cachedWest = this.getStackInSlot(0).copy();
+                if (this.cachedWest.hasTagCompound())
+                {
+                    final IPunchedCard card = CardDataStorage.instance()
+                            .read(this.getStackInSlot(0).getTagCompound());
+                    if (card.getID() == ECardType.FILTER.getID())
+                        this.filterWest = (FilterCard) card;
+                }
+            }
+            if (!ItemUtils.deepEquals(this.cachedNorth, this.getStackInSlot(1)))
+            {
+                this.filterNorth = null;
+                this.cachedNorth = this.getStackInSlot(1).copy();
+                if (this.cachedNorth.hasTagCompound())
+                {
+                    final IPunchedCard card = CardDataStorage.instance()
+                            .read(this.getStackInSlot(1).getTagCompound());
+                    if (card.getID() == ECardType.FILTER.getID())
+                        this.filterNorth = (FilterCard) card;
+                }
+            }
+            if (!ItemUtils.deepEquals(this.cachedEast, this.getStackInSlot(2)))
+            {
+                this.filterEast = null;
+                this.cachedEast = this.getStackInSlot(2).copy();
+                if (this.cachedEast.hasTagCompound())
+                {
+                    final IPunchedCard card = CardDataStorage.instance()
+                            .read(this.getStackInSlot(2).getTagCompound());
+                    if (card.getID() == ECardType.FILTER.getID())
+                        this.filterEast = (FilterCard) card;
+                }
+            }
+        }
+    }
+
     private boolean checkFilter(final EnumFacing facing, final ItemStack stack)
     {
-        if (!this.hasFilter())
+        if (!this.isFiltered())
             return true;
 
-        if (facing == this.getFacing().getOpposite())
-        {
-            if (this.filterNorth != null && (stack.isEmpty() || (this.getWhitelistProperty().get(1)
-                    ? !this.filterNorth.filter(stack) : this.filterNorth.filter(stack))))
-                return false;
-        }
-        else if (facing == this.getFacing().rotateY())
-        {
-            if (this.filterWest != null && (stack.isEmpty() || (this.getWhitelistProperty().get(0)
-                    ? !this.filterWest.filter(stack) : this.filterWest.filter(stack))))
-                return false;
-        }
-        else if (this.filterEast != null && (stack.isEmpty() || (this.getWhitelistProperty().get(2)
-                ? !this.filterEast.filter(stack) : this.filterEast.filter(stack))))
-            return false;
-        return true;
+        FilterCard filter = this.getFilter(facing);
+        return filter == null || (!stack.isEmpty() && (this.isWhitelist(facing) == filter.filter(stack)));
     }
 
     private void insert(final ItemStack stack, final EnumFacing facing)
@@ -181,7 +177,7 @@ public class TileSplitter extends TileInventoryBase
     {
         final IBelt belt = (IBelt) this.world.getTileEntity(this.getPos().down().offset(facing));
 
-        return belt.insert(stack, false);
+        return belt.getFacing() == facing && belt.insert(stack, false);
     }
 
     private boolean hasBelt(final EnumFacing facing)
@@ -206,7 +202,7 @@ public class TileSplitter extends TileInventoryBase
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
         tag.setInteger("facing", this.facing.ordinal());
-        tag.setBoolean("filtered", this.hasFilter);
+        tag.setBoolean("filtered", this.isFiltered);
 
         for (int i = 0; i < this.whitelistProperty.size(); i++)
             tag.setBoolean("whitelist" + i, this.whitelistProperty.get(i));
@@ -218,21 +214,11 @@ public class TileSplitter extends TileInventoryBase
     public void readFromNBT(final NBTTagCompound tag)
     {
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
-        this.hasFilter = tag.getBoolean("filtered");
+        this.isFiltered = tag.getBoolean("filtered");
 
         for (int i = 0; i < tag.getInteger("whitelistSize"); i++)
             this.whitelistProperty.set(i, tag.getBoolean("whitelist" + i));
         super.readFromNBT(tag);
-    }
-
-    public void setFacing(final EnumFacing facing)
-    {
-        this.facing = facing;
-    }
-
-    public EnumFacing getFacing()
-    {
-        return this.facing;
     }
 
     @Override
@@ -257,16 +243,6 @@ public class TileSplitter extends TileInventoryBase
     {
         if (this.isClient())
             this.forceSync();
-    }
-
-    public boolean hasFilter()
-    {
-        return this.hasFilter;
-    }
-
-    public void setHasFilter(final boolean hasFilter)
-    {
-        this.hasFilter = hasFilter;
     }
 
     public BaseListProperty<Boolean> getWhitelistProperty()
@@ -307,10 +283,22 @@ public class TileSplitter extends TileInventoryBase
     }
 
     @Override
-    public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
+    public boolean canInsertItem(final int index, final ItemStack stack, final EnumFacing direction)
     {
         if (index == 3)
-            return this.isItemValidForSlot(index, itemStackIn);
+        {
+            if (this.isFiltered())
+            {
+                this.setupFilters();
+                return this.checkFilter(this.getFacing().rotateY(), stack) ||
+                        this.checkFilter(this.getFacing().rotateYCCW(), stack) ||
+                        this.checkFilter(this.getFacing().getOpposite(), stack);
+            }
+            return (this.hasBelt(this.getFacing().rotateY()) && this.canInsert(stack, this.getFacing().rotateY())) ||
+                    this.hasBelt(this.getFacing().rotateYCCW()) && this.canInsert(stack, this.getFacing().rotateYCCW())
+                    || this.hasBelt(this.getFacing().getOpposite()) && this.canInsert(stack, this.getFacing()
+                    .getOpposite());
+        }
         return false;
     }
 
