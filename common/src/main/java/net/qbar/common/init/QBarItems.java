@@ -30,6 +30,8 @@ public class QBarItems
     public static final ItemMetal METALGEAR       = null;
     @ObjectHolder("metalingot")
     public static final ItemMetal  METALINGOT      = null;
+    @ObjectHolder("metalnugget")
+    public static final ItemMetal  METALNUGGET      = null;
     @ObjectHolder("solarreflector")
     public static final ItemBase  SOLAR_REFLECTOR = null;
 

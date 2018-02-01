@@ -69,6 +69,27 @@ public class QBarRecipeHelper
                         .setRegistryName(new ResourceLocation(QBarConstants.MODID, "block_ingot" + metalName)));
     }
 
+    public static void addIngotToNuggetRecipe(String metalName)
+    {
+        ItemStack ingotStack = new ItemStack(QBarItems.METALINGOT, 1, QBarMaterials.metals.indexOf(metalName));
+
+        QBarRecipeHandler.CRAFTING_RECIPES
+                .add(new ShapedOreRecipe(new ResourceLocation(QBarConstants.MODID, "nugget_ingot" + metalName),
+                        ingotStack, "XXX", "XXX", "XXX", 'X',
+                        new OreIngredient("nugget" + StringUtils.capitalize(metalName)))
+                        .setRegistryName(new ResourceLocation(QBarConstants.MODID, "nugget_ingot" + metalName)));
+    }
+
+    public static void addNuggetToIngotRecipe(String metalName)
+    {
+        ItemStack nuggetStack = new ItemStack(QBarItems.METALNUGGET, 9, QBarMaterials.metals.indexOf(metalName));
+
+        QBarRecipeHandler.CRAFTING_RECIPES
+                .add(new ShapelessOreRecipe(new ResourceLocation(QBarConstants.MODID, "ingot_nugget" + metalName),
+                        nuggetStack, new OreIngredient("ingot" + StringUtils.capitalize(metalName)))
+                        .setRegistryName(new ResourceLocation(QBarConstants.MODID, "ingot_nugget" + metalName)));
+    }
+
     public static void addLiquidBoilerRecipe(Fluid fuel, int heatPerMb, int timePerBucket)
     {
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.LIQUIDBOILER_UID)

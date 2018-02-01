@@ -20,6 +20,7 @@ import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
+import net.qbar.common.recipe.MaterialShape;
 import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -213,7 +214,7 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
         }
     }
 
-    private void startCasting(QBarMaterials.MaterialShape shape)
+    private void startCasting(MaterialShape shape)
     {
         if (this.outputTank.getFluidAmount() > 0 && this.getStackInSlot(2).isEmpty())
         {
@@ -221,16 +222,16 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
             {
                 int toDrain = 0;
                 ItemStack toFill = ItemStack.EMPTY;
-                if ((shape == QBarMaterials.MaterialShape.PLATE || shape == QBarMaterials.MaterialShape.INGOT) &&
+                if ((shape == MaterialShape.PLATE || shape == MaterialShape.INGOT) &&
                         this.outputTank.getFluidAmount() >= 144)
                 {
-                    toFill = shape == QBarMaterials.MaterialShape.PLATE ?
+                    toFill = shape == MaterialShape.PLATE ?
                             QBarMaterials.getPlateFromMetal(metal).copy() :
                             QBarMaterials.getIngotFromMetal(metal).copy();
                     toDrain = 144;
                     this.castSpeed = 1 / (144 / 6F);
                 }
-                else if (shape == QBarMaterials.MaterialShape.BLOCK && this.outputTank.getFluidAmount() >= 1296)
+                else if (shape == MaterialShape.BLOCK && this.outputTank.getFluidAmount() >= 1296)
                 {
                     toFill = QBarMaterials.getBlockFromMetal(metal).copy();
                     toDrain = 1496;
@@ -495,13 +496,13 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
                 this.alloyLogic();
                 break;
             case "CAST_INGOT":
-                this.startCasting(QBarMaterials.MaterialShape.INGOT);
+                this.startCasting(MaterialShape.INGOT);
                 break;
             case "CAST_PLATE":
-                this.startCasting(QBarMaterials.MaterialShape.PLATE);
+                this.startCasting(MaterialShape.PLATE);
                 break;
             case "CAST_BLOCK":
-                this.startCasting(QBarMaterials.MaterialShape.BLOCK);
+                this.startCasting(MaterialShape.BLOCK);
                 break;
         }
     }

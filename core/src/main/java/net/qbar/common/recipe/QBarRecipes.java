@@ -20,6 +20,8 @@ import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
 import net.qbar.common.recipe.type.SludgeRecipe;
 import org.apache.commons.lang3.StringUtils;
 
+import static net.qbar.common.recipe.MaterialShape.*;
+
 public class QBarRecipes
 {
     public void registerRecipes()
@@ -41,17 +43,25 @@ public class QBarRecipes
         QBarRecipeHandler.RECIPES.put(QBarRecipeHandler.ALLOY_UID,
                 new QBarRecipeCategory(QBarRecipeHandler.ALLOY_UID));
 
-        QBarMaterials.metals.forEach(metalName ->
+        QBarMaterials.metals.stream().forEach(metalName ->
         {
-            QBarRecipeHelper.addIngotToPlateRecipe(metalName);
-            QBarRecipeHelper.addBlockToPlateRecipe(metalName);
+            if (QBarMaterials.metals.containsShape(metalName, PLATE))
+            {
+                QBarRecipeHelper.addIngotToPlateRecipe(metalName);
+                QBarRecipeHelper.addBlockToPlateRecipe(metalName);
+            }
 
-            if (BlockMetal.VARIANTS.getAllowedValues().contains(metalName))
+            if (QBarMaterials.metals.containsShape(metalName, BLOCK))
             {
                 QBarRecipeHelper.addBlockToIngotRecipe(metalName);
                 QBarRecipeHelper.addIngotToBlockRecipe(metalName);
             }
-            if (QBarItems.METALGEAR.hasMetalVariant(metalName))
+            if (QBarMaterials.metals.containsShape(metalName, NUGGET))
+            {
+                QBarRecipeHelper.addNuggetToIngotRecipe(metalName);
+                QBarRecipeHelper.addIngotToNuggetRecipe(metalName);
+            }
+            if (QBarMaterials.metals.containsShape(metalName, GEAR))
                 QBarRecipeHelper.addIngotToGearRecipe(metalName);
         });
 
@@ -100,19 +110,25 @@ public class QBarRecipes
 
         QBarItems.METALPLATE.getMetals().forEach(metal ->
         {
-            ItemStack gear = new ItemStack(QBarItems.METALPLATE, 1, QBarMaterials.metals.indexOf(metal));
-            OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), gear);
+            ItemStack plate = new ItemStack(QBarItems.METALPLATE, 1, QBarMaterials.metals.indexOf(metal));
+            OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), plate);
         });
 
         QBarItems.METALINGOT.getMetals().forEach(metal ->
         {
-            ItemStack gear = new ItemStack(QBarItems.METALINGOT, 1, QBarMaterials.metals.indexOf(metal));
-            OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), gear);
+            ItemStack ingot = new ItemStack(QBarItems.METALINGOT, 1, QBarMaterials.metals.indexOf(metal));
+            OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), ingot);
         });
 
-        BlockMetal.VARIANTS.getAllowedValues().forEach(metal -> OreDictionary.registerOre("block" + StringUtils
-                        .capitalize(metal),
-                new ItemStack(QBarBlocks.METALBLOCK, 1, QBarMaterials.metals.indexOf(metal))));
+        QBarItems.METALNUGGET.getMetals().forEach(metal ->
+        {
+            ItemStack nugget = new ItemStack(QBarItems.METALNUGGET, 1, QBarMaterials.metals.indexOf(metal));
+            OreDictionary.registerOre("nugget" + StringUtils.capitalize(metal), nugget);
+        });
+
+        BlockMetal.VARIANTS.getAllowedValues().forEach(metal ->
+                OreDictionary.registerOre("block" + StringUtils.capitalize(metal),
+                        new ItemStack(QBarBlocks.METALBLOCK, 1, QBarMaterials.metals.indexOf(metal))));
     }
 
     @SubscribeEvent

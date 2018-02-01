@@ -9,38 +9,32 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.recipe.MaterialShape;
 import net.qbar.common.recipe.QBarMaterials;
 
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class ItemMetal extends ItemBase
 {
     @Getter
-    private List<String> metals;
-    private String       type;
+    private List<String>  metals;
+    private MaterialShape shape;
 
-    public ItemMetal(String type, Predicate<String> acceptor)
+    public ItemMetal(MaterialShape shape)
     {
-        super("metal" + type);
+        super("metal" + shape);
 
         this.setHasSubtypes(true);
-        this.type = type;
+        this.shape = shape;
 
-        this.metals = QBarMaterials.metals.stream().filter(acceptor).collect(Collectors.toList());
+        this.metals = QBarMaterials.metals.getAllMetalForShape(shape);
     }
 
     public int getMetalMeta(String metal)
     {
-        if (this.hasMetalVariant(metal))
+        if (QBarMaterials.metals.containsShape(metal, shape))
             return QBarMaterials.metals.indexOf(metal);
         return -1;
-    }
-
-    public boolean hasMetalVariant(String metal)
-    {
-        return this.metals.contains(metal);
     }
 
     @Override
@@ -66,7 +60,7 @@ public class ItemMetal extends ItemBase
     public void registerVariants()
     {
         this.metals.forEach(metal -> this.addVariant(metal, new ModelResourceLocation(QBarConstants.MODID + ":"
-                + type + "_" + metal, "inventory")));
+                + shape.toString() + "_" + metal, "inventory")));
         super.registerVariants();
     }
 
