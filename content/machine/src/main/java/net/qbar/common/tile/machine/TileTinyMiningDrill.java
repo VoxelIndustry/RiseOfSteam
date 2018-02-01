@@ -20,6 +20,8 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.item.ItemDrillCoreSample;
+import net.qbar.common.network.action.ActionSender;
+import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
 import net.qbar.common.steam.CapabilitySteamHandler;
@@ -29,14 +31,16 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements ITickable
+public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements ITickable, IActionReceiver
 {
     @Getter
     @Setter
-    private float                   progress;
+    private float progress;
 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
+
+    private boolean doStart = false;
 
     public TileTinyMiningDrill()
     {
@@ -51,7 +55,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     {
         if (this.isClient())
         {
-            if (this.getProgress() < 1)
+            if (this.getProgress() < 1 && this.doStart)
                 this.world.spawnParticle(EnumParticleTypes.BLOCK_DUST,
                         this.getPos().getX() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F,
                         this.getPos().getY(),
@@ -62,7 +66,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
             return;
         }
 
-        if (this.getProgress() < 1 && this.getSteam() >= 20)
+        if (this.doStart && this.getProgress() < 1 && this.getSteam() >= 20)
         {
             BlockPos toCheck = this.lastPos;
 
@@ -109,7 +113,13 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
                 lastPos = toCheck;
 
                 if (this.progress == 1)
+                {
                     this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
+                    this.progress = 0;
+                    this.lastPos = BlockPos.ORIGIN;
+                    this.results.clear();
+                    this.doStart = false;
+                }
             }
             // TODO: Change to real value when the portable storage is implemented
             this.drainSteam(0, true);
@@ -133,6 +143,8 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
         }
         tag.setInteger("ores", i);
 
+        tag.setBoolean("doStart", this.doStart);
+
         return super.writeToNBT(tag);
     }
 
@@ -145,6 +157,8 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
         for (int i = 0; i < tag.getInteger("ores"); i++)
             this.results.put(QBarOres.getMineralFromName(tag.getString("oreType" + i)).orElse(null),
                     tag.getFloat("oreCount" + i));
+
+        this.doStart = tag.getBoolean("doStart");
 
         super.readFromNBT(tag);
     }
@@ -197,19 +211,20 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("tinyminingdrill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).outputSlot(0, 80, 12).slot(1, 80, 58)
+                .addInventory().tile(this).outputSlot(0, 134, 35).slot(1, 80, 58)
                 .syncFloatValue(this::getProgress, this::setProgress).addInventory().create();
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.TINYMININGDRILL.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.TINYMININGDRILL.getUniqueID(), this.world, this.pos.getX
+                        (), this.pos.getY(),
                 this.pos.getZ());
         return true;
     }
@@ -217,7 +232,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
-        return new int[] { 0, 1 };
+        return new int[]{0, 1};
     }
 
     @Override
@@ -232,5 +247,15 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
     {
         return direction == EnumFacing.UP && index == 0 || direction != EnumFacing.UP && index != 0;
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("START".equals(actionID))
+        {
+            if (this.getProgress() == 0)
+                this.doStart = true;
+        }
     }
 }
