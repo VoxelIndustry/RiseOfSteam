@@ -88,7 +88,7 @@ public class MultiblockComponent implements IMachineComponent
 
     public Iterable<BlockPos> getAllInBox(BlockPos pos, final EnumFacing facing)
     {
-        Iterable<BlockPos> searchables = null;
+        Iterable<BlockPos> searchables;
 
         pos = pos.add(this.getCoreOffset(facing));
         if (facing.getAxis() == Axis.Z)
@@ -109,23 +109,23 @@ public class MultiblockComponent implements IMachineComponent
         EnumFacing resultFacing = side.getFacing();
         BlockPos resultPos = side.getPos();
 
-        if (side.getFacing().getAxis().isHorizontal())
+        if (orientation == EnumFacing.EAST)
         {
-            if (orientation == EnumFacing.EAST)
-            {
+            if (resultFacing.getAxis().isHorizontal())
                 resultFacing = resultFacing.rotateY();
-                resultPos = new BlockPos(-resultPos.getZ(), resultPos.getY(), resultPos.getX());
-            }
-            else if (orientation == EnumFacing.WEST)
-            {
+            resultPos = new BlockPos(-resultPos.getZ(), resultPos.getY(), resultPos.getX());
+        }
+        else if (orientation == EnumFacing.WEST)
+        {
+            if (resultFacing.getAxis().isHorizontal())
                 resultFacing = resultFacing.rotateY().getOpposite();
-                resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
-            }
-            else if (orientation == EnumFacing.NORTH)
-            {
+            resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
+        }
+        else if (orientation == EnumFacing.NORTH)
+        {
+            if (resultFacing.getAxis().isHorizontal())
                 resultFacing = resultFacing.getOpposite();
-                resultPos = new BlockPos(-resultPos.getX(), resultPos.getY(), -resultPos.getZ());
-            }
+            resultPos = new BlockPos(-resultPos.getX(), resultPos.getY(), -resultPos.getZ());
         }
         return new MultiblockSide(resultPos, resultFacing);
     }

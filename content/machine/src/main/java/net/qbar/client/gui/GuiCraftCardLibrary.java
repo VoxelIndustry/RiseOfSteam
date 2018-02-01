@@ -3,8 +3,8 @@ package net.qbar.client.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.CardDataStorage;
+import net.qbar.common.card.CraftCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.tile.machine.TileCraftCardLibrary;
@@ -29,7 +29,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
     public GuiCraftCardLibrary(final EntityPlayer player, final TileCraftCardLibrary craftCardLibrary)
     {
         super(craftCardLibrary.createContainer(player));
-        this.setWidth(xSize+24);
+        this.setWidth(xSize + 24);
         this.setHeight(ySize);
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);

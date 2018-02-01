@@ -31,18 +31,18 @@ import java.util.List;
 
 public class TileTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider, IConnectionAware
 {
-    private BlockPos                        inputPos;
+    private BlockPos inputPos;
 
-    private final DirectionalTank           tank;
-    private int                             tier;
+    private final DirectionalTank tank;
+    private       int             tier;
 
     private final ArrayList<MultiblockSide> connections;
 
     public TileTank(final int capacity, int tier)
     {
         super("fluidtank", 0);
-        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[] { EnumFacing.DOWN },
-                new EnumFacing[] { EnumFacing.UP });
+        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[]{EnumFacing.DOWN},
+                new EnumFacing[]{EnumFacing.UP});
         this.tier = tier;
         this.connections = new ArrayList<>();
     }
@@ -213,7 +213,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -225,7 +225,8 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
             this.markDirty();
             return true;
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.FLUIDTANK.getUniqueID(), this.world, this.pos.getX(),this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.FLUIDTANK.getUniqueID(), this.world, this.pos.getX(),
+                this.pos.getY(),
                 this.pos.getZ());
         return false;
     }
@@ -481,7 +482,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Input Top");
                 this.state.parts.add("Input Top1");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(-1, 3, 0), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 3, 0), EnumFacing.UP)))
             {
                 this.state.parts.add("Input O");
                 this.state.parts.add("Input O 1");
@@ -496,7 +497,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon O 6");
                 this.state.parts.add("Boulon O 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 3, 0), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(-1, 3, 0), EnumFacing.UP)))
             {
                 this.state.parts.add("Input E");
                 this.state.parts.add("Input E 1");
@@ -511,7 +512,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon E 6");
                 this.state.parts.add("Boulon E 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 3, 1), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 3, -1), EnumFacing.UP)))
             {
                 this.state.parts.add("Input S");
                 this.state.parts.add("Input S 1");
@@ -526,7 +527,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon S 6");
                 this.state.parts.add("Boulon S 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 3, -1), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 3, 1), EnumFacing.UP)))
             {
                 this.state.parts.add("Input N");
                 this.state.parts.add("Input N 1");
@@ -541,7 +542,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon N 6");
                 this.state.parts.add("Boulon N 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 3, -1), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(-1, 3, 1), EnumFacing.UP)))
             {
                 this.state.parts.add("Input NE");
                 this.state.parts.add("Input NE 1");
@@ -557,7 +558,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon NE 6");
                 this.state.parts.add("Boulon NE 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(-1, 3, -1), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 3, 1), EnumFacing.UP)))
             {
                 this.state.parts.add("Input NO");
                 this.state.parts.add("Input NO 1");
@@ -573,7 +574,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon NO 6");
                 this.state.parts.add("Boulon NO 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 3, 1), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(-1, 3, -1), EnumFacing.UP)))
             {
                 this.state.parts.add("Input SE");
                 this.state.parts.add("Input SE 1");
@@ -589,7 +590,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
                 this.state.parts.add("Boulon SE 6");
                 this.state.parts.add("Boulon SE 7");
             }
-            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(-1, 3, 1), EnumFacing.UP)))
+            if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 3, -1), EnumFacing.UP)))
             {
                 this.state.parts.add("Input SO");
                 this.state.parts.add("Input SO 1");
