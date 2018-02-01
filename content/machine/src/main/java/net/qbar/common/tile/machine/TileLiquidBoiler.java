@@ -356,22 +356,22 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
             this.state.parts.add("Input1B N");
         }
 
-        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 2, 0), EnumFacing.DOWN)))
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 2, 0), EnumFacing.UP)))
         {
             this.state.parts.add("OutputD");
             this.state.parts.add("OutputD1");
         }
-        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 2, 0), EnumFacing.DOWN)))
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 2, 0), EnumFacing.UP)))
         {
             this.state.parts.add("OutputC");
             this.state.parts.add("OutputC1");
         }
-        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 2, 1), EnumFacing.DOWN)))
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(1, 2, 1), EnumFacing.UP)))
         {
             this.state.parts.add("OutputB");
             this.state.parts.add("OutputB1");
         }
-        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 2, 1), EnumFacing.DOWN)))
+        if (!this.connections.contains(new MultiblockSide(BlockPos.ORIGIN.add(0, 2, 1), EnumFacing.UP)))
         {
             this.state.parts.add("OutputA");
             this.state.parts.add("OutputA1");
