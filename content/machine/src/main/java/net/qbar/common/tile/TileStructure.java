@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -33,15 +34,15 @@ import java.util.List;
 
 public class TileStructure extends QBarTileBase implements ITileMultiblockCore
 {
-    private Blueprint                 blueprint;
-    private MultiblockComponent       multiblock;
-    private BlueprintState            blueprintState;
+    private Blueprint           blueprint;
+    private MultiblockComponent multiblock;
+    private BlueprintState      blueprintState;
 
     @Getter
     @Setter
-    private int                       meta;
+    private int meta;
 
-    private AxisAlignedBB             cachedBB;
+    private AxisAlignedBB cachedBB;
 
     public final VisibilityModelState state = new VisibilityModelState();
 
@@ -159,6 +160,20 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     public void breakCore()
     {
         this.world.destroyBlock(this.getPos(), false);
+
+        this.blueprintState.getCurrentStacks().forEach(stack ->
+        {
+            stack.shrink(1);
+            InventoryHelper.spawnItemStack(this.world, this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(),
+                    stack);
+        });
+        for (int i = 0; i < this.blueprint.getSteps().size(); i++)
+        {
+            if (i < this.blueprintState.getCurrentStep())
+                this.blueprint.getSteps().get(i).forEach(stack ->
+                        InventoryHelper.spawnItemStack(this.world, this.getPos().getX(), this.getPos().getY(),
+                                this.getPos().getZ(), stack));
+        }
     }
 
     @Override
@@ -214,7 +229,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
         return super.getRenderBoundingBox();
     }
 
-    private int             previousStep = -1;
+    private int previousStep = -1;
     private List<BakedQuad> quadsCache;
 
     @SideOnly(Side.CLIENT)
