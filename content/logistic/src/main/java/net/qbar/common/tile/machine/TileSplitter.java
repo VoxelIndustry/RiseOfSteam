@@ -224,11 +224,11 @@ public class TileSplitter extends TileInventoryBase
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("itemsplitter", player).player(player.inventory).inventory(8, 103).hotbar(8, 161)
+        return new ContainerBuilder("itemsplitter", player).player(player.inventory).inventory(8, 99).hotbar(8, 157)
                 .addInventory().tile(this)
-                .filterSlot(0, 8, -5, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
-                .filterSlot(1, 8, 34, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
-                .filterSlot(2, 8, 73, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(0, 23, 76, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(1, 80, 76, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(2, 137, 76, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(0),
                         bool -> this.getWhitelistProperty().set(0, bool))
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(1),
