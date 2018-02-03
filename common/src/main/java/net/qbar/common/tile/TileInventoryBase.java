@@ -46,7 +46,7 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     @Override
     public boolean hasCustomName()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -145,6 +145,6 @@ public abstract class TileInventoryBase extends QBarTileBase implements IInvento
     public ITextComponent getDisplayName()
     {
         return this.hasCustomName() ? new TextComponentString(this.getName())
-                : new TextComponentTranslation(this.getName(), new Object[0]);
+                : new TextComponentTranslation("gui." + this.getName() + ".name", new Object[0]);
     }
 }

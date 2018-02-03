@@ -20,7 +20,7 @@ public class FilterViewPane extends GuiAbsolutePane
 
         this.whitelist = new GuiButton("WHITELIST");
         whitelist.setOnActionEvent(buttonAction);
-        whitelist.setWidth(55);
+        whitelist.setWidth(56);
         whitelist.setHeight(15);
         whitelist.setTextAlignment(EAlignment.MIDDLE_CENTER);
         this.addChild(whitelist, 0, 55);

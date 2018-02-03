@@ -2,6 +2,9 @@ package net.qbar.client.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CardDataStorage.ECardType;
@@ -11,13 +14,14 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileSplitter;
-import org.yggard.brokkgui.data.EAlignment;
 import org.yggard.brokkgui.element.GuiLabel;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
+import org.yggard.brokkgui.panel.GuiPane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 
+@SideOnly(Side.CLIENT)
 public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 {
     private static final int xSize = 180, ySize = 198;
@@ -47,27 +51,31 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.getMainPanel().setBackground(new Background(GuiSplitter.BACKGROUND));
 
         final GuiLabel title = new GuiLabel(splitter.getDisplayName().getFormattedText());
-        title.setExpandToText(true);
-        title.setTextAlignment(EAlignment.LEFT_CENTER);
-        mainPanel.addChild(title, 2, 2);
+        mainPanel.addChild(title, 5, 4);
 
         this.viewLeft = new FilterViewPane(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
                 .withInt("facing", this.splitter.getFacing().rotateY().ordinal())
                 .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(0)).send());
         this.viewLeft.setxTranslate(5);
         this.viewLeft.setyTranslate(21);
+        this.viewLeft.setVisible(false);
+        mainPanel.addChild(viewLeft, 0, 0);
 
         this.viewForward = new FilterViewPane(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
                 .withInt("facing", this.splitter.getFacing().getOpposite().ordinal())
                 .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(1)).send());
         this.viewForward.setxTranslate(62);
         this.viewForward.setyTranslate(21);
+        this.viewForward.setVisible(false);
+        mainPanel.addChild(viewForward, 0, 0);
 
         this.viewRight = new FilterViewPane(e -> new ServerActionBuilder("WHITELIST").toTile(splitter)
                 .withInt("facing", this.splitter.getFacing().rotateYCCW().ordinal())
                 .withBoolean("whitelist", !this.splitter.getWhitelistProperty().get(2)).send());
         this.viewRight.setxTranslate(119);
         this.viewRight.setyTranslate(21);
+        this.viewRight.setVisible(false);
+        mainPanel.addChild(viewRight, 0, 0);
 
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(stack -> this.refreshSlots(stack, viewLeft));
         ((ListenerSlot) this.getContainer().getSlot(37)).setOnChange(stack -> this.refreshSlots(stack, viewForward));
@@ -76,20 +84,27 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.getListeners().attach(this.splitter.getWhitelistProperty(), obs -> this.refreshWhitelists());
         this.refreshWhitelists();
 
-        GuiLabel labelLeft = new GuiLabel("Left");
-        labelLeft.setExpandToText(true);
-        labelLeft.setTextAlignment(EAlignment.MIDDLE_UP);
-        mainPanel.addChild(labelLeft, 32, 21);
+        GuiAbsolutePane arrowPane = new GuiAbsolutePane();
+        arrowPane.setWidth(160);
+        arrowPane.setHeight(46);
+        arrowPane.setOpacity(0.7f);
+        arrowPane.addStyleClass("arrows");
+        mainPanel.addChild(arrowPane, 10, 25);
 
-        GuiLabel labelForward = new GuiLabel("Forward");
-        labelForward.setExpandToText(true);
-        labelForward.setTextAlignment(EAlignment.MIDDLE_UP);
-        mainPanel.addChild(labelForward, 89, 21);
+        for (int i = 0; i < 3; i++)
+        {
+            EnumFacing facing = i == 0 ? splitter.getFacing().rotateY() : i == 1 ? splitter.getFacing().getOpposite()
+                    : splitter.getFacing().rotateYCCW();
 
-        GuiLabel labelRight = new GuiLabel("Right");
-        labelRight.setExpandToText(true);
-        labelRight.setTextAlignment(EAlignment.MIDDLE_UP);
-        mainPanel.addChild(labelRight, 116, 21);
+            if (!splitter.hasBelt(facing))
+            {
+                GuiPane invalid = new GuiPane();
+                invalid.setWidth(50);
+                invalid.setHeight(50);
+                invalid.addStyleClass("invalid");
+                mainPanel.addChild(invalid, 8 + (i * 57), 24);
+            }
+        }
     }
 
     private void refreshSlots(ItemStack stack, FilterViewPane pane)
@@ -99,15 +114,15 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
             final IPunchedCard card = CardDataStorage.instance().read(stack.getTagCompound());
             if (card != null && card.getID() == ECardType.FILTER.getID())
             {
-                if (!this.getMainPanel().hasChild(pane))
-                    ((GuiAbsolutePane) this.getMainPanel()).addChild(pane, 0, 0);
+                if (!pane.isVisible())
+                    pane.setVisible(true);
                 pane.refreshSlots((FilterCard) card);
             }
-            else if (this.getMainPanel().hasChild(pane))
-                this.getMainPanel().removeChild(pane);
+            else if (pane.isVisible())
+                pane.setVisible(false);
         }
-        else if (this.getMainPanel().hasChild(pane))
-            this.getMainPanel().removeChild(pane);
+        else if (pane.isVisible())
+            pane.setVisible(false);
     }
 
     private void refreshWhitelists()

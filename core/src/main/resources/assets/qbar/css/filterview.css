@@ -1,3 +1,12 @@
+label {
+    -text-shadow: false;
+    -text-color: #404040;
+}
+
+button {
+    -text-shadow: false;
+}
+
 pane.whitelist {
     -background-texture: url("qbar:textures/gui/filter_whitelist.png");
 }
@@ -22,4 +31,16 @@ pane.blacklist >> button {
 
 pane.blacklist >> button:hover {
     -background-color: #616161;
+}
+
+label.facing {
+    -text-color: #000000 87%;
+}
+
+pane.arrows {
+    -background-texture: url("qbar:textures/gui/splitter_arrows.png");
+}
+
+pane.invalid {
+    -background-texture: url("qbar:textures/gui/filter_invalid.png");
 }

@@ -177,14 +177,14 @@ public class TileSplitter extends TileInventoryBase
     {
         final IBelt belt = (IBelt) this.world.getTileEntity(this.getPos().down().offset(facing));
 
-        return belt.getFacing() == facing && belt.insert(stack, false);
+        return belt.insert(stack, false);
     }
 
-    private boolean hasBelt(final EnumFacing facing)
+    public boolean hasBelt(final EnumFacing facing)
     {
         final TileEntity tile = this.world.getTileEntity(this.getPos().down().offset(facing));
 
-        return tile != null && tile instanceof IBelt;
+        return tile != null && tile instanceof IBelt && ((IBelt) tile).getFacing() == facing;
     }
 
     @Override
@@ -194,7 +194,7 @@ public class TileSplitter extends TileInventoryBase
         lines.add("Input: " + this.hasBelt(this.getFacing()));
         lines.add("Output: " + (this.hasBelt(this.getFacing().getOpposite()) ? "FRONT " : "")
                 + (this.hasBelt(this.getFacing().rotateY()) ? "LEFT " : "")
-                + (this.hasBelt(this.getFacing().rotateY().getOpposite()) ? "RIGHT " : ""));
+                + (this.hasBelt(this.getFacing().rotateYCCW()) ? "RIGHT " : ""));
         lines.add("Buffer: " + this.getStackInSlot(3));
     }
 
