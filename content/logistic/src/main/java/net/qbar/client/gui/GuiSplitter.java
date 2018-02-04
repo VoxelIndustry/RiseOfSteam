@@ -3,8 +3,6 @@ package net.qbar.client.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CardDataStorage.ECardType;
@@ -21,7 +19,6 @@ import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiPane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 
-@SideOnly(Side.CLIENT)
 public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 {
     private static final int xSize = 180, ySize = 198;
