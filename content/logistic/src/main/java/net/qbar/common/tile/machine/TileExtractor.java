@@ -174,9 +174,9 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("itemextractor", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+        return new ContainerBuilder("itemextractor", player).player(player.inventory).inventory(8, 95).hotbar(8, 153)
                 .addInventory().tile(this)
-                .filterSlot(0, 26, 33, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+                .filterSlot(0, 80, 73, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
                 .syncBooleanValue(this.getWhitelistProperty()::getValue, this.getWhitelistProperty()::setValue)
                 .addInventory().create();
     }

@@ -1,6 +1,5 @@
 package net.qbar;
 
-import com.elytradev.concrete.network.NetworkContext;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -10,8 +9,6 @@ import net.minecraftforge.fml.common.event.*;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.CustomCreativeTab;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.recipe.category.QBarRecipeCategory;
-import org.apache.logging.log4j.Logger;
 
 @Mod(modid = QBarConstants.MODID, version = QBarConstants.VERSION, name = QBarConstants.MODNAME)
 public class QBar
