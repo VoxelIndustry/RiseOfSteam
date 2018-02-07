@@ -22,6 +22,8 @@ import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.ScrollPane;
+import org.yggard.brokkgui.policy.EScrollbarPolicy;
+import org.yggard.brokkgui.shape.Rectangle;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
@@ -79,6 +81,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         scrollPane.setWidth(120);
         scrollPane.setHeight(120);
         scrollPane.setFocused(true);
+        scrollPane.setScrollYPolicy(EScrollbarPolicy.NEVER);
 
         body.addChild(scrollPane, 48, 14);
 
@@ -131,8 +134,18 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                     .filter(descriptor -> descriptor.getTier().ordinal() == currentTier).count();
 
             GuiAbsolutePane tierPane = new GuiAbsolutePane();
-            tierPane.setWidth(176);
-            tierPane.setHeight(24 * (int) Math.ceil(tierElements / 9D));
+            tierPane.setWidth(120);
+            tierPane.setHeight(10 + 24 * (int) Math.ceil(tierElements / 5D) + (currentTier != maxTier ? 5 : 0));
+            tierPane.addChild(new GuiLabel("Tier " + currentTier), 3, 1);
+
+            if (currentTier != maxTier)
+            {
+                Rectangle divider = new Rectangle();
+                divider.setStyle("-color: #FFFFFF 48%;");
+                divider.setWidth(116);
+                divider.setHeight(2);
+                tierPane.addChild(divider, 2, tierPane.getHeight() - 5);
+            }
 
             List<MachineDescriptor> collect;
             if (this.selectedType.getValue() == null)
@@ -169,11 +182,12 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                     }).send();
                 });
 
-                tierPane.addChild(itemStack, 24 * (j % 5), 24 * (j / 5));
+                tierPane.addChild(itemStack, 24 * (j % 5), 10 + 24 * (j / 5));
             }
 
             mainPane.addChild(tierPane, 0, currentHeight);
             currentHeight += tierPane.getHeight();
         }
+        blueprintPane.setHeight(currentHeight);
     }
 }
