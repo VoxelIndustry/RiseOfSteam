@@ -15,11 +15,13 @@ import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileBlueprintPrinter;
+import org.yggard.brokkgui.control.GuiToggleButton;
 import org.yggard.brokkgui.control.GuiToggleGroup;
-import org.yggard.brokkgui.element.GuiRadioButton;
+import org.yggard.brokkgui.element.GuiLabel;
 import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
+import org.yggard.brokkgui.panel.ScrollPane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
 import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
@@ -30,10 +32,9 @@ import java.util.stream.Collectors;
 
 public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int xSize = 176, ySize = 166;
+    private static final int xSize = 176, ySize = 222;
 
-    private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/blueprintprinter.png",
-            0, 0, xSize / 256.0f, ySize / 256.0f);
+    private static final Texture BACKGROUND = new Texture(QBarConstants.MODID + ":textures/gui/blueprintprinter.png");
 
     private final TileBlueprintPrinter blueprintPrinter;
 
@@ -49,7 +50,9 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
+        this.addStylesheet("/assets/qbar/css/theme.css");
         this.addStylesheet("/assets/qbar/css/engineer_workshop.css");
+        this.addStylesheet("/assets/qbar/css/blueprint_printer.css");
 
         this.blueprintPrinter = blueprintPrinter;
 
@@ -64,15 +67,25 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         mainPanel.addChild(body, 23, 0);
         mainPanel.addChild(new EngineerTabPane(blueprintPrinter, blueprintPrinter.getType()), 0, 0);
 
+        final GuiLabel title = new GuiLabel(blueprintPrinter.getDisplayName().getFormattedText());
+        body.addChild(title, 5, 4);
+
         this.blueprintPane = new GuiAbsolutePane();
-        this.blueprintPane.setWidth(176);
-        this.blueprintPane.setHeight(65);
-        body.addChild(this.blueprintPane, 0, 18);
+        this.blueprintPane.setWidth(120);
+        this.blueprintPane.setHeight((QBarMachines.getAll().size() / 5 * 24));
+        this.blueprintPane.setID("blueprint");
+
+        ScrollPane scrollPane = new ScrollPane(blueprintPane);
+        scrollPane.setWidth(120);
+        scrollPane.setHeight(120);
+        scrollPane.setFocused(true);
+
+        body.addChild(scrollPane, 48, 14);
 
         this.buttonPane = new GuiAbsolutePane();
-        this.buttonPane.setWidth(176);
-        this.buttonPane.setHeight(18);
-        body.addChild(this.buttonPane, 0, 0);
+        this.buttonPane.setWidth(20);
+        this.buttonPane.setHeight(19 * EMachineType.values().length);
+        body.addChild(this.buttonPane, 27, 14);
 
         this.initButtons();
         this.initBlueprints(blueprintPane);
@@ -87,14 +100,15 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         GuiToggleGroup toggleGroup = new GuiToggleGroup();
         toggleGroup.setAllowNothing(true);
 
-        int i = 0;
-        for (EMachineType type : EMachineType.values())
+        for (int i = 0; i < EMachineType.values().length; i++)
         {
-            GuiRadioButton button = new GuiRadioButton();
+            GuiToggleButton button = new GuiToggleButton();
+            button.setWidth(20);
+            button.setHeight(19);
             button.setToggleGroup(toggleGroup);
+            button.addStyleClass("category");
 
-            this.buttonPane.addChild(button, 7 + 18 * i, 0);
-            i++;
+            this.buttonPane.addChild(button, 0, i * 19);
         }
         this.getListeners().attach(toggleGroup.getSelectedButtonProperty(),
                 (obs, oldValue, newValue) -> this.selectedType.setValue(newValue != null ?
@@ -108,7 +122,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         int maxTier = blueprintList.stream().max(Comparator.comparingInt(descriptor -> descriptor.getTier().ordinal()))
                 .get().getTier().ordinal();
 
-        int currentHeight = 7;
+        int currentHeight = 0;
         mainPane.clearChilds();
         for (int i = 0; i <= maxTier; i++)
         {
@@ -118,7 +132,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
 
             GuiAbsolutePane tierPane = new GuiAbsolutePane();
             tierPane.setWidth(176);
-            tierPane.setHeight(18 * (int) Math.ceil(tierElements / 9D));
+            tierPane.setHeight(24 * (int) Math.ceil(tierElements / 9D));
 
             List<MachineDescriptor> collect;
             if (this.selectedType.getValue() == null)
@@ -132,11 +146,11 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 MachineDescriptor machineDescriptor = collect.get(j);
                 ItemStackView itemStack = new ItemStackView(
                         new ItemStack(Item.getByNameOrId(QBarConstants.MODID + ":" + machineDescriptor.getName())));
-                itemStack.setWidth(18);
-                itemStack.setHeight(18);
+                itemStack.setWidth(24);
+                itemStack.setHeight(24);
                 itemStack.setTooltip(true);
                 itemStack.setAlternateString("");
-                itemStack.setBackground(new Background(machineDescriptor.getType().getColor()));
+                itemStack.setBackground(new Background(machineDescriptor.getType().getColor().addAlpha(-0.4f)));
 
                 itemStack.setOnClickEvent(e ->
                 {
@@ -155,7 +169,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                     }).send();
                 });
 
-                tierPane.addChild(itemStack, 7 + 18 * (j % 9), 18 * (j / 9));
+                tierPane.addChild(itemStack, 24 * (j % 5), 24 * (j / 5));
             }
 
             mainPane.addChild(tierPane, 0, currentHeight);

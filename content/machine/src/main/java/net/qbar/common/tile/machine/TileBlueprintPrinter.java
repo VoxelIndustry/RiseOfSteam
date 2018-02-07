@@ -79,8 +79,8 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("blueprintprinter", player).player(player.inventory)
-                .inventory(19, 84).hotbar(19, 142).addInventory()
-                .tile(this).filterSlot(0, 11, 0, stack -> stack.getItem() == Items.PAPER).addInventory().create();
+                .inventory(19, 112).hotbar(19, 170).addInventory()
+                .tile(this).filterSlot(0, 19, 90, stack -> stack.getItem() == Items.PAPER).addInventory().create();
     }
 
     @Override

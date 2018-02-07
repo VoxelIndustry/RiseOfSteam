@@ -139,6 +139,7 @@ gui.fluidtank_medium.name=Medium Fluid Tank
 gui.fluidtank_big.name=Big Fluid Tank
 gui.itemsplitter.name=Item Splitter
 gui.itemextractor.name=Item Extractor
+gui.blueprintprinter.name=Blueprint Printer
 
 #Ores
 ore.iron=Iron

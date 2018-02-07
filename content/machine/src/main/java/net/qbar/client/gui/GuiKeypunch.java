@@ -50,6 +50,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
+        this.addStylesheet("/assets/qbar/css/theme.css");
         this.addStylesheet("/assets/qbar/css/keypunch.css");
         this.addStylesheet("/assets/qbar/css/engineer_workshop.css");
 

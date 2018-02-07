@@ -1,12 +1,3 @@
-label {
-    -text-shadow: false;
-    -text-color: #404040;
-}
-
-button {
-    -text-shadow: false;
-}
-
 pane.whitelist {
     -background-texture: url("qbar:textures/gui/filter_whitelist.png");
 }
