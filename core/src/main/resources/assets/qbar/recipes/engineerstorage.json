@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "qbar:engineerstorage",
+    "data": 0
+  },
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  }
+}
