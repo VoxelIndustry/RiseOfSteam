@@ -38,6 +38,8 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     private MultiblockComponent multiblock;
     private BlueprintState      blueprintState;
 
+    private boolean complete;
+
     @Getter
     @Setter
     private int meta;
@@ -96,6 +98,7 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
                     final IBlockState state = block.getStateFromMeta(this.meta);
                     final IBlockState previous = this.world.getBlockState(this.getPos());
 
+                    this.complete = true;
                     this.world.setBlockToAir(this.pos);
                     this.world.notifyBlockUpdate(this.pos, previous, Blocks.AIR.getDefaultState(), 3);
 
@@ -161,18 +164,22 @@ public class TileStructure extends QBarTileBase implements ITileMultiblockCore
     {
         this.world.destroyBlock(this.getPos(), false);
 
-        this.blueprintState.getCurrentStacks().forEach(stack ->
+        if (!this.complete)
         {
-            stack.shrink(1);
-            InventoryHelper.spawnItemStack(this.world, this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(),
-                    stack);
-        });
-        for (int i = 0; i < this.blueprint.getSteps().size(); i++)
-        {
-            if (i < this.blueprintState.getCurrentStep())
-                this.blueprint.getSteps().get(i).forEach(stack ->
-                        InventoryHelper.spawnItemStack(this.world, this.getPos().getX(), this.getPos().getY(),
-                                this.getPos().getZ(), stack));
+            this.blueprintState.getCurrentStacks().forEach(stack ->
+            {
+                stack.shrink(1);
+                InventoryHelper.spawnItemStack(this.world, this.getPos().getX(), this.getPos().getY(), this.getPos()
+                                .getZ(),
+                        stack);
+            });
+            for (int i = 0; i < this.blueprint.getSteps().size(); i++)
+            {
+                if (i < this.blueprintState.getCurrentStep())
+                    this.blueprint.getSteps().get(i).forEach(stack ->
+                            InventoryHelper.spawnItemStack(this.world, this.getPos().getX(), this.getPos().getY(),
+                                    this.getPos().getZ(), stack));
+            }
         }
     }
 
