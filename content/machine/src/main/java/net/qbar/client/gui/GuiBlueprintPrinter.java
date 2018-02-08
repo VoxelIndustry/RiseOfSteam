@@ -52,7 +52,6 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
-        this.addStylesheet("/assets/qbar/css/theme.css");
         this.addStylesheet("/assets/qbar/css/engineer_workshop.css");
         this.addStylesheet("/assets/qbar/css/blueprint_printer.css");
 

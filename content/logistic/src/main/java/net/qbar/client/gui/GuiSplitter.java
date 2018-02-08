@@ -40,7 +40,6 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
-        this.addStylesheet("/assets/qbar/css/theme.css");
         this.addStylesheet("/assets/qbar/css/filterview.css");
         this.splitter = splitter;
 

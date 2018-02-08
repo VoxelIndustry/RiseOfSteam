@@ -18,6 +18,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,6 +43,7 @@ import net.qbar.common.tile.machine.TileBelt;
 import net.qbar.common.tile.machine.TileRollingMill;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
 import org.lwjgl.input.Mouse;
+import org.yggard.brokkgui.style.StylesheetManager;
 
 import java.util.function.BiConsumer;
 
@@ -87,6 +89,14 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileRollingMill.class, new RenderRollingMill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSteamFurnaceMK2.class, new RenderSteamFurnaceMK2());
         MinecraftForge.EVENT_BUS.register(new ClientEventManager());
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent e)
+    {
+        super.postInit(e);
+
+        StylesheetManager.getInstance().addUserAgent(QBarConstants.MODID, "/assets/qbar/css/theme.css");
     }
 
     @Override

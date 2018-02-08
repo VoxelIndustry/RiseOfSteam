@@ -6,10 +6,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.qbar.client.gui.*;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.*;
-import org.yggard.brokkgui.wrapper.BrokkGuiManager;
+import org.yggard.brokkgui.wrapper.impl.BrokkGuiManager;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -47,9 +48,11 @@ public class GuiHandler implements IGuiHandler
             switch (gui)
             {
                 case EXTRACTOR:
-                    return BrokkGuiManager.getBrokkGuiContainer(new GuiExtractor(player, (TileExtractor) tile));
+                    return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
+                            new GuiExtractor(player, (TileExtractor) tile));
                 case SPLITTER:
-                    return BrokkGuiManager.getBrokkGuiContainer(new GuiSplitter(player, (TileSplitter) tile));
+                    return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
+                            new GuiSplitter(player, (TileSplitter) tile));
                 default:
                     return null;
             }
@@ -61,7 +64,8 @@ public class GuiHandler implements IGuiHandler
             case BOILER:
                 return new GuiBoiler(player, (TileSolidBoiler) tile);
             case KEYPUNCH:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiKeypunch(player, (TileKeypunch) tile));
+                return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
+                        new GuiKeypunch(player, (TileKeypunch) tile));
             case ROLLINGMILL:
                 return new GuiRollingMill(player, (TileRollingMill) tile);
             case FLUIDTANK:
@@ -69,7 +73,8 @@ public class GuiHandler implements IGuiHandler
             case STEAMFURNACE:
                 return new GuiSteamFurnace(player, (TileSteamFurnace) tile);
             case ASSEMBLER:
-                return BrokkGuiManager.getBrokkGuiContainer(new GuiAssembler(player, (TileAssembler) tile));
+                return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
+                        new GuiAssembler(player, (TileAssembler) tile));
             case LIQUIDBOILER:
                 return new GuiLiquidBoiler(player, (TileLiquidBoiler) tile);
             case SOLARBOILER:
@@ -87,18 +92,18 @@ public class GuiHandler implements IGuiHandler
             case SAWMILL:
                 return new GuiSawMill(player, (TileSawMill) tile);
             case ENGINEERSTORAGE:
-                return BrokkGuiManager.getBrokkGuiContainer(
+                return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
                         new GuiEngineerStorage(player, (TileEngineerStorage) tile));
             case BLUEPRINTPRINTER:
-                return BrokkGuiManager.getBrokkGuiContainer(
+                return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
                         new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
             case CRAFTCARDLIBRARY:
-                return BrokkGuiManager.getBrokkGuiContainer(
+                return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
                         new GuiCraftCardLibrary(player, (TileCraftCardLibrary) tile));
             case ALLOYCAULDRON:
                 return new GuiAlloyCauldron(player, (TileAlloyCauldron) tile);
             case ENGINEERWORKBENCH:
-                return BrokkGuiManager.getBrokkGuiContainer(
+                return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
                         new GuiEngineerWorkbench(player, (TileEngineerWorkbench) tile));
             default:
                 break;
