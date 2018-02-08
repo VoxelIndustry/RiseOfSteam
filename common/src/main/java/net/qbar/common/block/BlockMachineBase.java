@@ -3,6 +3,7 @@ package net.qbar.common.block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
@@ -41,10 +42,15 @@ public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockCont
 
     public T getWorldTile(IBlockAccess world, BlockPos pos)
     {
+        return (T) this.getRawWorldTile(world, pos);
+    }
+
+    public TileEntity getRawWorldTile(IBlockAccess world, BlockPos pos)
+    {
         if (world instanceof ChunkCache)
-            return (T) ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+            return  ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
         else
-            return (T) world.getTileEntity(pos);
+            return  world.getTileEntity(pos);
     }
 
     public boolean checkWorldTile(IBlockAccess world, BlockPos pos)

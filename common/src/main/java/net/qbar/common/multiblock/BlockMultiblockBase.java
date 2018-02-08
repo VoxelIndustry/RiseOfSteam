@@ -238,14 +238,14 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
                             final EnumFacing facing, final IBlockState state, ItemStack wrench)
     {
         if (player.isSneaking())
-            this.getWorldTile(world, pos).breakCore();
+            ((ITileMultiblock) this.getRawWorldTile(world, pos)).breakCore();
         return false;
     }
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
-        if (this.getWorldTile(world, pos).isCore())
+        if (((ITileMultiblock) this.getRawWorldTile(world, pos)).isCore())
         {
             if (QBarMachines.contains(Blueprint.class, this.getMultiblock().getDescriptor().getName()))
                 drops.add(((ItemMultiblockBox) QBarItems.MULTIBLOCK_BOX).getBox(this.getMultiblock().getDescriptor()
