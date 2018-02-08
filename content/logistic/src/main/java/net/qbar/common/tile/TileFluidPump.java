@@ -10,7 +10,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
-import net.qbar.common.tile.QBarTileBase;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class TileFluidPump extends QBarTileBase implements ITickable
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (this.facing.equals(facing) || this.facing.getOpposite().equals(facing)
+        if ((this.facing.equals(facing) || this.facing.getOpposite().equals(facing))
                 && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return true;
         return super.hasCapability(capability, facing);
@@ -51,7 +50,7 @@ public class TileFluidPump extends QBarTileBase implements ITickable
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (this.facing.equals(facing) || this.facing.getOpposite().equals(facing)
+        if ((this.facing.equals(facing) || this.facing.getOpposite().equals(facing))
                 && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return (T) this.tank;
         return super.getCapability(capability, facing);

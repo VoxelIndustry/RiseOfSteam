@@ -69,7 +69,7 @@ public class SteamGrid extends CableGrid
                 .flatMap(pipe -> pipe.getConnectedHandlers().stream()).collect(Collectors.toSet());
         handlers.add(this.tank);
 
-        final double average = handlers.stream().mapToDouble(handler -> handler.getPressure()).average().orElse(0);
+        final double average = handlers.stream().mapToDouble(ISteamHandler::getPressure).average().orElse(0);
 
         final ISteamHandler[] above = handlers.stream().filter(handler -> handler.getPressure() - average > 0)
                 .toArray(ISteamHandler[]::new);
@@ -77,11 +77,9 @@ public class SteamGrid extends CableGrid
                 .toArray(ISteamHandler[]::new);
 
         final int drained = Stream.of(above).mapToInt(handler ->
-        {
-            return handler.drainSteam(
-                    Math.min((int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity),
-                    false);
-        }).sum();
+                handler.drainSteam(
+                        Math.min((int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity),
+                        false)).sum();
         int filled = 0;
 
         for (final ISteamHandler handler : below)

@@ -21,14 +21,14 @@ public class LimitedTank extends FluidTank
     public int fill(final FluidStack resource, final boolean doFill)
     {
         if (resource != null)
-            resource.amount = Math.min(resource.amount, this.transferCapacity);
+            resource.amount = Math.max(resource.amount, this.transferCapacity);
         return super.fill(resource, doFill);
     }
 
     @Override
     public FluidStack drain(final int maxDrain, final boolean doDrain)
     {
-        return super.drain(Math.min(maxDrain, this.transferCapacity), doDrain);
+        return super.drain(Math.max(maxDrain, this.transferCapacity), doDrain);
     }
 
     public Fluid getFluidType()
