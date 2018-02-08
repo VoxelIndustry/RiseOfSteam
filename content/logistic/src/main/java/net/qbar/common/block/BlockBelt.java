@@ -295,7 +295,7 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileBelt(.05f);
+        return new TileBelt(.1f);
     }
 
     @Override

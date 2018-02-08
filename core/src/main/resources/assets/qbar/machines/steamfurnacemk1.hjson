@@ -30,7 +30,7 @@
         ]
         crafter: {
             category: qbar.furnace
-            speed: 1.0
+            speed: 1.5
             itemInput: 1
             itemOutput: 1
         }

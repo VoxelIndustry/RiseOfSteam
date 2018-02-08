@@ -73,7 +73,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing.getAxis().isHorizontal())
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing != EnumFacing.UP)
             return this.getGrid() != -1 && this.getGridObject() != null;
         return super.hasCapability(capability, facing);
     }
@@ -82,7 +82,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing.getAxis().isHorizontal())
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing != EnumFacing.UP)
             return (T) this.getGridObject().getTank();
         return super.getCapability(capability, facing);
     }

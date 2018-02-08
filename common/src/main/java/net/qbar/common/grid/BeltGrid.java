@@ -216,7 +216,7 @@ public class BeltGrid extends CableGrid
                     if (!belt.hasChanged())
                     {
                         belt.setChanged(true);
-                        if (this.movedCount == 4)
+                        if (this.movedCount == 40)
                         {
                             this.getTank().drainSteam(1, true);
                             this.movedCount = 0;
