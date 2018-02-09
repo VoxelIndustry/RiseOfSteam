@@ -70,8 +70,8 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     {
         final EnumFacing orientation = this.getFacing();
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from == BlockPos.ORIGIN
-                && facing == orientation.rotateY().getOpposite())
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && (facing == EnumFacing.DOWN ||
+                (from == BlockPos.ORIGIN && facing == orientation.rotateY().getOpposite())))
             return true;
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
                 && facing.getAxis() == orientation.getAxis())
@@ -85,8 +85,8 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     {
         final EnumFacing orientation = this.getFacing();
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from == BlockPos.ORIGIN
-                && facing == orientation.rotateY().getOpposite())
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && (facing == EnumFacing.DOWN ||
+                (from == BlockPos.ORIGIN && facing == orientation.rotateY().getOpposite())))
             return (T) this.getSteamTank();
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
                 && facing.getAxis() == orientation.getAxis())
@@ -111,14 +111,15 @@ public class TileSteamFurnace extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.STEAMFURNACE.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.STEAMFURNACE.getUniqueID(), this.world, this.pos.getX(),
+                this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

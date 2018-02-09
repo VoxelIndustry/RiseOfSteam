@@ -4,7 +4,7 @@
     components: {
         steam: {
             capacity: 2000
-            consumption: 10
+            consumption: 30
             workingPressure: BASE_PRESSURE
             maxPressure: 1.5xBASE_PRESSURE
             overcharge: true
@@ -37,7 +37,7 @@
         ]
         crafter: {
             category: qbar.furnace
-            speed: 3.5
+            speed: 3
             itemInput: 1
             itemOutput: 1
         }
