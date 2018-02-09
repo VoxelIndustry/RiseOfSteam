@@ -53,27 +53,31 @@ public class TileSortingMachine extends TileCraftingMachineBase
             if (!this.getStackInSlot(this.getDescriptor().getOutputs()[0]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
             {
-                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), true);
+                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[0],
+                        1, false), true);
                 this.sync();
+                return;
             }
-            else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[1]).isEmpty()
+            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[1]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
             {
-                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(this.getDescriptor().getOutputs()[1],
+                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[1],
                         1, false), true);
                 this.sync();
+                return;
             }
-            else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[2]).isEmpty()
+            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[2]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[2]), false))
             {
-                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(this.getDescriptor().getOutputs()[2],
+                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[2],
                         1, false), true);
                 this.sync();
+                return;
             }
-            else if (!this.getStackInSlot(this.getDescriptor().getOutputs()[3]).isEmpty()
+            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[3]).isEmpty()
                     && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[3]), false))
             {
-                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(this.getDescriptor().getOutputs()[3],
+                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[3],
                         1, false), true);
                 this.sync();
             }
