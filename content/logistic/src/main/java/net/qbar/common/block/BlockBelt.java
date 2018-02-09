@@ -303,6 +303,64 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
     }
 
     @Override
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+                                    EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (facing != EnumFacing.UP)
+            return false;
+
+        TileBelt belt = this.getWorldTile(w, pos);
+
+        float posX = belt.getFacing().getAxis() == Axis.X ? hitZ : hitX;
+        float posY = belt.getFacing().getAxis() == Axis.X ? hitX : hitZ;
+
+        if (belt.getFacing() == EnumFacing.WEST)
+        {
+            posX = 1 - posX;
+            posY = 1 - posY;
+        }
+        else if (belt.getFacing() == EnumFacing.NORTH)
+            posY = 1 - posY;
+        else if (belt.getFacing() == EnumFacing.SOUTH)
+            posX = 1 - posX;
+
+        if (!w.isRemote && belt.hasGrid())
+        {
+            if (!player.isSneaking())
+            {
+                if (!player.getHeldItemMainhand().isEmpty() && belt.insert(player.getHeldItemMainhand(), posX, posY,
+                        false))
+                {
+                    ItemStack copy = player.getHeldItemMainhand().copy();
+                    copy.setCount(1);
+                    player.getHeldItemMainhand().shrink(1);
+                    belt.insert(copy, posX, posY, true);
+                    belt.itemUpdate();
+                }
+            }
+            else
+            {
+                // Used to catch item stopped right at the limit of the belt
+                posY += 1 / 16F;
+                for (int i = 0; i < belt.getItems().length; i++)
+                {
+                    ItemBelt itemBelt = belt.getItems()[i];
+                    if (itemBelt == null)
+                        continue;
+                    if (posX >= itemBelt.getPosX() && posX <= itemBelt.getPosX() + 6 / 16F && posY >= itemBelt.getPosY()
+                            && posY <= itemBelt.getPosY() + 6 / 16F)
+                    {
+                        player.addItemStackToInventory(itemBelt.getStack());
+                        belt.getItems()[i] = null;
+                        belt.itemUpdate();
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
         return new TileBelt(.1f);

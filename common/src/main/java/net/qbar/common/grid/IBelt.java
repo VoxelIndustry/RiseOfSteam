@@ -9,7 +9,12 @@ public interface IBelt extends ITileCable<BeltGrid>
 
     EnumFacing getFacing();
 
-    boolean insert(ItemStack stack, boolean doInsert);
+    default boolean insert(ItemStack stack, boolean doInsert)
+    {
+        return this.insert(stack, 10 / 32F, 0, doInsert);
+    }
+
+    boolean insert(ItemStack stack, float posX, float posY, boolean doInsert);
 
     ItemBelt[] getItems();
 

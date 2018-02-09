@@ -357,10 +357,10 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public boolean insert(final ItemStack stack, final boolean doInsert)
+    public boolean insert( ItemStack stack, float posX, float posY, boolean doInsert)
     {
         if (this.getGridObject() != null)
-            return this.getGridObject().insert(this, stack, doInsert);
+            return this.getGridObject().insert(this, stack, posX, posY, doInsert);
         return false;
     }
 

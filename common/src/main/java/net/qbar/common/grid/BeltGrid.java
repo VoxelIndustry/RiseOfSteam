@@ -289,24 +289,16 @@ public class BeltGrid extends CableGrid
         return false;
     }
 
-    public boolean insert(final IBelt belt, final ItemStack stack, final boolean doInsert)
+    public boolean insert(IBelt belt, ItemStack stack, float posX, float posY, boolean doInsert)
     {
         if (!belt.isSlope())
         {
-            boolean enoughSpace = true;
-            for (final ItemBelt item : belt.getItems())
-            {
-                if (item != null && !item.getStack().isEmpty() && item.getPosY() < 13 / 32F)
-                {
-                    enoughSpace = false;
-                    break;
-                }
-            }
+            boolean enoughSpace = !this.checkCollision(belt, new ItemBelt(stack, posX, posY), this.beltSpeed / 3);
             if (!enoughSpace)
                 return false;
             if (doInsert && !stack.isEmpty())
             {
-                belt.addItem(new ItemBelt(stack, this.BELT_MIDDLE, 0));
+                belt.addItem(new ItemBelt(stack, posX, posY));
                 belt.itemUpdate();
             }
         }
