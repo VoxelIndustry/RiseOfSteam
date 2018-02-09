@@ -3,8 +3,6 @@ package net.qbar.common.grid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
-import java.util.Collection;
-
 public interface IBelt extends ITileCable<BeltGrid>
 {
     boolean isSlope();
@@ -13,7 +11,7 @@ public interface IBelt extends ITileCable<BeltGrid>
 
     boolean insert(ItemStack stack, boolean doInsert);
 
-    Collection<ItemBelt> getItems();
+    ItemBelt[] getItems();
 
     /**
      * For internal use only! Used to sync belt contents upon grid modification.
@@ -29,4 +27,21 @@ public interface IBelt extends ITileCable<BeltGrid>
     void setWorking(boolean working);
 
     long getLastWorkStateChange();
+
+    default boolean isEmpty()
+    {
+        return this.getItems()[0] == null && this.getItems()[1] == null && this.getItems()[2] == null;
+    }
+
+    default void addItem(ItemBelt item)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (this.getItems()[i] == null)
+            {
+                this.getItems()[i] = item;
+                break;
+            }
+        }
+    }
 }

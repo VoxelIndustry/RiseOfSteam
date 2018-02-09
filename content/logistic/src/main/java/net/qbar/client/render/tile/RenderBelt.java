@@ -17,7 +17,8 @@ public class RenderBelt extends FastTESR<TileBelt>
 {
     @Override
     public void renderTileEntityFast(final TileBelt belt, final double x, final double y, final double z,
-                                     final float partialTicks, final int destroyStage, final float partial, final BufferBuilder renderer)
+                                     final float partialTicks, final int destroyStage, final float partial, final
+                                     BufferBuilder renderer)
     {
         final BlockPos pos = belt.getBlockPos();
 
@@ -71,11 +72,16 @@ public class RenderBelt extends FastTESR<TileBelt>
         ItemBelt previous = null;
         for (final ItemBelt item : belt.getItems())
         {
+            if (item == null)
+                continue;
             if (previous == null)
-                GlStateManager.translate(1 + item.getPos().y - 9 / 16.0, 0, item.getPos().x + 7 / 64.0);
+                GlStateManager.translate(1 + interp(item.getPrevPosY(), item.getPosY(), partialTicks) - 9 / 16.0,
+                        0, interp(item.getPrevPosX(), item.getPosX(), partialTicks) + 7 / 64.0);
             else
-                GlStateManager.translate(-(1 + previous.getPos().y - 9 / 16.0) + (1 + item.getPos().y - 9 / 16.0), 0,
-                        -(previous.getPos().x + 7 / 64.0) + (item.getPos().x + 7 / 64.0));
+                GlStateManager.translate(-(1 + interp(previous.getPrevPosY(), previous.getPosY(), partialTicks) - 9 /
+                                16.0) + (1 + interp(item.getPrevPosY(), item.getPosY(), partialTicks) - 9 / 16.0), 0,
+                        -(interp(previous.getPrevPosX(), previous.getPosX(), partialTicks) + 7 / 64.0) +
+                                (interp(item.getPrevPosX(), item.getPosX(), partialTicks) + 7 / 64.0));
             GlStateManager.pushMatrix();
             GlStateManager.rotate(180, 0, 1, 0);
             GlStateManager.translate(0.25, -0.25, 0);
@@ -87,5 +93,10 @@ public class RenderBelt extends FastTESR<TileBelt>
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
         RenderHelper.enableStandardItemLighting();
+    }
+
+    private float interp(float previous, float next, float partialTicks)
+    {
+        return previous + (next - previous) * partialTicks;
     }
 }

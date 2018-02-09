@@ -17,8 +17,8 @@ import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
+import net.qbar.common.util.ItemUtils;
 
-import javax.vecmath.Vector2f;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -28,23 +28,23 @@ import java.util.Map.Entry;
 public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnectionAware
 {
     @Getter
-    private int                                             grid;
+    private       int                                       grid;
     @Getter
     private final EnumMap<EnumFacing, ITileCable<BeltGrid>> connectionsMap;
-    private float                                           beltSpeed;
+    private       float                                     beltSpeed;
 
-    private EnumFacing                                      facing;
+    private EnumFacing facing;
 
-    private final List<ItemBelt>                            items;
+    private final ItemBelt[] items;
 
-    private boolean                                         hasChanged = false;
-    private boolean                                         isWorking  = false;
+    private boolean hasChanged = false;
+    private boolean isWorking  = false;
 
-    private final EnumMap<EnumFacing, ISteamHandler>        steamConnections;
+    private final EnumMap<EnumFacing, ISteamHandler> steamConnections;
 
-    private EBeltSlope                                      slopeState;
+    private EBeltSlope slopeState;
 
-    private long                                            lastWorkStateChange;
+    private long lastWorkStateChange;
 
     public TileBelt(final float beltSpeed)
     {
@@ -55,7 +55,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         this.steamConnections = new EnumMap<>(EnumFacing.class);
         this.facing = EnumFacing.UP;
 
-        this.items = new ArrayList<>(3);
+        this.items = new ItemBelt[3];
+
         this.slopeState = EBeltSlope.NORMAL;
     }
 
@@ -96,18 +97,20 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         tag.setFloat("beltSpeed", this.beltSpeed);
         tag.setInteger("isSlope", this.slopeState.ordinal());
 
-        for (final ItemBelt belt : this.items)
+        for (int i = 0; i < 3; i++)
         {
+            if (this.items[i] == null)
+                continue;
             final NBTTagCompound subTag = new NBTTagCompound();
 
-            subTag.setFloat("posX", belt.getPos().x);
-            subTag.setFloat("posY", belt.getPos().y);
+            subTag.setFloat("posX", this.items[i].getPosX());
+            subTag.setFloat("posY", this.items[i].getPosY());
 
-            belt.getStack().writeToNBT(subTag);
+            this.items[i].getStack().writeToNBT(subTag);
 
-            tag.setTag("item" + this.items.indexOf(belt), subTag);
+            tag.setTag("item" + i, subTag);
         }
-        tag.setInteger("itemCount", this.items.size());
+        tag.setInteger("itemCount", this.items.length);
         tag.setBoolean("isWorking", this.isWorking);
 
         for (final Entry<EnumFacing, ISteamHandler> entry : this.steamConnections.entrySet())
@@ -129,13 +132,29 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         this.beltSpeed = tag.getFloat("beltSpeed");
         this.slopeState = EBeltSlope.values()[tag.getInteger("isSlope")];
 
-        this.items.clear();
-        for (int i = 0; i < tag.getInteger("itemCount"); i++)
+        for (int i = 0; i < 3; i++)
         {
+            if (!tag.hasKey("item" + i))
+            {
+                if (this.items[i] != null)
+                    this.items[i] = null;
+                continue;
+            }
             final NBTTagCompound subTag = tag.getCompoundTag("item" + i);
-            this.items.add(new ItemBelt(new ItemStack(subTag),
-                    new Vector2f(subTag.getFloat("posX"), subTag.getFloat("posY"))));
+
+            ItemStack newItem = new ItemStack(subTag);
+            if (this.items[i] == null || !ItemUtils.deepEquals(this.items[i].getStack(), newItem))
+            {
+                this.items[i] = new ItemBelt(new ItemStack(subTag),
+                        subTag.getFloat("posX"), subTag.getFloat("posY"));
+            }
+            else
+            {
+                this.items[i].setPosX(subTag.getFloat("posX"));
+                this.items[i].setPosY(subTag.getFloat("posY"));
+            }
         }
+
 
         boolean needStateUpdate = false;
         if (this.isWorking != tag.getBoolean("isWorking"))
@@ -186,8 +205,12 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         else
             lines.add("Errored grid!");
 
-        for (final ItemBelt item : this.items)
-            lines.add("Slot " + this.items.indexOf(item) + ": " + item.getStack());
+        for (int i = 0; i < this.items.length; i++)
+        {
+            if (this.items[i] == null)
+                continue;
+            lines.add("Slot " + i + ": " + ItemUtils.getPrettyStackName(this.items[i].getStack()));
+        }
     }
 
     @Override
@@ -301,7 +324,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public List<ItemBelt> getItems()
+    public ItemBelt[] getItems()
     {
         return this.items;
     }

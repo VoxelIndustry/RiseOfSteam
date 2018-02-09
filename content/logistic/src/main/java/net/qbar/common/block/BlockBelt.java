@@ -30,6 +30,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.qbar.client.render.model.obj.QBarStateProperties;
 import net.qbar.common.IWrenchable;
 import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.machine.TileBelt;
 
 import javax.annotation.Nullable;
@@ -73,7 +74,8 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
 
     @Override
     public void addCollisionBoxToList(final IBlockState state, final World w, final BlockPos pos,
-                                      final AxisAlignedBB entityBox, final List<AxisAlignedBB> collidingBoxes, @Nullable final Entity entityIn,
+                                      final AxisAlignedBB entityBox, final List<AxisAlignedBB> collidingBoxes,
+                                      @Nullable final Entity entityIn,
                                       final boolean p_185477_7_)
     {
         if (this.getWorldTile(w, pos).isSlope())
@@ -151,8 +153,14 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
 
         TileBelt belt = this.getWorldTile(w, pos);
 
-        if(!belt.getItems().isEmpty())
-            belt.getItems().forEach(item -> InventoryHelper.spawnItemStack(w, pos.getX(), pos.getY(),pos.getZ(), item.getStack()));
+        if (!belt.isEmpty())
+        {
+            for (ItemBelt itemBelt : belt.getItems())
+            {
+                if (itemBelt != null)
+                    InventoryHelper.spawnItemStack(w, pos.getX(), pos.getY(), pos.getZ(), itemBelt.getStack());
+            }
+        }
         super.breakBlock(w, pos, state);
     }
 
@@ -206,7 +214,8 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
 
     @Override
     public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-                                            final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer)
+                                            final float hitX, final float hitY, final float hitZ, final int meta,
+                                            final EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(BlockBelt.FACING,
                 EBeltDirection.fromFacing(placer.getHorizontalFacing().getOpposite()));
@@ -282,7 +291,8 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
             GridManager.getInstance().disconnectCable((TileBelt) world.getTileEntity(pos));
         }
 
-        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.FACING, EBeltDirection.fromFacing(facing)));
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockBelt.FACING, EBeltDirection.fromFacing
+                (facing)));
 
         if (!world.isRemote)
         {
