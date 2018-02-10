@@ -94,7 +94,7 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
                         + ")!");
                 return ItemStack.EMPTY;
             }
-            item = ores.get(0);
+            item = ores.get(0).copy();
         }
         else
             item = new ItemStack(Item.getByNameOrId(stack));
