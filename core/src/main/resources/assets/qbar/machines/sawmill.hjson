@@ -35,9 +35,18 @@
         ]
         crafter: {
             category: qbar.sawmill
-            speed: 1.0
+            speed: 0.5
             itemInput: 1
             itemOutput: 1
+        }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, -2]
+                    facing: SOUTH
+                    slots: [0]
+                }
+            ]
         }
     }
 }

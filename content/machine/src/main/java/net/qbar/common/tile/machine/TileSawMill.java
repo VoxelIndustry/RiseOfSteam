@@ -2,7 +2,7 @@ package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,7 +10,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
@@ -22,47 +21,37 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class TileSawMill extends TileCraftingMachineBase
 {
+    private ItemStack cachedStack;
+
     public TileSawMill()
     {
         super(QBarMachines.SAW_MILL);
+
+        this.cachedStack = ItemStack.EMPTY;
     }
 
     @Override
-    public void update()
+    public void onRecipeChange()
     {
-        if (this.isClient())
-            return;
-        super.update();
-
-        final EnumFacing orientation = this.getFacing().getOpposite();
-
-        if (!this.isOutputEmpty() && this.hasBelt(orientation))
-        {
-            if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), orientation))
-            {
-                this.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), orientation);
-                this.sync();
-            }
-        }
+        if (this.getCurrentRecipe() != null)
+            this.cachedStack = this.getCurrentRecipe().getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
     }
 
-    private void insert(final ItemStack stack, final EnumFacing facing)
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
-        ((IBelt) this.world.getTileEntity(this.pos.offset(facing, 2).down())).insert(stack, true);
+        super.writeToNBT(tag);
+
+        tag.setTag("cachedStack", this.cachedStack.writeToNBT(new NBTTagCompound()));
+        return tag;
     }
 
-    private boolean canInsert(final ItemStack stack, final EnumFacing facing)
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
     {
-        final IBelt belt = (IBelt) this.world.getTileEntity(this.pos.offset(facing, 2).down());
+        super.readFromNBT(tag);
 
-        return belt.insert(stack, false);
-    }
-
-    private boolean hasBelt(final EnumFacing facing)
-    {
-        final TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2).down());
-
-        return tile != null && tile instanceof IBelt;
+        this.cachedStack = new ItemStack(tag.getCompoundTag("cachedStack"));
     }
 
     @Override
@@ -70,8 +59,9 @@ public class TileSawMill extends TileCraftingMachineBase
     {
         final EnumFacing orientation = this.getFacing();
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from == BlockPos.ORIGIN
-                && facing == orientation.rotateY().getOpposite())
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY &&
+                (facing == EnumFacing.DOWN || (from == BlockPos.ORIGIN
+                        && (facing == orientation.rotateY().getOpposite() || facing == orientation.rotateY()))))
             return true;
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
                 && facing.getAxis() == orientation.getAxis())
@@ -85,8 +75,9 @@ public class TileSawMill extends TileCraftingMachineBase
     {
         final EnumFacing orientation = this.getFacing();
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from == BlockPos.ORIGIN
-                && facing == orientation.rotateY().getOpposite())
+        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY &&
+                (facing == EnumFacing.DOWN || (from == BlockPos.ORIGIN
+                        && (facing == orientation.rotateY().getOpposite() || facing == orientation.rotateY()))))
             return (T) this.getSteamTank();
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
                 && facing.getAxis() == orientation.getAxis())
@@ -111,14 +102,15 @@ public class TileSawMill extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.SAWMILL.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.SAWMILL.getUniqueID(), this.world, this.pos.getX(), this
+                        .pos.getY(),
                 this.pos.getZ());
         return true;
     }
@@ -138,8 +130,19 @@ public class TileSawMill extends TileCraftingMachineBase
         return 1;
     }
 
+    @Override
+    public boolean hasFastRenderer()
+    {
+        return true;
+    }
+
     public EnumFacing getFacing()
     {
         return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
+    }
+
+    public ItemStack getCachedStack()
+    {
+        return this.cachedStack;
     }
 }

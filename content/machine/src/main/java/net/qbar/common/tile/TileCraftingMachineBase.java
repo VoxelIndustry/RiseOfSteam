@@ -14,10 +14,13 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
+import net.qbar.common.machine.AutomationComponent;
 import net.qbar.common.machine.CraftingComponent;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
@@ -33,21 +36,24 @@ import java.util.Optional;
 public abstract class TileCraftingMachineBase extends TileInventoryBase
         implements ITileMultiblockCore, ITickable, ISidedInventory, IContainerProvider
 {
-    private final MachineDescriptor                    descriptor;
-    private final CraftingComponent                    crafter;
-    private final SteamComponent                       steamMachine;
+    private final MachineDescriptor   descriptor;
+    @Getter
+    private final MultiblockComponent multiblock;
+    private final CraftingComponent   crafter;
+    private final SteamComponent      steamMachine;
+    private       AutomationModule    automation;
 
     @Getter
     @Setter
-    private float                                      currentProgress;
+    private float      currentProgress;
     @Getter
     @Setter
-    private float                                      maxProgress;
-    private QBarRecipe                                 currentRecipe;
+    private float      maxProgress;
+    private QBarRecipe currentRecipe;
 
-    private final SteamTank                            steamTank;
+    private final SteamTank steamTank;
 
-    private final FluidTank[]                          inputTanks, outputTanks, bufferTanks;
+    private final FluidTank[] inputTanks, outputTanks, bufferTanks;
 
     private final EnumMap<EnumFacing, SidedInvWrapper> inventoryWrapperCache;
 
@@ -56,8 +62,12 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         super(descriptor.getName(), descriptor.get(CraftingComponent.class).getInventorySize());
 
         this.descriptor = descriptor;
+        this.multiblock = descriptor.get(MultiblockComponent.class);
         this.crafter = descriptor.get(CraftingComponent.class);
         this.steamMachine = descriptor.get(SteamComponent.class);
+        if (descriptor.has(AutomationComponent.class))
+            this.automation = new AutomationModule(descriptor.get(AutomationComponent.class));
+
         this.inventoryWrapperCache = new EnumMap<>(EnumFacing.class);
 
         this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(), steamMachine.getMaxPressureCapacity());
@@ -227,6 +237,9 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
                 this.sync();
             }
         }
+
+        if (this.automation != null && !this.isOutputEmpty() && this.automation.tick(this.world, this.pos, this))
+            this.sync();
     }
 
     protected boolean acceptRecipe(QBarRecipe recipe)
@@ -319,7 +332,7 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     @Override
     public int[] getSlotsForFace(final EnumFacing side)
     {
-        switch(side)
+        switch (side)
         {
             case DOWN:
                 return this.crafter.getOutputs();
@@ -489,5 +502,25 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public FluidTank[] getBufferTanks()
     {
         return bufferTanks;
+    }
+
+    public int[] getInputSlots()
+    {
+        return this.crafter.getInputs();
+    }
+
+    public int[] getOutputSlots()
+    {
+        return this.crafter.getOutputs();
+    }
+
+    public int[] getBufferSlots()
+    {
+        return this.crafter.getBuffers();
+    }
+
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 }

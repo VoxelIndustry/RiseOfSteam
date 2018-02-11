@@ -26,10 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.QBar;
 import net.qbar.client.render.BlueprintRender;
 import net.qbar.client.render.model.obj.QBarOBJLoader;
-import net.qbar.client.render.tile.RenderBelt;
-import net.qbar.client.render.tile.RenderRollingMill;
-import net.qbar.client.render.tile.RenderSteamFurnaceMK2;
-import net.qbar.client.render.tile.RenderStructure;
+import net.qbar.client.render.tile.*;
 import net.qbar.common.CommonProxy;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.block.IModelProvider;
@@ -41,6 +38,7 @@ import net.qbar.common.network.MultiblockBoxPacket;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.TileBelt;
 import net.qbar.common.tile.machine.TileRollingMill;
+import net.qbar.common.tile.machine.TileSawMill;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
 import org.lwjgl.input.Mouse;
 import org.yggard.brokkgui.style.StylesheetManager;
@@ -88,6 +86,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileStructure.class, new RenderStructure());
         ClientRegistry.bindTileEntitySpecialRenderer(TileRollingMill.class, new RenderRollingMill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSteamFurnaceMK2.class, new RenderSteamFurnaceMK2());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileSawMill.class, new RenderSawMill());
         MinecraftForge.EVENT_BUS.register(new ClientEventManager());
     }
 

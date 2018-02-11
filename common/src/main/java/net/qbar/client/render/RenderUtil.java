@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class RenderUtil
 {
-    public static final void handleRenderItem(final ItemStack stack, final boolean render3d)
+    public static void handleRenderItem(final ItemStack stack, final boolean render3d)
     {
         GlStateManager.pushMatrix();
 
@@ -31,7 +32,7 @@ public class RenderUtil
             if (Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(stack, null, null).isGui3d())
             {
                 GlStateManager.scale(0.75F, 0.75F, 0.75F);
-                if (Block.getBlockFromItem(stack.getItem()) != null
+                if (Block.getBlockFromItem(stack.getItem()) != Blocks.AIR
                         && Block.getBlockFromItem(stack.getItem()).getDefaultState().isFullCube())
                     GlStateManager.translate(0, 0, -0.1);
             }
@@ -70,8 +71,8 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    public static final void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
-                                              final BlockRendererDispatcher blockRender)
+    public static void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
+                                        final BlockRendererDispatcher blockRender)
     {
         final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -95,9 +96,9 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    public static final void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
-                                              final BlockRendererDispatcher blockRender, final List<BakedQuad> alphaQuads,
-                                              final VisibilityModelState opaqueState)
+    public static void renderMultiblock(final IBlockState state, final double x, final double y, final double z,
+                                        final BlockRendererDispatcher blockRender, final List<BakedQuad> alphaQuads,
+                                        final VisibilityModelState opaqueState)
     {
         final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -127,7 +128,7 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    private static final void renderQuads(final List<BakedQuad> quads, final int alpha)
+    private static void renderQuads(final List<BakedQuad> quads, final int alpha)
     {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder buffer = tessellator.getBuffer();
@@ -139,8 +140,8 @@ public class RenderUtil
         tessellator.draw();
     }
 
-    public static final void renderRect(final double left, final double top, final double right, final double bottom,
-                                        final float r, final float g, final float b, final float a)
+    public static void renderRect(final double left, final double top, final double right, final double bottom,
+                                  final float r, final float g, final float b, final float a)
     {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder vertexbuffer = tessellator.getBuffer();

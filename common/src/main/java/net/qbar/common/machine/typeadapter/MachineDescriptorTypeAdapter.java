@@ -23,10 +23,11 @@ public class MachineDescriptorTypeAdapter extends TypeAdapter<MachineDescriptor>
         subTypeAdapters.put("multiblock", new MultiblockComponentTypeAdapter());
         subTypeAdapters.put("blueprint", new BlueprintComponentTypeAdapter());
         subTypeAdapters.put("crafter", new CraftingComponentTypeAdapter());
+        subTypeAdapters.put("automation", new AutomationComponentTypeAdapter());
     }
 
     @Override
-    public void write(JsonWriter out, MachineDescriptor value) throws IOException
+    public void write(JsonWriter out, MachineDescriptor value)
     {
 
     }
@@ -54,7 +55,8 @@ public class MachineDescriptorTypeAdapter extends TypeAdapter<MachineDescriptor>
                     {
                         if (QBarMachines.isPreloading())
                         {
-                            descriptor.getComponents().put(this.subTypeAdapters.get(in.nextName()).getComponentClass(), null);
+                            descriptor.getComponents().put(
+                                    this.subTypeAdapters.get(in.nextName()).getComponentClass(), null);
                             in.skipValue();
                         }
                         else

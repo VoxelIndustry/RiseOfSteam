@@ -118,8 +118,34 @@ public class MultiblockComponent implements IMachineComponent
         else if (orientation == EnumFacing.WEST)
         {
             if (resultFacing.getAxis().isHorizontal())
-                resultFacing = resultFacing.rotateY().getOpposite();
+                resultFacing = resultFacing.rotateYCCW();
             resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
+        }
+        else if (orientation == EnumFacing.NORTH)
+        {
+            if (resultFacing.getAxis().isHorizontal())
+                resultFacing = resultFacing.getOpposite();
+            resultPos = new BlockPos(-resultPos.getX(), resultPos.getY(), -resultPos.getZ());
+        }
+        return new MultiblockSide(resultPos, resultFacing);
+    }
+
+    public MultiblockSide multiblockSideToWorldSide(MultiblockSide side, EnumFacing orientation)
+    {
+        EnumFacing resultFacing = side.getFacing();
+        BlockPos resultPos = side.getPos();
+
+        if (orientation == EnumFacing.EAST)
+        {
+            if (resultFacing.getAxis().isHorizontal())
+                resultFacing = resultFacing.rotateYCCW();
+            resultPos = new BlockPos(resultPos.getZ(), resultPos.getY(), -resultPos.getX());
+        }
+        else if (orientation == EnumFacing.WEST)
+        {
+            if (resultFacing.getAxis().isHorizontal())
+                resultFacing = resultFacing.rotateY();
+            resultPos = new BlockPos(-resultPos.getZ(), resultPos.getY(), resultPos.getX());
         }
         else if (orientation == EnumFacing.NORTH)
         {
