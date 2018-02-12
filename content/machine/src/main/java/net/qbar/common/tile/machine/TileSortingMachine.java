@@ -30,61 +30,6 @@ public class TileSortingMachine extends TileCraftingMachineBase
     }
 
     @Override
-    public void update()
-    {
-        super.update();
-
-        if (this.isClient())
-            return;
-
-        final EnumFacing orientation = this.getFacing();
-
-        if (!this.isOutputEmpty())
-            tryInsert(orientation);
-    }
-
-    private void tryInsert(final EnumFacing facing)
-    {
-        TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2));
-        if (tile instanceof IBelt)
-        {
-            final IBelt belt = (IBelt) tile;
-
-            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[0]).isEmpty()
-                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
-            {
-                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[0],
-                        1, false), true);
-                this.sync();
-                return;
-            }
-            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[1]).isEmpty()
-                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
-            {
-                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[1],
-                        1, false), true);
-                this.sync();
-                return;
-            }
-            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[2]).isEmpty()
-                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[2]), false))
-            {
-                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[2],
-                        1, false), true);
-                this.sync();
-                return;
-            }
-            if (!this.getStackInSlot(this.getDescriptor().getOutputs()[3]).isEmpty()
-                    && belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[3]), false))
-            {
-                belt.insert(this.getInventoryWrapper(EnumFacing.NORTH).extractItem(this.getDescriptor().getOutputs()[3],
-                        1, false), true);
-                this.sync();
-            }
-        }
-    }
-
-    @Override
     public boolean acceptRecipe(QBarRecipe recipe)
     {
         return recipe.getRecipeOutputs(ItemStack.class).size() <= 4;

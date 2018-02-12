@@ -9,13 +9,18 @@ import net.qbar.common.machine.AutomationComponent;
 import net.qbar.common.machine.OutputPoint;
 import net.qbar.common.multiblock.MultiblockSide;
 
+import java.util.HashMap;
+
 public class AutomationModule
 {
     private final AutomationComponent component;
 
+    private final HashMap<OutputPoint, Integer> lastOutput;
+
     AutomationModule(AutomationComponent component)
     {
         this.component = component;
+        this.lastOutput = new HashMap<>();
     }
 
     public boolean tick(World world, BlockPos pos, TileCraftingMachineBase machine)
@@ -101,7 +106,26 @@ public class AutomationModule
 
     private int getNextSlotSeq(OutputPoint point, TileCraftingMachineBase machine)
     {
-        // TODO
+        if (!this.lastOutput.containsKey(point))
+            this.lastOutput.put(point, point.getSlots().length);
+
+        int start = this.lastOutput.get(point);
+        if (start == point.getSlots().length)
+            start = -1;
+        start++;
+
+        while (start < point.getSlots().length)
+        {
+            if (!machine.getStackInSlot(machine.getOutputSlots()[point.getSlots()[start]]).isEmpty())
+            {
+                this.lastOutput.put(point, start);
+                return machine.getOutputSlots()[point.getSlots()[start]];
+            }
+            start++;
+
+            if (start == point.getSlots().length)
+                start = 0;
+        }
         return 0;
     }
 

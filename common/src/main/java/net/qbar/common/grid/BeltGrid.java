@@ -174,7 +174,7 @@ public class BeltGrid extends CableGrid
 
         if (item.getPosY() < 1)
         {
-            if (!this.checkCollision(belt, item, this.beltSpeed / 3))
+            if (!this.doCollide(belt, item, this.beltSpeed / 3))
             {
                 item.setPosY(item.getPosY() + this.beltSpeed / 3);
                 hasChanged = true;
@@ -293,8 +293,7 @@ public class BeltGrid extends CableGrid
     {
         if (!belt.isSlope())
         {
-            boolean enoughSpace = !this.checkCollision(belt, new ItemBelt(stack, posX, posY), this.beltSpeed / 3);
-            if (!enoughSpace)
+            if (this.doCollide(belt, new ItemBelt(stack, posX, posY), this.beltSpeed / 3))
                 return false;
             if (doInsert && !stack.isEmpty())
             {
@@ -305,7 +304,7 @@ public class BeltGrid extends CableGrid
         return true;
     }
 
-    private boolean checkCollision(final IBelt belt, final ItemBelt item, final float add)
+    private boolean doCollide(final IBelt belt, final ItemBelt item, final float add)
     {
         if (!belt.isEmpty())
         {
@@ -316,7 +315,7 @@ public class BeltGrid extends CableGrid
                 if (collidable != item)
                 {
                     if (collidable.getPosY() < item.getPosY() + add + 6 / 16F
-                            && collidable.getPosY() > item.getPosY() + add)
+                            && collidable.getPosY() > item.getPosY() - add)
                         return true;
                 }
             }
