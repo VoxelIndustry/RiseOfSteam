@@ -137,6 +137,12 @@ public class QBarRecipeHelper
             baseMeltingTime)
     {
         QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
+                new MeltRecipe(new ItemStackRecipeIngredient("nugget" + StringUtils.capitalize(metalName), 1),
+                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 16)),
+                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+        );
+
+        QBarRecipeHandler.RECIPES.get(QBarRecipeHandler.MELTING_UID).add(
                 new MeltRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
                         new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 144)),
                         lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
