@@ -1,7 +1,6 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,7 +9,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
@@ -30,50 +28,9 @@ public class TileOreWasher extends TileCraftingMachineBase
     }
 
     @Override
-    public void update()
-    {
-        super.update();
-
-        if (this.isClient())
-            return;
-
-        final EnumFacing orientation = this.getFacing();
-
-        if (!this.isOutputEmpty())
-            tryInsert(orientation);
-    }
-
-    private void tryInsert(final EnumFacing facing)
-    {
-        TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2));
-        if (tile instanceof IBelt)
-        {
-            final IBelt belt = (IBelt) tile;
-
-            if (belt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), false))
-            {
-                belt.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), true);
-                this.sync();
-            }
-        }
-        TileEntity trashTile = this.world.getTileEntity(this.pos.offset(facing.rotateY(), 2).offset(facing));
-        if (trashTile instanceof IBelt)
-        {
-            final IBelt trashBelt = (IBelt) trashTile;
-
-            if (trashBelt.insert(this.getStackInSlot(this.getDescriptor().getOutputs()[1]), false))
-            {
-                trashBelt.insert(this.getInventoryWrapper(EnumFacing.DOWN)
-                        .extractItem(1, 1, false), true);
-                this.sync();
-            }
-        }
-    }
-
-    @Override
     public Object[] getCustomData()
     {
-        return new Object[] { 0 };
+        return new Object[]{0};
     }
 
     @Override
@@ -104,7 +61,7 @@ public class TileOreWasher extends TileCraftingMachineBase
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
@@ -117,7 +74,8 @@ public class TileOreWasher extends TileCraftingMachineBase
             this.markDirty();
             return true;
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.OREWASHER.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.OREWASHER.getUniqueID(), this.world, this.pos.getX(),
+                this.pos.getY(),
                 this.pos.getZ());
         return true;
     }

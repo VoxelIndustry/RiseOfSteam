@@ -2,7 +2,6 @@ package net.qbar.common.tile;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -12,15 +11,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.machine.AutomationComponent;
 import net.qbar.common.machine.CraftingComponent;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.SteamComponent;
-import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
@@ -33,15 +28,12 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class TileCraftingMachineBase extends TileInventoryBase
-        implements ITileMultiblockCore, ITickable, ISidedInventory, IContainerProvider
+public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBase implements ITickable
 {
-    private final MachineDescriptor   descriptor;
     @Getter
-    private final MultiblockComponent multiblock;
-    private final CraftingComponent   crafter;
-    private final SteamComponent      steamMachine;
-    private       AutomationModule    automation;
+    private final CraftingComponent crafter;
+    private final SteamComponent    steamMachine;
+    private       AutomationModule  automation;
 
     @Getter
     @Setter
@@ -59,10 +51,8 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
 
     public TileCraftingMachineBase(final MachineDescriptor descriptor)
     {
-        super(descriptor.getName(), descriptor.get(CraftingComponent.class).getInventorySize());
+        super(descriptor, descriptor.get(CraftingComponent.class).getInventorySize());
 
-        this.descriptor = descriptor;
-        this.multiblock = descriptor.get(MultiblockComponent.class);
         this.crafter = descriptor.get(CraftingComponent.class);
         this.steamMachine = descriptor.get(SteamComponent.class);
         if (descriptor.has(AutomationComponent.class))
@@ -343,25 +333,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
         }
     }
 
-    protected SidedInvWrapper getInventoryWrapper(EnumFacing side)
-    {
-        if (!this.inventoryWrapperCache.containsKey(side))
-            this.inventoryWrapperCache.put(side, new SidedInvWrapper(this, side));
-        return this.inventoryWrapperCache.get(side);
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.pos, false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
     @Override
     public boolean isItemValidForSlot(final int index, final ItemStack stack)
     {
@@ -428,11 +399,6 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public int useSteam(final int amount)
     {
         return this.steamTank.drainSteam(amount, true);
-    }
-
-    public CraftingComponent getDescriptor()
-    {
-        return this.crafter;
     }
 
     public SteamTank getSteamTank()
@@ -517,10 +483,5 @@ public abstract class TileCraftingMachineBase extends TileInventoryBase
     public int[] getBufferSlots()
     {
         return this.crafter.getBuffers();
-    }
-
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 }

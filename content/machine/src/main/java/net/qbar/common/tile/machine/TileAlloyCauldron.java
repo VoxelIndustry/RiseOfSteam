@@ -18,6 +18,7 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.recipe.MaterialShape;
@@ -66,7 +67,7 @@ public class TileAlloyCauldron extends TileMultiblockInventoryBase implements IT
      */
     public TileAlloyCauldron()
     {
-        super("alloycauldron", 5);
+        super(QBarMachines.ALLOY_CAULDRON, 5);
         this.inputTankLeft = new FluidTank(12 * Fluid.BUCKET_VOLUME);
         this.inputTankRight = new FluidTank(12 * Fluid.BUCKET_VOLUME);
         this.outputTank = new FluidTank(24 * Fluid.BUCKET_VOLUME);

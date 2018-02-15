@@ -20,6 +20,7 @@ import net.qbar.common.grid.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
@@ -35,11 +36,11 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
-    private       int                                           grid;
+    private int grid;
 
     public TileCraftCardLibrary()
     {
-        super("craftcardlibrary", 72);
+        super(QBarMachines.CRAFTCARD_LIBRARY, 72);
         this.grid = -1;
     }
 

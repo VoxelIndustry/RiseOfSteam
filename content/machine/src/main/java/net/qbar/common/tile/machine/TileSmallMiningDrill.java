@@ -66,7 +66,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
 
     public TileSmallMiningDrill()
     {
-        super("smallminingdrill", 0);
+        super(QBarMachines.SMALL_MINING_DRILL, 0);
 
         this.fluidTank = new FilteredFluidTank(32000,
                 fluid -> fluid != null && fluid.getFluid() == FluidRegistry.WATER);

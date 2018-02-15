@@ -16,9 +16,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.card.CardDataStorage;
+import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.card.CraftCard;
 import net.qbar.common.card.IPunchedCard;
-import net.qbar.common.card.CardDataStorage.ECardType;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
@@ -26,7 +26,6 @@ import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.CraftingComponent;
-import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.SteamComponent;
 import net.qbar.common.multiblock.MultiblockComponent;
@@ -42,18 +41,17 @@ import java.util.List;
 
 public class TileAssembler extends TileMultiblockInventoryBase implements ITickable
 {
-    private final MachineDescriptor   descriptor = QBarMachines.ASSEMBLER;
-    private final CraftingComponent   crafter    = descriptor.get(CraftingComponent.class);
+    private final CraftingComponent   crafter;
     private final BaseProperty<Float> currentProgress;
-    private float                     maxProgress;
+    private       float               maxProgress;
 
-    private final SteamTank           steamTank;
+    private final SteamTank steamTank;
 
-    private CraftCard                 craft;
-    private ItemStack                 cached     = ItemStack.EMPTY;
+    private CraftCard craft;
+    private ItemStack cached = ItemStack.EMPTY;
 
-    private ItemStack                 resultTemp;
-    private NonNullList<ItemStack>    remainingsTemp;
+    private ItemStack              resultTemp;
+    private NonNullList<ItemStack> remainingsTemp;
 
     // 0 : PunchedCard
     // 1 - 10 : Crafting Ingredients
@@ -63,8 +61,9 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
     // 30 - 38 : Craft buffer
     public TileAssembler()
     {
-        super("assembler", 39);
+        super(QBarMachines.ASSEMBLER, 39);
 
+        this.crafter = this.getDescriptor().get(CraftingComponent.class);
         this.steamTank = new SteamTank(0, 4000, SteamUtil.BASE_PRESSURE * 2);
 
         this.resultTemp = ItemStack.EMPTY;
@@ -102,7 +101,8 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
                     {
                         if (!this.getStackInSlot(j).isEmpty()
                                 && ItemUtils.deepEquals(this.getStackInSlot(j), this.craft.getRecipe()[i - 21])
-                                || OreDictionary.itemMatches(this.getStackInSlot(j), this.craft.getRecipe()[i - 21], true))
+                                || OreDictionary.itemMatches(this.getStackInSlot(j), this.craft.getRecipe()[i - 21],
+                                true))
                         {
                             this.setInventorySlotContents(i, this.decrStackSize(j, 1));
                             completed = true;
@@ -270,14 +270,15 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
 
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-            final float hitZ, BlockPos from)
+                                final float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.ASSEMBLER.getUniqueID(), this.world, this.pos.getX(), this.pos.getY(),
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.ASSEMBLER.getUniqueID(), this.world, this.pos.getX(),
+                this.pos.getY(),
                 this.pos.getZ());
         return true;
     }
@@ -326,8 +327,8 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
         return super.getCapability(capability, facing);
     }
 
-    private final int[] inputSlots   = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    private final int[] outputsSlots = new int[] { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+    private final int[] inputSlots   = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    private final int[] outputsSlots = new int[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
     @Override
     public int[] getSlotsForFace(final EnumFacing side)
@@ -358,7 +359,7 @@ public class TileAssembler extends TileMultiblockInventoryBase implements ITicka
 
     public float getEfficiency()
     {
-        return this.steamTank.getPressure() / this.descriptor.get(SteamComponent.class).getWorkingPressure();
+        return this.steamTank.getPressure() / this.getDescriptor().get(SteamComponent.class).getWorkingPressure();
     }
 
     public BaseProperty<Float> getCurrentProgressProperty()

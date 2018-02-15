@@ -20,6 +20,7 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.item.ItemDrillCoreSample;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.ore.QBarMineral;
@@ -44,7 +45,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 
     public TileTinyMiningDrill()
     {
-        super("tinyminingdrill", 2);
+        super(QBarMachines.TINY_MINING_DRILL, 2);
 
         this.results = new HashMap<>();
         this.lastPos = this.getPos();

@@ -42,7 +42,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
     public TileLiquidBoiler()
     {
-        super("liquidboiler", 0, 300, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 64);
+        super(QBarMachines.LIQUID_BOILER, 0, 300, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 64);
 
         this.fuelTank = new FilteredFluidTank(Fluid.BUCKET_VOLUME * 48,
                 fluidStack -> fluidStack != null && fluidStack.getFluid() != (FluidRegistry.WATER));

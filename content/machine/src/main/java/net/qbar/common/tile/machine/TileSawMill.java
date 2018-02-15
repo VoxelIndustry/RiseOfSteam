@@ -118,7 +118,7 @@ public class TileSawMill extends TileCraftingMachineBase
     @Override
     public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
     {
-        if (ArrayUtils.contains(this.getDescriptor().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
+        if (ArrayUtils.contains(this.getCrafter().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
                 && this.isOutputEmpty())
             return this.isItemValidForSlot(index, itemStackIn);
         return false;

@@ -39,7 +39,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
 
     public TileBlueprintPrinter()
     {
-        super("blueprintprinter", 1);
+        super(QBarMachines.BLUEPRINT_PRINTER, 1);
 
         this.grid = -1;
     }

@@ -3,7 +3,6 @@ package net.qbar.common.tile.machine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
@@ -42,67 +40,10 @@ public class TileRollingMill extends TileCraftingMachineBase
     }
 
     @Override
-    public void update()
-    {
-        if (this.isClient())
-            return;
-        super.update();
-
-        final EnumFacing orientation = this.getFacing();
-
-        BlockPos search;
-        switch (orientation)
-        {
-            case NORTH:
-                search = this.getPos().south();
-                break;
-            case SOUTH:
-                search = this.getPos().north();
-                break;
-            case WEST:
-                search = this.getPos().east();
-                break;
-            case EAST:
-                search = this.getPos().west();
-                break;
-            default:
-                search = this.getPos();
-                break;
-        }
-        if (!this.isOutputEmpty() && this.hasBelt(orientation, search))
-        {
-            if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), search))
-            {
-                this.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), search);
-                this.sync();
-            }
-        }
-    }
-
-    @Override
     public void onRecipeChange()
     {
         if (this.getCurrentRecipe() != null)
             this.cachedStack = this.getCurrentRecipe().getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
-    }
-
-    private void insert(final ItemStack stack, final BlockPos pos)
-    {
-        ((IBelt) this.world.getTileEntity(pos)).insert(stack, true);
-    }
-
-    private boolean canInsert(final ItemStack stack, final BlockPos pos)
-    {
-        final IBelt belt = (IBelt) this.world.getTileEntity(pos);
-
-        return belt.insert(stack, false);
-    }
-
-    private boolean hasBelt(final EnumFacing facing, final BlockPos pos)
-    {
-        final TileEntity tile = this.world.getTileEntity(pos);
-
-        return tile != null && tile instanceof IBelt;
     }
 
     @Override
@@ -169,11 +110,6 @@ public class TileRollingMill extends TileCraftingMachineBase
         return null;
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
@@ -204,7 +140,7 @@ public class TileRollingMill extends TileCraftingMachineBase
     @Override
     public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
     {
-        if (ArrayUtils.contains(this.getDescriptor().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
+        if (ArrayUtils.contains(this.getCrafter().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
                 && this.isOutputEmpty())
             return this.isItemValidForSlot(index, itemStackIn);
         return false;

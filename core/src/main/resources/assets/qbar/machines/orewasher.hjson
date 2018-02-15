@@ -41,5 +41,19 @@
             itemOutput: 2
             tankInput: [ 8000 ]
         }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, 2]
+                    facing: NORTH
+                    slots: [0]
+                }
+                {
+                    pos: [-2, 0, 1]
+                    facing: EAST
+                    slots: [1]
+                }
+            ]
+        }
     }
 }

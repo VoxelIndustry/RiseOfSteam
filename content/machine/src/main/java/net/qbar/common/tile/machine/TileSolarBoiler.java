@@ -32,7 +32,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
 
     public TileSolarBoiler()
     {
-        super("solarboiler", 0, 300, Fluid.BUCKET_VOLUME * 128, SteamUtil.BASE_PRESSURE * 2,
+        super(QBarMachines.SOLAR_BOILER, 0, 300, Fluid.BUCKET_VOLUME * 128, SteamUtil.BASE_PRESSURE * 2,
                 Fluid.BUCKET_VOLUME * 144);
 
         this.mirrors = new EnumMap<>(EnumFacing.class);

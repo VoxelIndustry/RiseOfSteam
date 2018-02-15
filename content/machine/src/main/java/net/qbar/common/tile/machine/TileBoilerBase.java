@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.qbar.client.ParticleHelper;
 import net.qbar.common.fluid.FilteredFluidTank;
+import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
@@ -29,10 +30,10 @@ public abstract class TileBoilerBase extends TileMultiblockInventoryBase impleme
     protected     float heat;
     private final float maxHeat;
 
-    public TileBoilerBase(String name, int inventorySize, int maxHeat, int steamCapacity, int steamMaxPressure,
-                          int waterCapacity)
+    public TileBoilerBase(MachineDescriptor descriptor, int inventorySize, int maxHeat, int steamCapacity,
+                          int steamMaxPressure, int waterCapacity)
     {
-        super(name, inventorySize);
+        super(descriptor, inventorySize);
 
         this.waterTank = new FilteredFluidTank(waterCapacity,
                 stack -> stack != null && stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER));

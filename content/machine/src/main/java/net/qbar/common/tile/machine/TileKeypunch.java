@@ -30,6 +30,7 @@ import net.qbar.common.grid.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
@@ -57,7 +58,7 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
 
     public TileKeypunch()
     {
-        super("keypunch", 2);
+        super(QBarMachines.KEYPUNCH, 2);
 
         this.isCraftTabProperty = new BaseProperty<>(true, "isCraftTabProperty");
         this.canPrintProperty = new BaseProperty<>(false, "canPrintProperty");

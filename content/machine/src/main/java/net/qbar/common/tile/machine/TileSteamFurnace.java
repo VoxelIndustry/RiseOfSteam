@@ -2,7 +2,6 @@ package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,11 +9,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.grid.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.tile.TileCraftingMachineBase;
@@ -25,44 +22,6 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     public TileSteamFurnace()
     {
         super(QBarMachines.FURNACE_MK1);
-    }
-
-    @Override
-    public void update()
-    {
-        if (this.isClient())
-            return;
-        super.update();
-
-        final EnumFacing orientation = this.getFacing().getOpposite();
-
-        if (!this.isOutputEmpty() && this.hasBelt(orientation))
-        {
-            if (this.canInsert(this.getStackInSlot(this.getDescriptor().getOutputs()[0]), orientation))
-            {
-                this.insert(this.getInventoryWrapper(EnumFacing.DOWN).extractItem(0, 1, false), orientation);
-                this.sync();
-            }
-        }
-    }
-
-    private void insert(final ItemStack stack, final EnumFacing facing)
-    {
-        ((IBelt) this.world.getTileEntity(this.pos.offset(facing, 2).down())).insert(stack, true);
-    }
-
-    private boolean canInsert(final ItemStack stack, final EnumFacing facing)
-    {
-        final IBelt belt = (IBelt) this.world.getTileEntity(this.pos.offset(facing, 2).down());
-
-        return belt.insert(stack, false);
-    }
-
-    private boolean hasBelt(final EnumFacing facing)
-    {
-        final TileEntity tile = this.world.getTileEntity(this.pos.offset(facing, 2).down());
-
-        return tile != null && tile instanceof IBelt;
     }
 
     @Override
@@ -127,7 +86,7 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     @Override
     public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
     {
-        if (ArrayUtils.contains(this.getDescriptor().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
+        if (ArrayUtils.contains(this.getCrafter().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
                 && this.isOutputEmpty())
             return this.isItemValidForSlot(index, itemStackIn);
         return false;
@@ -137,10 +96,5 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     public int getInventoryStackLimit()
     {
         return 1;
-    }
-
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 }

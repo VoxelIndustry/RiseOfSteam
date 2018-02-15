@@ -31,7 +31,7 @@ public class TileSolidBoiler extends TileBoilerBase
 
     public TileSolidBoiler()
     {
-        super("TileSolidBoiler", 1, 300, 4000, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
+        super(QBarMachines.SOLID_BOILER, 1, 300, 4000, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
     }
 
     @Override

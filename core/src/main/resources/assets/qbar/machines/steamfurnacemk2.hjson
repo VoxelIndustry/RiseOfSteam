@@ -41,5 +41,14 @@
             itemInput: 1
             itemOutput: 1
         }
+        automation: {
+            outputs: [
+                {
+                    pos: [1, 0, -2]
+                    facing: SOUTH
+                    slots: [0]
+                }
+            ]
+        }
     }
 }
