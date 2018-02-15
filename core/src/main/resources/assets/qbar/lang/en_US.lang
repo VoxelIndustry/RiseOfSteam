@@ -36,7 +36,7 @@ tile.liquidfuel_boiler.name=Liquid Fuel Boiler
 tile.orewasher.name=Ore Washer
 tile.sortingmachine.name=Sorting Machine
 tile.smallminingdrill.name=Small Mining Drill
-tile.tinyminingdrill.name=Tiny Mining Drill
+tile.tinyminingdrill.name=Core Sample Drill
 
 tile.alloycauldron.name=Alloy Cauldron
 tile.sawmill.name=Saw Mill
