@@ -17,14 +17,14 @@ import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.SteamComponent;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
-import net.qbar.common.tile.QBarTileBase;
 
 import java.util.List;
 
 public class TileOffshorePump extends QBarTileBase implements ITickable
 {
-    private int           transferCapacity;
-    private IFluidHandler top;
+    private SteamComponent steamComponent;
+    private int            transferCapacity;
+    private IFluidHandler  top;
     private boolean water = false;
 
     private final LimitedTank tank;
@@ -41,8 +41,8 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
         this.tank.setCanDrain(false);
         this.tank.setCanFill(false);
 
-        this.steamTank = new SteamTank(0, QBarMachines.OFFSHORE_PUMP.get(SteamComponent.class).getSteamCapacity(),
-                QBarMachines.OFFSHORE_PUMP.get(SteamComponent.class).getMaxPressureCapacity());
+        this.steamComponent = QBarMachines.OFFSHORE_PUMP.get(SteamComponent.class);
+        this.steamTank = new SteamTank(0, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity());
 
         this.facing = EnumFacing.NORTH;
     }
@@ -61,17 +61,18 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
             this.scanFluidHandler();
         }
 
-        if (this.water)
+        if (this.water && this.steamTank.drainSteam(steamComponent.getSteamConsumption(), true) ==
+                steamComponent.getSteamConsumption())
             this.transferFluid();
     }
 
-    public void transferFluid()
+    private void transferFluid()
     {
         if (this.top != null)
             this.top.fill(new FluidStack(FluidRegistry.WATER, this.transferCapacity), true);
     }
 
-    public void scanFluidHandler()
+    private void scanFluidHandler()
     {
         final BlockPos posNeighbor = this.getPos().up();
         final TileEntity tile = this.world.getTileEntity(posNeighbor);
