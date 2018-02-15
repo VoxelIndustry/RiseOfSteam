@@ -26,7 +26,9 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
 
     private final TileAssembler assembler;
 
-    final GuiAbsolutePane craftPane;
+    private final GuiAbsolutePane craftPane;
+    private final ItemStackView[] ingredients = new ItemStackView[9];
+    private final ItemStackView result;
 
     public GuiAssembler(final EntityPlayer player, final TileAssembler assembler)
     {
@@ -48,7 +50,6 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
         this.craftPane = new GuiAbsolutePane();
         this.craftPane.setWidth(104);
         this.craftPane.setHeight(54);
-        this.refreshCraftSlots(this.getContainer().getSlot(36).getStack());
         mainPanel.addChild(craftPane, 61, 9);
 
         Rectangle rectangle = new Rectangle(0, 0, assembler.getProgressScaled(18), 17);
@@ -62,33 +63,59 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
                     + "," + (18 / 256f) + "," + ((176 + assembler.getProgressScaled(18)) / 256f) + "," + (35 / 256f));
         });
         mainPanel.addChild(rectangle, 115, 10);
+
+        for (int i = 0; i < 9; i++)
+        {
+            ItemStackView ingredient = new ItemStackView();
+            ingredient.setWidth(18);
+            ingredient.setHeight(18);
+            ingredient.setTooltip(true);
+            ingredient.setColor(new Color(1, 1, 1, 0.5f));
+            this.craftPane.addChild(ingredient, 18 * (i % 3), 18 * (i / 3));
+            this.ingredients[i] = ingredient;
+
+            ((ListenerSlot) this.getContainer().getSlot(57 + i)).setOnChange(stack ->
+                    ingredient.setVisible(stack.isEmpty()));
+        }
+
+        ItemStackView result = new ItemStackView();
+        result.setWidth(18);
+        result.setHeight(18);
+        result.setTooltip(true);
+        result.setColor(new Color(1, 1, 1, 0.5f));
+        this.craftPane.addChild(result, 72, 0);
+        this.result = result;
+
+        ((ListenerSlot) this.getContainer().getSlot(47)).setOnChange(stack ->
+                result.setVisible(stack.isEmpty()));
+
+        this.refreshCraftSlots(this.getContainer().getSlot(36).getStack());
     }
 
     private void refreshCraftSlots(final ItemStack stack)
     {
-        this.craftPane.clearChilds();
+        boolean stackEmpty = false;
+
         if (stack.hasTagCompound())
         {
             final IPunchedCard card = CardDataStorage.instance().read(stack.getTagCompound());
             if (card != null && card.getID() == CardDataStorage.ECardType.CRAFT.getID())
             {
                 for (int i = 0; i < 9; i++)
-                {
-                    final ItemStackView view = new ItemStackView(((CraftCard) card).getRecipe()[i]);
-
-                    view.setWidth(18);
-                    view.setHeight(18);
-                    view.setTooltip(true);
-                    view.setColor(new Color(1, 1, 1, 0.5f));
-                    this.craftPane.addChild(view, 18 * (i % 3), 18 * (i / 3));
-                }
-                final ItemStackView resultView = new ItemStackView(((CraftCard) card).getResult());
-                resultView.setWidth(18);
-                resultView.setHeight(18);
-                resultView.setTooltip(true);
-                resultView.setColor(new Color(1, 1, 1, 0.5f));
-                this.craftPane.addChild(resultView, 72, 0);
+                    this.ingredients[i].setItemStack(((CraftCard) card).getRecipe()[i]);
+                this.result.setItemStack(((CraftCard) card).getResult());
             }
+            else
+                stackEmpty = true;
+        }
+        else
+            stackEmpty = true;
+
+        if (stackEmpty)
+        {
+            for (int i = 0; i < 9; i++)
+                this.ingredients[i].setItemStack(ItemStack.EMPTY);
+            this.result.setItemStack(ItemStack.EMPTY);
         }
     }
 }
