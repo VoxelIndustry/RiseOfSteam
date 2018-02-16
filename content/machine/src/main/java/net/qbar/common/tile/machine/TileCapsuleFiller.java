@@ -74,6 +74,13 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
     }
 
     @Override
+    public void onLoad()
+    {
+        if (this.isClient())
+            this.forceSync();
+    }
+
+    @Override
     public void addInfo(final List<String> lines)
     {
         lines.add("Steam " + this.tank.getSteam() + " / " + this.tank.getCapacity());

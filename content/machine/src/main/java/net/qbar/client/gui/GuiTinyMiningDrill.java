@@ -38,8 +38,11 @@ public class GuiTinyMiningDrill extends GuiMachineBase<TileTinyMiningDrill>
 
         this.addSimpleButton(new GuiSpace(72, 25, 31, 12), () ->
         {
-            if (this.miningDrill.getProgress() == 0)
+            if (!this.miningDrill.isDoStart())
+            {
                 new ServerActionBuilder("START").toTile(miningdrill).send();
+                this.miningDrill.setDoStart(true);
+            }
         });
     }
 
@@ -51,7 +54,7 @@ public class GuiTinyMiningDrill extends GuiMachineBase<TileTinyMiningDrill>
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
 
-        if (this.miningDrill.getProgress() != 0 || !this.miningDrill.getStackInSlot(0).isEmpty())
+        if (this.miningDrill.isDoStart() || !this.miningDrill.getStackInSlot(0).isEmpty())
             this.drawTexturedModalRect(x + 72, y + 25, 176, 7, 31, 12);
         this.fontRenderer.drawString("START", x + 73, y + 27, 4210752);
     }

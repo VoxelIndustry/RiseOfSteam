@@ -34,6 +34,8 @@ import java.util.Map;
 
 public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements ITickable, IActionReceiver
 {
+    private final int consumption = 20;
+
     @Getter
     @Setter
     private float progress;
@@ -41,6 +43,8 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     private BlockPos                lastPos;
     private Map<QBarMineral, Float> results;
 
+    @Getter
+    @Setter
     private boolean doStart = false;
 
     public TileTinyMiningDrill()
@@ -56,7 +60,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     {
         if (this.isClient())
         {
-            if (this.getProgress() < 1 && this.doStart)
+            if (this.getProgress() < 1 && this.getSteam() >= this.consumption && this.doStart)
                 this.world.spawnParticle(EnumParticleTypes.BLOCK_DUST,
                         this.getPos().getX() + 0.5 + (this.world.rand.nextFloat() / 4.0F) - 0.125F,
                         this.getPos().getY(),
@@ -67,7 +71,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
             return;
         }
 
-        if (this.doStart && this.getProgress() < 1 && this.getSteam() >= 20)
+        if (this.doStart && this.getProgress() < 1 && this.getSteam() >= this.consumption)
         {
             BlockPos toCheck = this.lastPos;
 
@@ -122,8 +126,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
                     this.doStart = false;
                 }
             }
-            // TODO: Change to real value when the portable storage is implemented
-            this.drainSteam(0, true);
+            this.drainSteam(this.consumption, true);
 
             this.sync();
         }
@@ -171,20 +174,21 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
             this.forceSync();
     }
 
-    public int getSteam()
+    private int getSteam()
     {
-        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH))
+        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+                EnumFacing.NORTH))
             return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).getSteam();
-        // TODO: Change to real value when the portable storage is implemented
-        return 1000;
+                    .getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).getSteam();
+        return 0;
     }
 
-    public int drainSteam(int quantity, boolean doDrain)
+    private int drainSteam(int quantity, boolean doDrain)
     {
-        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH))
+        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+                EnumFacing.NORTH))
             return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH)
+                    .getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH)
                     .drainSteam(quantity, doDrain);
         return 0;
     }
@@ -211,9 +215,12 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return new ContainerBuilder("tinyminingdrill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).outputSlot(0, 134, 35).slot(1, 80, 58)
-                .syncFloatValue(this::getProgress, this::setProgress).addInventory().create();
+        return new ContainerBuilder("tinyminingdrill", player)
+                .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
+                .tile(this)
+                .outputSlot(0, 134, 35).steamSlot(1, 80, 58)
+                .syncFloatValue(this::getProgress, this::setProgress)
+                .addInventory().create();
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
@@ -224,9 +231,8 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.TINYMININGDRILL.getUniqueID(), this.world, this.pos.getX
-                        (), this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.TINYMININGDRILL.getUniqueID(), this.world,
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
 
@@ -237,11 +243,10 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
     {
-        if (index == 1) // TODO: Add steam item capability check
-            return true;
-        return false;
+        return index == 1 && stack.hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+                EnumFacing.NORTH);
     }
 
     @Override
