@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.qbar.common.container.slot.*;
 import net.qbar.common.container.sync.DefaultSyncables;
 import net.qbar.common.recipe.QBarRecipeHandler;
+import net.qbar.common.steam.CapabilitySteamHandler;
 import org.apache.commons.lang3.Range;
 
 import java.util.List;
@@ -185,6 +186,25 @@ public class ContainerTileInventoryBuilder
     {
         this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(
                 stack -> stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, EnumFacing.UP)));
+        return this;
+    }
+
+    /**
+     * Add a steam-containers-only slot to the slot list of the current {@code IInventory}
+     * <p>
+     * The builtin filter will only allow {@link ItemStack} having the {@code CapabilitySteamHandler
+     * .ITEM_STEAM_HANDLER_CAPABILITY} with {@code EnumFacing.UP}
+     *
+     * @param index the index this slot will use to communicate with the inventory.
+     * @param x     the horizontal position at which the slot is placed
+     * @param y     the vertical position at which the slot is placed
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    @SuppressWarnings("null")
+    public ContainerTileInventoryBuilder steamSlot(final int index, final int x, final int y)
+    {
+        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(
+                stack -> stack.hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.UP)));
         return this;
     }
 

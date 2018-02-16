@@ -105,6 +105,8 @@ public class GuiHandler implements IGuiHandler
             case ENGINEERWORKBENCH:
                 return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
                         new GuiEngineerWorkbench(player, (TileEngineerWorkbench) tile));
+            case CAPSULE_FILLER:
+                return new GuiCapsuleFiller(player, (TileCapsuleFiller) tile);
             default:
                 break;
         }

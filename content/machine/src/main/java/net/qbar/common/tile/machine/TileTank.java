@@ -244,8 +244,9 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("fluidtank", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
+        return new ContainerBuilder("fluidtank", player)
+                .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
+                .tile(this).syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
     }
 
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)

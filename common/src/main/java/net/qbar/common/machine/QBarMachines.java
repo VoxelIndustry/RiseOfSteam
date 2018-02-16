@@ -41,6 +41,7 @@ public class QBarMachines
     public static MachineDescriptor KEYPUNCH;
     public static MachineDescriptor SOLAR_MIRROR;
     public static MachineDescriptor TINY_MINING_DRILL;
+    public static MachineDescriptor CAPSULE_FILLER;
 
     private static Set<MachineDescriptor>                                              machines = new HashSet<>();
     private static HashMap<Class<? extends IMachineComponent>, Set<MachineDescriptor>> subLists = new HashMap<>();
@@ -91,6 +92,7 @@ public class QBarMachines
         FURNACE_MK1 = loadMachine("steamfurnacemk1");
         FURNACE_MK2 = loadMachine("steamfurnacemk2");
         TINY_MINING_DRILL = loadMachine("tinyminingdrill");
+        CAPSULE_FILLER = loadMachine("capsulefiller");
 
         if (!isPreloading())
             getAllByComponent(Blueprint.class).forEach(new BlueprintLoader());

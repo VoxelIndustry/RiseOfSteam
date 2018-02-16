@@ -1,5 +1,6 @@
 package net.qbar.common.steam;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -12,10 +13,16 @@ public class CapabilitySteamHandler
     @CapabilityInject(ISteamHandler.class)
     public static Capability<ISteamHandler> STEAM_HANDLER_CAPABILITY = null;
 
+    @CapabilityInject(ISteamHandlerItem.class)
+    public static Capability<ISteamHandlerItem> ITEM_STEAM_HANDLER_CAPABILITY = null;
+
     public static void register()
     {
         CapabilityManager.INSTANCE.register(ISteamHandler.class, new DefaultSteamHandlerStorage<>(),
                 () -> new SteamTank(0, 10000, SteamUtil.BASE_PRESSURE * 2));
+
+        CapabilityManager.INSTANCE.register(ISteamHandlerItem.class, new DefaultSteamHandlerStorage<>(),
+                () -> new ItemSteamTank(ItemStack.EMPTY, 0, 10000, SteamUtil.BASE_PRESSURE * 2));
     }
 
     private static class DefaultSteamHandlerStorage<T extends ISteamHandler> implements Capability.IStorage<T>

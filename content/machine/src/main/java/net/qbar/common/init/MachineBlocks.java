@@ -47,6 +47,8 @@ public class MachineBlocks
                 TileAlloyCauldron.class));
         QBarBlocks.registerBlock(new BlockMultiblockMachine<>("sawmill", Material.IRON, TileSawMill::new,
                 TileSawMill.class));
+        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("capsulefiller", Material.IRON, TileCapsuleFiller::new,
+                TileCapsuleFiller.class));
 
         QBarBlocks.registerBlock(new BlockEngineerStorage());
         QBarBlocks.registerBlock(new BlockEngineerWorkbench());
@@ -77,5 +79,6 @@ public class MachineBlocks
         QBarBlocks.registerTile(TileEngineerWorkbench.class, "engineerworkbench");
         QBarBlocks.registerTile(TileBlueprintPrinter.class, "blueprintprinter");
         QBarBlocks.registerTile(TileCraftCardLibrary.class, "craftcardlibrary");
+        QBarBlocks.registerTile(TileCapsuleFiller.class, "capsulefiller");
     }
 }
