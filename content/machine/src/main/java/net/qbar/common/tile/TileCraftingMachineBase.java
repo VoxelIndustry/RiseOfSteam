@@ -43,6 +43,7 @@ public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBas
     private float      maxProgress;
     private QBarRecipe currentRecipe;
 
+    @Getter
     private final SteamTank steamTank;
 
     private final FluidTank[] inputTanks, outputTanks, bufferTanks;
@@ -399,11 +400,6 @@ public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBas
     public int useSteam(final int amount)
     {
         return this.steamTank.drainSteam(amount, true);
-    }
-
-    public SteamTank getSteamTank()
-    {
-        return this.steamTank;
     }
 
     @Override

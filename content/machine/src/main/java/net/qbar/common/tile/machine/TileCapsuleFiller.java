@@ -15,14 +15,14 @@ import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.SteamComponent;
-import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandlerItem;
 import net.qbar.common.steam.SteamTank;
+import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.List;
 
 public class TileCapsuleFiller extends TileMultiblockInventoryBase implements ITickable
 {
@@ -51,29 +51,34 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
 
             if (item != null && this.getTank().getSteam() > 0 &&
                     item.getSteam() < item.getCapacity() * item.getMaxPressure())
-            {
                 item.fillSteam(this.tank.drainSteam(this.steamComponent.getSteamConsumption(), true), true);
-                this.sync();
-            }
         }
     }
 
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
+        super.writeToNBT(tag);
+
         this.tank.writeToNBT(tag);
 
-        return super.writeToNBT(tag);
+        return tag;
     }
-
-    private ArrayList<MultiblockSide> tmpConnections = new ArrayList<>();
 
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
-        this.tank.readFromNBT(tag);
-
         super.readFromNBT(tag);
+
+        this.tank.readFromNBT(tag);
+    }
+
+    @Override
+    public void addInfo(final List<String> lines)
+    {
+        lines.add("Steam " + this.tank.getSteam() + " / " + this.tank.getCapacity());
+        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.tank.getPressure()) + " / "
+                + SteamUtil.pressureFormat.format(this.tank.getMaxPressure()));
     }
 
     @Override
@@ -117,7 +122,7 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
         return new ContainerBuilder("capsule_filler", player)
                 .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
                 .tile(this)
-                .steamSlot(0, 0, 0)
+                .steamSlot(0, 80, 36)
                 .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
                 .addInventory().create();
     }
