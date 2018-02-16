@@ -160,19 +160,9 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (this.tier == 0)
-        {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                    && (from.equals(BlockPos.ORIGIN) || from.equals(this.getInputPos()))
-                    && facing.getAxis().isHorizontal())
-                return true;
-        }
-        else
-        {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                    && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
-                return true;
-        }
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+                && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
+            return true;
         return super.hasCapability(capability, facing);
     }
 
@@ -180,35 +170,14 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (this.tier == 0)
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+                && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
         {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                    && (from.equals(BlockPos.ORIGIN) || from.equals(this.getInputPos()))
-                    && facing.getAxis().isHorizontal())
-            {
-                if (from.equals(BlockPos.ORIGIN))
-                    return (T) this.tank.getOutputHandler();
-                return (T) this.tank.getInputHandler();
-            }
-        }
-        else
-        {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                    && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
-            {
-                if (from.getY() == 0)
-                    return (T) this.tank.getOutputHandler();
-                return (T) this.tank.getInputHandler();
-            }
+            if (from.getY() == 0)
+                return (T) this.tank.getOutputHandler();
+            return (T) this.tank.getInputHandler();
         }
         return super.getCapability(capability, facing);
-    }
-
-    private BlockPos getInputPos()
-    {
-        if (this.inputPos == null)
-            this.inputPos = new BlockPos(0, 3, 0);
-        return this.inputPos;
     }
 
     @Override
@@ -226,8 +195,7 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
             return true;
         }
         player.openGui(QBarConstants.MODINSTANCE, MachineGui.FLUIDTANK.getUniqueID(), this.world, this.pos.getX(),
-                this.pos.getY(),
-                this.pos.getZ());
+                this.pos.getY(), this.pos.getZ());
         return false;
     }
 
