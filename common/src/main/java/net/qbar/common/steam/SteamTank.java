@@ -40,9 +40,9 @@ public class SteamTank implements ISteamTank
 
     public int drainInternal(final int amount, final boolean doDrain)
     {
-        int drained = Math.min(amount, this.steam);
+        int drained = Math.min(amount, this.getSteam());
         if (doDrain)
-            this.setSteam(this.steam - drained);
+            this.setSteam(this.getSteam() - drained);
         return drained;
     }
 
@@ -58,20 +58,20 @@ public class SteamTank implements ISteamTank
 
         filled = (int) Math.min(filled, this.getCapacity() * this.getMaxPressure() - this.getSteam());
         if (doFill)
-            this.setSteam(this.steam + filled);
+            this.setSteam(this.getSteam() + filled);
         return filled;
     }
 
     public void readFromNBT(final NBTTagCompound nbt)
     {
-        this.steam = nbt.getInteger("steam");
+        this.setSteam(nbt.getInteger("steam"));
         this.capacity = nbt.getInteger("capacity");
         this.maxPressure = nbt.getFloat("maxPressure");
     }
 
     public NBTTagCompound writeToNBT(final NBTTagCompound nbt)
     {
-        nbt.setInteger("steam", this.steam);
+        nbt.setInteger("steam", this.getSteam());
         nbt.setInteger("capacity", this.capacity);
         nbt.setFloat("maxPressure", this.maxPressure);
         return nbt;

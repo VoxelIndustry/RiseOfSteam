@@ -5,14 +5,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.SludgeData;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public class SludgeRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
@@ -20,7 +18,7 @@ public class SludgeRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements I
     private ItemStack result = new ItemStack(QBarItems.COMPRESSED_MINERAL_SLUDGE);
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(InventoryCrafting inv, World world)
     {
         for (int i = 0; i < 9; i++)
         {

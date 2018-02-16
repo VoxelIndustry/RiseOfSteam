@@ -3,12 +3,12 @@ package net.qbar.common.item;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.qbar.common.steam.*;
+import net.qbar.common.steam.ItemSteamTank;
+import net.qbar.common.steam.SteamUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -22,9 +22,24 @@ public class ItemSteamCapsule extends ItemBase
     {
         super(name);
         this.setHasSubtypes(true);
+        this.setMaxStackSize(1);
 
         this.capacity = capacity;
         this.pressure = pressure;
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        if (stack.hasTagCompound())
+            return 1 - ( stack.getTagCompound().getInteger("steam") / (this.capacity * pressure));
+        return 0;
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        return true;
     }
 
     @Override

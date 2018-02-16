@@ -66,4 +66,16 @@ public class ItemSteamTank extends SteamTank implements ISteamHandlerItem, ICapa
         }
         return filled;
     }
+
+    @Override
+    public void setSteam(int steam)
+    {
+        this.getContainer().getTagCompound().setInteger("steam", steam);
+    }
+
+    @Override
+    public int getSteam()
+    {
+        return this.getContainer().getTagCompound().getInteger("steam");
+    }
 }

@@ -25,13 +25,13 @@ public class QBarItems
     @ObjectHolder("ironrod")
     public static final ItemBase  IRON_ROD        = null;
     @ObjectHolder("metalplate")
-    public static final ItemMetal  METALPLATE      = null;
+    public static final ItemMetal METALPLATE      = null;
     @ObjectHolder("metalgear")
     public static final ItemMetal METALGEAR       = null;
     @ObjectHolder("metalingot")
-    public static final ItemMetal  METALINGOT      = null;
+    public static final ItemMetal METALINGOT      = null;
     @ObjectHolder("metalnugget")
-    public static final ItemMetal  METALNUGGET      = null;
+    public static final ItemMetal METALNUGGET     = null;
     @ObjectHolder("solarreflector")
     public static final ItemBase  SOLAR_REFLECTOR = null;
 
@@ -53,6 +53,15 @@ public class QBarItems
     public static final ItemBase LOGICBOX       = null;
     @ObjectHolder("multiblockbox")
     public static final ItemBase MULTIBLOCK_BOX = null;
+
+    @ObjectHolder("steamcapsule")
+    public static final ItemBase STEAMCAPSULE     = null;
+    @ObjectHolder("steamcapsulex4")
+    public static final ItemBase STEAMCAPSULE_X4  = null;
+    @ObjectHolder("steamcapsulex6")
+    public static final ItemBase STEAMCAPSULE_X6  = null;
+    @ObjectHolder("steamcapsulex12")
+    public static final ItemBase STEAMCAPSULE_X12 = null;
 
     public static List<Item> ITEMS;
 

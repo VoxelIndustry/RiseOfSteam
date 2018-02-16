@@ -21,6 +21,7 @@ import net.qbar.common.recipe.category.FurnaceRecipeCategory;
 import net.qbar.common.recipe.category.OreWasherRecipeCategory;
 import net.qbar.common.recipe.category.QBarRecipeCategory;
 import net.qbar.common.recipe.category.SortingMachineRecipeCategory;
+import net.qbar.common.recipe.type.CapsuleRecipe;
 import net.qbar.common.recipe.type.SludgeRecipe;
 import org.apache.commons.lang3.StringUtils;
 
@@ -96,6 +97,8 @@ public class QBarRecipes
 
         QBarRecipeHandler.CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(
                 new ResourceLocation(QBarConstants.MODID, "compressedsludge")));
+        QBarRecipeHandler.CRAFTING_RECIPES.add(new CapsuleRecipe().setRegistryName(
+                new ResourceLocation(QBarConstants.MODID, "steamcapsule")));
 
         QBarRecipeHelper.addMeltingRecipe("iron", 1204, 1204 * 1.25f, 35);
         QBarRecipeHelper.addMeltingRecipe("gold", 1064, 1064 * 1.25f, 20);
