@@ -311,7 +311,7 @@ public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerPro
 
         for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
         {
-            if (steamTank.getKey().getSteam() != 0)
+            if (steamTank.getKey().getSteam() != 0 && steamTank.getKey().getCapacity() != 0)
                 this.drawFluid(steamTank.getKey().toFluidStack(), x + steamTank.getValue().getX(),
                         y + steamTank.getValue().getY(), steamTank.getValue().getWidth(),
                         steamTank.getValue().getHeight(),

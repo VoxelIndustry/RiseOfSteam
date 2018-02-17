@@ -5,7 +5,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.qbar.common.block.*;
 import net.qbar.common.block.creative.BlockCreativeSteamGenerator;
 import net.qbar.common.block.creative.BlockCreativeWaterGenerator;
-import net.qbar.common.block.BlockStructure;
 import net.qbar.common.multiblock.TileMultiblockGag;
 import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.creative.TileCreativeSteamGenerator;
@@ -49,6 +48,10 @@ public class MachineBlocks
                 TileSawMill.class));
         QBarBlocks.registerBlock(new BlockMultiblockMachine<>("capsulefiller", Material.IRON, TileCapsuleFiller::new,
                 TileCapsuleFiller.class));
+        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamtank_small", Material.IRON,
+                () -> new TileSteamTank(0), TileSteamTank.class));
+        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamtank_medium", Material.IRON,
+                () -> new TileSteamTank(1), TileSteamTank.class));
 
         QBarBlocks.registerBlock(new BlockEngineerStorage());
         QBarBlocks.registerBlock(new BlockEngineerWorkbench());
@@ -80,5 +83,6 @@ public class MachineBlocks
         QBarBlocks.registerTile(TileBlueprintPrinter.class, "blueprintprinter");
         QBarBlocks.registerTile(TileCraftCardLibrary.class, "craftcardlibrary");
         QBarBlocks.registerTile(TileCapsuleFiller.class, "capsulefiller");
+        QBarBlocks.registerTile(TileSteamTank.class, "steamtank");
     }
 }

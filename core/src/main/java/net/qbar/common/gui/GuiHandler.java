@@ -107,6 +107,8 @@ public class GuiHandler implements IGuiHandler
                         new GuiEngineerWorkbench(player, (TileEngineerWorkbench) tile));
             case CAPSULE_FILLER:
                 return new GuiCapsuleFiller(player, (TileCapsuleFiller) tile);
+            case STEAMTANK:
+                return new GuiSteamTank(player, (TileSteamTank) tile);
             default:
                 break;
         }

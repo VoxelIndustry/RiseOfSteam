@@ -1,0 +1,11 @@
+{
+    tier: 1
+    type: LOGISTIC
+    components: {
+        multiblock: {
+            width: 2
+            height: 4
+            length: 2
+        }
+    }
+}
