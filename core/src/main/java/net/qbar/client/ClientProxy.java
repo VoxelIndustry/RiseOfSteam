@@ -145,10 +145,6 @@ public class ClientProxy extends CommonProxy
                 QBar.proxy.registerItemRenderer(item, 0, item.getUnlocalizedName().substring(5));
         }
 
-        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:fluidpipe"), 1,
-                new ModelResourceLocation(QBarConstants.MODID + ":fluidpipe", "inventoryvalve"));
-        ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:steampipe"), 1,
-                new ModelResourceLocation(QBarConstants.MODID + ":steampipe", "inventoryvalve"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
                 new ModelResourceLocation(QBarConstants.MODID + ":itemextractor", "facing=down,filter=true"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemsplitter"), 1,

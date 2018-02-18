@@ -14,10 +14,12 @@ public class LogisticBlocks
 {
     public static void init()
     {
-        QBarBlocks.registerBlock(new BlockFluidPipe(), block -> new ItemBlockMetadata(block, "valve"));
-        QBarBlocks.registerBlock(new BlockSteamPipe(), block -> new ItemBlockMetadata(block, "valve"));
+        QBarBlocks.registerBlock(new BlockFluidPipe());
+        QBarBlocks.registerBlock(new BlockSteamPipe());
         QBarBlocks.registerBlock(new BlockFluidPump());
         QBarBlocks.registerBlock(new BlockOffshorePump());
+
+        QBarBlocks.registerBlock(new BlockSteamValve());
 
         QBarBlocks.registerBlock(new BlockBelt());
         QBarBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
