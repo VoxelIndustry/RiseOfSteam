@@ -1,0 +1,44 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "qbar:items/steamcapsule"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "time": 0.0
+      },
+      "model": "qbar:item/steamcapsule"
+    },
+    {
+      "predicate": {
+        "time": 0.20
+      },
+      "model": "qbar:item/steamcapsule_20"
+    },
+    {
+      "predicate": {
+        "time": 0.40
+      },
+      "model": "qbar:item/steamcapsule_40"
+    },
+    {
+      "predicate": {
+        "time": 0.60
+      },
+      "model": "qbar:item/steamcapsule_60"
+    },
+    {
+      "predicate": {
+        "time": 0.80
+      },
+      "model": "qbar:item/steamcapsule_80"
+    },
+    {
+      "predicate": {
+        "time": 1
+      },
+      "model": "qbar:item/steamcapsule_100"
+    }
+  ]
+}

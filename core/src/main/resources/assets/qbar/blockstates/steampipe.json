@@ -14,9 +14,6 @@
     },
     "inventory": {
       "model": "qbar:steampipe_inventory.obj"
-    },
-    "inventoryvalve": {
-      "model": "qbar:steampipe_inventory_valve.obj"
     }
   }
 }

@@ -1,8 +1,11 @@
 package net.qbar.common.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,13 +29,22 @@ public class ItemSteamCapsule extends ItemBase
 
         this.capacity = capacity;
         this.pressure = pressure;
+
+        this.addPropertyOverride(new ResourceLocation("energy"), new IItemPropertyGetter()
+        {
+            @SideOnly(Side.CLIENT)
+            public float apply(ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity)
+            {
+                return stack.getTagCompound().getInteger("steam") / (capacity * pressure);
+            }
+        });
     }
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
         if (stack.hasTagCompound())
-            return 1 - ( stack.getTagCompound().getInteger("steam") / (this.capacity * pressure));
+            return 1 - (stack.getTagCompound().getInteger("steam") / (capacity * pressure));
         return 0;
     }
 
