@@ -138,3 +138,5 @@ fabric.properties
 *.iml
 
 *.ipr
+
+*.ase
