@@ -14,9 +14,6 @@
     },
     "inventory": {
       "model": "qbar:fluidpipe_inventory.obj"
-    },
-    "inventoryvalve": {
-      "model": "qbar:fluidpipe_inventory_valve.obj"
     }
   }
 }

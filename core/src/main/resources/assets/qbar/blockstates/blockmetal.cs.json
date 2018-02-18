@@ -10,7 +10,7 @@
     "matcher": {
       "variant": ["copper", "tin", "zinc", "nickel", "steel", "bronze", "brass", "lead"],
       "values": {
-        "texture#all": "qbar:blocks/#variant_block"
+        "texture#all": "qbar:blocks/block_#variant"
       }
     }
   }
