@@ -2,10 +2,7 @@ package net.qbar.common.init;
 
 import net.qbar.common.block.*;
 import net.qbar.common.block.item.ItemBlockMetadata;
-import net.qbar.common.tile.TileFluidPipe;
-import net.qbar.common.tile.TileSteamPipe;
-import net.qbar.common.tile.TileFluidPump;
-import net.qbar.common.tile.TileOffshorePump;
+import net.qbar.common.tile.*;
 import net.qbar.common.tile.machine.TileBelt;
 import net.qbar.common.tile.machine.TileExtractor;
 import net.qbar.common.tile.machine.TileSplitter;
@@ -32,5 +29,6 @@ public class LogisticBlocks
         QBarBlocks.registerTile(TileBelt.class, "belt");
         QBarBlocks.registerTile(TileExtractor.class, "itemextractor");
         QBarBlocks.registerTile(TileSplitter.class, "itemsplitter");
+        QBarBlocks.registerTile(TileSteamValve.class, "steamvalve");
     }
 }

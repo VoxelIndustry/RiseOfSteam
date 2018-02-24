@@ -14,16 +14,20 @@ import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.steam.SteamTank;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-public class TileSteamValve extends QBarTileBase implements IConnectionAware
+public class TileSteamValve extends QBarTileBase implements IConnectionAware, ITileInfoProvider
 {
     private static final SteamTank      emptyTank    = new SteamTank(0, 0, 0);
     private              DummySteamTank forwardTank  = new DummySteamTank(emptyTank);
     private              DummySteamTank backwardTank = new DummySteamTank(emptyTank);
 
-    @Getter
-    @Setter
-    private EnumFacing facing;
+    @Override
+    public void addInfo(final List<String> lines)
+    {
+        lines.add("Axis: " + this.getAxis());
+        lines.add("Facing: " + this.getFacing());
+    }
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
@@ -55,6 +59,11 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware
     private EnumFacing.Axis getAxis()
     {
         return this.world.getBlockState(this.pos).getValue(BlockSteamValve.AXIS);
+    }
+
+    private EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockSteamValve.FACING);
     }
 
     @Override

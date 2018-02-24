@@ -5,8 +5,10 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.tile.TileSteamValve;
 
@@ -27,13 +29,25 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
     }
 
     @Override
+    public boolean isOpaqueCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(final IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING, AXIS);
     }
 
     @Override
-    public IBlockState getStateFromMeta(final int meta)
+    public IBlockState getStateFromMeta(int meta)
     {
         EnumFacing facing = EnumFacing.VALUES[(meta % 4) + 2];
         EnumFacing.Axis axis = EnumFacing.Axis.values()[meta / 4];
@@ -42,9 +56,18 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
     }
 
     @Override
-    public int getMetaFromState(final IBlockState state)
+    public int getMetaFromState(IBlockState state)
     {
         return (state.getValue(FACING).ordinal() - 2) + state.getValue(AXIS).ordinal() * 3;
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
+                                            float hitZ, int meta, EntityLivingBase placer)
+    {
+        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer)
+                .withProperty(AXIS, facing.getAxis())
+                .withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer));
     }
 
     @Nullable
