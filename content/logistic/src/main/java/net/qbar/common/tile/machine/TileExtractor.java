@@ -10,10 +10,10 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.qbar.client.render.tile.VisibilityModelState;
-import net.qbar.common.card.FilterCard;
-import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CardDataStorage.ECardType;
+import net.qbar.common.card.FilterCard;
+import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
@@ -82,14 +82,9 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
             for (currentSlot = 0; currentSlot < slots; currentSlot++)
             {
                 simulated = itemHandler.extractItem(currentSlot, 1, true);
-                if (!simulated.isEmpty())
+                if (!simulated.isEmpty() && this.applyFilter(simulated))
                     break;
             }
-
-            if (this.hasFilter() && this.filter != null
-                    && (simulated.isEmpty() || (this.getWhitelistProperty().getValue() ? !this.filter.filter(simulated)
-                    : this.filter.filter(simulated))))
-                return;
 
             if (!simulated.isEmpty() && this.canInsert(simulated) && this.useSteam(1, false))
             {
@@ -97,6 +92,16 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
                 this.useSteam(1, true);
             }
         }
+    }
+
+    private boolean applyFilter(ItemStack stack)
+    {
+        if (!this.hasFilter() || this.filter == null)
+            return true;
+        if (this.getWhitelistProperty().getValue() && this.filter.filter(stack) ||
+                !this.getWhitelistProperty().getValue() && !this.filter.filter(stack))
+            return true;
+        return false;
     }
 
     private boolean useSteam(final int amount, final boolean use)
