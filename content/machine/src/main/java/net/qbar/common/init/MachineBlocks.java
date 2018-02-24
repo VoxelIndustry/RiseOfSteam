@@ -58,6 +58,9 @@ public class MachineBlocks
         QBarBlocks.registerBlock(new BlockCraftCardLibrary());
         QBarBlocks.registerBlock(new BlockBlueprintPrinter());
 
+        QBarBlocks.registerBlock(new BlockBase("gearbox", Material.IRON));
+        QBarBlocks.registerBlock(new BlockBase("logicbox", Material.IRON));
+
         QBarBlocks.registerTile(TileTank.class, "tank");
         QBarBlocks.registerTile(TileKeypunch.class, "keypunch");
         QBarBlocks.registerTile(TileSolidBoiler.class, "boiler");

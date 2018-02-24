@@ -12,8 +12,6 @@ public class MachineItems
         QBarItems.registerItem(new ItemBlueprint());
 
         QBarItems.registerItem(new ItemBase("redstone_card"));
-        QBarItems.registerItem(new ItemBase("gearbox"));
-        QBarItems.registerItem(new ItemBase("logicbox"));
         QBarItems.registerItem(new ItemBase("ironrod"));
         QBarItems.registerItem(new ItemBase("solarreflector"));
     }

@@ -23,6 +23,11 @@ public class CardDataStorage
     {
     }
 
+    public ECardType getType(NBTTagCompound tag)
+    {
+        return ECardType.values()[tag.getInteger("cardTypeID")];
+    }
+
     public <T extends IPunchedCard> T read(NBTTagCompound tag, Class<T> cardClass)
     {
         return cardClass.cast(this.read(tag));
