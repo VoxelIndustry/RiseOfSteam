@@ -1,5 +1,7 @@
 package net.qbar.common.grid;
 
+import net.qbar.common.grid.impl.BeltGrid;
+import net.qbar.common.grid.node.IBelt;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

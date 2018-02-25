@@ -1,7 +1,9 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.node;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.impl.CableGrid;
 
 import javax.annotation.Nullable;
 

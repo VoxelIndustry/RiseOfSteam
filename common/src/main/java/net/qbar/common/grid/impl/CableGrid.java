@@ -1,7 +1,9 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.impl;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.node.ITileNode;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -22,14 +24,14 @@ public abstract class CableGrid
         this.cables = new HashSet<>();
     }
 
-    void tick()
+    public void tick()
     {
 
     }
 
-    abstract CableGrid copy(final int identifier);
+    public abstract CableGrid copy(final int identifier);
 
-    boolean canMerge(final CableGrid grid)
+    public boolean canMerge(final CableGrid grid)
     {
         return grid.getIdentifier() != this.getIdentifier();
     }
@@ -39,7 +41,7 @@ public abstract class CableGrid
      *
      * @param grid the source grid
      */
-    void onMerge(final CableGrid grid)
+    public void onMerge(final CableGrid grid)
     {
 
     }
@@ -50,7 +52,7 @@ public abstract class CableGrid
      *
      * @param grid the grid source grid before splitting.
      */
-    void onSplit(final CableGrid grid)
+    public void onSplit(final CableGrid grid)
     {
 
     }

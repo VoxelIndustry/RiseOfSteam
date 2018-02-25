@@ -1,7 +1,9 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.impl;
 
 import net.minecraftforge.fluids.Fluid;
 import net.qbar.common.fluid.LimitedTank;
+import net.qbar.common.grid.node.IFluidPipe;
+import net.qbar.common.grid.node.ITileNode;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -59,13 +61,13 @@ public class PipeGrid extends CableGrid
     }
 
     @Override
-    CableGrid copy(final int identifier)
+    public CableGrid copy(final int identifier)
     {
         return new PipeGrid(identifier, this.transferCapacity);
     }
 
     @Override
-    boolean canMerge(final CableGrid grid)
+    public boolean canMerge(final CableGrid grid)
     {
         if (grid instanceof PipeGrid)
         {
@@ -77,7 +79,7 @@ public class PipeGrid extends CableGrid
     }
 
     @Override
-    void onMerge(final CableGrid grid)
+    public void onMerge(final CableGrid grid)
     {
         this.getTank().setCapacity(this.getCapacity());
         this.getOutputs().addAll(((PipeGrid) grid).getOutputs());
@@ -86,7 +88,7 @@ public class PipeGrid extends CableGrid
     }
 
     @Override
-    void onSplit(final CableGrid grid)
+    public void onSplit(final CableGrid grid)
     {
         this.getOutputs().addAll(
                 ((PipeGrid) grid).getOutputs().stream().filter(this.getCables()::contains).collect(Collectors.toSet()));

@@ -16,7 +16,7 @@ import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.fluid.FilteredFluidTank;
-import net.qbar.common.grid.CableGrid;
+import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;

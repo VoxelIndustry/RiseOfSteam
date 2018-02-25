@@ -1,5 +1,7 @@
 package net.qbar.common.grid;
 
+import net.qbar.common.grid.impl.CableGrid;
+import net.qbar.common.grid.node.ITileCable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;

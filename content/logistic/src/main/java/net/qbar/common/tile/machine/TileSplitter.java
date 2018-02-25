@@ -22,7 +22,7 @@ import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
-import net.qbar.common.grid.IBelt;
+import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;

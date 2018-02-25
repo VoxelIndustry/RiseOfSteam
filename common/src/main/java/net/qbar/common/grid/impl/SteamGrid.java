@@ -1,5 +1,7 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.impl;
 
+import net.qbar.common.grid.node.ISteamPipe;
+import net.qbar.common.grid.node.ITileNode;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamTank;
 
@@ -27,13 +29,13 @@ public class SteamGrid extends CableGrid
     }
 
     @Override
-    CableGrid copy(final int identifier)
+    public CableGrid copy(final int identifier)
     {
         return new SteamGrid(identifier, this.transferCapacity);
     }
 
     @Override
-    boolean canMerge(final CableGrid grid)
+    public boolean canMerge(final CableGrid grid)
     {
         if (grid instanceof SteamGrid && ((SteamGrid) grid).getTransferCapacity() == this.transferCapacity)
             return super.canMerge(grid);
@@ -41,7 +43,7 @@ public class SteamGrid extends CableGrid
     }
 
     @Override
-    void onMerge(final CableGrid grid)
+    public void onMerge(final CableGrid grid)
     {
         this.getConnectedPipes().addAll(((SteamGrid) grid).getConnectedPipes());
         this.getTank().setCapacity(this.getCapacity());
@@ -50,7 +52,7 @@ public class SteamGrid extends CableGrid
     }
 
     @Override
-    void onSplit(final CableGrid grid)
+    public void onSplit(final CableGrid grid)
     {
         this.getConnectedPipes().addAll(((SteamGrid) grid).getConnectedPipes().stream()
                 .filter(this.getCables()::contains).collect(Collectors.toSet()));
@@ -61,7 +63,7 @@ public class SteamGrid extends CableGrid
     }
 
     @Override
-    void tick()
+    public void tick()
     {
         super.tick();
 
@@ -78,7 +80,8 @@ public class SteamGrid extends CableGrid
 
         final int drained = Stream.of(above).mapToInt(handler ->
                 handler.drainSteam(
-                        Math.min((int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity),
+                        Math.min((int) ((handler.getPressure() - average) * handler.getCapacity()), this
+                                .transferCapacity),
                         false)).sum();
         int filled = 0;
 

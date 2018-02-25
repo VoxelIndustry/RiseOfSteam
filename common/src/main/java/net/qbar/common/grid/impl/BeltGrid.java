@@ -1,4 +1,4 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.impl;
 
 import lombok.Getter;
 import net.minecraft.block.material.Material;
@@ -10,6 +10,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.qbar.common.grid.node.IBelt;
+import net.qbar.common.grid.node.ITileNode;
+import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.steam.SteamTank;
 
 import javax.annotation.Nonnull;
@@ -35,13 +38,13 @@ public class BeltGrid extends CableGrid
     }
 
     @Override
-    CableGrid copy(final int identifier)
+    public CableGrid copy(final int identifier)
     {
         return new BeltGrid(identifier, this.beltSpeed);
     }
 
     @Override
-    boolean canMerge(final CableGrid grid)
+    public boolean canMerge(final CableGrid grid)
     {
         if (grid instanceof BeltGrid && ((BeltGrid) grid).getBeltSpeed() == this.beltSpeed)
             return super.canMerge(grid);
@@ -49,7 +52,7 @@ public class BeltGrid extends CableGrid
     }
 
     @Override
-    void onMerge(final CableGrid grid)
+    public void onMerge(final CableGrid grid)
     {
         this.getTank().setCapacity(this.getSteamCapacity());
         if (((BeltGrid) grid).getTank().getSteam() != 0)
@@ -65,7 +68,7 @@ public class BeltGrid extends CableGrid
     }
 
     @Override
-    void onSplit(final CableGrid grid)
+    public void onSplit(final CableGrid grid)
     {
         this.getTank()
                 .fillInternal(((BeltGrid) grid).getTank().drainInternal(
