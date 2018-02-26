@@ -47,10 +47,6 @@ public class QBarItems
     @ObjectHolder("drillcoresample")
     public static final ItemBase DRILL_CORE_SAMPLE = null;
 
-    @ObjectHolder("gearbox")
-    public static final ItemBase GEARBOX        = null;
-    @ObjectHolder("logicbox")
-    public static final ItemBase LOGICBOX       = null;
     @ObjectHolder("multiblockbox")
     public static final ItemBase MULTIBLOCK_BOX = null;
 

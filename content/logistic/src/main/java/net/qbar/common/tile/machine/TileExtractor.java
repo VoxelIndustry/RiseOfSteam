@@ -77,16 +77,19 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
             final IItemHandler itemHandler = this.getItemHandler();
 
             final int slots = itemHandler.getSlots();
-            int currentSlot;
+            int currentSlot = -1;
             ItemStack simulated = ItemStack.EMPTY;
-            for (currentSlot = 0; currentSlot < slots; currentSlot++)
+            for (int i = 0; i < slots; i++)
             {
-                simulated = itemHandler.extractItem(currentSlot, 1, true);
+                simulated = itemHandler.extractItem(i, 1, true);
                 if (!simulated.isEmpty() && this.applyFilter(simulated))
+                {
+                    currentSlot = i;
                     break;
+                }
             }
 
-            if (!simulated.isEmpty() && this.canInsert(simulated) && this.useSteam(1, false))
+            if (currentSlot != -1 && this.canInsert(simulated) && this.useSteam(1, false))
             {
                 this.insert(itemHandler.extractItem(currentSlot, 1, false));
                 this.useSteam(1, true);
