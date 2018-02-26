@@ -58,7 +58,7 @@ public class TileSolidBoiler extends TileBoilerBase
                 this.maxBurnTime = 0;
             }
 
-            if (this.heat >= 90)
+            if (this.heat >= 100)
             {
                 int toProduce = (int) (1 / Math.E * (this.heat / 10));
                 final FluidStack drained = this.getWaterTank().drain(toProduce, true);
