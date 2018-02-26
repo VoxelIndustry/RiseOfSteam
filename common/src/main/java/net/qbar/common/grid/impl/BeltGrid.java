@@ -10,15 +10,16 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.steam.SteamTank;
 
 import javax.annotation.Nonnull;
 
 public class BeltGrid extends CableGrid
 {
+    @Getter
     private final SteamTank tank;
 
     @Getter
@@ -57,7 +58,7 @@ public class BeltGrid extends CableGrid
         this.getTank().setCapacity(this.getSteamCapacity());
         if (((BeltGrid) grid).getTank().getSteam() != 0)
             this.getTank().fillInternal(((BeltGrid) grid).getTank().getSteam(), true);
-        if (this.lastWorkingState != ((BeltGrid) grid).getLastWorkingState())
+        if (this.lastWorkingState != ((BeltGrid) grid).lastWorkingState)
         {
             grid.getCables().forEach(cable ->
             {
@@ -259,11 +260,6 @@ public class BeltGrid extends CableGrid
         return hasChanged;
     }
 
-    public SteamTank getTank()
-    {
-        return this.tank;
-    }
-
     public int getSteamCapacity()
     {
         if (this.getCables().size() < 4)
@@ -353,10 +349,5 @@ public class BeltGrid extends CableGrid
             }
         }
         return false;
-    }
-
-    public boolean getLastWorkingState()
-    {
-        return this.lastWorkingState;
     }
 }

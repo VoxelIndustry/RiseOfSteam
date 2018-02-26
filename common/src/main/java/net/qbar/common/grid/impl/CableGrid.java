@@ -1,6 +1,7 @@
 package net.qbar.common.grid.impl;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.node.ITileNode;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 
 @EqualsAndHashCode
 @ToString
+@Getter
 public abstract class CableGrid
 {
     private final int identifier;
@@ -86,15 +88,5 @@ public abstract class CableGrid
     public boolean hasCable(final ITileNode<?> cable)
     {
         return this.cables.contains(cable);
-    }
-
-    public int getIdentifier()
-    {
-        return this.identifier;
-    }
-
-    public HashSet<ITileNode<?>> getCables()
-    {
-        return this.cables;
     }
 }

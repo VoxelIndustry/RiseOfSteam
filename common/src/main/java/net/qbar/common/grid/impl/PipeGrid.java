@@ -1,5 +1,6 @@
 package net.qbar.common.grid.impl;
 
+import lombok.Getter;
 import net.minecraftforge.fluids.Fluid;
 import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.grid.node.IFluidPipe;
@@ -9,6 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+@Getter
 public class PipeGrid extends CableGrid
 {
     private final LimitedTank tank;
@@ -46,11 +48,6 @@ public class PipeGrid extends CableGrid
             return true;
         }
         return false;
-    }
-
-    public int getTransferCapacity()
-    {
-        return this.transferCapacity;
     }
 
     @Override
@@ -102,11 +99,6 @@ public class PipeGrid extends CableGrid
         return this.getTank().getFluidType();
     }
 
-    public LimitedTank getTank()
-    {
-        return this.tank;
-    }
-
     public int getCapacity()
     {
         if (this.getCables().size() < 4)
@@ -117,11 +109,6 @@ public class PipeGrid extends CableGrid
     public boolean isEmpty()
     {
         return this.getFluid() == null || this.getTank().getFluidAmount() == 0;
-    }
-
-    public HashSet<IFluidPipe> getOutputs()
-    {
-        return this.outputs;
     }
 
     public void addOutput(final IFluidPipe output)

@@ -29,4 +29,9 @@ public interface ISteamHandler
     int getSteam();
 
     int getCapacity();
+
+    default int getFreeSpace()
+    {
+        return (int) (this.getCapacity() * this.getMaxPressure() - this.getSteam());
+    }
 }

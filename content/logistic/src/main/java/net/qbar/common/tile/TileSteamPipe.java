@@ -5,9 +5,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.common.grid.impl.SteamGrid;
 import net.qbar.common.grid.node.ISteamPipe;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.grid.impl.SteamGrid;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
@@ -41,9 +41,7 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Override
     public void addSpecificInfo(final List<String> lines)
     {
-        lines.add("Contains: " + this.getGridObject().getTank().getSteam() + " / "
-                + this.getGridObject().getTank().getCapacity());
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure()) + " / "
+        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getAveragePressure()) + " / "
                 + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getMaxPressure()));
     }
 

@@ -1,22 +1,24 @@
 package net.qbar.common.grid.impl;
 
+import lombok.Getter;
 import net.qbar.common.grid.node.ISteamPipe;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamTank;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+@Getter
 public class SteamGrid extends CableGrid
 {
     private       int       transferCapacity;
     private final SteamTank tank;
 
     private final Set<ISteamPipe> connectedPipes;
+
+    private double averagePressure;
 
     public SteamGrid(final int identifier, final int transferCapacity)
     {
@@ -67,40 +69,7 @@ public class SteamGrid extends CableGrid
     {
         super.tick();
 
-        final Set<ISteamHandler> handlers = this.connectedPipes.stream()
-                .flatMap(pipe -> pipe.getConnectedHandlers().stream()).collect(Collectors.toSet());
-        handlers.add(this.tank);
-
-        final double average = handlers.stream().mapToDouble(ISteamHandler::getPressure).average().orElse(0);
-
-        final ISteamHandler[] above = handlers.stream().filter(handler -> handler.getPressure() - average > 0)
-                .toArray(ISteamHandler[]::new);
-        final ISteamHandler[] below = handlers.stream().filter(handler -> handler.getPressure() - average < 0)
-                .toArray(ISteamHandler[]::new);
-
-        final int drained = Stream.of(above).mapToInt(handler ->
-                handler.drainSteam(
-                        Math.min((int) ((handler.getPressure() - average) * handler.getCapacity()), this
-                                .transferCapacity),
-                        false)).sum();
-        int filled = 0;
-
-        for (final ISteamHandler handler : below)
-            filled += handler.fillSteam(
-                    Math.max(drained / below.length, Math.min(
-                            (int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity)),
-                    true);
-
-        for (final ISteamHandler handler : above)
-            handler.drainSteam(
-                    Math.max(filled / above.length, Math.min(
-                            (int) ((handler.getPressure() - average) * handler.getCapacity()), this.transferCapacity)),
-                    true);
-    }
-
-    public SteamTank getTank()
-    {
-        return this.tank;
+        // TODO : Replace with SteamGrid
     }
 
     public boolean isEmpty()
@@ -111,11 +80,6 @@ public class SteamGrid extends CableGrid
     public int getCapacity()
     {
         return this.getCables().size() * this.getTransferCapacity();
-    }
-
-    public int getTransferCapacity()
-    {
-        return this.transferCapacity;
     }
 
     public void setTransferCapacity(final int transferCapacity)
@@ -153,10 +117,5 @@ public class SteamGrid extends CableGrid
             return true;
         }
         return false;
-    }
-
-    public Set<ISteamPipe> getConnectedPipes()
-    {
-        return this.connectedPipes;
     }
 }
