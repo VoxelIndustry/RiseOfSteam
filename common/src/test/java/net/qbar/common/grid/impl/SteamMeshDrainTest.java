@@ -121,4 +121,19 @@ public class SteamMeshDrainTest
 
         assertThat(mesh.getSteam()).isEqualTo(1300);
     }
+
+    @Test
+    public void testLimitedDrain()
+    {
+        SteamTank tank = new SteamTank(1000, 2000, 2);
+
+        SteamMesh mesh = new SteamMesh(64);
+        mesh.addHandler(tank);
+
+        int drained = mesh.drainSteam(500, true);
+
+        assertThat(drained).isEqualTo(64);
+
+        assertThat(tank.getSteam()).isEqualTo(1000 - 64);
+    }
 }

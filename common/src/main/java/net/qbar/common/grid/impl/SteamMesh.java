@@ -93,6 +93,11 @@ public class SteamMesh implements ISteamHandler
     @Override
     public int drainSteam(int amount, boolean doDrain)
     {
+        return this.internalDrain(Math.min(amount, this.transferCapacity), doDrain);
+    }
+
+    private int internalDrain(int amount, boolean doDrain)
+    {
         int toDrain = amount;
         int totalDrained = 0;
 
@@ -113,6 +118,11 @@ public class SteamMesh implements ISteamHandler
 
     @Override
     public int fillSteam(int amount, boolean doFill)
+    {
+        return this.internalFill(Math.min(amount, this.transferCapacity), doFill);
+    }
+
+    private int internalFill(int amount, boolean doFill)
     {
         int toFill = amount;
         int totalFilled = 0;

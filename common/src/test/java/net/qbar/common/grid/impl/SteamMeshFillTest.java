@@ -121,4 +121,19 @@ public class SteamMeshFillTest
 
         assertThat(mesh.getSteam()).isEqualTo(2300);
     }
+
+    @Test
+    public void testLimitedFill()
+    {
+        SteamTank tank = new SteamTank(1000, 2000, 2);
+
+        SteamMesh mesh = new SteamMesh(64);
+        mesh.addHandler(tank);
+
+        int filled = mesh.fillSteam(500, true);
+
+        assertThat(filled).isEqualTo(64);
+
+        assertThat(tank.getSteam()).isEqualTo(1000 + 64);
+    }
 }
