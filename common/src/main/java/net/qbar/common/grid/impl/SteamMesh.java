@@ -11,15 +11,15 @@ public class SteamMesh implements ISteamHandler
 {
     private List<ISteamHandler> handlers;
     @Getter
-    private int                 transferCapacity;
+    private int                 throttle;
 
     private double averagePressure;
 
-    public SteamMesh(int transferCapacity)
+    public SteamMesh(int throttle)
     {
         this.handlers = new ArrayList<>();
 
-        this.transferCapacity = transferCapacity;
+        this.throttle = throttle;
     }
 
     public SteamMesh()
@@ -29,7 +29,7 @@ public class SteamMesh implements ISteamHandler
 
     public void tick()
     {
-        this.averagePressure = handlers.stream().mapToDouble(ISteamHandler::getPressure).average().orElse(0);
+        this.averagePressure = this.getPressure();
 
         if (handlers.size() <= 1)
             return;
@@ -45,8 +45,8 @@ public class SteamMesh implements ISteamHandler
 
         final int drained = Stream.of(above).mapToInt(handler ->
                 handler.drainSteam(
-                        Math.min((int) ((handler.getPressure() - averagePressure) * handler.getCapacity()), this
-                                .transferCapacity),
+                        Math.min((int) Math.ceil((handler.getPressure() - averagePressure) * handler.getCapacity()),
+                                this.throttle),
                         false)).sum();
 
         int filled = 0;
@@ -55,15 +55,14 @@ public class SteamMesh implements ISteamHandler
         for (final ISteamHandler handler : below)
             filled += handler.fillSteam(
                     Math.max(drained / below.length, Math.min(
-                            (int) ((handler.getPressure() - averagePressure) * handler.getCapacity()), this
-                                    .transferCapacity)),
+                            (int) ((handler.getPressure() - averagePressure) * handler.getCapacity()), this.throttle)),
                     true);
 
         for (final ISteamHandler handler : above)
             handler.drainSteam(
-                    Math.max(filled / above.length, Math.min(
-                            (int) ((handler.getPressure() - averagePressure) * handler.getCapacity()), this
-                                    .transferCapacity)),
+                    Math.min(filled / above.length, Math.min(
+                            (int) Math.ceil((handler.getPressure() - averagePressure) * handler.getCapacity()),
+                            this.throttle)),
                     true);
     }
 
@@ -93,7 +92,7 @@ public class SteamMesh implements ISteamHandler
     @Override
     public int drainSteam(int amount, boolean doDrain)
     {
-        return this.internalDrain(Math.min(amount, this.transferCapacity), doDrain);
+        return this.internalDrain(Math.min(amount, this.throttle), doDrain);
     }
 
     private int internalDrain(int amount, boolean doDrain)
@@ -119,7 +118,7 @@ public class SteamMesh implements ISteamHandler
     @Override
     public int fillSteam(int amount, boolean doFill)
     {
-        return this.internalFill(Math.min(amount, this.transferCapacity), doFill);
+        return this.internalFill(Math.min(amount, this.throttle), doFill);
     }
 
     private int internalFill(int amount, boolean doFill)
@@ -157,10 +156,7 @@ public class SteamMesh implements ISteamHandler
     @Override
     public float getPressure()
     {
-        int pressure = 0;
-        for (ISteamHandler handler : this.handlers)
-            pressure += handler.getPressure();
-        return pressure / handlers.size();
+        return (float) this.getSteam() / this.getCapacity();
     }
 
     @Override
