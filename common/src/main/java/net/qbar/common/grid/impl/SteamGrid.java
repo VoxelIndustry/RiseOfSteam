@@ -1,33 +1,28 @@
 package net.qbar.common.grid.impl;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import lombok.Getter;
 import net.qbar.common.grid.node.ISteamPipe;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.steam.SteamTank;
-
-import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import net.qbar.common.steam.ISteamHandler;
 
 @Getter
 public class SteamGrid extends CableGrid
 {
-    private       int       transferCapacity;
-    private final SteamTank tank;
+    private int transferCapacity;
 
-    private final Set<ISteamPipe> connectedPipes;
+    private final ListMultimap<ISteamHandler, ISteamPipe> handlersConnections;
 
-    private double averagePressure;
+    private SteamMesh mesh;
 
     public SteamGrid(final int identifier, final int transferCapacity)
     {
         super(identifier);
         this.transferCapacity = transferCapacity;
 
-        this.connectedPipes = new HashSet<>();
-
-        this.tank = new SteamTank(0, this.transferCapacity * 4, 1.5f);
+        this.handlersConnections = MultimapBuilder.hashKeys().arrayListValues().build();
+        this.mesh = new SteamMesh(transferCapacity);
     }
 
     @Override
@@ -47,21 +42,17 @@ public class SteamGrid extends CableGrid
     @Override
     public void onMerge(final CableGrid grid)
     {
-        this.getConnectedPipes().addAll(((SteamGrid) grid).getConnectedPipes());
-        this.getTank().setCapacity(this.getCapacity());
-        if (((SteamGrid) grid).getTank().getSteam() != 0)
-            this.getTank().fillInternal(((SteamGrid) grid).getTank().getSteam(), true);
+        this.handlersConnections.putAll(((SteamGrid) grid).handlersConnections);
     }
 
     @Override
     public void onSplit(final CableGrid grid)
     {
-        this.getConnectedPipes().addAll(((SteamGrid) grid).getConnectedPipes().stream()
-                .filter(this.getCables()::contains).collect(Collectors.toSet()));
-        this.getTank()
-                .fillInternal(((SteamGrid) grid).getTank().drainInternal(
-                        ((SteamGrid) grid).getTank().getSteam() / grid.getCables().size() * this.getCables().size(),
-                        false), true);
+        ((SteamGrid) grid).handlersConnections.forEach((handler, pipe) ->
+        {
+            if (this.hasCable(pipe))
+                this.handlersConnections.put(handler, pipe);
+        });
     }
 
     @Override
@@ -69,12 +60,7 @@ public class SteamGrid extends CableGrid
     {
         super.tick();
 
-        // TODO : Replace with SteamGrid
-    }
-
-    public boolean isEmpty()
-    {
-        return this.tank.getSteam() == 0;
+        this.mesh.tick();
     }
 
     public int getCapacity()
@@ -82,26 +68,25 @@ public class SteamGrid extends CableGrid
         return this.getCables().size() * this.getTransferCapacity();
     }
 
-    public void setTransferCapacity(final int transferCapacity)
+    public void addConnectedPipe(final ISteamPipe pipe, final ISteamHandler handler)
     {
-        this.transferCapacity = transferCapacity;
+        if (!this.handlersConnections.containsKey(handler))
+            this.mesh.addHandler(handler);
+        if (!this.handlersConnections.containsEntry(handler, pipe))
+            this.handlersConnections.put(handler, pipe);
     }
 
-    public void addConnectedPipe(final ISteamPipe pipe)
+    private void clearConnectedPipe(final ISteamPipe pipe)
     {
-        this.connectedPipes.add(pipe);
+        pipe.getConnectedHandlers().forEach(handler -> this.removeConnectedPipe(pipe, handler));
     }
 
-    public void removeConnectedPipe(final ISteamPipe pipe)
+    public void removeConnectedPipe(final ISteamPipe pipe, final ISteamHandler handler)
     {
-        this.connectedPipes.remove(pipe);
-    }
+        this.handlersConnections.remove(handler, pipe);
 
-    @Override
-    public void addCable(@Nonnull final ITileNode cable)
-    {
-        super.addCable(cable);
-        this.getTank().setCapacity(this.getCapacity());
+        if (!this.handlersConnections.containsKey(handler))
+            this.mesh.removeHandler(handler);
     }
 
     @Override
@@ -109,13 +94,14 @@ public class SteamGrid extends CableGrid
     {
         if (super.removeCable(cable))
         {
-            this.removeConnectedPipe((ISteamPipe) cable);
-            this.getTank().setCapacity(this.getCapacity());
-
-            if (this.getTank().getSteam() > 0)
-                this.getTank().drainInternal(this.getTank().getSteam() / (this.getCables().size() + 1), true);
+            this.clearConnectedPipe((ISteamPipe) cable);
             return true;
         }
         return false;
+    }
+
+    public ISteamHandler getTank()
+    {
+        return this.mesh;
     }
 }

@@ -6,10 +6,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.qbar.common.block.BlockSteamValve;
-import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
+import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.impl.SteamGrid;
 import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.steam.SteamTank;
 
@@ -88,7 +89,7 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
     {
         @Getter
         @Setter
-        private SteamTank delegate;
+        private ISteamHandler delegate;
 
         public DummySteamTank(SteamTank delegate)
         {
@@ -134,7 +135,7 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
         @Override
         public FluidStack toFluidStack()
         {
-            return delegate.toFluidStack();
+            return null;
         }
 
         @Override

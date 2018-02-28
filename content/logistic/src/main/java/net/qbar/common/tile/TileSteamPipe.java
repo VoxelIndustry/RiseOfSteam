@@ -1,6 +1,5 @@
 package net.qbar.common.tile;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -16,9 +15,6 @@ import java.util.List;
 
 public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implements ISteamPipe
 {
-
-    private int coldStorage;
-
     public TileSteamPipe(final int transferCapacity)
     {
         super(transferCapacity, CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY);
@@ -41,54 +37,23 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Override
     public void addSpecificInfo(final List<String> lines)
     {
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getAveragePressure()) + " / "
+        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure()) + " / "
                 + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getMaxPressure()));
     }
 
     @Override
     public void setGrid(final int gridIdentifier)
     {
-        final int previous = this.grid;
         this.grid = gridIdentifier;
 
-        if (gridIdentifier == -1)
-            this.coldStorage = 0;
-        else if (this.coldStorage != 0 && previous == -1)
-        {
-            this.getGridObject().getTank().fillInternal(this.coldStorage, true);
-            this.coldStorage = 0;
-        }
-
         if (this.getGridObject() != null && !this.adjacentHandler.isEmpty())
-            this.getGridObject().addConnectedPipe(this);
-    }
-
-    @Override
-    public void readFromNBT(final NBTTagCompound tagCompound)
-    {
-        super.readFromNBT(tagCompound);
-
-        this.coldStorage = tagCompound.getInteger("coldStorage");
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound)
-    {
-        super.writeToNBT(tagCompound);
-
-        this.toColdStorage();
-        if (this.coldStorage != 0)
-            tagCompound.setInteger("coldStorage", this.coldStorage);
-
-        return tagCompound;
+            this.adjacentHandler.forEach((facing, handler) -> this.getGridObject().addConnectedPipe(this, handler));
     }
 
     @Override
     public boolean canConnect(final ITileNode<?> to)
     {
-        if (to instanceof TileSteamPipe)
-            return true;
-        return false;
+        return to instanceof TileSteamPipe;
     }
 
     @Override
@@ -96,24 +61,27 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     {
         final TileEntity tile = this.world.getTileEntity(posNeighbor);
 
-        final BlockPos substract = posNeighbor.subtract(this.pos);
-        final EnumFacing facing = EnumFacing.getFacingFromVector(substract.getX(), substract.getY(), substract.getZ())
+        final BlockPos substracted = posNeighbor.subtract(this.pos);
+        final EnumFacing facing = EnumFacing.getFacingFromVector(
+                substracted.getX(), substracted.getY(), substracted.getZ())
                 .getOpposite();
 
         if (this.adjacentHandler.containsKey(facing.getOpposite()))
         {
             if (tile == null || !tile.hasCapability(this.capability, facing))
             {
+                if (this.getGridObject() != null)
+                    this.getGridObject().removeConnectedPipe(this, this.adjacentHandler.get(facing.getOpposite()));
+
                 this.disconnectHandler(facing.getOpposite(), tile);
-                if (this.adjacentHandler.isEmpty())
-                    this.getGridObject().removeConnectedPipe(this);
             }
-            else if (tile.hasCapability(this.capability, facing) && !tile
-                    .getCapability(this.capability, facing).equals(this.adjacentHandler.get(facing.getOpposite())))
+            else if (tile.hasCapability(this.capability, facing) &&
+                    !tile.getCapability(this.capability, facing).equals(this.adjacentHandler.get(facing.getOpposite())))
             {
                 this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
+
                 if (this.getGridObject() != null)
-                    this.getGridObject().addConnectedPipe(this);
+                    this.getGridObject().addConnectedPipe(this, this.adjacentHandler.get(facing.getOpposite()));
             }
         }
         else
@@ -123,19 +91,11 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
                 if (tile.hasCapability(this.capability, facing) && !(tile instanceof TileSteamPipe))
                 {
                     this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
+
                     if (this.getGridObject() != null)
-                        this.getGridObject().addConnectedPipe(this);
+                        this.getGridObject().addConnectedPipe(this, this.adjacentHandler.get(facing.getOpposite()));
                 }
             }
-        }
-    }
-
-    private void toColdStorage()
-    {
-        if (this.getGridObject() != null && this.getGridObject().getTank().getSteam() != 0)
-        {
-            this.coldStorage = this.getGridObject().getTank().getSteam();
-            this.coldStorage /= this.getGridObject().getCables().size();
         }
     }
 
@@ -144,5 +104,4 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     {
         return new SteamGrid(id, this.transferCapacity);
     }
-
 }
