@@ -34,15 +34,23 @@ public class SteamMesh implements ISteamHandler
         if (handlers.size() <= 1)
             return;
 
-        final ISteamHandler[] above = handlers.stream().filter(handler -> handler.getPressure() - averagePressure > 0)
+        /*
+         * All handlers above and below the average pressure are gathered.
+         * To prevent useless repartition the actual steam difference must be greater than 16.
+         * In the below case, a check is performed to filter full handlers that will explode anyway.
+         */
+        final ISteamHandler[] above = handlers.stream().filter(handler -> handler.getPressure() - averagePressure > 0
+                && handler.getSteamDifference((float) averagePressure) > 16)
                 .toArray(ISteamHandler[]::new);
         final ISteamHandler[] below = handlers.stream().filter(handler -> handler.getPressure() - averagePressure < 0
+                && handler.getSteamDifference((float) averagePressure) < -16
                 && handler.getPressure() < handler.getMaxPressure())
                 .toArray(ISteamHandler[]::new);
 
         if (above.length == 0 || below.length == 0)
             return;
 
+        // Fake drain to check for handlers throttling and change the simulation accordingly
         final int drained = Stream.of(above).mapToInt(handler ->
                 handler.drainSteam(
                         Math.min((int) Math.ceil((handler.getPressure() - averagePressure) * handler.getCapacity()),
@@ -51,13 +59,15 @@ public class SteamMesh implements ISteamHandler
 
         int filled = 0;
 
-
+        // Real fill to also check for throttling and make sure we never lose steam
         for (final ISteamHandler handler : below)
             filled += handler.fillSteam(
                     Math.max(drained / below.length, Math.min(
-                            (int) ((handler.getPressure() - averagePressure) * handler.getCapacity()), this.throttle)),
+                            (int) Math.ceil((handler.getPressure() - averagePressure) * handler.getCapacity()),
+                            this.throttle)),
                     true);
 
+        // Real drain once we know how much can be extracted and how much can me inserted
         for (final ISteamHandler handler : above)
             handler.drainSteam(
                     Math.min(filled / above.length, Math.min(

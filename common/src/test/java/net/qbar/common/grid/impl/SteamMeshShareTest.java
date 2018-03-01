@@ -65,9 +65,9 @@ public class SteamMeshShareTest
         for (int i = 0; i < 16; i++)
             mesh.tick();
 
-        assertThat(fullTank.getPressure()).isEqualTo(emptyTank.getPressure(), offset(0.01f));
-        assertThat(fullTank.getSteam()).isBetween(666, 667);
-        assertThat(emptyTank.getSteam()).isBetween(333, 334);
+        assertThat(fullTank.getPressure()).isEqualTo(emptyTank.getPressure(), offset(0.05f));
+        assertThat(fullTank.getSteam()).isBetween(666 - 16, 666 + 16);
+        assertThat(emptyTank.getSteam()).isBetween(333 - 16, 333 + 16);
 
         assertThat(mesh.getPressure()).isEqualTo(0.66f, offset(0.01f));
     }
