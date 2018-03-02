@@ -2,6 +2,7 @@ package net.qbar.common.tile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -148,6 +149,18 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
         public boolean canDrain()
         {
             return delegate.canDrain();
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound nbt)
+        {
+
+        }
+
+        @Override
+        public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+        {
+            return nbt;
         }
     }
 }
