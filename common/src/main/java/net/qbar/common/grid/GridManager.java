@@ -1,5 +1,8 @@
 package net.qbar.common.grid;
 
+import net.qbar.common.grid.impl.CableGrid;
+import net.qbar.common.grid.node.ITileNode;
+
 import java.util.*;
 
 public class GridManager

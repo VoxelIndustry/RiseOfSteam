@@ -11,6 +11,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.model.obj.QBarOBJState;
 import net.qbar.common.event.TickHandler;
 import net.qbar.common.grid.*;
+import net.qbar.common.grid.impl.CableGrid;
+import net.qbar.common.grid.node.ITileCable;
+import net.qbar.common.grid.node.ITileNode;
 import net.qbar.common.network.PipeUpdatePacket;
 
 import java.util.*;

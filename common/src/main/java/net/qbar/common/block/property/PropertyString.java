@@ -3,13 +3,14 @@ package net.qbar.common.block.property;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import net.minecraft.block.properties.PropertyHelper;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @EqualsAndHashCode
+@Getter
 public class PropertyString extends PropertyHelper<String>
 {
     private List<String> allowedValues;
@@ -39,12 +40,6 @@ public class PropertyString extends PropertyHelper<String>
     public static PropertyString create(String name, String... values)
     {
         return new PropertyString(name, values);
-    }
-
-    @Override
-    public Collection<String> getAllowedValues()
-    {
-        return this.allowedValues;
     }
 
     @Override

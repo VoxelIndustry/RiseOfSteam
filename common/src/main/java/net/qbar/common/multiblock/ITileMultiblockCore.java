@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.qbar.common.grid.CableGrid;
+import net.qbar.common.grid.impl.CableGrid;
 
 import javax.annotation.Nullable;
 

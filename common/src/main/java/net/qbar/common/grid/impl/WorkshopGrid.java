@@ -1,6 +1,9 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.impl;
 
 import lombok.Getter;
+import net.qbar.common.grid.node.ITileNode;
+import net.qbar.common.grid.node.ITileWorkshop;
+import net.qbar.common.grid.WorkshopMachine;
 
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
@@ -41,20 +44,20 @@ public class WorkshopGrid extends CableGrid
 
         if (this.machines.containsKey(WorkshopMachine.WORKBENCH) &&
                 (((ITileWorkshop) cable).getType() == WorkshopMachine.STORAGE ||
-                ((ITileWorkshop) cable).getType() == WorkshopMachine.CARDLIBRARY))
+                        ((ITileWorkshop) cable).getType() == WorkshopMachine.CARDLIBRARY))
             this.machines.get(WorkshopMachine.WORKBENCH).refreshWorkbenchCrafts();
         return super.removeCable(cable);
     }
 
     @Override
-    boolean canMerge(CableGrid grid)
+    public boolean canMerge(CableGrid grid)
     {
         return super.canMerge(grid) &&
                 ((WorkshopGrid) grid).getMachines().keySet().stream().noneMatch(machines::containsKey);
     }
 
     @Override
-    CableGrid copy(int identifier)
+    public CableGrid copy(int identifier)
     {
         return new WorkshopGrid(identifier);
     }

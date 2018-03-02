@@ -1,9 +1,12 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.node;
 
 import com.google.common.collect.LinkedListMultimap;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.grid.impl.WorkshopGrid;
 import net.qbar.common.multiblock.ITileMultiblock;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.tile.ILoadable;

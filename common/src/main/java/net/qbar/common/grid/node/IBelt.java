@@ -1,7 +1,9 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.node;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.qbar.common.grid.ItemBelt;
+import net.qbar.common.grid.impl.BeltGrid;
 
 public interface IBelt extends ITileCable<BeltGrid>
 {

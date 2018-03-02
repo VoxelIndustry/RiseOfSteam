@@ -1,8 +1,9 @@
-package net.qbar.common.grid;
+package net.qbar.common.grid.node;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.qbar.common.grid.impl.CableGrid;
 
 import java.util.EnumMap;
 

@@ -12,25 +12,42 @@
   "variants": {
     "axis": {
       "x": {
-        "x": 90
+        "x": -90
       },
       "y": {
-        "x": 90
+        "transform": {
+          "rotation": [
+            {
+              "z": -90
+            }
+          ]
+        }
       },
       "z": {
-        "x": 90
       }
     },
     "facing": {
       "north": {
-        "y": 270
+        "y": 0
       },
       "south": {
+        "y": 180
+      },
+      "east": {
         "y": 90
       },
-      "east": {},
       "west": {
-        "y": 180
+        "y": 270
+      }
+    },
+    "axis=y,facing=east": {
+      "transform": {
+        "rotation": [
+          {
+            "z": -90,
+            "x": 45
+          }
+        ]
       }
     },
     "inventory": {

@@ -22,7 +22,7 @@ import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.fluid.FilteredFluidTank;
-import net.qbar.common.grid.IBelt;
+import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;

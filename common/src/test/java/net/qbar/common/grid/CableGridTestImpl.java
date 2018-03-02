@@ -1,14 +1,16 @@
 package net.qbar.common.grid;
 
+import net.qbar.common.grid.impl.CableGrid;
+
 public class CableGridTestImpl extends CableGrid
 {
-    public CableGridTestImpl(int identifier)
+    CableGridTestImpl(int identifier)
     {
         super(identifier);
     }
 
     @Override
-    CableGrid copy(int identifier)
+    public CableGrid copy(int identifier)
     {
         return new CableGridTestImpl(identifier);
     }

@@ -1,6 +1,8 @@
 package net.qbar.common.grid;
 
 import net.minecraft.util.EnumFacing;
+import net.qbar.common.grid.impl.CableGrid;
+import net.qbar.common.grid.node.ITileCable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +28,7 @@ public class GridManagerTest
         CableGrid grid = new CableGrid(GridManager.getInstance().getNextID())
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }
@@ -46,7 +48,7 @@ public class GridManagerTest
         CableGrid grid = new CableGrid(GridManager.getInstance().getNextID())
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }
@@ -85,7 +87,7 @@ public class GridManagerTest
         when(cable.createGrid(anyInt())).then(answer -> new CableGrid(answer.getArgument(0))
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }
@@ -121,7 +123,7 @@ public class GridManagerTest
         CableGrid leftGrid = new CableGrid(0)
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }
@@ -130,7 +132,7 @@ public class GridManagerTest
         CableGrid rightGrid = new CableGrid(1)
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }
@@ -159,7 +161,7 @@ public class GridManagerTest
         cable.setGrid(GridManager.getInstance().addGrid(new CableGrid(0)
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }
@@ -174,7 +176,7 @@ public class GridManagerTest
         CableGrid grid = GridManager.getInstance().addGrid(new CableGrid(0)
         {
             @Override
-            CableGrid copy(int identifier)
+            public CableGrid copy(int identifier)
             {
                 return null;
             }

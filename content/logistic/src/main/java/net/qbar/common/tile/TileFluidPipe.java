@@ -8,9 +8,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.qbar.common.grid.IFluidPipe;
-import net.qbar.common.grid.ITileNode;
-import net.qbar.common.grid.PipeGrid;
+import net.qbar.common.grid.node.IFluidPipe;
+import net.qbar.common.grid.node.ITileNode;
+import net.qbar.common.grid.impl.PipeGrid;
 
 import java.util.List;
 
