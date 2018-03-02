@@ -4,7 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.machine.CraftingComponent;
+import net.qbar.common.machine.component.CraftingComponent;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import org.apache.commons.lang3.ArrayUtils;
 

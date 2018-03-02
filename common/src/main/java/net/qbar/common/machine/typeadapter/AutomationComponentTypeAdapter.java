@@ -5,7 +5,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.qbar.common.machine.AutomationComponent;
+import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.OutputPoint;
 import net.qbar.common.multiblock.MultiblockSide;
 

@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.SteamTank;
 

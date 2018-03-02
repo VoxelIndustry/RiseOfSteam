@@ -11,8 +11,8 @@ import org.hjson.JsonValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,8 +44,9 @@ public class QBarMachines
     public static MachineDescriptor CAPSULE_FILLER;
     public static MachineDescriptor SMALL_STEAM_TANK;
     public static MachineDescriptor MEDIUM_STEAM_TANK;
+    public static MachineDescriptor STEAM_MESH_TEST;
 
-    private static Set<MachineDescriptor>                                              machines = new HashSet<>();
+    private static HashMap<String, MachineDescriptor>                                  machines = new HashMap<>();
     private static HashMap<Class<? extends IMachineComponent>, Set<MachineDescriptor>> subLists = new HashMap<>();
 
     public static final Gson GSON = new GsonBuilder()
@@ -97,6 +98,7 @@ public class QBarMachines
         CAPSULE_FILLER = loadMachine("capsulefiller");
         SMALL_STEAM_TANK = loadMachine("steamtank_small");
         MEDIUM_STEAM_TANK = loadMachine("steamtank_medium");
+        STEAM_MESH_TEST = loadMachine("steammeshtest");
 
         if (!isPreloading())
             getAllByComponent(Blueprint.class).forEach(new BlueprintLoader());
@@ -106,13 +108,14 @@ public class QBarMachines
     {
         if (!subLists.containsKey(componentType))
             subLists.put(componentType,
-                    machines.stream().filter(descriptor -> descriptor.has(componentType)).collect(Collectors.toSet()));
+                    machines.values().stream().filter(descriptor -> descriptor.has(componentType)).collect(Collectors
+                            .toSet()));
         return subLists.get(componentType);
     }
 
-    public static Set<MachineDescriptor> getAll()
+    public static Collection<MachineDescriptor> getAll()
     {
-        return machines;
+        return machines.values();
     }
 
     public static boolean contains(Class<? extends IMachineComponent> componentType, String name)
@@ -128,6 +131,11 @@ public class QBarMachines
         if (desc.isPresent())
             return desc.get().get(componentType);
         return null;
+    }
+
+    public static MachineDescriptor get(String name)
+    {
+        return machines.get(name);
     }
 
     public static boolean isPreloading()
@@ -146,7 +154,7 @@ public class QBarMachines
                     MachineDescriptor.class);
             stream.close();
             descriptor.setName(name);
-            machines.add(descriptor);
+            machines.put(name, descriptor);
         } catch (IOException e)
         {
             e.printStackTrace();

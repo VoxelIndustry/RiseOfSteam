@@ -1,7 +1,10 @@
-package net.qbar.common.machine;
+package net.qbar.common.machine.component;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.qbar.common.machine.IMachineComponent;
+import net.qbar.common.machine.MachineDescriptor;
+import net.qbar.common.machine.OutputPoint;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,7 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.steam.CapabilitySteamHandler;
 import net.qbar.common.steam.ISteamHandlerItem;
 import net.qbar.common.steam.SteamTank;

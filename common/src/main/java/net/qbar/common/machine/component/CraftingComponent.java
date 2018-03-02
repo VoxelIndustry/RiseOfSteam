@@ -1,8 +1,10 @@
-package net.qbar.common.machine;
+package net.qbar.common.machine.component;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.qbar.common.machine.IMachineComponent;
+import net.qbar.common.machine.MachineDescriptor;
 
 @Getter
 @Setter

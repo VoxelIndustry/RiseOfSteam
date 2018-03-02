@@ -26,7 +26,7 @@ import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.ore.SludgeData;
