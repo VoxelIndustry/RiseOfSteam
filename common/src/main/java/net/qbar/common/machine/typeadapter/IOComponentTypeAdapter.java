@@ -5,56 +5,57 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.qbar.common.machine.InputPoint;
-import net.qbar.common.machine.OutputPoint;
-import net.qbar.common.machine.component.AutomationComponent;
+import net.qbar.common.machine.FluidIOPoint;
+import net.qbar.common.machine.component.IOComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationComponent>
-        implements IMachineComponentTypeAdapter<AutomationComponent>
+public class IOComponentTypeAdapter extends TypeAdapter<IOComponent>
+        implements IMachineComponentTypeAdapter<IOComponent>
 {
     @Override
-    public void write(JsonWriter out, AutomationComponent value) throws IOException
+    public void write(JsonWriter out, IOComponent value)
     {
 
     }
 
     @Override
-    public Class<AutomationComponent> getComponentClass()
+    public Class<IOComponent> getComponentClass()
     {
-        return AutomationComponent.class;
+        return IOComponent.class;
     }
 
     @Override
-    public AutomationComponent read(JsonReader in) throws IOException
+    public IOComponent read(JsonReader in) throws IOException
     {
-        AutomationComponent component = new AutomationComponent();
+        IOComponent component = new IOComponent();
 
+        List<MultiblockSide> steamIO = new ArrayList<>();
+        List<FluidIOPoint> fluidIO = new ArrayList<>();
         in.beginObject();
         while (in.hasNext())
         {
             switch (in.nextName())
             {
-                case "outputs":
+                case "steam":
                     in.beginArray();
                     while (in.hasNext())
                     {
                         in.beginObject();
-                        parseOutputPoint(in, component);
+                        steamIO.add(parseSteam(in));
                         in.endObject();
                     }
                     in.endArray();
                     break;
-                case "inputs":
+                case "fluid":
                     in.beginArray();
                     while (in.hasNext())
                     {
                         in.beginObject();
-                        parseInputPoint(in, component);
+                        fluidIO.add(parseFluid(in));
                         in.endObject();
                     }
                     in.endArray();
@@ -64,13 +65,13 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
         }
         in.endObject();
 
+        component.setSteamIO(steamIO.toArray(new MultiblockSide[steamIO.size()]));
+        component.setFluidIO(fluidIO.toArray(new FluidIOPoint[fluidIO.size()]));
         return component;
     }
 
-    private void parseOutputPoint(JsonReader in, AutomationComponent component) throws IOException
+    private MultiblockSide parseSteam(JsonReader in) throws IOException
     {
-        OutputPoint outputPoint = new OutputPoint();
-
         BlockPos pos = BlockPos.ORIGIN;
         EnumFacing facing = EnumFacing.NORTH;
 
@@ -86,31 +87,16 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
                 case "facing":
                     facing = EnumFacing.byName(in.nextString());
                     break;
-                case "slots":
-                    List<Integer> slots = new ArrayList<>();
-                    in.beginArray();
-                    while (in.hasNext())
-                        slots.add(in.nextInt());
-                    in.endArray();
-
-                    outputPoint.setSlots(slots.toArray(new Integer[slots.size()]));
-                    break;
-                case "order":
-                    if ("balanced".equals(in.nextString()))
-                        outputPoint.setRoundRobin(true);
-                    break;
                 default:
                     break;
             }
         }
-        outputPoint.setSide(new MultiblockSide(pos, facing));
-        component.getOutputs().add(outputPoint);
+        return new MultiblockSide(pos, facing);
     }
 
-    private void parseInputPoint(JsonReader in, AutomationComponent component) throws IOException
+    private FluidIOPoint parseFluid(JsonReader in) throws IOException
     {
-        InputPoint inputPoint = new InputPoint();
-
+        FluidIOPoint point = new FluidIOPoint();
         BlockPos pos = BlockPos.ORIGIN;
         EnumFacing facing = EnumFacing.NORTH;
 
@@ -126,20 +112,21 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
                 case "facing":
                     facing = EnumFacing.byName(in.nextString());
                     break;
-                case "slots":
-                    List<Integer> slots = new ArrayList<>();
-                    in.beginArray();
-                    while (in.hasNext())
-                        slots.add(in.nextInt());
-                    in.endArray();
-
-                    inputPoint.setSlots(slots.toArray(new Integer[slots.size()]));
+                case "restriction":
+                    String restriction = in.nextString();
+                    if ("input-only".equals(restriction))
+                        point.setInput(true);
+                    if ("output-only".equals(restriction))
+                        point.setOutput(true);
+                    break;
+                case "tank":
+                    point.setTankName(in.nextString());
                     break;
                 default:
                     break;
             }
         }
-        inputPoint.setSide(new MultiblockSide(pos, facing));
-        component.getInputs().add(inputPoint);
+        point.setSide(new MultiblockSide(pos, facing));
+        return point;
     }
 }

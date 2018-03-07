@@ -13,7 +13,7 @@ public class SteamComponentTypeAdapter extends TypeAdapter<SteamComponent>
         implements IMachineComponentTypeAdapter<SteamComponent>
 {
     @Override
-    public void write(JsonWriter out, SteamComponent value) throws IOException
+    public void write(JsonWriter out, SteamComponent value)
     {
 
     }

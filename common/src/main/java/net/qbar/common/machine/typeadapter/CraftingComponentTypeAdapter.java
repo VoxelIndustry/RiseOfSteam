@@ -16,7 +16,7 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
         implements IMachineComponentTypeAdapter<CraftingComponent>
 {
     @Override
-    public void write(JsonWriter out, CraftingComponent value) throws IOException
+    public void write(JsonWriter out, CraftingComponent value)
     {
 
     }

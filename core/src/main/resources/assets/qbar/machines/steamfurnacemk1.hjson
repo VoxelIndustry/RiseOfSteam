@@ -11,7 +11,7 @@
         }
         multiblock: {
             width: 1
-            height: 1
+            height: 2
             length: 3
             offsetZ: 1
         }
@@ -37,9 +37,28 @@
         automation: {
             outputs: [
                 {
-                    pos: [0, -1, -2]
+                    pos: [0, 0, -2]
                     facing: SOUTH
                     slots: [0]
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 0, 2]
+                    facing: NORTH
+                    slots: [0]
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 0]
+                    facing: EAST
+                }
+                {
+                    pos: [0, 0, 0]
+                    facing: WEST
                 }
             ]
         }

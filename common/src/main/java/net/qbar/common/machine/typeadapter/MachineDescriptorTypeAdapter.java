@@ -24,6 +24,7 @@ public class MachineDescriptorTypeAdapter extends TypeAdapter<MachineDescriptor>
         subTypeAdapters.put("blueprint", new BlueprintComponentTypeAdapter());
         subTypeAdapters.put("crafter", new CraftingComponentTypeAdapter());
         subTypeAdapters.put("automation", new AutomationComponentTypeAdapter());
+        subTypeAdapters.put("io", new IOComponentTypeAdapter());
     }
 
     @Override
