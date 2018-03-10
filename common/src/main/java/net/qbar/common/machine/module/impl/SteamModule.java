@@ -1,4 +1,4 @@
-package net.qbar.common.machine.module;
+package net.qbar.common.machine.module.impl;
 
 import com.google.common.collect.LinkedListMultimap;
 import lombok.Getter;
@@ -8,6 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.grid.node.ISteamMachine;
 import net.qbar.common.machine.component.SteamComponent;
+import net.qbar.common.machine.module.IModularMachine;
+import net.qbar.common.machine.module.ISerializableModule;
+import net.qbar.common.machine.module.MachineModule;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.ISteamTank;
 

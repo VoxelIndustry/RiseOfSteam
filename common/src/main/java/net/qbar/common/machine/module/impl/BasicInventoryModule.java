@@ -1,7 +1,9 @@
-package net.qbar.common.machine.module;
+package net.qbar.common.machine.module.impl;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.qbar.common.machine.module.IModularMachine;
+import net.qbar.common.machine.module.InventoryModule;
 
 import javax.annotation.Nonnull;
 import java.util.stream.IntStream;

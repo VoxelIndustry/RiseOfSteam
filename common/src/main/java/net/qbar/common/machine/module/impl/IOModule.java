@@ -9,11 +9,11 @@ import net.qbar.common.machine.module.MachineModule;
 
 import javax.annotation.Nullable;
 
-public class CapabilityModule extends MachineModule implements ICapabilityModule
+public class IOModule extends MachineModule implements ICapabilityModule
 {
-    public CapabilityModule(IModularMachine machine)
+    public IOModule(IModularMachine machine)
     {
-        super(machine, "CapabilityModule");
+        super(machine, "IOModule");
     }
 
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
