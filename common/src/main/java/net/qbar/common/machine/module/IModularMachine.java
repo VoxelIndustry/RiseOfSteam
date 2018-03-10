@@ -1,10 +1,11 @@
 package net.qbar.common.machine.module;
 
 import net.qbar.common.machine.MachineDescriptor;
+import org.yggard.hermod.IEventEmitter;
 
 import java.util.Collection;
 
-public interface IModularMachine
+public interface IModularMachine extends IEventEmitter
 {
     Collection<MachineModule> getModules();
 

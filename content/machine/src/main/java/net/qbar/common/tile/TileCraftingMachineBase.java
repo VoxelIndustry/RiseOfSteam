@@ -10,11 +10,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.fluid.FilteredFluidTank;
+import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.component.CraftingComponent;
-import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
@@ -24,7 +23,6 @@ import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.ItemUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +46,6 @@ public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBas
 
     private final FluidTank[] inputTanks, outputTanks, bufferTanks;
 
-    private final EnumMap<EnumFacing, SidedInvWrapper> inventoryWrapperCache;
-
     public TileCraftingMachineBase(final MachineDescriptor descriptor)
     {
         super(descriptor, descriptor.get(CraftingComponent.class).getInventorySize());
@@ -58,8 +54,6 @@ public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBas
         this.steamMachine = descriptor.get(SteamComponent.class);
         if (descriptor.has(AutomationComponent.class))
             this.automation = new AutomationModule(descriptor.get(AutomationComponent.class));
-
-        this.inventoryWrapperCache = new EnumMap<>(EnumFacing.class);
 
         this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(), steamMachine.getMaxPressureCapacity());
 

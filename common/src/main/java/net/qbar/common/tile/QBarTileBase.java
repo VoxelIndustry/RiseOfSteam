@@ -26,13 +26,13 @@ public class QBarTileBase extends TileEntity implements ITileInfoProvider
         this.readFromNBT(packet.getNbtCompound());
     }
 
-    protected void forceSync()
+    public void forceSync()
     {
         new TileSyncRequestPacket(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(),
                 this.getPos().getZ()).sendToServer();
     }
 
-    protected void sync()
+    public void sync()
     {
         if (this.world != null)
             NetworkHandler.sendTileToRange(this);

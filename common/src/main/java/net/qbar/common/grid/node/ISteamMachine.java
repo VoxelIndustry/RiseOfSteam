@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.impl.SteamMachineGrid;
 import net.qbar.common.machine.module.IModularMachine;
-import net.qbar.common.machine.module.SteamModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.multiblock.ITileMultiblock;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.steam.ISteamHandler;

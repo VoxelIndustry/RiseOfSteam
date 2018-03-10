@@ -1,12 +1,15 @@
-package net.qbar.common.machine.module;
+package net.qbar.common.machine.module.impl;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.common.machine.module.ICapabilityModule;
+import net.qbar.common.machine.module.IModularMachine;
+import net.qbar.common.machine.module.MachineModule;
 
 import javax.annotation.Nullable;
 
-public class CapabilityModule extends MachineModule
+public class CapabilityModule extends MachineModule implements ICapabilityModule
 {
     public CapabilityModule(IModularMachine machine)
     {
