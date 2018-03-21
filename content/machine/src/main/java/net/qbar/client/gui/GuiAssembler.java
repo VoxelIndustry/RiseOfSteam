@@ -9,7 +9,6 @@ import net.qbar.common.card.IPunchedCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.tile.machine.TileAssembler;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
@@ -43,7 +42,7 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
         final GuiAbsolutePane mainPanel = new GuiAbsolutePane();
         this.setMainPanel(mainPanel);
 
-        mainPanel.setBackground(new Background(BACKGROUND));
+        mainPanel.setBackgroundTexture(BACKGROUND);
 
         ((ListenerSlot) this.getContainer().getSlot(36)).setOnChange(this::refreshCraftSlots);
 

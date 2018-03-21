@@ -1,5 +1,5 @@
 pane#blueprint itemstack:hover {
-    -background-texture: url("qbar:textures/gui/printer_hover.png");
+    -foreground-texture: url("qbar:textures/gui/printer_hover.png");
 }
 
 .category {

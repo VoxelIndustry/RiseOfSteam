@@ -1,7 +1,6 @@
 package net.qbar.client.gui;
 
 import net.qbar.common.card.FilterCard;
-import org.yggard.brokkgui.data.EAlignment;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.event.ActionEvent;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
@@ -22,7 +21,6 @@ public class FilterViewPane extends GuiAbsolutePane
         whitelist.setOnActionEvent(buttonAction);
         whitelist.setWidth(56);
         whitelist.setHeight(15);
-        whitelist.setTextAlignment(EAlignment.MIDDLE_CENTER);
         this.addChild(whitelist, 0, 55);
 
         this.views = new ItemStackView[9];
@@ -32,12 +30,12 @@ public class FilterViewPane extends GuiAbsolutePane
     {
         if (whitelist)
         {
-            this.whitelist.setText("WHITELIST");
+            this.whitelist.getLabel().setText("WHITELIST");
             this.getStyleClass().replace("blacklist", "whitelist");
         }
         else
         {
-            this.whitelist.setText("BLACKLIST");
+            this.whitelist.getLabel().setText("BLACKLIST");
             this.getStyleClass().replace("whitelist", "blacklist");
         }
     }

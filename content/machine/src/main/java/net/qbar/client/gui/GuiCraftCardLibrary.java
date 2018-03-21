@@ -8,7 +8,6 @@ import net.qbar.common.card.CraftCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.tile.machine.TileCraftCardLibrary;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
@@ -42,7 +41,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
         GuiAbsolutePane body = new GuiAbsolutePane();
         body.setWidth(xSize);
         body.setHeightRatio(1);
-        body.setBackground(new Background(BACKGROUND));
+        body.setBackgroundTexture(BACKGROUND);
 
         mainPanel.addChild(body, 23, 0);
         mainPanel.addChild(new EngineerTabPane(craftCardLibrary, craftCardLibrary.getType()), 0, 0);

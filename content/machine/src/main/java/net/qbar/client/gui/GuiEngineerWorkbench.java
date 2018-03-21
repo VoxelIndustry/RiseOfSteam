@@ -9,7 +9,6 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileEngineerWorkbench;
 import org.lwjgl.input.Keyboard;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
@@ -46,7 +45,7 @@ public class GuiEngineerWorkbench extends BrokkGuiContainer<BuiltContainer>
         GuiAbsolutePane body = new GuiAbsolutePane();
         body.setWidth(xSize);
         body.setHeightRatio(1);
-        body.setBackground(new Background(BACKGROUND));
+        body.setBackgroundTexture(BACKGROUND);
 
         mainPanel.addChild(body, 23, 0);
         mainPanel.addChild(new EngineerTabPane(engineerWorkbench, engineerWorkbench.getType()), 0, 0);
