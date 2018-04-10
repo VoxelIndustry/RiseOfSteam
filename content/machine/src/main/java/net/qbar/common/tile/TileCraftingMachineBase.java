@@ -12,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.machine.MachineDescriptor;
-import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.component.CraftingComponent;
 import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.recipe.QBarRecipe;
@@ -52,8 +51,6 @@ public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBas
 
         this.crafter = descriptor.get(CraftingComponent.class);
         this.steamMachine = descriptor.get(SteamComponent.class);
-        if (descriptor.has(AutomationComponent.class))
-            this.automation = new AutomationModule(descriptor.get(AutomationComponent.class));
 
         this.steamTank = new SteamTank(0, steamMachine.getSteamCapacity(), steamMachine.getMaxPressureCapacity());
 
@@ -222,9 +219,6 @@ public abstract class TileCraftingMachineBase extends TileMultiblockInventoryBas
                 this.sync();
             }
         }
-
-        if (this.automation != null && !this.isOutputEmpty() && this.automation.tick(this.world, this.pos, this))
-            this.sync();
     }
 
     protected boolean acceptRecipe(QBarRecipe recipe)

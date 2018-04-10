@@ -44,8 +44,8 @@
             ]
             inputs: [
                 {
-                    pos: [0, 0, 2]
-                    facing: NORTH
+                    pos: [0, 1, 1]
+                    facing: SOUTH
                     slots: [0]
                 }
             ]

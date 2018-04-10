@@ -20,9 +20,11 @@ public abstract class InventoryModule extends MachineModule implements ISerializ
     private String                 inventoryName;
     private NonNullList<ItemStack> stacks;
 
-    public InventoryModule(IModularMachine machine, String name)
+    public InventoryModule(IModularMachine machine, String name, int slotCount)
     {
         super(machine, name);
+
+        this.stacks = NonNullList.withSize(slotCount, ItemStack.EMPTY);
     }
 
     @Override

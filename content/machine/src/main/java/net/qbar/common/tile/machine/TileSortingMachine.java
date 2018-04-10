@@ -17,7 +17,7 @@ import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.tile.TileCraftingMachineBase;
 
 public class TileSortingMachine extends TileCraftingMachineBase
@@ -57,7 +57,7 @@ public class TileSortingMachine extends TileCraftingMachineBase
         {
             return true;
         }
-        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
+        else if (capability == SteamCapabilities.STEAM_HANDLER && side.getFacing() == EnumFacing.WEST
                 && side.getPos().getX() == 0 && side.getPos().getY() == 0 && side.getPos().getZ() == 1)
         {
             return true;
@@ -77,7 +77,7 @@ public class TileSortingMachine extends TileCraftingMachineBase
         {
             return (T) this.getInventoryWrapper(facing);
         }
-        else if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.WEST
+        else if (capability == SteamCapabilities.STEAM_HANDLER && side.getFacing() == EnumFacing.WEST
                 && side.getPos().getX() == 0 && side.getPos().getY() == 0 && side.getPos().getZ() == 1)
         {
             return (T) this.getSteamTank();

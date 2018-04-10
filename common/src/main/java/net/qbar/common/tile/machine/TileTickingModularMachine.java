@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TileTickingModularMachine extends TileModularMachine implements ITickable
 {
-    private List<ITickableModule> tickables = new ArrayList<>();
+    private List<ITickableModule> tickings;
 
     public TileTickingModularMachine(MachineDescriptor descriptor)
     {
@@ -25,7 +25,7 @@ public class TileTickingModularMachine extends TileModularMachine implements ITi
     @Override
     public void update()
     {
-        this.tickables.forEach(ITickableModule::tick);
+        this.getTickings().forEach(ITickableModule::tick);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class TileTickingModularMachine extends TileModularMachine implements ITi
         super.addModule(module);
 
         if (module instanceof ITickableModule)
-            this.tickables.add((ITickableModule) module);
+            this.getTickings().add((ITickableModule) module);
     }
 
     @Override
@@ -43,13 +43,20 @@ public class TileTickingModularMachine extends TileModularMachine implements ITi
         super.removeModule(module);
 
         if (module instanceof ITickableModule)
-            this.tickables.remove(module);
+            this.getTickings().remove(module);
     }
 
     @Override
     protected void reloadModules()
     {
-        this.tickables.clear();
+        this.getTickings().clear();
         super.reloadModules();
+    }
+
+    private List<ITickableModule> getTickings()
+    {
+        if (this.tickings == null)
+            this.tickings = new ArrayList<>();
+        return this.tickings;
     }
 }

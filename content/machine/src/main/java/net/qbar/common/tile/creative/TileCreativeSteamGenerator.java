@@ -4,7 +4,7 @@ import java.util.List;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.CreativeSteamTank;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.tile.QBarTileBase;
@@ -42,7 +42,7 @@ public class TileCreativeSteamGenerator extends QBarTileBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
             return true;
         return super.hasCapability(capability, facing);
     }
@@ -51,7 +51,7 @@ public class TileCreativeSteamGenerator extends QBarTileBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
             return (T) this.steamTank;
         return super.getCapability(capability, facing);
     }

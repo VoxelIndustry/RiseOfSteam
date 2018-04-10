@@ -29,15 +29,15 @@ public class ItemSteamTank extends SteamTank implements ISteamHandlerItem, ICapa
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
     {
-        return capability == CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY;
+        return capability == SteamCapabilities.ITEM_STEAM_HANDLER;
     }
 
     @Nullable
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY)
-            return CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY.cast(this);
+        if (capability == SteamCapabilities.ITEM_STEAM_HANDLER)
+            return SteamCapabilities.ITEM_STEAM_HANDLER.cast(this);
         return null;
     }
 

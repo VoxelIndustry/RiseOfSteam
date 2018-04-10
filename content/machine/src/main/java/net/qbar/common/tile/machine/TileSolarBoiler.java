@@ -19,7 +19,7 @@ import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.ITileMultiblock;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.util.FluidUtils;
@@ -90,7 +90,7 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
         {
             MultiblockSide side = QBarMachines.SOLAR_BOILER.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
@@ -114,14 +114,14 @@ public class TileSolarBoiler extends TileBoilerBase implements ILoadable
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
         {
             MultiblockSide side = QBarMachines.SOLAR_BOILER.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
             if (side.getPos().getX() == -1 && side.getPos().getY() == 0 && side.getPos().getZ() == 1
                     && side.getFacing() == EnumFacing.SOUTH)
-                return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getSteamTank());
+                return SteamCapabilities.STEAM_HANDLER.cast(this.getSteamTank());
         }
         else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {

@@ -1,18 +1,15 @@
 package net.qbar.common.machine.module;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.qbar.common.tile.QBarTileBase;
 
 @Getter
+@AllArgsConstructor
 public abstract class MachineModule
 {
     private IModularMachine machine;
     private String          name;
-
-    public MachineModule(IModularMachine machine, String name)
-    {
-        this.machine = machine;
-    }
 
     public QBarTileBase getMachineTile()
     {

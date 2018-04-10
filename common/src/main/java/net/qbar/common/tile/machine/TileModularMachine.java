@@ -11,6 +11,8 @@ import net.qbar.common.machine.module.IModularMachine;
 import net.qbar.common.machine.module.ISerializableModule;
 import net.qbar.common.machine.module.MachineModule;
 import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.tile.QBarTileBase;
 import org.yggard.hermod.EventDispatcher;
 
@@ -18,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class TileModularMachine extends QBarTileBase implements IModularMachine
+public class TileModularMachine extends QBarTileBase implements IModularMachine, ITileMultiblockCore
 {
     private HashMap<Class<? extends MachineModule>, MachineModule> modules;
 
@@ -62,7 +64,8 @@ public class TileModularMachine extends QBarTileBase implements IModularMachine
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
-        tag.setString("machineDescriptor", this.descriptor.getName());
+        if (this.descriptor != null)
+            tag.setString("machineDescriptor", this.descriptor.getName());
 
         modules.values().forEach(module ->
         {
@@ -75,21 +78,47 @@ public class TileModularMachine extends QBarTileBase implements IModularMachine
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
-        return (this.hasModule(IOModule.class) && this.getModule(IOModule.class)
-                .hasCapability(capability, BlockPos.ORIGIN, facing)) || super.hasCapability(capability, facing);
+        return this.hasCapability(capability, BlockPos.ORIGIN, facing) || super.hasCapability(capability, facing);
     }
 
     @Nullable
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
+        T result = this.getCapability(capability, BlockPos.ORIGIN, facing);
+
+        if (result != null)
+            return result;
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void breakCore()
+    {
+        this.world.destroyBlock(this.pos, false);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
+    }
+
+    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
+    {
+        return this.hasModule(IOModule.class) && this.getModule(IOModule.class).hasCapability(capability, from, facing);
+    }
+
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
+    {
         if (this.hasModule(IOModule.class))
         {
-            T result = this.getModule(IOModule.class).getCapability(capability, BlockPos.ORIGIN, facing);
+            T result = this.getModule(IOModule.class).getCapability(capability, from, facing);
             if (result != null)
                 return result;
         }
-        return super.getCapability(capability, facing);
+        return null;
     }
 
     @Override
@@ -109,6 +138,12 @@ public class TileModularMachine extends QBarTileBase implements IModularMachine
     public <T extends MachineModule> boolean hasModule(Class<T> moduleClass)
     {
         return this.modules.containsKey(moduleClass);
+    }
+
+    @Override
+    public EnumFacing getFacing()
+    {
+        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
     }
 
     protected void addModule(MachineModule module)

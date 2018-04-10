@@ -10,38 +10,37 @@ import javax.annotation.Nullable;
 
 public interface ITileMultiblockCore extends ITileMultiblock
 {
-    @Override
-    default boolean isCore()
-    {
-        return true;
-    }
-
-    @Override
-    default boolean isCorePresent()
-    {
-        return true;
-    }
-
-    @Override
-    default ITileMultiblockCore getCore()
-    {
-        return this;
-    }
+    void breakCore();
 
     boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing);
 
     @Nullable
     <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing);
 
-    default boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                 final float hitZ, BlockPos from)
+    default ITileMultiblockCore getCore()
     {
-        return false;
+        return this;
     }
 
     default BlockPos getCoreOffset()
     {
         return BlockPos.ORIGIN;
+    }
+
+    default boolean isCore()
+    {
+        return true;
+    }
+
+    default boolean isCorePresent()
+    {
+        return true;
+    }
+
+    default boolean onRightClick(EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ,
+                                 BlockPos from)
+    {
+        return false;
     }
 
     default void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)

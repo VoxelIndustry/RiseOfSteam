@@ -4,67 +4,76 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.grid.node.IBelt;
-import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.OutputPoint;
+import net.qbar.common.machine.component.AutomationComponent;
+import net.qbar.common.machine.module.IModularMachine;
+import net.qbar.common.machine.module.ITickableModule;
+import net.qbar.common.machine.module.MachineModule;
+import net.qbar.common.machine.module.impl.CraftingInventoryModule;
+import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 
 import java.util.HashMap;
 
-public class AutomationModule
+public class AutomationModule extends MachineModule implements ITickableModule
 {
-    private final AutomationComponent component;
-
     private final HashMap<OutputPoint, Integer> lastOutput;
 
-    AutomationModule(AutomationComponent component)
+    private final CraftingInventoryModule inventory;
+
+    private final SidedInvWrapper outputWrapper;
+
+    public AutomationModule(IModularMachine machine)
     {
-        this.component = component;
+        super(machine, "AutomationModule");
+
         this.lastOutput = new HashMap<>();
+        this.inventory = machine.getModule(CraftingInventoryModule.class);
+        this.outputWrapper = new SidedInvWrapper(this.inventory, EnumFacing.NORTH);
     }
 
-    public boolean tick(World world, BlockPos pos, TileCraftingMachineBase machine)
+    @Override
+    public void tick()
     {
-        boolean isDirty = false;
-
-        for (OutputPoint point : this.component.getOutputs())
+        for (OutputPoint point : this.getMachine().getDescriptor().get(AutomationComponent.class).getOutputs())
         {
-            if (!anySlotFull(point, machine))
+            if (!anySlotFull(point))
                 continue;
 
-            MultiblockSide side = machine.getMultiblock().multiblockSideToWorldSide(
-                    point.getSide(), machine.getFacing());
-            BlockPos computedPos = pos.add(side.getPos());
-            if (this.hasBelt(world, computedPos))
+            MultiblockSide side = this.getMachine().getDescriptor().get(MultiblockComponent.class)
+                    .multiblockSideToWorldSide(point.getSide(), this.getMachine().getFacing());
+
+            BlockPos computedPos = this.getMachineTile().getPos().add(side.getPos());
+            if (this.hasBelt(this.getMachineTile().getWorld(), computedPos))
             {
                 int slot;
 
                 if (point.getSlots().length > 1)
                 {
                     if (point.isRoundRobin())
-                        slot = this.getNextSlotSeq(point, machine);
+                        slot = this.getNextSlotSeq(point);
                     else
-                        slot = this.getFirstFullSlot(point, machine);
+                        slot = this.getFirstFullSlot(point);
                 }
                 else
-                    slot = machine.getOutputSlots()[point.getSlots()[0]];
+                    slot = inventory.getOutputSlots()[point.getSlots()[0]];
 
                 if (slot == -1)
                     continue;
 
-                ItemStack toTransfer = machine.getStackInSlot(slot);
-                IBelt belt = (IBelt) world.getTileEntity(computedPos);
+                ItemStack toTransfer = inventory.getStackInSlot(slot);
+                IBelt belt = (IBelt) this.getMachineTile().getWorld().getTileEntity(computedPos);
 
                 if (this.canInsert(belt, toTransfer, side.getFacing()))
                 {
                     this.insert(belt,
-                            machine.getInventoryWrapper(EnumFacing.NORTH).extractItem(slot, 1, false),
-                            side.getFacing());
-                    isDirty = true;
+                            this.outputWrapper.extractItem(slot, 1, false), side.getFacing());
                 }
             }
         }
-        return isDirty;
+        this.getMachineTile().sync();
     }
 
     private void insert(IBelt belt, ItemStack stack, EnumFacing facing)
@@ -94,17 +103,17 @@ public class AutomationModule
         return w.getTileEntity(pos) instanceof IBelt;
     }
 
-    private boolean anySlotFull(OutputPoint point, TileCraftingMachineBase machine)
+    private boolean anySlotFull(OutputPoint point)
     {
         for (int slot : point.getSlots())
         {
-            if (!machine.getStackInSlot(machine.getOutputSlots()[slot]).isEmpty())
+            if (!inventory.getStackInSlot(inventory.getOutputSlots()[slot]).isEmpty())
                 return true;
         }
         return false;
     }
 
-    private int getNextSlotSeq(OutputPoint point, TileCraftingMachineBase machine)
+    private int getNextSlotSeq(OutputPoint point)
     {
         if (!this.lastOutput.containsKey(point))
             this.lastOutput.put(point, point.getSlots().length);
@@ -116,10 +125,10 @@ public class AutomationModule
 
         while (start < point.getSlots().length)
         {
-            if (!machine.getStackInSlot(machine.getOutputSlots()[point.getSlots()[start]]).isEmpty())
+            if (!inventory.getStackInSlot(inventory.getOutputSlots()[point.getSlots()[start]]).isEmpty())
             {
                 this.lastOutput.put(point, start);
-                return machine.getOutputSlots()[point.getSlots()[start]];
+                return inventory.getOutputSlots()[point.getSlots()[start]];
             }
             start++;
 
@@ -129,12 +138,12 @@ public class AutomationModule
         return 0;
     }
 
-    private int getFirstFullSlot(OutputPoint point, TileCraftingMachineBase machine)
+    private int getFirstFullSlot(OutputPoint point)
     {
         for (int slot : point.getSlots())
         {
-            if (!machine.getStackInSlot(machine.getOutputSlots()[slot]).isEmpty())
-                return machine.getOutputSlots()[slot];
+            if (!inventory.getStackInSlot(inventory.getOutputSlots()[slot]).isEmpty())
+                return inventory.getOutputSlots()[slot];
         }
         return -1;
     }

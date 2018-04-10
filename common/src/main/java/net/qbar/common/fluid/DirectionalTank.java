@@ -6,7 +6,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -17,7 +16,7 @@ public class DirectionalTank
     private final FluidTank internalTank;
     private final String    name;
 
-    private final InternalRestrictedTank outputOnly, inputOnly, both;
+    private final RestrictedTank outputOnly, inputOnly, both;
 
     public DirectionalTank(final String name, final FluidTank tank, final EnumFacing[] outputs,
                            final EnumFacing[] inputs)
@@ -28,9 +27,9 @@ public class DirectionalTank
         this.internalTank = tank;
         this.name = name;
 
-        this.outputOnly = new InternalRestrictedTank(this.internalTank, true, false);
-        this.inputOnly = new InternalRestrictedTank(this.internalTank, false, true);
-        this.both = new InternalRestrictedTank(this.internalTank, true, true);
+        this.outputOnly = new RestrictedTank(this.internalTank, true, false);
+        this.inputOnly = new RestrictedTank(this.internalTank, false, true);
+        this.both = new RestrictedTank(this.internalTank, true, true);
     }
 
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
@@ -111,48 +110,5 @@ public class DirectionalTank
     public IFluidHandler getOutputHandler()
     {
         return this.outputOnly;
-    }
-
-    private static class InternalRestrictedTank implements IFluidHandler
-    {
-        private final FluidTank internalTank;
-        private final boolean   canOutput, canInput;
-
-        private InternalRestrictedTank(final FluidTank internalTank, final boolean canOutput, final boolean canInput)
-        {
-            this.internalTank = internalTank;
-            this.canOutput = canOutput;
-            this.canInput = canInput;
-        }
-
-        @Override
-        public IFluidTankProperties[] getTankProperties()
-        {
-            return this.internalTank.getTankProperties();
-        }
-
-        @Override
-        public int fill(final FluidStack resource, final boolean doFill)
-        {
-            if (this.canInput)
-                return this.internalTank.fill(resource, doFill);
-            return 0;
-        }
-
-        @Override
-        public FluidStack drain(final FluidStack resource, final boolean doDrain)
-        {
-            if (this.canOutput)
-                return this.internalTank.drain(resource, doDrain);
-            return null;
-        }
-
-        @Override
-        public FluidStack drain(final int maxDrain, final boolean doDrain)
-        {
-            if (this.canOutput)
-                return this.internalTank.drain(maxDrain, doDrain);
-            return null;
-        }
     }
 }

@@ -5,7 +5,7 @@ public class CreativeSteamTank extends SteamTank
 
     public CreativeSteamTank()
     {
-        super(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        super(100_000, 100_000, 1);
     }
 
     @Override

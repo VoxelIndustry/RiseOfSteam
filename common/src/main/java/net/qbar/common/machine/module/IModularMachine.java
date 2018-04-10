@@ -1,5 +1,6 @@
 package net.qbar.common.machine.module;
 
+import net.minecraft.util.EnumFacing;
 import net.qbar.common.machine.MachineDescriptor;
 import org.yggard.hermod.IEventEmitter;
 
@@ -14,4 +15,6 @@ public interface IModularMachine extends IEventEmitter
     <T extends MachineModule> boolean hasModule(Class<T> moduleClass);
 
     MachineDescriptor getDescriptor();
+
+    EnumFacing getFacing();
 }

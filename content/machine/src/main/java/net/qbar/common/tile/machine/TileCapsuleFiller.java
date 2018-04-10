@@ -15,7 +15,7 @@ import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.component.SteamComponent;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.ISteamHandlerItem;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
@@ -47,7 +47,7 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
         if (!this.getStackInSlot(0).isEmpty())
         {
             ISteamHandlerItem item = this.getStackInSlot(0).getCapability(
-                    CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH);
+                    SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH);
 
             if (item != null && this.getTank().getSteam() > 0 &&
                     item.getSteam() < item.getCapacity() * item.getMaxPressure())
@@ -97,7 +97,7 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
     @Override
     public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
     {
-        return stack.hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH);
+        return stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
     @Override
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
             return true;
         return false;
     }
@@ -118,8 +118,8 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
     @Override
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
-            return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getTank());
+        if (capability == SteamCapabilities.STEAM_HANDLER)
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getTank());
         return null;
     }
 

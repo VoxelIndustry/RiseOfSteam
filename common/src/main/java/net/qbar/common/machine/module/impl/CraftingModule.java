@@ -46,6 +46,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
     @Getter
     @Setter
     private float      maxProgress;
+    @Getter
     private QBarRecipe currentRecipe;
 
     @Setter
@@ -214,8 +215,8 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
     @Override
     public void fromNBT(NBTTagCompound tag)
     {
-        this.currentProgress = tag.getFloat("currentProgress");
-        this.maxProgress = tag.getFloat("maxProgress");
+        this.setCurrentProgress(tag.getFloat("currentProgress"));
+        this.setMaxProgress(tag.getFloat("maxProgress"));
 
         if (tag.getInteger("bufferFluidStack") != 0)
         {
@@ -280,6 +281,13 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
     public float getEfficiency()
     {
         return this.efficiencySupplier.apply(this.getMachine());
+    }
+
+    public int getProgressScaled(int scale)
+    {
+        if (this.currentProgress != 0 && this.maxProgress != 0)
+            return (int) (this.currentProgress * scale / this.maxProgress);
+        return 0;
     }
 
     ////////////////////

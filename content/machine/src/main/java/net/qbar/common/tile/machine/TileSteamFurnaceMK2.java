@@ -17,7 +17,7 @@ import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.tile.TileCraftingMachineBase;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -87,7 +87,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
         {
             MultiblockSide side = QBarMachines.FURNACE_MK2.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
@@ -109,7 +109,7 @@ public class TileSteamFurnaceMK2 extends TileCraftingMachineBase
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
+        if (capability == SteamCapabilities.STEAM_HANDLER)
         {
             MultiblockSide side = QBarMachines.FURNACE_MK2.get(MultiblockComponent.class)
                     .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());

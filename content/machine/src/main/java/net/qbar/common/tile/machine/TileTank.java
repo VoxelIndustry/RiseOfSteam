@@ -152,12 +152,6 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     }
 
     @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
-    @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
@@ -248,13 +242,19 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     @Override
     public void connectTrigger(EnumFacing facing, CableGrid grid)
     {
-        this.getCore().connectTrigger(BlockPos.ORIGIN, facing, grid);
+        this.connectTrigger(BlockPos.ORIGIN, facing, grid);
     }
 
     @Override
     public void disconnectTrigger(EnumFacing facing, CableGrid grid)
     {
-        this.getCore().disconnectTrigger(BlockPos.ORIGIN, facing, grid);
+        this.disconnectTrigger(BlockPos.ORIGIN, facing, grid);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
     }
 
     ////////////

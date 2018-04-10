@@ -20,19 +20,19 @@ public class MachineBlocks
         QBarBlocks.registerBlock(new BlockTank("fluidtank_medium", Fluid.BUCKET_VOLUME * 128, 1));
         QBarBlocks.registerBlock(new BlockTank("fluidtank_big", Fluid.BUCKET_VOLUME * 432, 2));
         QBarBlocks.registerBlock(new BlockSolidBoiler());
-        QBarBlocks.registerBlock(
-                new BlockMultiblockMachine<>("assembler", Material.IRON, TileAssembler::new, TileAssembler.class));
+       /* QBarBlocks.registerBlock(
+                new BlockMultiblockMachine<>("assembler", Material.IRON, TileAssembler::new, TileAssembler.class));*/
         QBarBlocks.registerBlock(new BlockCreativeSteamGenerator());
         QBarBlocks.registerBlock(new BlockCreativeWaterGenerator());
         QBarBlocks.registerBlock(new BlockStructure());
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamfurnacemk1", Material.IRON, TileSteamFurnace::new,
+        QBarBlocks.registerBlock(new BlockMultiModularMachine<>("steamfurnacemk1", Material.IRON, TileSteamFurnace::new,
                 TileSteamFurnace.class));
         QBarBlocks.registerBlock(new BlockSolarBoiler());
         QBarBlocks.registerBlock(new BlockSolarMirror());
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("rollingmill", Material.IRON, TileRollingMill::new,
+        QBarBlocks.registerBlock(new BlockMultiModularMachine<>("rollingmill", Material.IRON, TileRollingMill::new,
                 TileRollingMill.class));
-        QBarBlocks.registerBlock(new BlockLiquidBoiler());
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamfurnacemk2", Material.IRON,
+      /*  QBarBlocks.registerBlock(new BlockLiquidBoiler());
+       QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamfurnacemk2", Material.IRON,
                 TileSteamFurnaceMK2::new, TileSteamFurnaceMK2.class));
         QBarBlocks.registerBlock(
                 new BlockMultiblockMachine<>("orewasher", Material.IRON, TileOreWasher::new, TileOreWasher.class));
@@ -51,7 +51,7 @@ public class MachineBlocks
         QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamtank_small", Material.IRON,
                 () -> new TileSteamTank(0), TileSteamTank.class));
         QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamtank_medium", Material.IRON,
-                () -> new TileSteamTank(1), TileSteamTank.class));
+                () -> new TileSteamTank(1), TileSteamTank.class));*/
 
         QBarBlocks.registerBlock(new BlockEngineerStorage());
         QBarBlocks.registerBlock(new BlockEngineerWorkbench());

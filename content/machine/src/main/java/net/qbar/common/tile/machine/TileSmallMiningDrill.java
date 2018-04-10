@@ -30,7 +30,7 @@ import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.ore.SludgeData;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 import net.qbar.common.util.FluidUtils;
@@ -296,7 +296,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
         MultiblockSide side = QBarMachines.SMALL_MINING_DRILL.get(MultiblockComponent.class)
                 .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.EAST
+        if (capability == SteamCapabilities.STEAM_HANDLER && side.getFacing() == EnumFacing.EAST
                 && side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
         {
             return true;
@@ -316,7 +316,7 @@ public class TileSmallMiningDrill extends TileMultiblockInventoryBase implements
         MultiblockSide side = QBarMachines.SMALL_MINING_DRILL.get(MultiblockComponent.class)
                 .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getFacing() == EnumFacing.EAST
+        if (capability == SteamCapabilities.STEAM_HANDLER && side.getFacing() == EnumFacing.EAST
                 && side.getPos().getX() == 1 && side.getPos().getY() == 0 && side.getPos().getZ() == -1)
         {
             return (T) this.steamTank;

@@ -1,6 +1,5 @@
 package net.qbar.common.block;
 
-import lombok.Getter;
 import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -14,14 +13,10 @@ import net.qbar.common.QBarConstants;
 
 import java.util.Random;
 
-public class BlockEnergizedTallGrass extends BlockTallGrass implements INamedBlock
+public class BlockEnergizedTallGrass extends BlockTallGrass
 {
-    @Getter
-    private String name;
-
     public BlockEnergizedTallGrass(String name)
     {
-        this.name = name;
         this.setSoundType(SoundType.PLANT);
 
         this.setRegistryName(QBarConstants.MODID, name);

@@ -168,7 +168,7 @@ public class TileCraftCardLibrary extends TileMultiblockInventoryBase implements
     @Override
     public BlockPos getBlockPos()
     {
-        return this.getCorePos();
+        return this.getPos();
     }
 
     @Override

@@ -20,8 +20,8 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.ITileMultiblockCore;
@@ -43,7 +43,7 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
-    private int grid;
+    private       int                                         grid;
 
     private NonNullList<ItemStack> craftables;
     private int[]                  craftablesCount;
@@ -64,9 +64,9 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
             return;
         if (!this.hasGrid())
             return;
-        if(!this.getGridObject().getMachines().containsKey(WorkshopMachine.CARDLIBRARY))
+        if (!this.getGridObject().getMachines().containsKey(WorkshopMachine.CARDLIBRARY))
         {
-            if(!this.craftables.isEmpty())
+            if (!this.craftables.isEmpty())
             {
                 this.craftables.clear();
                 this.sync();
@@ -225,7 +225,7 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
     @Override
     public BlockPos getBlockPos()
     {
-        return this.getCorePos();
+        return this.getPos();
     }
 
     @Override

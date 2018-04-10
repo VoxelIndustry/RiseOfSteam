@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 public class SteamModule extends MachineModule implements ISerializableModule, ISteamMachine
 {
-    private final ISteamTank     tank;
+    private final ISteamTank tank;
 
     @Getter
     @Setter
@@ -32,6 +32,8 @@ public class SteamModule extends MachineModule implements ISerializableModule, I
 
         SteamComponent component = machine.getDescriptor().get(SteamComponent.class);
         this.tank = tankSupplier.apply(component);
+
+        this.grid = -1;
     }
 
     public ISteamHandler getSteamHandler()
@@ -40,7 +42,7 @@ public class SteamModule extends MachineModule implements ISerializableModule, I
     }
 
     @Override
-    public ISteamHandler getInternalSteamHandler()
+    public ISteamTank getInternalSteamHandler()
     {
         return this.tank;
     }

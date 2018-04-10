@@ -19,6 +19,8 @@ public class SteamUtil
 
     public static ISteamTank createTank(SteamComponent component)
     {
+        if (component == null)
+            return null;
         return new SteamTank(0, component.getSteamCapacity(), component.getMaxPressureCapacity());
     }
 }

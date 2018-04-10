@@ -26,7 +26,7 @@ import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.type.LiquidBoilerRecipe;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamStack;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.util.FluidUtils;
@@ -155,7 +155,7 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     @Override
     public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2
+        if (capability == SteamCapabilities.STEAM_HANDLER && from.getY() == 2
                 && facing == EnumFacing.UP)
             return true;
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0
@@ -167,9 +167,9 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     @Override
     public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && from.getY() == 2
+        if (capability == SteamCapabilities.STEAM_HANDLER && from.getY() == 2
                 && facing == EnumFacing.UP)
-            return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getSteamTank());
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getSteamTank());
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
         {
             MultiblockSide side = QBarMachines.LIQUID_BOILER.get(MultiblockComponent.class)
@@ -291,13 +291,13 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     @Override
     public void connectTrigger(EnumFacing facing, CableGrid grid)
     {
-        this.getCore().connectTrigger(BlockPos.ORIGIN, facing, grid);
+        this.connectTrigger(BlockPos.ORIGIN, facing, grid);
     }
 
     @Override
     public void disconnectTrigger(EnumFacing facing, CableGrid grid)
     {
-        this.getCore().disconnectTrigger(BlockPos.ORIGIN, facing, grid);
+        this.disconnectTrigger(BlockPos.ORIGIN, facing, grid);
     }
 
     ////////////

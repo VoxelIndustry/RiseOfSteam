@@ -6,11 +6,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.impl.SteamMachineGrid;
-import net.qbar.common.machine.module.IModularMachine;
-import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.multiblock.ITileMultiblock;
-import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.steam.ISteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,38 +47,34 @@ public interface ISteamMachine extends ITileNode<SteamMachineGrid>
     {
         Set<ISteamMachine> toConnect = new HashSet<>();
 
-        Set<BlockPos> openset = new HashSet<>();
-        Set<BlockPos> frontier = new HashSet<>();
+        Set<MultiblockSide> openset = new HashSet<>();
+        Set<MultiblockSide> frontier = new HashSet<>();
 
-        frontier.add(this.getBlockPos());
+        frontier.add(new MultiblockSide(this.getBlockPos(), EnumFacing.NORTH));
         while (!frontier.isEmpty())
         {
-            Set<BlockPos> frontierCpy = new HashSet<>(frontier);
-            for (BlockPos current : frontierCpy)
+            Set<MultiblockSide> frontierCpy = new HashSet<>(frontier);
+            for (MultiblockSide current : frontierCpy)
             {
                 openset.add(current);
 
-                TileEntity found = this.getBlockWorld().getTileEntity(current);
+                TileEntity found = this.getBlockWorld().getTileEntity(current.getPos());
                 if (found == this || (found instanceof ITileMultiblock &&
                         ((ITileMultiblock) found).getCorePos().equals(this.getBlockPos())))
                 {
                     for (EnumFacing facing : EnumFacing.VALUES)
                     {
-                        BlockPos facingPos = current.offset(facing);
-                        if (!openset.contains(facingPos) && !frontier.contains(facingPos))
-                            frontier.add(facingPos);
+                        BlockPos facingPos = current.getPos().offset(facing);
+                        if (!openset.contains(facingPos) && !frontier.contains(new MultiblockSide(facingPos, facing)))
+                            frontier.add(new MultiblockSide(facingPos, facing));
                     }
                 }
                 else
                 {
-                    if (found instanceof IModularMachine && ((IModularMachine) found).hasModule(SteamModule.class))
-                        toConnect.add(((IModularMachine) found).getModule(SteamModule.class));
-                    else if (found instanceof ITileMultiblock && !(found instanceof ITileMultiblockCore) &&
-                            !((ITileMultiblock) found).getCorePos().equals(this.getBlockPos()) &&
-                            ((ITileMultiblock) found).getCore() instanceof IModularMachine &&
-                            ((IModularMachine) ((ITileMultiblock) found).getCore()).hasModule(SteamModule.class))
-                        toConnect.add(
-                                ((IModularMachine) ((ITileMultiblock) found).getCore()).getModule(SteamModule.class));
+                    if (found != null && found.hasCapability(SteamCapabilities.STEAM_MACHINE,
+                            current.getFacing().getOpposite()))
+                        toConnect.add(found.getCapability(SteamCapabilities.STEAM_MACHINE,
+                                current.getFacing().getOpposite()));
                 }
                 frontier.remove(current);
             }

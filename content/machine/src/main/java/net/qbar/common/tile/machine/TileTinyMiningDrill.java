@@ -25,7 +25,7 @@ import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import javax.annotation.Nullable;
@@ -176,19 +176,19 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 
     private int getSteam()
     {
-        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+        if (this.getStackInSlot(1).hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER,
                 EnumFacing.NORTH))
             return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).getSteam();
+                    .getCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH).getSteam();
         return 0;
     }
 
     private int drainSteam(int quantity, boolean doDrain)
     {
-        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+        if (this.getStackInSlot(1).hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER,
                 EnumFacing.NORTH))
             return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH)
+                    .getCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH)
                     .drainSteam(quantity, doDrain);
         return 0;
     }
@@ -245,7 +245,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
     @Override
     public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
     {
-        return index == 1 && stack.hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+        return index == 1 && stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER,
                 EnumFacing.NORTH);
     }
 

@@ -16,12 +16,12 @@ import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.DirectionalTank;
-import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
+import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamTank;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.TileInventoryBase;
@@ -144,7 +144,7 @@ public class TileSteamTank extends TileInventoryBase implements ITileMultiblockC
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
-                capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY;
+                capability == SteamCapabilities.STEAM_HANDLER;
     }
 
     @Nullable
@@ -154,21 +154,15 @@ public class TileSteamTank extends TileInventoryBase implements ITileMultiblockC
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
                     this.getFluidTank().getFluidHandler(EnumFacing.UP));
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY)
-            return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.getSteamTank());
+        if (capability == SteamCapabilities.STEAM_HANDLER)
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getSteamTank());
         return null;
     }
 
     @Override
     public void breakCore()
     {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
+        this.world.destroyBlock(this.pos, false);
     }
 
     @Override
@@ -188,6 +182,12 @@ public class TileSteamTank extends TileInventoryBase implements ITileMultiblockC
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         return this.getCapability(capability, BlockPos.ORIGIN, facing);
+    }
+
+    @Override
+    public BlockPos getCorePos()
+    {
+        return this.getPos();
     }
 
     private class LinkedSteamTank extends SteamTank

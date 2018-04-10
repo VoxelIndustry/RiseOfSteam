@@ -10,9 +10,9 @@ import java.util.stream.IntStream;
 
 public class BasicInventoryModule extends InventoryModule
 {
-    public BasicInventoryModule(IModularMachine machine)
+    public BasicInventoryModule(IModularMachine machine, int slotCount)
     {
-        super(machine, "BasicInventoryModule");
+        super(machine, "BasicInventoryModule", slotCount);
     }
 
     @Override

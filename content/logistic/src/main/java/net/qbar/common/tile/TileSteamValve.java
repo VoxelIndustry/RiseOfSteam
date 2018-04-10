@@ -2,17 +2,14 @@ package net.qbar.common.tile;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
 import net.qbar.common.block.BlockSteamValve;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.impl.SteamGrid;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.ISteamHandler;
-import net.qbar.common.steam.ISteamTank;
 import net.qbar.common.steam.SteamTank;
 
 import javax.annotation.Nullable;
@@ -34,7 +31,7 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing.getAxis() == this.getAxis())
+        if (capability == SteamCapabilities.STEAM_HANDLER && facing.getAxis() == this.getAxis())
             return true;
         return super.hasCapability(capability, facing);
     }
@@ -43,12 +40,12 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing.getAxis() == this.getAxis())
+        if (capability == SteamCapabilities.STEAM_HANDLER && facing.getAxis() == this.getAxis())
         {
             if (facing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE)
-                return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.backwardTank);
+                return SteamCapabilities.STEAM_HANDLER.cast(this.backwardTank);
             else
-                return CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY.cast(this.forwardTank);
+                return SteamCapabilities.STEAM_HANDLER.cast(this.forwardTank);
         }
         return super.getCapability(capability, facing);
     }
@@ -86,7 +83,7 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
             this.backwardTank.setDelegate(((SteamGrid) grid).getTank());
     }
 
-    private class DummySteamTank implements ISteamTank
+    private class DummySteamTank implements ISteamHandler
     {
         @Getter
         @Setter
@@ -134,12 +131,6 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
         }
 
         @Override
-        public FluidStack toFluidStack()
-        {
-            return null;
-        }
-
-        @Override
         public boolean canFill()
         {
             return delegate.canFill();
@@ -149,18 +140,6 @@ public class TileSteamValve extends QBarTileBase implements IConnectionAware, IT
         public boolean canDrain()
         {
             return delegate.canDrain();
-        }
-
-        @Override
-        public void readFromNBT(NBTTagCompound nbt)
-        {
-
-        }
-
-        @Override
-        public NBTTagCompound writeToNBT(NBTTagCompound nbt)
-        {
-            return nbt;
         }
     }
 }

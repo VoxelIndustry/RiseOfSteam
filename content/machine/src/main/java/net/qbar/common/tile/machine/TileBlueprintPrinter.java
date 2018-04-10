@@ -16,8 +16,8 @@ import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
@@ -35,7 +35,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
-    private int grid;
+    private       int                                         grid;
 
     public TileBlueprintPrinter()
     {
@@ -167,7 +167,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
     @Override
     public BlockPos getBlockPos()
     {
-        return this.getCorePos();
+        return this.getPos();
     }
 
     @Override

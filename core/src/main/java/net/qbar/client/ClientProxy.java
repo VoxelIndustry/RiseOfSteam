@@ -102,15 +102,15 @@ public class ClientProxy extends CommonProxy
     public void registerItemRenderer(final Item item, final int meta, final String id)
     {
         ModelLoader.setCustomModelResourceLocation(item, meta,
-                new ModelResourceLocation(QBarConstants.MODID + ":" + id, "inventory"));
+                new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     private static void registerFluidsClient()
     {
         QBarFluids.FLUIDS.forEach((fluid, blockFluid) ->
         {
-            ModelResourceLocation fluidLocation = new ModelResourceLocation(QBarConstants.MODID + ":" +
-                    blockFluid.getName(), fluid.getName());
+            ModelResourceLocation fluidLocation = new ModelResourceLocation(blockFluid.getRegistryName(),
+                    fluid.getName());
             ModelLoader.setCustomStateMapper(blockFluid, new StateMapperBase()
             {
                 @Override

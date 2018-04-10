@@ -22,7 +22,8 @@ public class CraftingInventoryModule extends InventoryModule
 
     public CraftingInventoryModule(IModularMachine machine)
     {
-        super(machine, "CraftingInventoryModule");
+        super(machine, "CraftingInventoryModule",
+                machine.getDescriptor().get(CraftingComponent.class).getInventorySize());
 
         this.crafter = machine.getDescriptor().get(CraftingComponent.class);
     }
@@ -61,6 +62,12 @@ public class CraftingInventoryModule extends InventoryModule
         return ArrayUtils.contains(this.crafter.getOutputs(), index);
     }
 
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 1;
+    }
+
     public boolean isBufferEmpty()
     {
         for (int i = 0; i < this.crafter.getBuffers().length; i++)
@@ -89,5 +96,20 @@ public class CraftingInventoryModule extends InventoryModule
                 return false;
         }
         return true;
+    }
+
+    public int[] getInputSlots()
+    {
+        return this.crafter.getInputs();
+    }
+
+    public int[] getOutputSlots()
+    {
+        return this.crafter.getOutputs();
+    }
+
+    public int[] getBufferSlots()
+    {
+        return this.crafter.getBuffers();
     }
 }

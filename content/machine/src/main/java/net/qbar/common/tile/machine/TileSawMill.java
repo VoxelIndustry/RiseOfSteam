@@ -15,7 +15,7 @@ import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.tile.TileCraftingMachineBase;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -59,7 +59,7 @@ public class TileSawMill extends TileCraftingMachineBase
     {
         final EnumFacing orientation = this.getFacing();
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY &&
+        if (capability == SteamCapabilities.STEAM_HANDLER &&
                 (facing == EnumFacing.DOWN || (from == BlockPos.ORIGIN
                         && (facing == orientation.rotateY().getOpposite() || facing == orientation.rotateY()))))
             return true;
@@ -75,7 +75,7 @@ public class TileSawMill extends TileCraftingMachineBase
     {
         final EnumFacing orientation = this.getFacing();
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY &&
+        if (capability == SteamCapabilities.STEAM_HANDLER &&
                 (facing == EnumFacing.DOWN || (from == BlockPos.ORIGIN
                         && (facing == orientation.rotateY().getOpposite() || facing == orientation.rotateY()))))
             return (T) this.getSteamTank();

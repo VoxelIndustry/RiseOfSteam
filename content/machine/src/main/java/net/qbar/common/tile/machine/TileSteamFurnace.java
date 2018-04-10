@@ -1,23 +1,24 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.impl.CraftingInventoryModule;
+import net.qbar.common.machine.module.impl.CraftingModule;
+import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.CapabilitySteamHandler;
-import net.qbar.common.tile.TileCraftingMachineBase;
-import org.apache.commons.lang3.ArrayUtils;
+import net.qbar.common.steam.SteamUtil;
+import net.qbar.common.tile.AutomationModule;
 
-public class TileSteamFurnace extends TileCraftingMachineBase
+public class TileSteamFurnace extends TileTickingModularMachine implements IContainerProvider
 {
     public TileSteamFurnace()
     {
@@ -25,76 +26,45 @@ public class TileSteamFurnace extends TileCraftingMachineBase
     }
 
     @Override
-    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
-    {
-        final EnumFacing orientation = this.getFacing();
-
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && (facing == EnumFacing.DOWN ||
-                (from == BlockPos.ORIGIN && facing == orientation.rotateY().getOpposite())))
-            return true;
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
-                && facing.getAxis() == orientation.getAxis())
-            return true;
-        return false;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
-    {
-        final EnumFacing orientation = this.getFacing();
-
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && (facing == EnumFacing.DOWN ||
-                (from == BlockPos.ORIGIN && facing == orientation.rotateY().getOpposite())))
-            return (T) this.getSteamTank();
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
-                && facing.getAxis() == orientation.getAxis())
-        {
-            return (T) this.getInventoryWrapper(facing);
-        }
-        return null;
-    }
-
-    @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
+        CraftingInventoryModule inventory = this.getModule(CraftingInventoryModule.class);
+        CraftingModule crafter = this.getModule(CraftingModule.class);
+        SteamModule steamEngine = this.getModule(SteamModule.class);
+
         return new ContainerBuilder("furnacemk1", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this)
+                .addInventory().tile(inventory)
                 .recipeSlot(0, QBarRecipeHandler.FURNACE_UID, 0, 47, 36,
-                        slot -> this.isBufferEmpty() && this.isOutputEmpty())
+                        slot -> inventory.isBufferEmpty() && inventory.isOutputEmpty())
                 .outputSlot(1, 116, 35).displaySlot(2, -1000, 0)
-                .syncFloatValue(this::getCurrentProgress, this::setCurrentProgress)
-                .syncFloatValue(this::getMaxProgress, this::setMaxProgress)
-                .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam).addInventory().create();
+                .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
+                .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
+                .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
+                        steamEngine.getInternalSteamHandler()::setSteam).addInventory().create();
     }
 
     @Override
-    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+    public boolean onRightClick(EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.STEAMFURNACE.getUniqueID(), this.world, this.pos.getX(),
-                this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.STEAMFURNACE.getUniqueID(), this.world,
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
 
     @Override
-    public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
+    protected void reloadModules()
     {
-        if (ArrayUtils.contains(this.getCrafter().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
-                && this.isOutputEmpty())
-            return this.isItemValidForSlot(index, itemStackIn);
-        return false;
-    }
+        super.reloadModules();
 
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 1;
+        this.addModule(new SteamModule(this, SteamUtil::createTank));
+        this.addModule(new CraftingInventoryModule(this));
+        this.addModule(new CraftingModule(this));
+        this.addModule(new AutomationModule(this));
+        this.addModule(new IOModule(this));
     }
 }

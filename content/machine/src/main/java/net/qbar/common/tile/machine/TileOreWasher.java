@@ -16,7 +16,7 @@ import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.tile.TileCraftingMachineBase;
 import net.qbar.common.util.FluidUtils;
 
@@ -86,7 +86,7 @@ public class TileOreWasher extends TileCraftingMachineBase
         MultiblockSide side = QBarMachines.ORE_WASHER.get(MultiblockComponent.class)
                 .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getPos().getX() == -1
+        if (capability == SteamCapabilities.STEAM_HANDLER && side.getPos().getX() == -1
                 && side.getPos().getY() == 0 && side.getPos().getZ() == 0 && side.getFacing() == EnumFacing.WEST)
         {
             return true;
@@ -111,7 +111,7 @@ public class TileOreWasher extends TileCraftingMachineBase
         MultiblockSide side = QBarMachines.ORE_WASHER.get(MultiblockComponent.class)
                 .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
 
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && side.getPos().getX() == -1
+        if (capability == SteamCapabilities.STEAM_HANDLER && side.getPos().getX() == -1
                 && side.getPos().getY() == 0 && side.getPos().getZ() == 0 && side.getFacing() == EnumFacing.WEST)
         {
             return (T) this.getSteamTank();

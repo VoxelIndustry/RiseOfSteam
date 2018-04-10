@@ -83,7 +83,7 @@ public class TileSolarMirror extends QBarTileBase implements ITileMultiblockCore
     @Override
     public void breakCore()
     {
-        this.world.destroyBlock(this.getPos(), false);
+        this.world.destroyBlock(this.pos, false);
     }
 
     @Override
