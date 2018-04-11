@@ -86,7 +86,7 @@ public class CommonProxy
         GridManager.getInstance().cableGrids.clear();
     }
 
-    public void registerItemRenderer(final Item item, final int meta, final String id)
+    public void registerItemRenderer(final Item item, final int meta)
     {
 
     }

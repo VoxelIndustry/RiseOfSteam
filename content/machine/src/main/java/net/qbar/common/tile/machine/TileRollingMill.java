@@ -88,7 +88,7 @@ public class TileRollingMill extends TileTickingModularMachine implements IConta
         CraftingModule crafter = this.getModule(CraftingModule.class);
         SteamModule steamEngine = this.getModule(SteamModule.class);
 
-        return new ContainerBuilder("furnacemk1", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+        return new ContainerBuilder("rollingmill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(inventory)
                 .recipeSlot(0, QBarRecipeHandler.ROLLINGMILL_UID, 0, 47, 36,
                         slot -> inventory.isBufferEmpty() && inventory.isOutputEmpty())

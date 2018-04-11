@@ -31,10 +31,10 @@ public class MachineBlocks
         QBarBlocks.registerBlock(new BlockSolarMirror());
         QBarBlocks.registerBlock(new BlockMultiModularMachine<>("rollingmill", Material.IRON, TileRollingMill::new,
                 TileRollingMill.class));
-      /*  QBarBlocks.registerBlock(new BlockLiquidBoiler());
-       QBarBlocks.registerBlock(new BlockMultiblockMachine<>("steamfurnacemk2", Material.IRON,
+        //  QBarBlocks.registerBlock(new BlockLiquidBoiler());
+        QBarBlocks.registerBlock(new BlockMultiModularMachine<>("steamfurnacemk2", Material.IRON,
                 TileSteamFurnaceMK2::new, TileSteamFurnaceMK2.class));
-        QBarBlocks.registerBlock(
+       /* QBarBlocks.registerBlock(
                 new BlockMultiblockMachine<>("orewasher", Material.IRON, TileOreWasher::new, TileOreWasher.class));
         QBarBlocks.registerBlock(new BlockMultiblockMachine<>("sortingmachine", Material.IRON, TileSortingMachine::new,
                 TileSortingMachine.class));

@@ -53,7 +53,10 @@ public class CraftingInventoryModule extends InventoryModule
     @Override
     public boolean canInsertItem(int index, @Nonnull ItemStack stack, @Nonnull EnumFacing side)
     {
-        return ArrayUtils.contains(this.crafter.getInputs(), index) && this.isItemValidForSlot(index, stack);
+        return ArrayUtils.contains(this.crafter.getInputs(), index)
+                && this.isBufferEmpty()
+                && this.isOutputEmpty()
+                && this.isItemValidForSlot(index, stack);
     }
 
     @Override

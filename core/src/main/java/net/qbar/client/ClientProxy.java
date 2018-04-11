@@ -99,7 +99,7 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void registerItemRenderer(final Item item, final int meta, final String id)
+    public void registerItemRenderer(final Item item, final int meta)
     {
         ModelLoader.setCustomModelResourceLocation(item, meta,
                 new ModelResourceLocation(item.getRegistryName(), "inventory"));
@@ -126,24 +126,23 @@ public class ClientProxy extends CommonProxy
     public void onModelRegistry(ModelRegistryEvent e)
     {
         ClientProxy.registerFluidsClient();
-    }
-
-    @SubscribeEvent
-    public void onModelBake(final ModelBakeEvent e)
-    {
-        final ModelResourceLocation key = new ModelResourceLocation(QBarConstants.MODID + ":" + QBarItems.BLUEPRINT
-                .name,
-                "inventory");
-        final IBakedModel originalModel = e.getModelRegistry().getObject(key);
-        e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
         for (Item item : QBarItems.ITEMS)
         {
             if (item instanceof IItemModelProvider && ((IItemModelProvider) item).hasSpecialModel())
                 ((IItemModelProvider) item).registerModels();
             else
-                QBar.proxy.registerItemRenderer(item, 0, item.getUnlocalizedName().substring(5));
+                QBar.proxy.registerItemRenderer(item, 0);
         }
+    }
+
+    @SubscribeEvent
+    public void onModelBake(final ModelBakeEvent e)
+    {
+        final ModelResourceLocation key = new ModelResourceLocation(QBarItems.BLUEPRINT.getRegistryName(),
+                "inventory");
+        final IBakedModel originalModel = e.getModelRegistry().getObject(key);
+        e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("qbar:itemextractor"), 1,
                 new ModelResourceLocation(QBarConstants.MODID + ":itemextractor", "facing=down,filter=true"));
