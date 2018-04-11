@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.machine.component.FluidComponent;
 import net.qbar.common.machine.module.IModularMachine;
 import net.qbar.common.machine.module.ISerializableModule;
@@ -19,9 +20,26 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
 
     public FluidStorageModule(IModularMachine machine)
     {
-        super(machine, "FluidComponent");
+        super(machine, "FluidStorageModule");
 
         this.fluidHandlers = new HashMap<>();
+
+        if (machine.getDescriptor().has(FluidComponent.class))
+        {
+            FluidComponent component = machine.getDescriptor().get(FluidComponent.class);
+
+            component.getTanks().forEach((name, bounds) ->
+            {
+                FluidTank tank;
+
+                if (bounds.getValue() != Integer.MAX_VALUE)
+                    tank = new LimitedTank(name, bounds.getKey(), bounds.getValue());
+                else
+                    tank = new FluidTank(bounds.getKey());
+
+                fluidHandlers.put(name, tank);
+            });
+        }
     }
 
     @Override
@@ -64,9 +82,9 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
         return this.fluidHandlers.get(name);
     }
 
-    public void replaceFluidHandler(String name, IFluidHandler handler)
+    public void setFluidHandler(String name, IFluidHandler handler)
     {
-        this.fluidHandlers.replace(name, handler);
+        this.fluidHandlers.put(name, handler);
     }
 
     public static Builder build(IModularMachine machine)

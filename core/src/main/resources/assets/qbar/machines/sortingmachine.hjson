@@ -46,6 +46,21 @@
                     order: balanced
                 }
             ]
+            inputs: [
+                {
+                    pos: [0, 1, 0]
+                    facing: NORTH
+                    slots: [0]
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 1]
+                    facing: WEST
+                }
+            ]
         }
     }
 }

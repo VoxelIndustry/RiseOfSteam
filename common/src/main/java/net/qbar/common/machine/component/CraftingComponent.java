@@ -21,9 +21,8 @@ public class CraftingComponent implements IMachineComponent
 
     private float craftingSpeed;
 
-    private int[] inputTanks;
-    private int[] outputTanks;
-    private int[] bufferTanks;
+    private String[] inputTanks;
+    private String[] outputTanks;
 
     private MachineDescriptor descriptor;
 }

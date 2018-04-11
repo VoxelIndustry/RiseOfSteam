@@ -36,11 +36,11 @@ public class MachineBlocks
                 TileSteamFurnaceMK2::new, TileSteamFurnaceMK2.class));
         QBarBlocks.registerBlock(new BlockMultiModularMachine<>("sawmill", Material.IRON, TileSawMill::new,
                 TileSawMill.class));
-       /* QBarBlocks.registerBlock(
-                new BlockMultiblockMachine<>("orewasher", Material.IRON, TileOreWasher::new, TileOreWasher.class));
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("sortingmachine", Material.IRON, TileSortingMachine::new,
+        QBarBlocks.registerBlock(
+                new BlockMultiModularMachine<>("orewasher", Material.IRON, TileOreWasher::new, TileOreWasher.class));
+        QBarBlocks.registerBlock(new BlockMultiModularMachine<>("sortingmachine", Material.IRON, TileSortingMachine::new,
                 TileSortingMachine.class));
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("smallminingdrill", Material.IRON,
+       /* QBarBlocks.registerBlock(new BlockMultiblockMachine<>("smallminingdrill", Material.IRON,
                 TileSmallMiningDrill::new, TileSmallMiningDrill.class));
         QBarBlocks.registerBlock(new BlockMultiblockMachine<>("tinyminingdrill", Material.IRON,
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));

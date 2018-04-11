@@ -70,6 +70,20 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
         this.inputTanks = new ArrayList<>();
         this.outputTanks = new ArrayList<>();
         this.bufferFluidStacks = new ArrayList<>();
+
+        if (machine.hasModule(FluidStorageModule.class))
+        {
+            FluidStorageModule fluidStorage = machine.getModule(FluidStorageModule.class);
+
+            for (String name : this.crafter.getInputTanks())
+            {
+                this.inputTanks.add((FluidTank) fluidStorage.getFluidHandler(name));
+                this.bufferFluidStacks.add(null);
+            }
+
+            for (String name : this.crafter.getOutputTanks())
+                this.outputTanks.add((FluidTank) fluidStorage.getFluidHandler(name));
+        }
     }
 
     private ISteamHandler getSteamHandler()
@@ -99,7 +113,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                 if (this.getInventory().isBufferEmpty())
                 {
                     final Object[] ingredients = new Object[this.crafter.getBuffers().length
-                            + this.crafter.getBufferTanks().length];
+                            + this.crafter.getInputTanks().length];
 
                     for (int i = 0; i < this.crafter.getInputs().length; i++)
                         ingredients[i] = this.getInventory().getStackInSlot(this.crafter.getInputs()[i]);
@@ -135,12 +149,12 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                 else
                 {
                     final Object[] ingredients = new Object[this.crafter.getBuffers().length
-                            + this.crafter.getBufferTanks().length];
+                            + this.crafter.getInputTanks().length];
 
                     for (int i = 0; i < this.crafter.getBuffers().length; i++)
                         ingredients[i] = this.getInventory().getStackInSlot(this.crafter.getBuffers()[i]);
-                    for (int i = 0; i < this.crafter.getBufferTanks().length; i++)
-                        ingredients[this.crafter.getBufferTanks().length + i] = this.bufferFluidStacks.get(i);
+                    for (int i = 0; i < this.crafter.getInputTanks().length; i++)
+                        ingredients[this.crafter.getInputTanks().length + i] = this.bufferFluidStacks.get(i);
 
                     final Optional<QBarRecipe> recipe = QBarRecipeHandler.getRecipe(this.crafter.getRecipeCategory(),
                             ingredients);
@@ -185,7 +199,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
 
                 for (final int buffer : this.crafter.getBuffers())
                     this.getInventory().setInventorySlotContents(buffer, ItemStack.EMPTY);
-                for (int j = 0; j < this.crafter.getBufferTanks().length; j++)
+                for (int j = 0; j < this.crafter.getInputTanks().length; j++)
                     this.bufferFluidStacks.set(j, null);
 
                 i = 0;
@@ -304,7 +318,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
         else
             craftTank = new FluidTank(component.getTankCapacity(name));
 
-        this.getMachine().getModule(FluidStorageModule.class).replaceFluidHandler(name, craftTank);
+        this.getMachine().getModule(FluidStorageModule.class).setFluidHandler(name, craftTank);
 
         this.inputTanks.add(craftTank);
         this.bufferFluidStacks.add(null);
@@ -315,7 +329,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
         FluidComponent component = this.getMachine().getDescriptor().get(FluidComponent.class);
         FluidTank craftTank = new FluidTank(component.getTankCapacity(name));
 
-        this.getMachine().getModule(FluidStorageModule.class).replaceFluidHandler(name, craftTank);
+        this.getMachine().getModule(FluidStorageModule.class).setFluidHandler(name, craftTank);
 
         this.outputTanks.add(craftTank);
     }

@@ -64,24 +64,23 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
                     break;
                 case "tankInput":
                     in.beginArray();
-                    List<Integer> inputs = new ArrayList<>();
+                    List<String> inputs = new ArrayList<>();
                     while (in.hasNext())
-                        inputs.add(in.nextInt());
+                        inputs.add(in.nextString());
                     in.endArray();
 
-                    component.setInputTanks(new int[inputs.size()]);
+                    component.setInputTanks(new String[inputs.size()]);
                     for (int i = 0; i < inputs.size(); i++)
                         component.getInputTanks()[i] = inputs.get(i);
-                    component.setBufferTanks(ArrayUtils.clone(component.getInputTanks()));
                     break;
                 case "tankOutput":
                     in.beginArray();
-                    List<Integer> outputs = new ArrayList<>();
+                    List<String> outputs = new ArrayList<>();
                     while (in.hasNext())
-                        outputs.add(in.nextInt());
+                        outputs.add(in.nextString());
                     in.endArray();
 
-                    component.setOutputTanks(new int[outputs.size()]);
+                    component.setOutputTanks(new String[outputs.size()]);
                     for (int i = 0; i < outputs.size(); i++)
                         component.getOutputTanks()[i] = outputs.get(i);
                     break;
@@ -107,11 +106,9 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
                     component.getOutputs().length + component.getBuffers().length);
 
         if (component.getInputTanks() == null)
-            component.setInputTanks(new int[0]);
+            component.setInputTanks(new String[0]);
         if (component.getOutputTanks() == null)
-            component.setOutputTanks(new int[0]);
-        if (component.getBufferTanks() == null)
-            component.setBufferTanks(new int[0]);
+            component.setOutputTanks(new String[0]);
         return component;
     }
 }

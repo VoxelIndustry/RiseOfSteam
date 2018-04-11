@@ -100,6 +100,8 @@ public class IOComponentTypeAdapter extends TypeAdapter<IOComponent>
         BlockPos pos = BlockPos.ORIGIN;
         EnumFacing facing = EnumFacing.NORTH;
 
+        point.setInput(true);
+        point.setOutput(true);
         while (in.hasNext())
         {
             switch (in.nextName())
@@ -115,9 +117,9 @@ public class IOComponentTypeAdapter extends TypeAdapter<IOComponent>
                 case "restriction":
                     String restriction = in.nextString();
                     if ("input-only".equals(restriction))
-                        point.setInput(true);
+                        point.setOutput(false);
                     if ("output-only".equals(restriction))
-                        point.setOutput(true);
+                        point.setInput(false);
                     break;
                 case "tank":
                     point.setTankName(in.nextString());
