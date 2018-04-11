@@ -1,26 +1,30 @@
 package net.qbar.common.tile.machine;
 
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.multiblock.BlockMultiblockBase;
+import net.qbar.common.machine.event.RecipeChangeEvent;
+import net.qbar.common.machine.module.impl.CraftingInventoryModule;
+import net.qbar.common.machine.module.impl.CraftingModule;
+import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.SteamCapabilities;
-import net.qbar.common.tile.TileCraftingMachineBase;
-import org.apache.commons.lang3.ArrayUtils;
+import net.qbar.common.steam.SteamUtil;
+import net.qbar.common.tile.AutomationModule;
 
-public class TileSawMill extends TileCraftingMachineBase
+public class TileSawMill extends TileTickingModularMachine implements IContainerProvider
 {
+    @Getter
     private ItemStack cachedStack;
 
     public TileSawMill()
@@ -31,10 +35,25 @@ public class TileSawMill extends TileCraftingMachineBase
     }
 
     @Override
-    public void onRecipeChange()
+    protected void reloadModules()
     {
-        if (this.getCurrentRecipe() != null)
-            this.cachedStack = this.getCurrentRecipe().getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
+        super.reloadModules();
+
+        CraftingModule crafter = new CraftingModule(this);
+        crafter.setOnRecipeChange(this::onRecipeChange);
+
+        this.addModule(new SteamModule(this, SteamUtil::createTank));
+        this.addModule(new CraftingInventoryModule(this));
+        this.addModule(crafter);
+        this.addModule(new AutomationModule(this));
+        this.addModule(new IOModule(this));
+    }
+
+    private void onRecipeChange(RecipeChangeEvent e)
+    {
+        if (this.getModule(CraftingModule.class).getCurrentRecipe() != null)
+            this.cachedStack = this.getModule(CraftingModule.class)
+                    .getCurrentRecipe().getRecipeOutputs(ItemStack.class).get(0).getRawIngredient();
     }
 
     @Override
@@ -55,49 +74,21 @@ public class TileSawMill extends TileCraftingMachineBase
     }
 
     @Override
-    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
-    {
-        final EnumFacing orientation = this.getFacing();
-
-        if (capability == SteamCapabilities.STEAM_HANDLER &&
-                (facing == EnumFacing.DOWN || (from == BlockPos.ORIGIN
-                        && (facing == orientation.rotateY().getOpposite() || facing == orientation.rotateY()))))
-            return true;
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
-                && facing.getAxis() == orientation.getAxis())
-            return true;
-        return false;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
-    {
-        final EnumFacing orientation = this.getFacing();
-
-        if (capability == SteamCapabilities.STEAM_HANDLER &&
-                (facing == EnumFacing.DOWN || (from == BlockPos.ORIGIN
-                        && (facing == orientation.rotateY().getOpposite() || facing == orientation.rotateY()))))
-            return (T) this.getSteamTank();
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && from != BlockPos.ORIGIN
-                && facing.getAxis() == orientation.getAxis())
-        {
-            return (T) this.getInventoryWrapper(facing);
-        }
-        return null;
-    }
-
-    @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
+        CraftingInventoryModule inventory = this.getModule(CraftingInventoryModule.class);
+        CraftingModule crafter = this.getModule(CraftingModule.class);
+        SteamModule steamEngine = this.getModule(SteamModule.class);
+
         return new ContainerBuilder("sawmill", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this)
+                .addInventory().tile(inventory)
                 .recipeSlot(0, QBarRecipeHandler.SAW_MILL_UID, 0, 47, 36,
-                        slot -> this.isBufferEmpty() && this.isOutputEmpty())
+                        slot -> inventory.isBufferEmpty() && inventory.isOutputEmpty())
                 .outputSlot(1, 116, 35).displaySlot(2, -1000, 0)
-                .syncFloatValue(this::getCurrentProgress, this::setCurrentProgress)
-                .syncFloatValue(this::getMaxProgress, this::setMaxProgress)
-                .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam).addInventory().create();
+                .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
+                .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
+                .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
+                        steamEngine.getInternalSteamHandler()::setSteam).addInventory().create();
     }
 
     @Override
@@ -116,33 +107,8 @@ public class TileSawMill extends TileCraftingMachineBase
     }
 
     @Override
-    public boolean canInsertItem(final int index, final ItemStack itemStackIn, final EnumFacing direction)
-    {
-        if (ArrayUtils.contains(this.getCrafter().getInputs(), index) && this.isInputEmpty() && this.isBufferEmpty()
-                && this.isOutputEmpty())
-            return this.isItemValidForSlot(index, itemStackIn);
-        return false;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 1;
-    }
-
-    @Override
     public boolean hasFastRenderer()
     {
         return true;
-    }
-
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
-    public ItemStack getCachedStack()
-    {
-        return this.cachedStack;
     }
 }

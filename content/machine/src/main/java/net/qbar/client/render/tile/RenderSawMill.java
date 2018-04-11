@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.client.render.RenderUtil;
+import net.qbar.common.machine.module.impl.CraftingInventoryModule;
+import net.qbar.common.machine.module.impl.CraftingModule;
 import net.qbar.common.tile.machine.TileSawMill;
 
 public class RenderSawMill extends FastTESR<TileSawMill>
@@ -34,16 +36,19 @@ public class RenderSawMill extends FastTESR<TileSawMill>
                 break;
         }
 
-        if (!tile.getStackInSlot(0).isEmpty())
-            RenderUtil.handleRenderItem(tile.getStackInSlot(0), true);
-        if (!tile.getStackInSlot(2).isEmpty())
-        {
-            GlStateManager.translate(-3 * (tile.getCurrentProgress() / tile.getMaxProgress()), 0, 0);
+        CraftingModule crafter = tile.getModule(CraftingModule.class);
+        CraftingInventoryModule inventory = tile.getModule(CraftingInventoryModule.class);
 
-            if (tile.getCurrentProgress() / tile.getMaxProgress() > 0.5)
+        if (!inventory.getStackInSlot(0).isEmpty())
+            RenderUtil.handleRenderItem(inventory.getStackInSlot(0), true);
+        if (!inventory.getStackInSlot(2).isEmpty())
+        {
+            GlStateManager.translate(-3 * (crafter.getCurrentProgress() / crafter.getMaxProgress()), 0, 0);
+
+            if (crafter.getCurrentProgress() / crafter.getMaxProgress() > 0.5)
                 RenderUtil.handleRenderItem(tile.getCachedStack(), true);
             else
-                RenderUtil.handleRenderItem(tile.getStackInSlot(2), true);
+                RenderUtil.handleRenderItem(inventory.getStackInSlot(2), true);
         }
         GlStateManager.popMatrix();
     }
