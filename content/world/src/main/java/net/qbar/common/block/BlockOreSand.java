@@ -20,8 +20,8 @@ import net.qbar.common.QBarConstants;
 
 public class BlockOreSand extends BlockFalling implements IModelProvider
 {
-    private static final PropertyEnum<BlockOreSand.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreSand
-            .EnumType.class);
+    private static final PropertyEnum<BlockOreSand.EnumType> VARIANTS =
+            PropertyEnum.create("variant", BlockOreSand.EnumType.class);
 
     public BlockOreSand(String name)
     {
