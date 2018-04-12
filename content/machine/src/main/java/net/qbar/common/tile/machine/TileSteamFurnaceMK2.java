@@ -20,7 +20,7 @@ import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.AutomationModule;
+import net.qbar.common.machine.module.impl.AutomationModule;
 import net.qbar.common.tile.module.SteamHeaterModule;
 
 public class TileSteamFurnaceMK2 extends TileTickingModularMachine implements IContainerProvider

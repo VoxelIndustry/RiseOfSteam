@@ -25,7 +25,7 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
     private SteamComponent steamComponent;
     private int            transferCapacity;
     private IFluidHandler  top;
-    private boolean water = false;
+    private boolean        water = false;
 
     private final LimitedTank tank;
 
@@ -37,7 +37,7 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
     {
         this.transferCapacity = transferCapacity;
 
-        this.tank = new LimitedTank("offshorepump", 0, 0);
+        this.tank = new LimitedTank(0, 0);
         this.tank.setCanDrain(false);
         this.tank.setCanFill(false);
 

@@ -314,7 +314,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
 
         FluidComponent component = this.getMachine().getDescriptor().get(FluidComponent.class);
         if (component.getTankThrottle(name) != Integer.MAX_VALUE)
-            craftTank = new LimitedTank(name, component.getTankCapacity(name), component.getTankThrottle(name));
+            craftTank = new LimitedTank(component.getTankCapacity(name), component.getTankThrottle(name));
         else
             craftTank = new FluidTank(component.getTankCapacity(name));
 

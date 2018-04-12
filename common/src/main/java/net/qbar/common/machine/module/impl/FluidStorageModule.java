@@ -2,8 +2,10 @@ package net.qbar.common.machine.module.impl;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.qbar.common.fluid.FilteredFluidTank;
 import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.machine.component.FluidComponent;
 import net.qbar.common.machine.module.IModularMachine;
@@ -13,6 +15,7 @@ import net.qbar.common.machine.module.MachineModule;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class FluidStorageModule extends MachineModule implements ISerializableModule
 {
@@ -33,9 +36,9 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
                 FluidTank tank;
 
                 if (bounds.getValue() != Integer.MAX_VALUE)
-                    tank = new LimitedTank(name, bounds.getKey(), bounds.getValue());
+                    tank = new LimitedTank(bounds.getKey(), bounds.getValue());
                 else
-                    tank = new FluidTank(bounds.getKey());
+                    tank = new FilteredFluidTank(bounds.getKey());
 
                 fluidHandlers.put(name, tank);
             });
@@ -85,6 +88,15 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
     public void setFluidHandler(String name, IFluidHandler handler)
     {
         this.fluidHandlers.put(name, handler);
+    }
+
+    public FluidStorageModule addFilter(String name, Predicate<FluidStack> filter)
+    {
+        if (this.fluidHandlers.get(name) instanceof FilteredFluidTank)
+            ((FilteredFluidTank) this.fluidHandlers.get(name)).setFilter(filter);
+        else
+            throw new RuntimeException("A filter cannot be set on a foreign tank object! [" + name + "]");
+        return this;
     }
 
     public static Builder build(IModularMachine machine)

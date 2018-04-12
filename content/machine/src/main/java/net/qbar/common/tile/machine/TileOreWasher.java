@@ -15,7 +15,7 @@ import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.module.impl.*;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.AutomationModule;
+import net.qbar.common.machine.module.impl.AutomationModule;
 import net.qbar.common.util.FluidUtils;
 
 public class TileOreWasher extends TileTickingModularMachine implements IContainerProvider

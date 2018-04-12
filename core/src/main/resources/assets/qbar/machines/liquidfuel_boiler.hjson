@@ -7,6 +7,10 @@
             height: 3
             length: 2
         }
+        steam: {
+            capacity: 32000
+            maxPressure: 1.5xBASE_PRESSURE
+        }
         blueprint: [
             {
                 time: 30
@@ -23,5 +27,62 @@
                 ]
             }
         ]
+        fluid: [
+            {
+                name: water
+                capacity: 64000
+            }
+            {
+                name: fuel
+                capacity: 48000
+            }
+        ]
+        io: {
+            steam: [
+                {
+                    fromPos: [0, 2, 0]
+                    toPos: [1, 2, 1]
+                    facing: UP
+                }
+            ]
+            fluid: {
+                water: [
+                    {
+                        pos: [0, 0, 0]
+                        facing: NORTH
+                    }
+                    {
+                        pos: [0, 0, 1]
+                        facing: WEST
+                    }
+                    {
+                        pos: [1, 0, 1]
+                        facing: SOUTH
+                    }
+                    {
+                        pos: [1, 0, 0]
+                        facing: EAST
+                    }
+                ]
+                fuel: [
+                    {
+                        pos: [1, 0, 0]
+                        facing: NORTH
+                    }
+                    {
+                        pos: [0, 0, 0]
+                        facing: WEST
+                    }
+                    {
+                        pos: [0, 0, 1]
+                        facing: SOUTH
+                    }
+                    {
+                        pos: [1, 0, 1]
+                        facing: EAST
+                    }
+                ]
+            }
+        }
     }
 }

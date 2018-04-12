@@ -33,9 +33,9 @@ public class BuiltContainer extends Container
 
     private final List<IInventory> inventories;
 
-    BuiltContainer(final String name, final EntityPlayer player, final List<IInventory> inventories,
-                          final Predicate<EntityPlayer> canInteract, final List<Range<Integer>> playerSlotRange,
-                          final List<Range<Integer>> tileSlotRange)
+    BuiltContainer(String name, EntityPlayer player, List<IInventory> inventories,
+                   Predicate<EntityPlayer> canInteract, List<Range<Integer>> playerSlotRange,
+                   List<Range<Integer>> tileSlotRange)
     {
         this.player = player;
         this.name = name;
@@ -47,51 +47,55 @@ public class BuiltContainer extends Container
 
         this.inventories = inventories;
 
-        this.inventories.forEach(inventory -> inventory.openInventory(player));
+        this.inventories.forEach(inventory ->
+        {
+            if (inventory != null)
+                inventory.openInventory(player);
+        });
     }
 
-    public void setSyncables(final List<SyncableProperty<?>> properties)
+    public void setSyncables(List<SyncableProperty<?>> properties)
     {
         this.syncablesValues = properties;
     }
 
-    public void addSyncable(final SyncableProperty<?> property)
+    public void addSyncable(SyncableProperty<?> property)
     {
         this.syncablesValues.add(property);
     }
 
-    public void addCraftEvents(final List<Consumer<InventoryCrafting>> craftEvents)
+    public void addCraftEvents(List<Consumer<InventoryCrafting>> craftEvents)
     {
         this.craftEvents = craftEvents;
     }
 
-    public void addCraftEvent(final Consumer<InventoryCrafting> craftEvent)
+    public void addCraftEvent(Consumer<InventoryCrafting> craftEvent)
     {
         if (this.craftEvents == null)
             this.craftEvents = new ArrayList<>();
         this.craftEvents.add(craftEvent);
     }
 
-    public void removeCraftEvent(final Consumer<InventoryCrafting> craftEvent)
+    public void removeCraftEvent(Consumer<InventoryCrafting> craftEvent)
     {
         if (this.craftEvents == null)
             this.craftEvents = new ArrayList<>();
         this.craftEvents.remove(craftEvent);
     }
 
-    public void addSlot(final Slot slot)
+    public void addSlot(Slot slot)
     {
         this.addSlotToContainer(slot);
     }
 
     @Override
-    public boolean canInteractWith(final EntityPlayer playerIn)
+    public boolean canInteractWith(EntityPlayer playerIn)
     {
         return this.canInteract.test(playerIn);
     }
 
     @Override
-    public final void onCraftMatrixChanged(final IInventory inv)
+    public final void onCraftMatrixChanged(IInventory inv)
     {
         if (this.craftEvents != null && !this.craftEvents.isEmpty())
             this.craftEvents.forEach(consumer -> consumer.accept((InventoryCrafting) inv));
@@ -116,7 +120,7 @@ public class BuiltContainer extends Container
         }
     }
 
-    public void updateProperty(final int id, final NBTTagCompound property)
+    public void updateProperty(int id, NBTTagCompound property)
     {
         final SyncableProperty<?> syncable = this.syncablesValues.get(id);
         syncable.fromNBT(property);
@@ -124,7 +128,7 @@ public class BuiltContainer extends Container
     }
 
     @Override
-    public ItemStack transferStackInSlot(final EntityPlayer player, final int index)
+    public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
         ItemStack originalStack = ItemStack.EMPTY;
 
@@ -164,7 +168,7 @@ public class BuiltContainer extends Container
         return originalStack;
     }
 
-    protected boolean shiftItemStack(final ItemStack stackToShift, final int start, final int end)
+    protected boolean shiftItemStack(ItemStack stackToShift, int start, int end)
     {
         boolean changed = false;
         if (stackToShift.isStackable())
@@ -220,7 +224,7 @@ public class BuiltContainer extends Container
         return changed;
     }
 
-    private boolean shiftToTile(final ItemStack stackToShift)
+    private boolean shiftToTile(ItemStack stackToShift)
     {
         for (final Range<Integer> range : this.tileSlotRanges)
             if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
@@ -228,7 +232,7 @@ public class BuiltContainer extends Container
         return false;
     }
 
-    private boolean shiftToPlayer(final ItemStack stackToShift)
+    private boolean shiftToPlayer(ItemStack stackToShift)
     {
         for (final Range<Integer> range : this.playerSlotRanges)
             if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
@@ -237,9 +241,13 @@ public class BuiltContainer extends Container
     }
 
     @Override
-    public void onContainerClosed(final EntityPlayer player)
+    public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        this.inventories.forEach(inventory -> inventory.closeInventory(player));
+        this.inventories.forEach(inventory ->
+        {
+            if (inventory != null)
+                inventory.closeInventory(player);
+        });
     }
 }

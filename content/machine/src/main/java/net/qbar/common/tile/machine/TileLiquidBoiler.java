@@ -1,57 +1,78 @@
 package net.qbar.common.tile.machine;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.fluid.FilteredFluidTank;
-import net.qbar.common.grid.impl.CableGrid;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.IConnectionAware;
+import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.impl.FluidStorageModule;
+import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.type.LiquidBoilerRecipe;
-import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamStack;
 import net.qbar.common.steam.SteamUtil;
+import net.qbar.common.tile.module.SteamBoilerModule;
 import net.qbar.common.util.FluidUtils;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.function.Predicate;
 
-public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
+public class TileLiquidBoiler extends TileTickingModularMachine implements IConnectionAware, IContainerProvider
 {
-    private final FluidTank fuelTank;
+    private static final Predicate<FluidStack> FUEL_FILTER = stack -> stack != null && stack.getFluid() != null &&
+            QBarRecipeHandler.inputMatchWithoutCount(QBarRecipeHandler.LIQUIDBOILER_UID, 0, stack);
 
     private final ArrayList<MultiblockSide> connections;
 
     public TileLiquidBoiler()
     {
-        super(QBarMachines.LIQUID_BOILER, 0, 300, Fluid.BUCKET_VOLUME * 32, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 64);
+        super(QBarMachines.LIQUID_BOILER);
 
-        this.fuelTank = new FilteredFluidTank(Fluid.BUCKET_VOLUME * 48,
-                fluidStack -> fluidStack != null && fluidStack.getFluid() != (FluidRegistry.WATER));
         this.connections = new ArrayList<>();
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new BasicInventoryModule(this, 0));
+        this.addModule(new SteamModule(this, SteamUtil::createTank));
+        this.addModule(new FluidStorageModule(this)
+                .addFilter("water", FluidUtils.WATER_FILTER)
+                .addFilter("fuel", FUEL_FILTER));
+
+        this.addModule(SteamBoilerModule.builder()
+                .machine(this)
+                .maxHeat(300).waterTank("water")
+                .build());
+
+        this.addModule(new IOModule(this));
     }
 
     private Fluid              cachedFluid;
     private LiquidBoilerRecipe recipe;
-    private double pendingFuel = 0;
+    private double             pendingFuel = 0;
 
     @Override
     public void update()
@@ -60,50 +81,32 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
         if (this.isServer())
         {
-            if (this.getFuel() != null && this.getFuel().getFluid() != this.cachedFluid)
+            IFluidTank fuelTank = (IFluidTank) this.getModule(FluidStorageModule.class).getFluidHandler("fuel");
+            FluidStack fuel = fuelTank.getFluid();
+
+            if (fuel != null && fuel.getFluid() != this.cachedFluid)
             {
                 recipe = null;
-                Optional<QBarRecipe> recipeSearched = QBarRecipeHandler.getRecipe(QBarRecipeHandler.LIQUIDBOILER_UID,
-                        this.getFuel());
+                Optional<QBarRecipe> recipeSearched =
+                        QBarRecipeHandler.getRecipe(QBarRecipeHandler.LIQUIDBOILER_UID, fuel);
 
                 recipeSearched.ifPresent(qBarRecipe -> recipe = (LiquidBoilerRecipe) qBarRecipe);
-                this.cachedFluid = this.getFuel().getFluid();
+                this.cachedFluid = fuel.getFluid();
             }
 
-            if (recipe != null)
+            SteamBoilerModule boiler = this.getModule(SteamBoilerModule.class);
+
+            if (recipe != null && boiler.getCurrentHeat() < boiler.getMaxHeat())
             {
-                double toConsume = 1000.0 / recipe.getTime();
+                float toConsume = 1000f / recipe.getTime();
                 this.pendingFuel += toConsume;
 
-                toConsume = Math.min((int) pendingFuel, this.getFuelTank().getFluidAmount());
+                toConsume = Math.min((int) pendingFuel, fuelTank.getFluidAmount());
 
-                this.heat += recipe.getRecipeOutputs(SteamStack.class).get(0).getRawIngredient().getAmount()
-                        * toConsume;
-                this.getFuelTank().drain((int) toConsume, true);
+                boiler.addHeat(
+                        recipe.getRecipeOutputs(SteamStack.class).get(0).getRawIngredient().getAmount() * toConsume);
+                fuelTank.drain((int) toConsume, true);
                 this.pendingFuel -= toConsume;
-            }
-
-            if (this.heat >= 100)
-            {
-                int toProduce = (int) (1 / Math.E * (this.heat / 10));
-                final FluidStack drained = this.getWaterTank().drain(toProduce, true);
-                if (drained != null)
-                    toProduce = drained.amount;
-                else
-                    toProduce = 0;
-                this.getSteamTank().fillSteam(toProduce, true);
-                if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
-                    this.heat--;
-                this.sync();
-            }
-
-            if (this.world.getTotalWorldTime() % 5 == 0)
-            {
-                if (this.heat > this.getMinimumTemp())
-                    this.heat -= 0.1f;
-                else if (this.heat < this.getMinimumTemp())
-                    this.heat = this.getMinimumTemp();
-                this.sync();
             }
         }
     }
@@ -112,8 +115,6 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-
-        tag.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
 
         if (this.isServer())
         {
@@ -134,9 +135,6 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     {
         super.readFromNBT(tag);
 
-        if (tag.hasKey("fuelTank"))
-            this.fuelTank.readFromNBT(tag.getCompoundTag("fuelTank"));
-
         if (this.isClient())
         {
             tmpConnections.clear();
@@ -153,82 +151,22 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
     }
 
     @Override
-    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
-    {
-        if (capability == SteamCapabilities.STEAM_HANDLER && from.getY() == 2
-                && facing == EnumFacing.UP)
-            return true;
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0
-                && facing.getAxis().isHorizontal())
-            return true;
-        return false;
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
-    {
-        if (capability == SteamCapabilities.STEAM_HANDLER && from.getY() == 2
-                && facing == EnumFacing.UP)
-            return SteamCapabilities.STEAM_HANDLER.cast(this.getSteamTank());
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && from.getY() == 0)
-        {
-            MultiblockSide side = QBarMachines.LIQUID_BOILER.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
-            if (side.getFacing() == EnumFacing.NORTH)
-            {
-                if (side.getPos().equals(BlockPos.ORIGIN))
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
-                else if (side.getPos().getX() == 1 && side.getPos().getZ() == 0)
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
-            }
-            else if (side.getFacing() == EnumFacing.WEST)
-            {
-                if (side.getPos().getX() == 0 && side.getPos().getZ() == 1)
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
-                else if (side.getPos().equals(BlockPos.ORIGIN))
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
-            }
-            else if (side.getFacing() == EnumFacing.SOUTH)
-            {
-                if (side.getPos().getX() == 1 && side.getPos().getZ() == 1)
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
-                else if (side.getPos().getX() == 0 && side.getPos().getZ() == 1)
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
-            }
-            else if (side.getFacing() == EnumFacing.EAST)
-            {
-                if (side.getPos().getX() == 1 && side.getPos().getZ() == 0)
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
-                else if (side.getPos().getX() == 1 && side.getPos().getZ() == 1)
-                    return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getFuelTank());
-            }
-        }
-        return null;
-    }
-
-    @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
+        SteamModule steamEngine = this.getModule(SteamModule.class);
+        SteamBoilerModule boiler = this.getModule(SteamBoilerModule.class);
+        FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
+
         return new ContainerBuilder("liquidboiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).syncFloatValue(this::getHeat, this::setHeat)
-                .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
-                .syncFluidValue(this::getWater, this::setWater).syncFluidValue(this::getFuel, this::setFuel)
+                .addInventory().tile(this.getModule(BasicInventoryModule.class))
+                .syncFloatValue(boiler::getCurrentHeat, boiler::setCurrentHeat)
+                .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
+                        steamEngine.getInternalSteamHandler()::setSteam)
+                .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,
+                        ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
+                .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("fuel"))::getFluid,
+                        ((FluidTank) fluidStorage.getFluidHandler("fuel"))::setFluid)
                 .addInventory().create();
-    }
-
-    public FluidTank getFuelTank()
-    {
-        return this.fuelTank;
-    }
-
-    public FluidStack getFuel()
-    {
-        return this.fuelTank.getFluid();
-    }
-
-    public void setFuel(final FluidStack fluid)
-    {
-        this.fuelTank.setFluid(fluid);
     }
 
     @Override
@@ -242,8 +180,9 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
 
         if (from.getY() == 0)
         {
-            if (FluidUtils.drainPlayerHand(this.getFuelTank(), player)
-                    || FluidUtils.fillPlayerHand(this.getFuelTank(), player))
+            IFluidHandler fuelTank = this.getModule(FluidStorageModule.class).getFluidHandler("fuel");
+
+            if (FluidUtils.drainPlayerHand(fuelTank, player) || FluidUtils.fillPlayerHand(fuelTank, player))
             {
                 this.markDirty();
                 return true;
@@ -251,16 +190,16 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
         }
         else
         {
-            if (FluidUtils.drainPlayerHand(this.getWaterTank(), player)
-                    || FluidUtils.fillPlayerHand(this.getWaterTank(), player))
+            IFluidHandler waterTank = this.getModule(FluidStorageModule.class).getFluidHandler("water");
+
+            if (FluidUtils.drainPlayerHand(waterTank, player) || FluidUtils.fillPlayerHand(waterTank, player))
             {
                 this.markDirty();
                 return true;
             }
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.LIQUIDBOILER.getUniqueID(), this.getWorld(), this.pos
-                        .getX(), this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.LIQUIDBOILER.getUniqueID(), this.getWorld(),
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
 
@@ -378,23 +317,5 @@ public class TileLiquidBoiler extends TileBoilerBase implements IConnectionAware
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return new int[0];
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return false;
     }
 }

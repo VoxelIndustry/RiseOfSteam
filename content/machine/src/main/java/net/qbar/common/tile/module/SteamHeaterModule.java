@@ -51,6 +51,14 @@ public class SteamHeaterModule extends MachineModule implements ISerializableMod
     @Override
     public void tick()
     {
+        if (this.getMachineTile().getWorld().getTotalWorldTime() % 5 == 0)
+        {
+            if (this.currentHeat > this.getMinimumTemp())
+                this.currentHeat -= 0.1f;
+            else if (this.currentHeat < this.getMinimumTemp())
+                this.currentHeat = this.getMinimumTemp();
+        }
+
         ISteamTank tank = this.getMachine().getModule(SteamModule.class).getInternalSteamHandler();
 
         if (tank.getSteam() > steamPerHeat)
@@ -66,6 +74,12 @@ public class SteamHeaterModule extends MachineModule implements ISerializableMod
             this.tempSteam -= drained;
             this.currentHeat += (float) drained / steamPerHeat;
         }
+    }
+
+    private int getMinimumTemp()
+    {
+        return (int) (this.getMachineTile().getWorld().getBiome(
+                this.getMachineTile().getPos()).getTemperature(this.getMachineTile().getPos()) * 20);
     }
 
     public int getHeatScaled(int pixels)

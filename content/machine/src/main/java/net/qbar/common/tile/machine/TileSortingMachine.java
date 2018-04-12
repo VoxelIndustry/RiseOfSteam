@@ -18,7 +18,7 @@ import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.AutomationModule;
+import net.qbar.common.machine.module.impl.AutomationModule;
 
 public class TileSortingMachine extends TileTickingModularMachine implements IContainerProvider
 {

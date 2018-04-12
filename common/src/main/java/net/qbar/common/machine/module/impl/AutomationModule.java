@@ -1,4 +1,4 @@
-package net.qbar.common.tile;
+package net.qbar.common.machine.module.impl;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -11,7 +11,6 @@ import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.module.IModularMachine;
 import net.qbar.common.machine.module.ITickableModule;
 import net.qbar.common.machine.module.MachineModule;
-import net.qbar.common.machine.module.impl.CraftingInventoryModule;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 

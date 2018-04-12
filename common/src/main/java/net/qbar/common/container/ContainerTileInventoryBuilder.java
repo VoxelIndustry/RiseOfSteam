@@ -344,7 +344,8 @@ public class ContainerTileInventoryBuilder
      */
     public ContainerBuilder addInventory()
     {
-        this.parent.tileInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
+        if (this.tile.getSizeInventory() != 0)
+            this.parent.tileInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
         this.parent.inventories.add(this.tile);
         return this.parent;
     }
