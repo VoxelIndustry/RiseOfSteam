@@ -2,11 +2,14 @@ package net.qbar.client.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.IFluidTank;
 import net.qbar.client.gui.util.GuiMachineBase;
 import net.qbar.client.gui.util.GuiProgress;
 import net.qbar.client.gui.util.GuiSpace;
 import net.qbar.client.gui.util.GuiTexturedSpace;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.machine.module.impl.FluidStorageModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.tile.machine.TileSmallMiningDrill;
 
 import java.util.Collections;
@@ -20,8 +23,10 @@ public class GuiSmallMiningDrill extends GuiMachineBase<TileSmallMiningDrill>
     {
         super(player, miningdrill, BACKGROUND);
 
-        this.addFluidTank(miningdrill.getFluidTank(), 128, 7, 18, 73);
-        this.addSteamTank(miningdrill.getSteamTank(), 151, 7, 18, 73);
+        this.addFluidTank((IFluidTank) miningdrill.getModule(FluidStorageModule.class).getFluidHandler("water"),
+                128, 7, 18, 73);
+        this.addSteamTank(miningdrill.getModule(SteamModule.class).getInternalSteamHandler(),
+                151, 7, 18, 73);
 
         this.addAnimatedSprite(this::getHeatScaled,
                 GuiProgress.builder().space(GuiTexturedSpace.builder().x(10).y(79).width(12).height(71).u(176).v(84)

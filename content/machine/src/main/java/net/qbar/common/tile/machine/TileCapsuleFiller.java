@@ -1,41 +1,40 @@
 package net.qbar.common.tile.machine;
 
-import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.component.SteamComponent;
-import net.qbar.common.steam.SteamCapabilities;
+import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.machine.module.impl.SteamModule;
+import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.ISteamHandlerItem;
-import net.qbar.common.steam.SteamTank;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.TileMultiblockInventoryBase;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-public class TileCapsuleFiller extends TileMultiblockInventoryBase implements ITickable
+public class TileCapsuleFiller extends TileTickingModularMachine implements IContainerProvider
 {
-    @Getter
-    private final SteamTank      tank;
-    private       SteamComponent steamComponent;
-
     public TileCapsuleFiller()
     {
-        super(QBarMachines.CAPSULE_FILLER, 1);
+        super(QBarMachines.CAPSULE_FILLER);
+    }
 
-        this.steamComponent = this.getDescriptor().get(SteamComponent.class);
-        this.tank = new SteamTank(0, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity());
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new BasicInventoryModule(this, 1)
+                .filter(0, stack -> stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH)));
+        this.addModule(new SteamModule(this, SteamUtil::createTank));
+        this.addModule(new IOModule(this));
     }
 
     @Override
@@ -44,33 +43,18 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
         if (this.isClient())
             return;
 
-        if (!this.getStackInSlot(0).isEmpty())
+        BasicInventoryModule inventory = this.getModule(BasicInventoryModule.class);
+        ISteamHandler steamHandler = this.getModule(SteamModule.class).getInternalSteamHandler();
+        if (!inventory.getStackInSlot(0).isEmpty())
         {
-            ISteamHandlerItem item = this.getStackInSlot(0).getCapability(
+            ISteamHandlerItem item = inventory.getStackInSlot(0).getCapability(
                     SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH);
 
-            if (item != null && this.getTank().getSteam() > 0 &&
+            if (item != null && steamHandler.getSteam() > 0 &&
                     item.getSteam() < item.getCapacity() * item.getMaxPressure())
-                item.fillSteam(this.tank.drainSteam(this.steamComponent.getSteamConsumption(), true), true);
+                item.fillSteam(steamHandler.drainSteam(
+                        this.getDescriptor().get(SteamComponent.class).getSteamConsumption(), true), true);
         }
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
-    {
-        super.writeToNBT(tag);
-
-        this.tank.writeToNBT(tag);
-
-        return tag;
-    }
-
-    @Override
-    public void readFromNBT(final NBTTagCompound tag)
-    {
-        super.readFromNBT(tag);
-
-        this.tank.readFromNBT(tag);
     }
 
     @Override
@@ -81,56 +65,16 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
     }
 
     @Override
-    public void addInfo(final List<String> lines)
-    {
-        lines.add("Steam " + this.tank.getSteam() + " / " + this.tank.getCapacity());
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.tank.getPressure()) + " / "
-                + SteamUtil.pressureFormat.format(this.tank.getMaxPressure()));
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return new int[]{0};
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH);
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == SteamCapabilities.STEAM_HANDLER)
-            return true;
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == SteamCapabilities.STEAM_HANDLER)
-            return SteamCapabilities.STEAM_HANDLER.cast(this.getTank());
-        return null;
-    }
-
-    @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
+        SteamModule steamEngine = this.getModule(SteamModule.class);
+
         return new ContainerBuilder("capsule_filler", player)
                 .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this)
+                .tile(this.getModule(BasicInventoryModule.class))
                 .steamSlot(0, 80, 36)
-                .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
+                .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
+                        steamEngine.getInternalSteamHandler()::setSteam)
                 .addInventory().create();
     }
 
@@ -146,15 +90,5 @@ public class TileCapsuleFiller extends TileMultiblockInventoryBase implements IT
         player.openGui(QBarConstants.MODINSTANCE, MachineGui.CAPSULE_FILLER.getUniqueID(), this.getWorld(),
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
-    }
-
-    private int getSteamAmount()
-    {
-        return this.getTank().getSteam();
-    }
-
-    private void setSteamAmount(final int amount)
-    {
-        this.getTank().setSteam(amount);
     }
 }

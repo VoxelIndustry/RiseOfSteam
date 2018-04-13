@@ -2,8 +2,11 @@ package net.qbar.client.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.IFluidTank;
 import net.qbar.client.gui.util.GuiMachineBase;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.machine.module.impl.FluidStorageModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.tile.machine.TileSteamTank;
 
 public class GuiSteamTank extends GuiMachineBase<TileSteamTank>
@@ -15,8 +18,9 @@ public class GuiSteamTank extends GuiMachineBase<TileSteamTank>
     {
         super(player, tile, BACKGROUND);
 
-        this.addFluidTank(tile.getFluidTank().getInternalFluidHandler(), 88, 6, 18, 73);
-        this.addSteamTank(tile.getSteamTank(), 70, 6, 18, 73);
+        this.addFluidTank((IFluidTank) tile.getModule(FluidStorageModule.class).getFluidHandler("water"),
+                88, 6, 18, 73);
+        this.addSteamTank(tile.getModule(SteamModule.class).getInternalSteamHandler(), 70, 6, 18, 73);
 
         this.addLabel(5, 4, tile.getDisplayName().getFormattedText());
     }

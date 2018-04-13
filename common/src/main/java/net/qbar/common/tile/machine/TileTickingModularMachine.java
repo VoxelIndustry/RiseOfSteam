@@ -25,7 +25,8 @@ public class TileTickingModularMachine extends TileModularMachine implements ITi
     @Override
     public void update()
     {
-        this.getTickings().forEach(ITickableModule::tick);
+        if (this.getDescriptor() != null)
+            this.getTickings().forEach(ITickableModule::tick);
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IntHashMap;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -13,11 +14,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.qbar.common.util.ItemUtils;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 @Getter
 public abstract class InventoryModule extends MachineModule implements ISerializableModule, ISidedInventory
 {
-    private String                 inventoryName;
+    private IntHashMap<Predicate<ItemStack>> slotFilters;
+
     private NonNullList<ItemStack> stacks;
 
     public InventoryModule(IModularMachine machine, String name, int slotCount)
@@ -25,6 +28,7 @@ public abstract class InventoryModule extends MachineModule implements ISerializ
         super(machine, name);
 
         this.stacks = NonNullList.withSize(slotCount, ItemStack.EMPTY);
+        this.slotFilters = new IntHashMap<>();
     }
 
     @Override
@@ -38,6 +42,12 @@ public abstract class InventoryModule extends MachineModule implements ISerializ
     {
         ItemUtils.saveAllItems(tag, this.stacks);
         return tag;
+    }
+
+    public InventoryModule filter(int slot, Predicate<ItemStack> filter)
+    {
+        this.slotFilters.addKey(slot, filter);
+        return this;
     }
 
     @Override
@@ -111,6 +121,8 @@ public abstract class InventoryModule extends MachineModule implements ISerializ
     @Override
     public boolean isItemValidForSlot(final int index, final ItemStack stack)
     {
+        if (this.slotFilters.containsItem(index))
+            return this.slotFilters.lookup(index).test(stack);
         return true;
     }
 

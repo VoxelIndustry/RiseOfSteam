@@ -5,106 +5,92 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
-import net.qbar.common.fluid.DirectionalTank;
 import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.multiblock.ITileMultiblockCore;
-import net.qbar.common.steam.SteamCapabilities;
-import net.qbar.common.steam.SteamTank;
-import net.qbar.common.steam.SteamUtil;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.component.SteamComponent;
+import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.impl.FluidStorageModule;
+import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.machine.module.impl.SteamModule;
+import net.qbar.common.steam.ISteamTank;
+import net.qbar.common.steam.LinkedSteamTank;
 import net.qbar.common.util.FluidUtils;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-@Getter
-public class TileSteamTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider,
-        IConnectionAware
+public class TileSteamTank extends TileModularMachine implements IContainerProvider, IConnectionAware
 {
+    @Getter
     private int tier;
-
-    private DirectionalTank fluidTank;
-    private SteamTank       steamTank;
 
     public TileSteamTank(int tier)
     {
-        super("steamtank", 0);
+        super(tier == 0 ? QBarMachines.SMALL_STEAM_TANK : QBarMachines.MEDIUM_STEAM_TANK);
 
         this.tier = tier;
-
-        int capacity = tier == 0 ? 64 : 128;
-
-        this.fluidTank = new DirectionalTank("steamtank", new FluidTank(Fluid.BUCKET_VOLUME * capacity),
-                new EnumFacing[0], new EnumFacing[]{EnumFacing.UP});
-        this.steamTank = new LinkedSteamTank(0, Fluid.BUCKET_VOLUME * capacity,
-                tier == 0 ? SteamUtil.BASE_PRESSURE * 1.5f : SteamUtil.BASE_PRESSURE * 2.5f,
-                this.fluidTank.getInternalFluidHandler());
     }
 
     public TileSteamTank()
     {
-        this(0);
+        this.tier = -1;
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    protected void reloadModules()
     {
-        lines.add("Steam " + this.steamTank.getSteam() + " / " + this.steamTank.getCapacity());
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.steamTank.getPressure()) + " / "
-                + SteamUtil.pressureFormat.format(this.steamTank.getMaxPressure()));
+        super.reloadModules();
+
+        this.addModule(new BasicInventoryModule(this, 0));
+        this.addModule(new FluidStorageModule(this)
+                .addFilter("water", FluidUtils.WATER_FILTER));
+        this.addModule(new SteamModule(this, this::createTank));
+
+        this.addModule(new IOModule(this));
     }
 
     @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
+    public void readFromNBT(NBTTagCompound tag)
     {
-        super.writeToNBT(tag);
+        this.tier = tag.getInteger("tier");
 
-        tag.setTag("fluid", this.fluidTank.writeToNBT(new NBTTagCompound()));
-        tag.setTag("steam", this.steamTank.writeToNBT(new NBTTagCompound()));
-
-        return tag;
-    }
-
-    @Override
-    public void readFromNBT(final NBTTagCompound tag)
-    {
         super.readFromNBT(tag);
-
-        this.fluidTank.readFromNBT(tag.getCompoundTag("fluid"));
-        this.steamTank.readFromNBT(tag.getCompoundTag("steam"));
     }
 
-    public FluidStack getFluid()
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
-        return this.fluidTank.getInternalFluidHandler().getFluid();
+        tag.setInteger("tier", this.tier);
+
+        return super.writeToNBT(tag);
     }
 
-    public void setFluid(final FluidStack fluid)
+    private ISteamTank createTank(SteamComponent steamComponent)
     {
-        this.fluidTank.setFluidStack(fluid);
+        return new LinkedSteamTank(0, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity(),
+                (IFluidTank) this.getModule(FluidStorageModule.class).getFluidHandler("water"));
     }
 
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
+        SteamModule steamEngine = this.getModule(SteamModule.class);
+        FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
+
         return new ContainerBuilder("steamtank", player)
                 .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this)
-                .syncFluidValue(this::getFluid, this::setFluid)
-                .syncIntegerValue(this.getSteamTank()::getSteam, this.getSteamTank()::setSteam)
+                .tile(this.getModule(BasicInventoryModule.class))
+                .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
+                        steamEngine.getInternalSteamHandler()::setSteam)
+                .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,
+                        ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
                 .addInventory().create();
     }
 
@@ -117,8 +103,8 @@ public class TileSteamTank extends TileInventoryBase implements ITileMultiblockC
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        if (FluidUtils.drainPlayerHand(this.getFluidTank().getInternalFluidHandler(), player) ||
-                FluidUtils.fillPlayerHand(this.getFluidTank().getInternalFluidHandler(), player))
+        IFluidHandler water = this.getModule(FluidStorageModule.class).getFluidHandler("water");
+        if (FluidUtils.drainPlayerHand(water, player) || FluidUtils.fillPlayerHand(water, player))
         {
             this.markDirty();
             return true;
@@ -141,70 +127,9 @@ public class TileSteamTank extends TileInventoryBase implements ITileMultiblockC
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
-                capability == SteamCapabilities.STEAM_HANDLER;
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
-                    this.getFluidTank().getFluidHandler(EnumFacing.UP));
-        if (capability == SteamCapabilities.STEAM_HANDLER)
-            return SteamCapabilities.STEAM_HANDLER.cast(this.getSteamTank());
-        return null;
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.pos, false);
-    }
-
-    @Override
     public void onLoad()
     {
         if (this.isClient())
             this.forceSync();
-    }
-
-    @Override
-    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
-    {
-        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
-    {
-        return this.getCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
-    private class LinkedSteamTank extends SteamTank
-    {
-        private IFluidTank fluidTank;
-
-        private LinkedSteamTank(int steamAmount, int capacity, float maxPressure, IFluidTank fluidTank)
-        {
-            super(steamAmount, capacity, maxPressure);
-
-            this.fluidTank = fluidTank;
-        }
-
-        @Override
-        public int getCapacity()
-        {
-            return fluidTank.getFluidAmount();
-        }
     }
 }

@@ -7,6 +7,12 @@
             height: 3
             length: 2
         }
+        fluid: [
+            {
+                name: fluid
+                capacity: 128000
+            }
+        ]
         blueprint: [
             {
                 time: 30
@@ -20,5 +26,44 @@
                 ]
             }
         ]
+        io: {
+            fluid: [
+                {
+                    fromPos: [0, 0, 0]
+                    toPos: [1, 0, 0]
+                    facing: NORTH
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [1, 0, 0]
+                    toPos: [1, 0, 1]
+                    facing: EAST
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [0, 0, 0]
+                    toPos: [0, 0, 1]
+                    facing: WEST
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [0, 0, 1]
+                    toPos: [1, 0, 1]
+                    facing: SOUTH
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [0, 2, 0]
+                    toPos: [1, 2, 1]
+                    facing: UP
+                    tank: fluid
+                    restriction: input-only
+                }
+            ]
+        }
     }
 }

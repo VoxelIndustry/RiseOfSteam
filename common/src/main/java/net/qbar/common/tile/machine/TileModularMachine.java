@@ -4,6 +4,8 @@ import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.QBarMachines;
@@ -144,6 +146,13 @@ public class TileModularMachine extends QBarTileBase implements IModularMachine,
     public EnumFacing getFacing()
     {
         return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TextComponentTranslation("gui." + this.descriptor.getName() + ".name");
     }
 
     protected void addModule(MachineModule module)

@@ -7,6 +7,7 @@ import net.qbar.common.machine.typeadapter.MachineDescriptorTypeAdapter;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import org.apache.commons.io.IOUtils;
 import org.hjson.JsonValue;
+import org.hjson.ParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +50,9 @@ public class QBarMachines
     private static HashMap<String, MachineDescriptor>                                  machines = new HashMap<>();
     private static HashMap<Class<? extends IMachineComponent>, Set<MachineDescriptor>> subLists = new HashMap<>();
 
-    public static final Gson GSON = new GsonBuilder()
+    public static final Gson    GSON = new GsonBuilder()
             .registerTypeAdapter(MachineDescriptor.class, new MachineDescriptorTypeAdapter()).create();
-    private static boolean preload;
+    private static      boolean preload;
 
     public static void preLoadMachines()
     {
@@ -158,6 +159,9 @@ public class QBarMachines
         } catch (IOException e)
         {
             e.printStackTrace();
+        } catch (ParseException e)
+        {
+            QBarConstants.LOGGER.error("Exception thrown while parsing " + name, e);
         }
         return descriptor;
     }

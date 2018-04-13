@@ -8,19 +8,16 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
-import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.tile.machine.TileTank;
 
-public class BlockTank extends BlockMultiblockBase<TileTank>
+public class BlockTank extends BlockMultiModularMachine<TileTank>
 {
-    private final int capacity;
     private final int tier;
 
-    public BlockTank(final String name, final int capacity, final int tier)
+    public BlockTank(final String name, final int tier)
     {
-        super(name, Material.IRON, TileTank.class);
+        super(name, Material.IRON, TileTank::new, TileTank.class);
 
-        this.capacity = capacity;
         this.tier = tier;
     }
 
@@ -36,8 +33,7 @@ public class BlockTank extends BlockMultiblockBase<TileTank>
         if (this.checkWorldTile(world, pos))
         {
             final TileTank tile = this.getWorldTile(world, pos);
-            if (tile.getTier() != 0)
-                return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, tile.state);
+            return ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, tile.state);
         }
         return state;
     }
@@ -45,6 +41,6 @@ public class BlockTank extends BlockMultiblockBase<TileTank>
     @Override
     public TileTank getTile(final World w, final IBlockState state)
     {
-        return new TileTank(this.capacity, this.tier);
+        return new TileTank(this.tier);
     }
 }
