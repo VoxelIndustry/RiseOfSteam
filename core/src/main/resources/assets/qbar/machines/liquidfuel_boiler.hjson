@@ -9,7 +9,7 @@
         }
         steam: {
             capacity: 32000
-            maxPressure: 1.5xBASE_PRESSURE
+            maxPressure: 2xBASE_PRESSURE
         }
         blueprint: [
             {

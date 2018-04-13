@@ -9,6 +9,10 @@
             offsetX: 1
             offsetZ: 1
         }
+        steam: {
+            capacity: 128000
+            maxPressure: 3xBASE_PRESSURE
+        }
         blueprint: [
             {
                 time: 20
@@ -29,5 +33,26 @@
                 ]
             }
         ]
+        fluid: [
+            {
+                name: water
+                capacity: 144000
+            }
+        ]
+        io: {
+            steam: [
+                {
+                    pos: [-1, 0, 1]
+                    facing: SOUTH
+                }
+            ]
+            fluid: [
+                {
+                    pos: [1, 0, 1]
+                    facing: SOUTH
+                    tank: water
+                }
+            ]
+        }
     }
 }

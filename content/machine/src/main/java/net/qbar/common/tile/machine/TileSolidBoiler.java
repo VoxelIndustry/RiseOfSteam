@@ -1,37 +1,57 @@
 package net.qbar.common.tile.machine;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
-import net.qbar.common.container.slot.SlotFuel;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.multiblock.MultiblockComponent;
-import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.steam.SteamCapabilities;
+import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.impl.FluidStorageModule;
+import net.qbar.common.machine.module.impl.IOModule;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.steam.SteamUtil;
+import net.qbar.common.tile.module.SteamBoilerModule;
 import net.qbar.common.util.FluidUtils;
 
-public class TileSolidBoiler extends TileBoilerBase
+@Getter
+@Setter
+public class TileSolidBoiler extends TileTickingModularMachine implements IContainerProvider
 {
     private int currentBurnTime;
     private int maxBurnTime;
 
     public TileSolidBoiler()
     {
-        super(QBarMachines.SOLID_BOILER, 1, 300, 4000, SteamUtil.BASE_PRESSURE * 2, Fluid.BUCKET_VOLUME * 32);
+        super(QBarMachines.SOLID_BOILER);
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new BasicInventoryModule(this, 1));
+        this.addModule(new SteamModule(this, SteamUtil::createTank));
+        this.addModule(new FluidStorageModule(this)
+                .addFilter("water", FluidUtils.WATER_FILTER));
+
+        this.addModule(SteamBoilerModule.builder()
+                .machine(this)
+                .maxHeat(300).waterTank("water")
+                .build());
+
+        this.addModule(new IOModule(this));
     }
 
     @Override
@@ -39,46 +59,25 @@ public class TileSolidBoiler extends TileBoilerBase
     {
         super.update();
 
-        if (this.isServer())
+        if (this.isClient())
+            return;
+
+        BasicInventoryModule inventory = this.getModule(BasicInventoryModule.class);
+        if (this.maxBurnTime == 0 && !inventory.getStackInSlot(0).isEmpty())
         {
-            if (this.maxBurnTime == 0 && !this.getStackInSlot(0).isEmpty())
-            {
-                this.maxBurnTime = TileEntityFurnace.getItemBurnTime(this.getStackInSlot(0)) / 2;
-                if (this.maxBurnTime != 0)
-                    this.decrStackSize(0, 1);
-            }
-            if (this.currentBurnTime < this.maxBurnTime)
-            {
-                this.currentBurnTime++;
-                this.heat += 0.1f;
-            }
-            else
-            {
-                this.currentBurnTime = 0;
-                this.maxBurnTime = 0;
-            }
-
-            if (this.heat >= 100)
-            {
-                int toProduce = (int) (1 / Math.E * (this.heat / 10));
-                final FluidStack drained = this.getWaterTank().drain(toProduce, true);
-                if (drained != null)
-                    toProduce = drained.amount;
-                else
-                    toProduce = 0;
-                this.getSteamTank().fillSteam(toProduce, true);
-                if (toProduce != 0 && this.world.getTotalWorldTime() % 2 == 0)
-                    this.heat -= 0.1f;
-            }
-
-            if (this.world.getTotalWorldTime() % 5 == 0)
-            {
-                if (this.heat > this.getMinimumTemp())
-                    this.heat -= 0.1f;
-                else if (this.heat < this.getMinimumTemp())
-                    this.heat = this.getMinimumTemp();
-                this.sync();
-            }
+            this.maxBurnTime = TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0)) / 2;
+            if (this.maxBurnTime != 0)
+                inventory.decrStackSize(0, 1);
+        }
+        if (this.currentBurnTime < this.maxBurnTime)
+        {
+            this.currentBurnTime++;
+            this.getModule(SteamBoilerModule.class).addHeat(1);
+        }
+        else
+        {
+            this.currentBurnTime = 0;
+            this.maxBurnTime = 0;
         }
     }
 
@@ -102,101 +101,43 @@ public class TileSolidBoiler extends TileBoilerBase
         this.maxBurnTime = tag.getInteger("maxBurnTime");
     }
 
-    public int getCurrentBurnTime()
-    {
-        return this.currentBurnTime;
-    }
-
-    public void setCurrentBurnTime(final int currentBurnTime)
-    {
-        this.currentBurnTime = currentBurnTime;
-    }
-
-    public int getMaxBurnTime()
-    {
-        return this.maxBurnTime;
-    }
-
-    public void setMaxBurnTime(final int maxBurnTime)
-    {
-        this.maxBurnTime = maxBurnTime;
-    }
-
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("boiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this).fuelSlot(0, 80, 43).syncFloatValue(this::getHeat, this::setHeat)
+        SteamModule steamEngine = this.getModule(SteamModule.class);
+        SteamBoilerModule boiler = this.getModule(SteamBoilerModule.class);
+        FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
+
+        return new ContainerBuilder("solidboiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this.getModule(BasicInventoryModule.class))
+                .fuelSlot(0, 80, 43)
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
-                .syncIntegerValue(this::getSteamAmount, this::setSteamAmount)
-                .syncFluidValue(this::getWater, this::setWater).addInventory().create();
+                .syncFloatValue(boiler::getCurrentHeat, boiler::setCurrentHeat)
+                .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
+                        steamEngine.getInternalSteamHandler()::setSteam)
+                .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,
+                        ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
+                .addInventory().create();
     }
 
     @Override
-    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
-    {
-        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class)
-                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
-
-        if (capability == SteamCapabilities.STEAM_HANDLER)
-        {
-            if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
-                    && side.getPos().getZ() == 1)
-                return true;
-        }
-        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-        {
-            if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
-                    && side.getPos().getZ() == 0)
-                return true;
-        }
-        else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return true;
-        return false;
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
-    {
-        MultiblockSide side = QBarMachines.SOLID_BOILER.get(MultiblockComponent.class)
-                .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing());
-
-        if (capability == SteamCapabilities.STEAM_HANDLER)
-        {
-            if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
-                    && side.getPos().getZ() == 1)
-                return SteamCapabilities.STEAM_HANDLER.cast(this.getSteamTank());
-        }
-        else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-        {
-            if (side.getFacing() == EnumFacing.EAST && side.getPos().getX() == 1 && side.getPos().getY() == 0
-                    && side.getPos().getZ() == 0)
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getWaterTank());
-        }
-        else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.getInventoryWrapper(facing));
-        return null;
-    }
-
-    @Override
-    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+    public boolean onRightClick(EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        if (FluidUtils.drainPlayerHand(this.getWaterTank(), player)
-                || FluidUtils.fillPlayerHand(this.getWaterTank(), player))
+        IFluidHandler water = this.getModule(FluidStorageModule.class).getFluidHandler("water");
+        if (FluidUtils.drainPlayerHand(water, player)
+                || FluidUtils.fillPlayerHand(water, player))
         {
             this.markDirty();
             return true;
         }
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BOILER.getUniqueID(), this.getWorld(), this.pos.getX(),
-                this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.BOILER.getUniqueID(), this.getWorld(),
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
 
@@ -205,23 +146,5 @@ public class TileSolidBoiler extends TileBoilerBase
     {
         if (this.isClient())
             this.forceSync();
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return new int[]{0};
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return index == 0 && TileEntityFurnace.isItemFuel(stack) || SlotFuel.isBucket(stack);
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return index == 0;
     }
 }
