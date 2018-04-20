@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.tile.machine.TileEngineerStorage;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
@@ -32,7 +31,7 @@ public class GuiEngineerStorage  extends BrokkGuiContainer<BuiltContainer>
         GuiAbsolutePane body = new GuiAbsolutePane();
         body.setWidth(xSize);
         body.setHeightRatio(1);
-        body.setBackground(new Background(BACKGROUND));
+        body.setBackgroundTexture(BACKGROUND);
 
         mainPanel.addChild(body, 23, 0);
         mainPanel.addChild(new EngineerTabPane(tile, tile.getType()), 0, 0);

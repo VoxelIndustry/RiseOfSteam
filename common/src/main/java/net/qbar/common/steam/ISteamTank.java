@@ -10,4 +10,6 @@ public interface ISteamTank extends ISteamHandler
     void readFromNBT(NBTTagCompound nbt);
 
     NBTTagCompound writeToNBT(NBTTagCompound nbt);
+
+    void setSteam(int steam);
 }

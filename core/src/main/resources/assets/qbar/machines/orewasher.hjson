@@ -39,7 +39,7 @@
             speed: 1.0
             itemInput: 1
             itemOutput: 2
-            tankInput: [ 8000 ]
+            tankInput: [ "washer" ]
         }
         automation: {
             outputs: [
@@ -52,6 +52,34 @@
                     pos: [-2, 0, 1]
                     facing: EAST
                     slots: [1]
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 1, -1]
+                    facing: NORTH
+                    slots: [0]
+                }
+            ]
+        }
+        fluid: [
+            {
+                name: washer
+                capacity: 8000
+            }
+        ]
+        io: {
+            steam: [
+                {
+                    pos: [-1, 0, 0]
+                    facing: WEST
+                }
+            ]
+            fluid: [
+                {
+                    pos: [1, 0, -1]
+                    facing: EAST
+                    tank: washer
                 }
             ]
         }

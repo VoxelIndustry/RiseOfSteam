@@ -1,61 +1,63 @@
 package net.qbar.common.tile.machine;
 
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
-import net.qbar.common.fluid.DirectionalTank;
-import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.IConnectionAware;
+import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.multiblock.BlockMultiblockBase;
-import net.qbar.common.multiblock.ITileMultiblockCore;
+import net.qbar.common.machine.module.InventoryModule;
+import net.qbar.common.machine.module.impl.FluidStorageModule;
+import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
-import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.FluidUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class TileTank extends TileInventoryBase implements ITileMultiblockCore, IContainerProvider, IConnectionAware
+public class TileTank extends TileModularMachine implements IContainerProvider, IConnectionAware
 {
-    private BlockPos inputPos;
+    @Getter
+    private int tier;
 
-    private final DirectionalTank tank;
-    private       int             tier;
+    private final ArrayList<MultiblockSide> connections = new ArrayList<>();
 
-    private final ArrayList<MultiblockSide> connections;
-
-    public TileTank(final int capacity, int tier)
+    public TileTank(int tier)
     {
-        super("fluidtank", 0);
-        this.tank = new DirectionalTank("TileTank", new FluidTank(capacity), new EnumFacing[]{EnumFacing.DOWN},
-                new EnumFacing[]{EnumFacing.UP});
+        super(tier == 0 ? QBarMachines.SMALL_FLUID_TANK :
+                (tier == 1 ? QBarMachines.MEDIUM_FLUID_TANK : QBarMachines.BIG_FLUID_TANK));
         this.tier = tier;
-        this.connections = new ArrayList<>();
     }
 
     public TileTank()
     {
-        this(0, 0);
+        this.tier = -1;
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new InventoryModule(this, 0));
+        this.addModule(new FluidStorageModule(this));
+        this.addModule(new IOModule(this));
     }
 
     @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
-        this.tank.writeToNBT(tag);
         tag.setInteger("tier", this.tier);
 
         if (this.isServer())
@@ -75,7 +77,6 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     @Override
     public void readFromNBT(final NBTTagCompound tag)
     {
-        this.tank.readFromNBT(tag);
         this.tier = tag.getInteger("tier");
 
         if (this.isClient())
@@ -105,81 +106,6 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
         }
     }
 
-    public EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
-    }
-
-    public int getTier()
-    {
-        return this.tier;
-    }
-
-    @Override
-    public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
-    {
-        return this.hasCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
-    {
-        return this.getCapability(capability, BlockPos.ORIGIN, facing);
-    }
-
-    @Override
-    public void addInfo(final List<String> lines)
-    {
-        if (this.tank.getFluidHandler(EnumFacing.UP) != null
-                && this.tank.getFluidHandler(EnumFacing.UP).getTankProperties()[0].getContents() != null)
-        {
-            lines.add("Containing " + this.tank.getFluidHandler(EnumFacing.UP).getTankProperties()[0].getContents()
-                    .getFluid().getName());
-            lines.add(this.tank.getFluidHandler(EnumFacing.UP).getTankProperties()[0].getContents().amount + " / "
-                    + this.tank.getFluidHandler(EnumFacing.UP).getTankProperties()[0].getCapacity() + " mB");
-        }
-    }
-
-    public FluidTank getTank()
-    {
-        return this.tank.getInternalFluidHandler();
-    }
-
-    @Override
-    public void breakCore()
-    {
-        this.world.destroyBlock(this.getPos(), false);
-    }
-
-    @Override
-    public BlockPos getCorePos()
-    {
-        return this.getPos();
-    }
-
-    @Override
-    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
-    {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
-            return true;
-        return super.hasCapability(capability, facing);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
-    {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                && ((from.getY() == 0 && facing.getAxis().isHorizontal()) || facing == EnumFacing.UP))
-        {
-            if (from.getY() == 0)
-                return (T) this.tank.getOutputHandler();
-            return (T) this.tank.getInputHandler();
-        }
-        return super.getCapability(capability, facing);
-    }
-
     @Override
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
                                 final float hitZ, BlockPos from)
@@ -189,7 +115,8 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
         if (player.getHeldItemMainhand().getItem() == QBarItems.WRENCH)
             return false;
 
-        if (FluidUtils.drainPlayerHand(this.getTank(), player) || FluidUtils.fillPlayerHand(this.getTank(), player))
+        IFluidHandler fluid = this.getModule(FluidStorageModule.class).getFluidHandler("fluid");
+        if (FluidUtils.drainPlayerHand(fluid, player) || FluidUtils.fillPlayerHand(fluid, player))
         {
             this.markDirty();
             return true;
@@ -199,22 +126,17 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
         return false;
     }
 
-    public FluidStack getFluid()
-    {
-        return this.tank.getInternalFluidHandler().getFluid();
-    }
-
-    public void setFluid(final FluidStack fluid)
-    {
-        this.tank.setFluidStack(fluid);
-    }
-
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
+        FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
+
         return new ContainerBuilder("fluidtank", player)
-                .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this).syncFluidValue(this::getFluid, this::setFluid).addInventory().create();
+                .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
+                .tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("fluid"))::getFluid,
+                        ((FluidTank) fluidStorage.getFluidHandler("fluid"))::setFluid)
+                .addInventory().create();
     }
 
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
@@ -248,13 +170,13 @@ public class TileTank extends TileInventoryBase implements ITileMultiblockCore, 
     @Override
     public void connectTrigger(EnumFacing facing, CableGrid grid)
     {
-        this.getCore().connectTrigger(BlockPos.ORIGIN, facing, grid);
+        this.connectTrigger(BlockPos.ORIGIN, facing, grid);
     }
 
     @Override
     public void disconnectTrigger(EnumFacing facing, CableGrid grid)
     {
-        this.getCore().disconnectTrigger(BlockPos.ORIGIN, facing, grid);
+        this.disconnectTrigger(BlockPos.ORIGIN, facing, grid);
     }
 
     ////////////

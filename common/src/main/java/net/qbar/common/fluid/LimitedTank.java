@@ -1,19 +1,18 @@
 package net.qbar.common.fluid;
 
+import lombok.Getter;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 
-public class LimitedTank extends FluidTank
+public class LimitedTank extends FilteredFluidTank
 {
-    private final String name;
-    private final int    transferCapacity;
+    @Getter
+    private final int transferCapacity;
 
-    public LimitedTank(final String name, final int capacity, final int transferCapacity)
+    public LimitedTank(final int capacity, final int transferCapacity)
     {
         super(capacity);
 
-        this.name = name;
         this.transferCapacity = transferCapacity;
     }
 

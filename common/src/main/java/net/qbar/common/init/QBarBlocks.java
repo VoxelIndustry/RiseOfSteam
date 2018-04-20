@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockMachineBase;
-import net.qbar.common.block.INamedBlock;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import net.qbar.common.multiblock.ItemBlockMultiblockBase;
 
@@ -96,19 +95,19 @@ public class QBarBlocks
     public static final Block ENERGIZED_TALL_GRASS = null;
 
     @ObjectHolder("blockmetal")
-    public static final Block            METALBLOCK    = null;
+    public static final Block            METALBLOCK         = null;
     @ObjectHolder("sawmill")
-    public static final BlockMachineBase SAWMILL       = null;
+    public static final BlockMachineBase SAWMILL            = null;
     @ObjectHolder("alloycauldron")
-    public static final BlockMachineBase ALLOYCAULDRON = null;
+    public static final BlockMachineBase ALLOYCAULDRON      = null;
     @ObjectHolder("engineerworkbench")
     public static final BlockMachineBase ENGINEER_WORKBENCH = null;
     @ObjectHolder("engineerstorage")
-    public static final BlockMachineBase ENGINEER_STORAGE = null;
+    public static final BlockMachineBase ENGINEER_STORAGE   = null;
     @ObjectHolder("craftcardlibrary")
     public static final BlockMachineBase CRAFT_CARD_LIBRARY = null;
     @ObjectHolder("blueprintprinter")
-    public static final BlockMachineBase BLUEPRINT_PRINTER = null;
+    public static final BlockMachineBase BLUEPRINT_PRINTER  = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 
@@ -123,7 +122,7 @@ public class QBarBlocks
         event.getRegistry().registerAll(BLOCKS.keySet().toArray(new Block[BLOCKS.size()]));
     }
 
-    static <T extends Block & INamedBlock> void registerBlock(final T block)
+    static <T extends Block> void registerBlock(final T block)
     {
         if (block instanceof BlockMultiblockBase)
             QBarBlocks.registerBlock(block, ItemBlockMultiblockBase::new);
@@ -131,8 +130,8 @@ public class QBarBlocks
             QBarBlocks.registerBlock(block, ItemBlock::new);
     }
 
-    static <T extends Block & INamedBlock> void registerBlock(final T block,
-                                                              final Function<T, ItemBlock> supplier)
+    static <T extends Block> void registerBlock(final T block,
+                                                final Function<T, ItemBlock> supplier)
     {
         final ItemBlock supplied = supplier.apply(block);
         supplied.setRegistryName(block.getRegistryName());

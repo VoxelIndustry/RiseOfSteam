@@ -44,9 +44,9 @@ public class QBarJEIRecipeWrapper implements IRecipeWrapper
     public void getIngredients(final IIngredients ingredients)
     {
         ingredients.setInputs(ItemStack.class, this.recipe.getRecipeInputs(ItemStack.class).stream()
-                .map(RecipeIngredient::getRawIngredient).collect(Collectors.toList()));
+                .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
         ingredients.setOutputs(ItemStack.class, this.recipe.getRecipeOutputs(ItemStack.class).stream()
-                .map(RecipeIngredient::getRawIngredient).collect(Collectors.toList()));
+                .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
     }
 
     public static class Builder

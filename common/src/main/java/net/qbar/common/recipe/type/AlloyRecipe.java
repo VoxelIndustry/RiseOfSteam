@@ -30,7 +30,7 @@ public class AlloyRecipe extends QBarRecipe
 
     public FluidStack getOutput()
     {
-        return this.getRecipeOutputs(FluidStack.class).get(0).getRawIngredient();
+        return this.getRecipeOutputs(FluidStack.class).get(0).getRaw();
     }
 
     public NonNullList<RecipeIngredient<FluidStack>> getInputs()

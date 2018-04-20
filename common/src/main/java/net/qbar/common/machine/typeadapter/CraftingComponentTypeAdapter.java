@@ -4,9 +4,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.qbar.common.QBarConstants;
-import net.qbar.common.machine.CraftingComponent;
+import net.qbar.common.machine.component.CraftingComponent;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
         implements IMachineComponentTypeAdapter<CraftingComponent>
 {
     @Override
-    public void write(JsonWriter out, CraftingComponent value) throws IOException
+    public void write(JsonWriter out, CraftingComponent value)
     {
 
     }
@@ -56,32 +55,30 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
                     component.setCraftingSpeed((float) in.nextDouble());
                     break;
                 case "itemInput":
-                    component.setInputs(new int[in.nextInt()]);
-                    component.setBuffers(new int[component.getInputs().length]);
+                    component.setInputs(in.nextInt());
                     break;
                 case "itemOutput":
-                    component.setOutputs(new int[in.nextInt()]);
+                    component.setOutputs(in.nextInt());
                     break;
                 case "tankInput":
                     in.beginArray();
-                    List<Integer> inputs = new ArrayList<>();
+                    List<String> inputs = new ArrayList<>();
                     while (in.hasNext())
-                        inputs.add(in.nextInt());
+                        inputs.add(in.nextString());
                     in.endArray();
 
-                    component.setInputTanks(new int[inputs.size()]);
+                    component.setInputTanks(new String[inputs.size()]);
                     for (int i = 0; i < inputs.size(); i++)
                         component.getInputTanks()[i] = inputs.get(i);
-                    component.setBufferTanks(ArrayUtils.clone(component.getInputTanks()));
                     break;
                 case "tankOutput":
                     in.beginArray();
-                    List<Integer> outputs = new ArrayList<>();
+                    List<String> outputs = new ArrayList<>();
                     while (in.hasNext())
-                        outputs.add(in.nextInt());
+                        outputs.add(in.nextString());
                     in.endArray();
 
-                    component.setOutputTanks(new int[outputs.size()]);
+                    component.setOutputTanks(new String[outputs.size()]);
                     for (int i = 0; i < outputs.size(); i++)
                         component.getOutputTanks()[i] = outputs.get(i);
                     break;
@@ -91,27 +88,15 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
         }
         in.endObject();
 
-        for (int i = 0; i < component.getInputs().length; i++)
-        {
-            component.getInputs()[i] = i;
-            component.getBuffers()[i] = i + component.getInputs().length + component.getOutputs().length;
-        }
-        for (int i = 0; i < component.getOutputs().length; i++)
-            component.getOutputs()[i] = i + component.getInputs().length;
-        component.setIoUnion(ArrayUtils.addAll(component.getInputs(), component.getOutputs()));
-
         if (inventorySize != 0)
             component.setInventorySize(inventorySize);
         else
-            component.setInventorySize(component.getInputs().length +
-                    component.getOutputs().length + component.getBuffers().length);
+            component.setInventorySize(component.getInputs() * 2 + component.getOutputs());
 
         if (component.getInputTanks() == null)
-            component.setInputTanks(new int[0]);
+            component.setInputTanks(new String[0]);
         if (component.getOutputTanks() == null)
-            component.setOutputTanks(new int[0]);
-        if (component.getBufferTanks() == null)
-            component.setBufferTanks(new int[0]);
+            component.setOutputTanks(new String[0]);
         return component;
     }
 }

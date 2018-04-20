@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.qbar.client.gui.util.GuiMachineBase;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.tile.machine.TileCapsuleFiller;
 
 public class GuiCapsuleFiller extends GuiMachineBase<TileCapsuleFiller>
@@ -15,6 +16,6 @@ public class GuiCapsuleFiller extends GuiMachineBase<TileCapsuleFiller>
     {
         super(player, tile, BACKGROUND);
 
-        this.addSteamTank(tile.getTank(), 151, 7, 18, 73);
+        this.addSteamTank(tile.getModule(SteamModule.class).getInternalSteamHandler(), 151, 7, 18, 73);
     }
 }

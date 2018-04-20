@@ -23,7 +23,7 @@ public class PipeGrid extends CableGrid
         super(identifier);
 
         this.transferCapacity = transferCapacity;
-        this.tank = new LimitedTank("PipeGrid", transferCapacity * 4, transferCapacity);
+        this.tank = new LimitedTank(transferCapacity * 4, transferCapacity);
 
         this.outputs = new HashSet<>();
     }

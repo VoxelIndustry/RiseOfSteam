@@ -14,8 +14,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.LimitedTank;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.machine.SteamComponent;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.machine.component.SteamComponent;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamTank;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
     private SteamComponent steamComponent;
     private int            transferCapacity;
     private IFluidHandler  top;
-    private boolean water = false;
+    private boolean        water = false;
 
     private final LimitedTank tank;
 
@@ -37,7 +37,7 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
     {
         this.transferCapacity = transferCapacity;
 
-        this.tank = new LimitedTank("offshorepump", 0, 0);
+        this.tank = new LimitedTank(0, 0);
         this.tank.setCanDrain(false);
         this.tank.setCanFill(false);
 
@@ -122,7 +122,7 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
     {
         if (facing == EnumFacing.UP && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return true;
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY
+        if (capability == SteamCapabilities.STEAM_HANDLER
                 && facing == this.getFacing().rotateAround(Axis.Y).getOpposite())
             return true;
         return super.hasCapability(capability, facing);
@@ -134,7 +134,7 @@ public class TileOffshorePump extends QBarTileBase implements ITickable
     {
         if (facing == EnumFacing.UP && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return (T) this.tank;
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY
+        if (capability == SteamCapabilities.STEAM_HANDLER
                 && facing == this.getFacing().rotateAround(Axis.Y).getOpposite())
             return (T) this.steamTank;
         return super.getCapability(capability, facing);

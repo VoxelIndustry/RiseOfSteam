@@ -86,7 +86,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.adjacentHandler.put(facing, to);
         this.updateState();
 
-        if (tile != null && tile instanceof IConnectionAware)
+        if (tile instanceof IConnectionAware)
             ((IConnectionAware) tile).connectTrigger(facing.getOpposite(), this.getGridObject());
     }
 
@@ -95,7 +95,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.adjacentHandler.remove(facing);
         this.updateState();
 
-        if (tile != null && tile instanceof IConnectionAware)
+        if (tile instanceof IConnectionAware)
             ((IConnectionAware) tile).disconnectTrigger(facing.getOpposite(), this.getGridObject());
     }
 

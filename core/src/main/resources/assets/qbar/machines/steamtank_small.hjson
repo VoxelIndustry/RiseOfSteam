@@ -1,11 +1,69 @@
 {
-    tier: 0
-    type: LOGISTIC
-    components: {
-        multiblock: {
-            width: 2
-            height: 2
-            length: 2
-        }
+  tier: 0
+  type: LOGISTIC
+  components: {
+    multiblock: {
+      width: 2
+      height: 2
+      length: 2
     }
+    steam: {
+      capacity: 64000
+      maxPressure: 1xBASE_PRESSURE
+    }
+    fluid: [
+      {
+        name: water
+        capacity: 64000
+      }
+    ]
+    io: {
+      steam: [
+        {
+          fromPos: [0, 1, 0]
+          toPos: [1, 1, 0]
+          facing: NORTH
+        }
+        {
+          fromPos: [1, 1, 0]
+          toPos: [1, 1, 1]
+          facing: EAST
+        }
+        {
+          fromPos: [0, 1, 0]
+          toPos: [0, 1, 1]
+          facing: WEST
+        }
+        {
+          fromPos: [0, 1, 1]
+          toPos: [1, 1, 1]
+          facing: SOUTH
+        }
+      ]
+      fluid: {
+        water: [
+          {
+            fromPos: [0, 0, 0]
+            toPos: [1, 0, 0]
+            facing: NORTH
+          }
+          {
+            fromPos: [1, 0, 0]
+            toPos: [1, 0, 1]
+            facing: EAST
+          }
+          {
+            fromPos: [0, 0, 0]
+            toPos: [0, 0, 1]
+            facing: WEST
+          }
+          {
+            fromPos: [0, 0, 1]
+            toPos: [1, 0, 1]
+            facing: SOUTH
+          }
+        ]
+      }
+    }
+  }
 }

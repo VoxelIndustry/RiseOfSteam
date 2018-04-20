@@ -3,7 +3,7 @@ package net.qbar.common.machine.typeadapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.qbar.common.machine.SteamComponent;
+import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.steam.SteamUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -13,7 +13,7 @@ public class SteamComponentTypeAdapter extends TypeAdapter<SteamComponent>
         implements IMachineComponentTypeAdapter<SteamComponent>
 {
     @Override
-    public void write(JsonWriter out, SteamComponent value) throws IOException
+    public void write(JsonWriter out, SteamComponent value)
     {
 
     }

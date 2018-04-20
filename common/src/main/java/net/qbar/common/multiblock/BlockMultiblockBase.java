@@ -194,20 +194,18 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     {
         super.neighborChanged(state, w, pos, block, from);
 
-        final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
-        if (tile != null && !tile.isCore() && !tile.isCorePresent())
+        TileEntity tile = w.getTileEntity(pos);
+        if (tile instanceof TileMultiblockGag && !((TileMultiblockGag) tile).isCorePresent())
             w.getTileEntity(pos).getWorld().destroyBlock(pos, false);
     }
 
     @Override
-    public boolean onBlockActivated(final World w, final BlockPos pos, final IBlockState state,
-                                    final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final
-                                    float hitX, final float hitY,
-                                    final float hitZ)
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+                                    EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        final ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
+        ITileMultiblock tile = (ITileMultiblock) w.getTileEntity(pos);
 
-        if (tile != null && tile.getCore() != null)
+        if (tile != null)
             return tile.getCore().onRightClick(player, facing, hitX, hitY, hitZ, tile.getCoreOffset());
         return false;
     }
@@ -258,7 +256,7 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     @Override
     public TileEntity createNewTileEntity(final World w, final int meta)
     {
-        final IBlockState state = this.getStateFromMeta(meta);
+        IBlockState state = this.getStateFromMeta(meta);
         if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))
             return new TileMultiblockGag();
         return this.getTile(w, state);
@@ -269,7 +267,8 @@ public abstract class BlockMultiblockBase<T extends QBarTileBase & ITileMultiblo
     public MultiblockComponent getMultiblock()
     {
         if (this.multiblock == null)
-            this.multiblock = QBarMachines.getComponent(MultiblockComponent.class, this.name);
+            this.multiblock = QBarMachines.getComponent(MultiblockComponent.class,
+                    this.getRegistryName().getResourcePath());
         return this.multiblock;
     }
 

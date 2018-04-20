@@ -8,24 +8,30 @@ pane.blacklist {
 
 pane.whitelist button {
     -background-color: rgba(0, 0, 0, 0);
-    -text-color: #000000 87%;
 }
 
 pane.whitelist button:hover {
     -background-color: #F5F5F5;
 }
 
+pane.whitelist button >> text {
+    -color: #000000 87%;
+}
+
 pane.blacklist button {
     -background-color: rgba(0, 0, 0, 0);
-    -text-color: #FFFFFF 87%;
 }
 
 pane.blacklist button:hover {
     -background-color: #616161;
 }
 
-label.facing {
-    -text-color: #000000 87%;
+pane.blacklist button >> text {
+    -color: #FFFFFF 87%;
+}
+
+label.facing > text {
+    -color: #000000 87%;
 }
 
 pane.arrows {

@@ -18,7 +18,7 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
         implements IMachineComponentTypeAdapter<Blueprint>
 {
     @Override
-    public void write(JsonWriter out, Blueprint value) throws IOException
+    public void write(JsonWriter out, Blueprint value)
     {
 
     }

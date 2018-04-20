@@ -1,6 +1,7 @@
 package net.qbar.common.grid.impl;
 
 import lombok.Getter;
+import net.qbar.common.QBarConstants;
 import net.qbar.common.steam.ISteamHandler;
 
 import java.util.ArrayList;
@@ -193,6 +194,10 @@ public class SteamMesh implements ISteamHandler
         int capacity = 0;
         for (ISteamHandler handler : this.handlers)
             capacity += handler.getCapacity();
+
+        if (capacity < 0)
+            QBarConstants.LOGGER.warn("SteamMesh capacity compute returned a negative value!" +
+                    " Something very wrong happened with your grid.");
         return capacity;
     }
 

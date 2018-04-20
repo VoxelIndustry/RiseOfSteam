@@ -13,7 +13,6 @@ import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileSplitter;
 import org.yggard.brokkgui.element.GuiLabel;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiPane;
@@ -45,7 +44,7 @@ public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 
         final GuiAbsolutePane mainPanel = new GuiAbsolutePane();
         this.setMainPanel(mainPanel);
-        this.getMainPanel().setBackground(new Background(GuiSplitter.BACKGROUND));
+        this.getMainPanel().setBackgroundTexture(GuiSplitter.BACKGROUND);
 
         final GuiLabel title = new GuiLabel(splitter.getDisplayName().getFormattedText());
         mainPanel.addChild(title, 5, 4);

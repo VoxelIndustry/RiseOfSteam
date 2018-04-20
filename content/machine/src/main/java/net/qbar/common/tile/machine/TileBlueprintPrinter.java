@@ -10,38 +10,50 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.InventoryModule;
+import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
-import net.qbar.common.tile.TileMultiblockInventoryBase;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 @Getter
-public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements IActionReceiver, ITileWorkshop
+public class TileBlueprintPrinter extends TileTickingModularMachine
+        implements IContainerProvider, IActionReceiver, ITileWorkshop
 {
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Setter
-    private int grid;
+    private       int                                         grid;
 
     public TileBlueprintPrinter()
     {
-        super(QBarMachines.BLUEPRINT_PRINTER, 1);
+        super(QBarMachines.BLUEPRINT_PRINTER);
 
         this.grid = -1;
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new InventoryModule(this, 1));
+        this.getModule(InventoryModule.class).getInventory("basic")
+                .addSlotFilter(0, stack -> stack.getItem() == Items.PAPER);
+        this.addModule(new IOModule(this));
     }
 
     @Override
@@ -58,60 +70,13 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
     }
 
     @Override
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return new int[]{0};
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return index == 0 && stack.getItem() == Items.PAPER;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return index == 0;
-    }
-
-    @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
-        return new ContainerBuilder("blueprintprinter", player).player(player.inventory)
+        return new ContainerBuilder("blueprintprinter", player).player(player)
                 .inventory(19, 112).hotbar(19, 170).addInventory()
-                .tile(this).filterSlot(0, 19, 90, stack -> stack.getItem() == Items.PAPER).addInventory().create();
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-    {
-        return this.hasCapability(capability, BlockPos.ORIGIN, facing) || super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-    {
-        T rtn = this.getCapability(capability, BlockPos.ORIGIN, facing);
-        return rtn != null ? rtn : super.getCapability(capability, facing);
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return true;
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) this.getInventoryWrapper(facing);
-        return null;
+                .tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .filterSlot(0, 19, 90, stack -> stack.getItem() == Items.PAPER)
+                .addInventory().create();
     }
 
     @Override
@@ -133,7 +98,9 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
     {
         if ("PRINT".equals(actionID))
         {
-            if (this.getStackInSlot(0).getCount() > 0 &&
+            InventoryHandler inventory = this.getModule(InventoryModule.class).getInventory("basic");
+
+            if (inventory.getStackInSlot(0).getCount() > 0 &&
                     QBarMachines.contains(Blueprint.class, payload.getString("blueprint")))
             {
                 ItemStack blueprint = new ItemStack(QBarItems.BLUEPRINT);
@@ -150,7 +117,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
                 else
                     sender.getPlayer().addItemStackToInventory(blueprint);
 
-                this.decrStackSize(0, 1);
+                inventory.extractItem(0, 1, false);
             }
         }
         else if ("MACHINES_LOAD".equals(actionID) && this.hasGrid())
@@ -167,7 +134,7 @@ public class TileBlueprintPrinter extends TileMultiblockInventoryBase implements
     @Override
     public BlockPos getBlockPos()
     {
-        return this.getCorePos();
+        return this.getPos();
     }
 
     @Override

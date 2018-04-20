@@ -7,6 +7,12 @@
             height: 3
             length: 1
         }
+        fluid: [
+            {
+                name: fluid
+                capacity: 48000
+            }
+        ]
         blueprint: [
             {
                 time: 20
@@ -20,5 +26,39 @@
                 ]
             }
         ]
+        io: {
+            fluid: [
+                {
+                    pos: [0, 0, 0]
+                    facing: NORTH
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    pos: [0, 0, 0]
+                    facing: EAST
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    pos: [0, 0, 0]
+                    facing: WEST
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    pos: [0, 0, 0]
+                    facing: SOUTH
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    pos: [0, 2, 0]
+                    facing: UP
+                    tank: fluid
+                    restriction: input-only
+                }
+            ]
+        }
     }
 }

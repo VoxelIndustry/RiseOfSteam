@@ -15,16 +15,14 @@ import net.minecraft.world.chunk.Chunk;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.tile.QBarTileBase;
 
-public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockContainer implements INamedBlock
+public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockContainer
 {
-    public  String   name;
     private Class<T> tileClass;
 
     public BlockMachineBase(final String name, final Material material, Class<T> tileClass)
     {
         super(material);
 
-        this.name = name;
         this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
         this.setCreativeTab(QBarConstants.TAB_ALL);
@@ -51,12 +49,6 @@ public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockCont
         return EnumBlockRenderType.MODEL;
     }
 
-    @Override
-    public String getName()
-    {
-        return this.name;
-    }
-
     public T getWorldTile(IBlockAccess world, BlockPos pos)
     {
         return (T) this.getRawWorldTile(world, pos);
@@ -65,9 +57,9 @@ public abstract class BlockMachineBase<T extends QBarTileBase> extends BlockCont
     public TileEntity getRawWorldTile(IBlockAccess world, BlockPos pos)
     {
         if (world instanceof ChunkCache)
-            return  ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+            return ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
         else
-            return  world.getTileEntity(pos);
+            return world.getTileEntity(pos);
     }
 
     public boolean checkWorldTile(IBlockAccess world, BlockPos pos)

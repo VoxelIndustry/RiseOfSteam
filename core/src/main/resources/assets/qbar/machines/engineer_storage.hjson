@@ -1,0 +1,23 @@
+{
+    tier: 0
+    type: UTILITY
+    components: {
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, 0]
+                    facing: ["NORTH", "EAST", "SOUTH", "WEST", "UP", "DOWN"]
+                    slots: 0..31
+                    order: balanced
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 0, 0]
+                    facing: ["NORTH", "EAST", "SOUTH", "WEST", "UP", "DOWN"]
+                    slots: 0..31
+                }
+            ]
+        }
+    }
+}

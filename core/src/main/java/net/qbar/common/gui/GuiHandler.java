@@ -62,7 +62,7 @@ public class GuiHandler implements IGuiHandler
         switch (gui)
         {
             case BOILER:
-                return new GuiBoiler(player, (TileSolidBoiler) tile);
+                return new GuiSolidBoiler(player, (TileSolidBoiler) tile);
             case KEYPUNCH:
                 return BrokkGuiManager.getBrokkGuiContainer(QBarConstants.MODID,
                         new GuiKeypunch(player, (TileKeypunch) tile));

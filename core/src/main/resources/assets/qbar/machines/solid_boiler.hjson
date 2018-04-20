@@ -7,6 +7,10 @@
             height: 3
             length: 2
         }
+        steam: {
+            capacity: 24000
+            maxPressure: 2xBASE_PRESSURE
+        }
         blueprint: [
             {
                 time: 20
@@ -20,5 +24,26 @@
                 ]
             }
         ]
+        fluid: [
+            {
+                name: water
+                capacity: 32000
+            }
+        ]
+        io: {
+            steam: [
+                {
+                    pos: [1, 0, 1]
+                    facing: EAST
+                }
+            ]
+            fluid: [
+                {
+                    pos: [1, 0, 0]
+                    facing: EAST
+                    tank: water
+                }
+            ]
+        }
     }
 }

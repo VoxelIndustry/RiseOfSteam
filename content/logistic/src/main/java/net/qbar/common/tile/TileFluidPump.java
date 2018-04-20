@@ -26,7 +26,7 @@ public class TileFluidPump extends QBarTileBase implements ITickable
     public TileFluidPump(final int transferCapacity)
     {
         this.transferCapacity = transferCapacity;
-        this.tank = new LimitedTank("TileFluidPump", 0, 0);
+        this.tank = new LimitedTank(0, 0);
         this.tank.setCanDrain(false);
         this.tank.setCanFill(false);
         this.facing = EnumFacing.UP;

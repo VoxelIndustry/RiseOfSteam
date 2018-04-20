@@ -17,7 +17,7 @@ import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.grid.node.ITileCable;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
@@ -79,7 +79,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing != EnumFacing.UP)
+        if (capability == SteamCapabilities.STEAM_HANDLER && facing != EnumFacing.UP)
             return this.getGrid() != -1 && this.getGridObject() != null;
         return super.hasCapability(capability, facing);
     }
@@ -88,7 +88,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY && facing != EnumFacing.UP)
+        if (capability == SteamCapabilities.STEAM_HANDLER && facing != EnumFacing.UP)
             return (T) this.getGridObject().getTank();
         return super.getCapability(capability, facing);
     }

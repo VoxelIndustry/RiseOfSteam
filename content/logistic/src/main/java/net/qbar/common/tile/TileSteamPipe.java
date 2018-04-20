@@ -7,7 +7,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.grid.impl.SteamGrid;
 import net.qbar.common.grid.node.ISteamPipe;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.SteamUtil;
 
@@ -17,7 +17,7 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
 {
     public TileSteamPipe(final int transferCapacity)
     {
-        super(transferCapacity, CapabilitySteamHandler.STEAM_HANDLER_CAPABILITY);
+        super(transferCapacity, SteamCapabilities.STEAM_HANDLER);
     }
 
     public TileSteamPipe()

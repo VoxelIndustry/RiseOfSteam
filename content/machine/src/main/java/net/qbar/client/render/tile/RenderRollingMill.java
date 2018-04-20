@@ -4,13 +4,17 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.client.render.RenderUtil;
+import net.qbar.common.inventory.InventoryHandler;
+import net.qbar.common.machine.module.InventoryModule;
+import net.qbar.common.machine.module.impl.CraftingModule;
 import net.qbar.common.tile.machine.TileRollingMill;
 
 public class RenderRollingMill extends FastTESR<TileRollingMill>
 {
     @Override
     public void renderTileEntityFast(final TileRollingMill tile, final double x, final double y, final double z,
-                                     final float partialTicks, final int destroyStage, final float partial, final BufferBuilder VertexBuffer)
+                                     final float partialTicks, final int destroyStage, final float partial, final
+                                         BufferBuilder VertexBuffer)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + .42, y + 1.2, z + 1.8);
@@ -33,16 +37,19 @@ public class RenderRollingMill extends FastTESR<TileRollingMill>
                 break;
         }
 
-        if (!tile.getStackInSlot(0).isEmpty())
-            RenderUtil.handleRenderItem(tile.getStackInSlot(0), true);
-        if (!tile.getStackInSlot(2).isEmpty())
-        {
-            GlStateManager.translate(-2 * (tile.getCurrentProgress() / tile.getMaxProgress()), 0, 0);
+        CraftingModule crafter = tile.getModule(CraftingModule.class);
+        InventoryHandler inventory = tile.getModule(InventoryModule.class).getInventory("crafting");
 
-            if (tile.getCurrentProgress() / tile.getMaxProgress() > 0.5)
+        if (!inventory.getStackInSlot(0).isEmpty())
+            RenderUtil.handleRenderItem(inventory.getStackInSlot(0), true);
+        if (!inventory.getStackInSlot(2).isEmpty())
+        {
+            GlStateManager.translate(-2 * (crafter.getCurrentProgress() / crafter.getMaxProgress()), 0, 0);
+
+            if (crafter.getCurrentProgress() / crafter.getMaxProgress() > 0.5)
                 RenderUtil.handleRenderItem(tile.getCachedStack(), true);
             else
-                RenderUtil.handleRenderItem(tile.getStackInSlot(2), true);
+                RenderUtil.handleRenderItem(inventory.getStackInSlot(2), true);
         }
         GlStateManager.popMatrix();
     }

@@ -8,5 +8,5 @@ public abstract class RecipeIngredient<T>
 
     public abstract int getQuantity();
 
-    public abstract T getRawIngredient();
+    public abstract T getRaw();
 }

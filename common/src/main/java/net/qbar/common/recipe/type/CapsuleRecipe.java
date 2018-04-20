@@ -10,7 +10,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.qbar.common.init.QBarItems;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 
 public class CapsuleRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
@@ -61,9 +61,9 @@ public class CapsuleRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
             else if (inv.getStackInSlot(i).getItem().equals(QBarItems.STEAMCAPSULE_X6))
                 capsuleCount += 6;
 
-            if (inv.getStackInSlot(i).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+            if (inv.getStackInSlot(i).hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER,
                     EnumFacing.NORTH))
-                steam += inv.getStackInSlot(i).getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
+                steam += inv.getStackInSlot(i).getCapability(SteamCapabilities.ITEM_STEAM_HANDLER,
                         EnumFacing.NORTH).getSteam();
         }
 
@@ -78,7 +78,7 @@ public class CapsuleRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements 
         ItemStack result = new ItemStack(resultItem);
         if (result.hasTagCompound())
             result.setTagCompound(new NBTTagCompound());
-        result.getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH)
+        result.getCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH)
                 .fillSteam(steam, true);
 
         return result;

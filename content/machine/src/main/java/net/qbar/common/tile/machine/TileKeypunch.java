@@ -16,8 +16,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.card.CardDataStorage;
 import net.qbar.common.card.CraftCard;
@@ -25,25 +23,27 @@ import net.qbar.common.card.FilterCard;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.EmptyContainer;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.InventoryModule;
+import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
-import net.qbar.common.tile.TileMultiblockInventoryBase;
 
 import java.util.List;
 
-public class TileKeypunch extends TileMultiblockInventoryBase implements IActionReceiver, ITileWorkshop
+public class TileKeypunch extends TileModularMachine implements IContainerProvider, IActionReceiver, ITileWorkshop
 {
-    private final int[] INPUT  = new int[]{0};
-    private final int[] OUTPUT = new int[]{1};
-
+    @Getter
     private final BaseListProperty<ItemStack> craftStacks;
+    @Getter
     private final BaseListProperty<ItemStack> filterStacks;
 
     private final BaseProperty<Boolean> isCraftTabProperty, canPrintProperty;
@@ -52,13 +52,13 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
 
     @Getter
     @Setter
-    private int grid;
+    private       int                                         grid;
     @Getter
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
 
     public TileKeypunch()
     {
-        super(QBarMachines.KEYPUNCH, 2);
+        super(QBarMachines.KEYPUNCH);
 
         this.isCraftTabProperty = new BaseProperty<>(true, "isCraftTabProperty");
         this.canPrintProperty = new BaseProperty<>(false, "canPrintProperty");
@@ -80,6 +80,18 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
         });
 
         this.grid = -1;
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new InventoryModule(this, 2));
+        this.getModule(InventoryModule.class).getInventory("basic")
+                .addSlotFilter(0, stack -> stack.getItem().equals(QBarItems.PUNCHED_CARD));
+
+        this.addModule(new IOModule(this));
     }
 
     @Override
@@ -136,9 +148,9 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("keypunch", player).player(player.inventory).inventory(19, 93).hotbar(19, 151)
-                .addInventory().tile(this)
-                .filterSlot(0, 37, 70, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+        return new ContainerBuilder("keypunch", player).player(player).inventory(19, 93).hotbar(19, 151)
+                .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .filterSlot(0, 37, 70, stack -> stack.getItem().equals(QBarItems.PUNCHED_CARD))
                 .outputSlot(1, 145, 70)
                 .syncBooleanValue(this.isCraftTabProperty::getValue, this.isCraftTabProperty::setValue)
                 .syncBooleanValue(this.getCanPrintProperty()::getValue, this.getCanPrintProperty()::setValue)
@@ -163,26 +175,6 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                 .addInventory().create();
     }
 
-    @Override
-    public int[] getSlotsForFace(final EnumFacing side)
-    {
-        return side.equals(EnumFacing.DOWN) ? this.OUTPUT : this.INPUT;
-    }
-
-    @Override
-    public boolean canInsertItem(final int index, final ItemStack stack, final EnumFacing side)
-    {
-        if (!side.equals(EnumFacing.DOWN))
-            return this.isItemValidForSlot(index, stack);
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(final int index, final ItemStack stack, final EnumFacing side)
-    {
-        return side.equals(EnumFacing.DOWN);
-    }
-
     public BaseProperty<Boolean> getCraftTabProperty()
     {
         return this.isCraftTabProperty;
@@ -191,16 +183,6 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
     public BaseProperty<Boolean> getCanPrintProperty()
     {
         return this.canPrintProperty;
-    }
-
-    public BaseListProperty<ItemStack> getCraftStacks()
-    {
-        return this.craftStacks;
-    }
-
-    public BaseListProperty<ItemStack> getFilterStacks()
-    {
-        return this.filterStacks;
     }
 
     public ItemStack getRecipeResult()
@@ -213,37 +195,21 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
     }
 
     @Override
-    public boolean hasCapability(final Capability<?> capability, final BlockPos from, final EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return true;
-        return false;
-    }
-
-    @Override
-    public <T> T getCapability(final Capability<T> capability, final BlockPos from, final EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) this.getInventoryWrapper(facing);
-        return null;
-    }
-
-    @Override
-    public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,
-                                final float hitZ, BlockPos from)
+    public boolean onRightClick(EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ, BlockPos from)
     {
         if (player.isSneaking())
             return false;
 
-        player.openGui(QBarConstants.MODINSTANCE, MachineGui.KEYPUNCH.getUniqueID(), this.getWorld(), this.pos.getX()
-                , this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(QBarConstants.MODINSTANCE, MachineGui.KEYPUNCH.getUniqueID(), this.getWorld(),
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
 
     @Override
     public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
     {
+        InventoryHandler inventory = this.getModule(InventoryModule.class).getInventory("basic");
+
         switch (actionID)
         {
             case "SET_TAB":
@@ -262,11 +228,11 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
             case "LOAD_CARD":
                 if (this.getCraftTabProperty().getValue())
                 {
-                    if (this.getStackInSlot(0).hasTagCompound() && this.getStackInSlot(0).getTagCompound()
+                    if (inventory.getStackInSlot(0).hasTagCompound() && inventory.getStackInSlot(0).getTagCompound()
                             .getInteger("cardTypeID") == CardDataStorage.ECardType.CRAFT.getID())
                     {
                         final CraftCard card = (CraftCard) CardDataStorage.instance()
-                                .read(this.getStackInSlot(0).getTagCompound());
+                                .read(inventory.getStackInSlot(0).getTagCompound());
                         for (int i = 0; i < card.getRecipe().length; i++)
                             this.getCraftStacks().set(i, card.getRecipe()[i]);
                         this.markDirty();
@@ -275,11 +241,11 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                 }
                 else
                 {
-                    if (this.getStackInSlot(0).hasTagCompound() && this.getStackInSlot(0).getTagCompound()
+                    if (inventory.getStackInSlot(0).hasTagCompound() && inventory.getStackInSlot(0).getTagCompound()
                             .getInteger("cardTypeID") == CardDataStorage.ECardType.FILTER.getID())
                     {
                         final FilterCard card = (FilterCard) CardDataStorage.instance()
-                                .read(this.getStackInSlot(0).getTagCompound());
+                                .read(inventory.getStackInSlot(0).getTagCompound());
                         for (int i = 0; i < card.stacks.length; i++)
                             this.getFilterStacks().set(i, card.stacks[i]);
                         this.markDirty();
@@ -298,12 +264,12 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                             card.setIngredient(i, this.getCraftStacks().get(i).copy());
                         card.setResult(this.getRecipeResult().copy());
                         CardDataStorage.instance().write(punched.getTagCompound(), card);
-                        this.decrStackSize(0, 1);
+                        inventory.extractItem(0, 1, false);
 
-                        if (this.getStackInSlot(1).isEmpty())
-                            this.setInventorySlotContents(1, punched);
+                        if (inventory.getStackInSlot(1).isEmpty())
+                            inventory.setStackInSlot(1, punched);
                         else
-                            this.getStackInSlot(1).grow(1);
+                            inventory.getStackInSlot(1).grow(1);
                         this.markDirty();
                     }
                 }
@@ -315,12 +281,12 @@ public class TileKeypunch extends TileMultiblockInventoryBase implements IAction
                     for (int i = 0; i < this.getFilterStacks().size(); i++)
                         card.stacks[i] = this.getFilterStacks().get(i).copy();
                     CardDataStorage.instance().write(punched.getTagCompound(), card);
-                    this.decrStackSize(0, 1);
+                    inventory.extractItem(0, 1, false);
 
-                    if (this.getStackInSlot(1).isEmpty())
-                        this.setInventorySlotContents(1, punched);
+                    if (inventory.getStackInSlot(1).isEmpty())
+                        inventory.setStackInSlot(1, punched);
                     else
-                        this.getStackInSlot(1).grow(1);
+                        inventory.getStackInSlot(1).grow(1);
                     this.markDirty();
                 }
                 break;

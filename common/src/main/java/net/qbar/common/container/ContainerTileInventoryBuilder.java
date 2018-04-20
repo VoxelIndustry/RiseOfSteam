@@ -1,31 +1,30 @@
 package net.qbar.common.container;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.qbar.common.container.slot.*;
 import net.qbar.common.container.sync.DefaultSyncables;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import org.apache.commons.lang3.Range;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ContainerTileInventoryBuilder
 {
-    private final IInventory       tile;
+    private final ItemStackHandler inventory;
     private final ContainerBuilder parent;
     private final int              rangeStart;
 
-    ContainerTileInventoryBuilder(final ContainerBuilder parent, final IInventory tile)
+    ContainerTileInventoryBuilder(final ContainerBuilder parent, final ItemStackHandler inventory)
     {
-        this.tile = tile;
+        this.inventory = inventory;
         this.parent = parent;
         this.rangeStart = parent.slots.size();
     }
@@ -86,7 +85,7 @@ public class ContainerTileInventoryBuilder
      */
     public ContainerTileInventoryBuilder slot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new ListenerSlot(this.tile, index, x, y));
+        this.parent.slots.add(new ListenerSlot(this.inventory, index, x, y));
         return this;
     }
 
@@ -101,7 +100,7 @@ public class ContainerTileInventoryBuilder
      */
     public ContainerTileInventoryBuilder outputSlot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new SlotOutput(this.tile, index, x, y));
+        this.parent.slots.add(new SlotOutput(this.inventory, index, x, y));
         return this;
     }
 
@@ -122,7 +121,7 @@ public class ContainerTileInventoryBuilder
     public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
                                                     final int x, final int y)
     {
-        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
+        this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
                 .setFilter(stack -> QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
         return this;
     }
@@ -147,7 +146,7 @@ public class ContainerTileInventoryBuilder
     public ContainerTileInventoryBuilder recipeSlot(final int index, final String recipeID, final int recipeSlot,
                                                     final int x, final int y, final Predicate<Integer> predicate)
     {
-        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(stack -> predicate.test(index)
+        this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(stack -> predicate.test(index)
                 && QBarRecipeHandler.inputMatchWithoutCount(recipeID, recipeSlot, stack)));
         return this;
     }
@@ -166,7 +165,7 @@ public class ContainerTileInventoryBuilder
     public ContainerTileInventoryBuilder filterSlot(final int index, final int x, final int y,
                                                     final Predicate<ItemStack> filter)
     {
-        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(filter));
+        this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(filter));
         return this;
     }
 
@@ -184,7 +183,7 @@ public class ContainerTileInventoryBuilder
     @SuppressWarnings("null")
     public ContainerTileInventoryBuilder fluidSlot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(
+        this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(
                 stack -> stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, EnumFacing.UP)));
         return this;
     }
@@ -192,8 +191,8 @@ public class ContainerTileInventoryBuilder
     /**
      * Add a steam-containers-only slot to the slot list of the current {@code IInventory}
      * <p>
-     * The builtin filter will only allow {@link ItemStack} having the {@code CapabilitySteamHandler
-     * .ITEM_STEAM_HANDLER_CAPABILITY} with {@code EnumFacing.UP}
+     * The builtin filter will only allow {@link ItemStack} having the {@code SteamCapabilities
+     * .ITEM_STEAM_HANDLER} with {@code EnumFacing.UP}
      *
      * @param index the index this slot will use to communicate with the inventory.
      * @param x     the horizontal position at which the slot is placed
@@ -203,8 +202,8 @@ public class ContainerTileInventoryBuilder
     @SuppressWarnings("null")
     public ContainerTileInventoryBuilder steamSlot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new FilteredSlot(this.tile, index, x, y).setFilter(
-                stack -> stack.hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.UP)));
+        this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(
+                stack -> stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.UP)));
         return this;
     }
 
@@ -221,7 +220,7 @@ public class ContainerTileInventoryBuilder
      */
     public ContainerTileInventoryBuilder fuelSlot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new SlotFuel(this.tile, index, x, y));
+        this.parent.slots.add(new SlotFuel(this.inventory, index, x, y));
         return this;
     }
 
@@ -238,7 +237,7 @@ public class ContainerTileInventoryBuilder
      */
     public ContainerTileInventoryBuilder displaySlot(final int index, final int x, final int y)
     {
-        this.parent.slots.add(new SlotDisplay(this.tile, index, x, y));
+        this.parent.slots.add(new SlotDisplay(this.inventory, index, x, y));
         return this;
     }
 
@@ -345,8 +344,9 @@ public class ContainerTileInventoryBuilder
      */
     public ContainerBuilder addInventory()
     {
-        this.parent.tileInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
-        this.parent.inventories.add(this.tile);
+        if (this.inventory.getSlots() != 0)
+            this.parent.tileInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
+        this.parent.inventories.add(this.inventory);
         return this.parent;
     }
 }

@@ -9,30 +9,28 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.block.BlockVeinOre;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
+import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.item.ItemDrillCoreSample;
 import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.ore.QBarMineral;
 import net.qbar.common.ore.QBarOres;
-import net.qbar.common.steam.CapabilitySteamHandler;
-import net.qbar.common.tile.TileMultiblockInventoryBase;
+import net.qbar.common.steam.SteamCapabilities;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements ITickable, IActionReceiver
+public class TileTinyMiningDrill extends TileTickingModularMachine implements IContainerProvider, IActionReceiver
 {
     private final int consumption = 20;
 
@@ -49,10 +47,18 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 
     public TileTinyMiningDrill()
     {
-        super(QBarMachines.TINY_MINING_DRILL, 2);
+        super(QBarMachines.TINY_MINING_DRILL);
 
         this.results = new HashMap<>();
         this.lastPos = this.getPos();
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new InventoryModule(this, 2));
     }
 
     @Override
@@ -73,6 +79,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 
         if (this.doStart && this.getProgress() < 1 && this.getSteam() >= this.consumption)
         {
+            InventoryHandler inventory = this.getModule(InventoryModule.class).getInventory("basic");
             BlockPos toCheck = this.lastPos;
 
             for (int i = 0; i < 25; i++)
@@ -88,7 +95,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
                             if (toCheck.getZ() == this.getPos().getZ() + 7)
                             {
                                 this.progress = 1;
-                                this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
+                                inventory.setStackInSlot(0, ItemDrillCoreSample.getSample(this.getPos(), results));
                             }
                             toCheck = new BlockPos(this.getPos().getX() - 7, 0, toCheck.getZ() + 1);
                         }
@@ -119,7 +126,7 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 
                 if (this.progress == 1)
                 {
-                    this.setInventorySlotContents(0, ItemDrillCoreSample.getSample(this.getPos(), results));
+                    inventory.setStackInSlot(0, ItemDrillCoreSample.getSample(this.getPos(), results));
                     this.progress = 0;
                     this.lastPos = BlockPos.ORIGIN;
                     this.results.clear();
@@ -176,48 +183,29 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
 
     private int getSteam()
     {
-        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
-                EnumFacing.NORTH))
-            return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH).getSteam();
+        ItemStack steam = this.getModule(InventoryModule.class).getInventory("basic").getStackInSlot(1);
+
+        if (steam.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH))
+            return steam.getCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH).getSteam();
         return 0;
     }
 
     private int drainSteam(int quantity, boolean doDrain)
     {
-        if (this.getStackInSlot(1).hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
-                EnumFacing.NORTH))
-            return this.getStackInSlot(1)
-                    .getCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY, EnumFacing.NORTH)
+        ItemStack steam = this.getModule(InventoryModule.class).getInventory("basic").getStackInSlot(1);
+
+        if (steam.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH))
+            return steam.getCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH)
                     .drainSteam(quantity, doDrain);
         return 0;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN
-                && from.getY() == 1)
-            return true;
-        return super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN
-                && from.getY() == 1)
-            return (T) this.getInventoryWrapper(facing);
-        return super.getCapability(capability, facing);
     }
 
     @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("tinyminingdrill", player)
-                .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this)
+                .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
+                .tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .outputSlot(0, 134, 35).steamSlot(1, 80, 58)
                 .syncFloatValue(this::getProgress, this::setProgress)
                 .addInventory().create();
@@ -234,25 +222,6 @@ public class TileTinyMiningDrill extends TileMultiblockInventoryBase implements 
         player.openGui(QBarConstants.MODINSTANCE, MachineGui.TINYMININGDRILL.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return new int[]{0, 1};
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return index == 1 && stack.hasCapability(CapabilitySteamHandler.ITEM_STEAM_HANDLER_CAPABILITY,
-                EnumFacing.NORTH);
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return direction == EnumFacing.UP && index == 0 || direction != EnumFacing.UP && index != 0;
     }
 
     @Override

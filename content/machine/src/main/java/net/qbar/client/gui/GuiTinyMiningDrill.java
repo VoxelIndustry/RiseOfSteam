@@ -7,6 +7,7 @@ import net.qbar.client.gui.util.GuiProgress;
 import net.qbar.client.gui.util.GuiSpace;
 import net.qbar.client.gui.util.GuiTexturedSpace;
 import net.qbar.common.QBarConstants;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileTinyMiningDrill;
 
@@ -54,7 +55,8 @@ public class GuiTinyMiningDrill extends GuiMachineBase<TileTinyMiningDrill>
         final int x = (this.width - this.xSize) / 2;
         final int y = (this.height - this.ySize) / 2;
 
-        if (this.miningDrill.isDoStart() || !this.miningDrill.getStackInSlot(0).isEmpty())
+        if (this.miningDrill.isDoStart() ||
+                !this.miningDrill.getModule(InventoryModule.class).getInventory("basic").getStackInSlot(0).isEmpty())
             this.drawTexturedModalRect(x + 72, y + 25, 176, 7, 31, 12);
         this.fontRenderer.drawString("START", x + 73, y + 27, 4210752);
     }

@@ -1,8 +1,4 @@
-label {
-    -text-shadow: false;
-    -text-color: #404040;
-}
-
-button {
-    -text-shadow: false;
+label > text {
+    -shadow: false;
+    -color: #404040;
 }

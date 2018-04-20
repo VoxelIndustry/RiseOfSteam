@@ -17,7 +17,7 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.fluid.MultiFluidTank;
 import net.qbar.common.steam.ISteamTank;
-import net.qbar.common.tile.TileInventoryBase;
+import net.qbar.common.tile.QBarTileBase;
 import org.apache.commons.lang3.tuple.Pair;
 import org.yggard.brokkgui.BrokkGuiPlatform;
 import org.yggard.brokkgui.data.Vector2i;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class GuiMachineBase<T extends TileInventoryBase & IContainerProvider> extends GuiContainer
+public abstract class GuiMachineBase<T extends QBarTileBase & IContainerProvider> extends GuiContainer
 {
     public static final NumberFormat heatFormat;
 

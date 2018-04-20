@@ -18,19 +18,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.qbar.common.QBarConstants;
 
-public class BlockOreSand extends BlockFalling implements INamedBlock, IModelProvider
+public class BlockOreSand extends BlockFalling implements IModelProvider
 {
-    private static final PropertyEnum<BlockOreSand.EnumType> VARIANTS = PropertyEnum.create("variant", BlockOreSand.EnumType.class);
-
-    @Getter
-    public String name;
+    private static final PropertyEnum<BlockOreSand.EnumType> VARIANTS =
+            PropertyEnum.create("variant", BlockOreSand.EnumType.class);
 
     public BlockOreSand(String name)
     {
         super(Material.SAND);
         this.setSoundType(SoundType.SAND);
 
-        this.name = name;
         this.setRegistryName(QBarConstants.MODID, name);
         this.setUnlocalizedName(name);
         this.setCreativeTab(QBarConstants.TAB_ALL);

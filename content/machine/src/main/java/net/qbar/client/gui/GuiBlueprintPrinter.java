@@ -18,7 +18,6 @@ import net.qbar.common.tile.machine.TileBlueprintPrinter;
 import org.yggard.brokkgui.control.GuiToggleButton;
 import org.yggard.brokkgui.control.GuiToggleGroup;
 import org.yggard.brokkgui.element.GuiLabel;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.ScrollPane;
@@ -63,7 +62,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         GuiAbsolutePane body = new GuiAbsolutePane();
         body.setWidth(xSize);
         body.setHeightRatio(1);
-        body.setBackground(new Background(BACKGROUND));
+        body.setBackgroundTexture(BACKGROUND);
 
         mainPanel.addChild(body, 23, 0);
         mainPanel.addChild(new EngineerTabPane(blueprintPrinter, blueprintPrinter.getType()), 0, 0);
@@ -162,7 +161,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                 itemStack.setHeight(24);
                 itemStack.setTooltip(true);
                 itemStack.setAlternateString("");
-                itemStack.setBackground(new Background(machineDescriptor.getType().getColor().addAlpha(-0.4f)));
+                itemStack.setBackgroundColor(machineDescriptor.getType().getColor().addAlpha(-0.4f));
 
                 itemStack.setOnClickEvent(e ->
                 {

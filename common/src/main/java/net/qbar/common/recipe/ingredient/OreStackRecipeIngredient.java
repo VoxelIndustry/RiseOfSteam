@@ -30,7 +30,7 @@ public class OreStackRecipeIngredient extends RecipeIngredient<OreStack>
     }
 
     @Override
-    public OreStack getRawIngredient()
+    public OreStack getRaw()
     {
         return this.stack;
     }

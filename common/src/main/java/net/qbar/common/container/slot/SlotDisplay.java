@@ -1,11 +1,11 @@
 package net.qbar.common.container.slot;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 public class SlotDisplay extends ListenerSlot
 {
-    public SlotDisplay(final IInventory inventory, final int index, final int x, final int y)
+    public SlotDisplay(final IItemHandler inventory, final int index, final int x, final int y)
     {
         super(inventory, index, x, y);
     }

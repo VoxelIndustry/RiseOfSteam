@@ -7,11 +7,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.qbar.common.network.NetworkHandler;
 import net.qbar.common.network.TileSyncRequestPacket;
+import org.yggard.hermod.EventDispatcher;
+import org.yggard.hermod.IEventEmitter;
 
 import java.util.List;
 
-public class QBarTileBase extends TileEntity implements ITileInfoProvider
+public class QBarTileBase extends TileEntity implements ITileInfoProvider, IEventEmitter
 {
+    private EventDispatcher eventDispatcher;
+
     @Override
     public SPacketUpdateTileEntity getUpdatePacket()
     {
@@ -26,13 +30,13 @@ public class QBarTileBase extends TileEntity implements ITileInfoProvider
         this.readFromNBT(packet.getNbtCompound());
     }
 
-    protected void forceSync()
+    public void forceSync()
     {
         new TileSyncRequestPacket(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(),
                 this.getPos().getZ()).sendToServer();
     }
 
-    protected void sync()
+    public void sync()
     {
         if (this.world != null)
             NetworkHandler.sendTileToRange(this);
@@ -56,5 +60,18 @@ public class QBarTileBase extends TileEntity implements ITileInfoProvider
     public void addInfo(final List<String> lines)
     {
 
+    }
+
+    @Override
+    public EventDispatcher getEventDispatcher()
+    {
+        if (this.eventDispatcher == null)
+            this.initEventDispatcher();
+        return this.eventDispatcher;
+    }
+
+    private void initEventDispatcher()
+    {
+        this.eventDispatcher = new EventDispatcher();
     }
 }

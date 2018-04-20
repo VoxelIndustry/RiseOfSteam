@@ -20,8 +20,8 @@ public class FluidStackRecipeIngredient extends RecipeIngredient<FluidStack>
     @Override
     public boolean match(FluidStack against)
     {
-        return against.getFluid().equals(this.getRawIngredient().getFluid())
-                && FluidStack.areFluidStackTagsEqual(against, this.getRawIngredient());
+        return against.getFluid().equals(this.getRaw().getFluid())
+                && FluidStack.areFluidStackTagsEqual(against, this.getRaw());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class FluidStackRecipeIngredient extends RecipeIngredient<FluidStack>
     }
 
     @Override
-    public FluidStack getRawIngredient()
+    public FluidStack getRaw()
     {
         return this.ingredient;
     }

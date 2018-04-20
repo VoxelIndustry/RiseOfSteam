@@ -1,0 +1,22 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, -1, -2]
+                    facing: SOUTH
+                    slots: [0]
+                }
+            ]
+        }
+    }
+}

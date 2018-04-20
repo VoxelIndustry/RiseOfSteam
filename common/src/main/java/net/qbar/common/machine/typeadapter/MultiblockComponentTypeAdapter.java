@@ -11,7 +11,7 @@ public class MultiblockComponentTypeAdapter extends TypeAdapter<MultiblockCompon
         implements IMachineComponentTypeAdapter<MultiblockComponent>
 {
     @Override
-    public void write(JsonWriter out, MultiblockComponent value) throws IOException
+    public void write(JsonWriter out, MultiblockComponent value)
     {
 
     }

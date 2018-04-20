@@ -19,7 +19,6 @@ import net.qbar.common.network.action.ServerActionBuilder;
 import net.qbar.common.tile.machine.TileKeypunch;
 import net.qbar.common.util.ItemUtils;
 import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.paint.Background;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
@@ -65,7 +64,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.body = new GuiRelativePane();
         this.body.setWidth(xSize);
         this.body.setHeight(ySize);
-        this.body.setBackground(new Background(GuiKeypunch.BACKGROUND));
+        this.body.setBackgroundTexture(GuiKeypunch.BACKGROUND);
 
         mainPanel.addChild(this.header, 23, 0);
         mainPanel.addChild(this.body, 23, 18);
@@ -126,7 +125,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.assemble.setWidth(56);
         this.assemble.setHeight(16);
         this.assemble.setOnActionEvent(e ->
-                new ServerActionBuilder(this.assemble.getText().equals("PRINT") ? "PRINT_CARD" : "LOAD_CARD")
+                new ServerActionBuilder(this.assemble.getLabel().getText().equals("PRINT") ? "PRINT_CARD" : "LOAD_CARD")
                         .toTile(keypunch).send());
         this.body.addChild(this.assemble, 0.5f, 0.415f);
 
@@ -163,7 +162,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             view.setWidth(18);
             view.setHeight(18);
             view.setTooltip(true);
-            view.setBackground(new Background(GuiKeypunch.SLOT));
+            view.setBackgroundTexture(GuiKeypunch.SLOT);
             view.setOnClickEvent(click ->
             {
                 if (click.getKey() == 1)
@@ -196,7 +195,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         resultView.setWidth(22);
         resultView.setHeight(22);
         resultView.setTooltip(true);
-        resultView.setBackground(new Background(GuiKeypunch.SLOT));
+        resultView.setBackgroundTexture(GuiKeypunch.SLOT);
         this.craftPane.addChild(resultView, 25 + (18 * 4), 3 + 18);
 
         this.getListeners().attach(this.keypunch.getCraftStacks(),
@@ -227,7 +226,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             view.setWidth(18);
             view.setHeight(18);
             view.setTooltip(true);
-            view.setBackground(new Background(GuiKeypunch.SLOT));
+            view.setBackgroundTexture(GuiKeypunch.SLOT);
             view.setOnClickEvent(click ->
             {
                 if (click.getKey() == 1)
@@ -265,7 +264,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         {
             if (stack.getTagCompound() == null)
             {
-                this.assemble.setText("PRINT");
+                this.assemble.getLabel().setText("PRINT");
 
                 if (this.keypunch.getCanPrintProperty().getValue())
                 {
@@ -300,7 +299,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             }
             else
             {
-                this.assemble.setText("LOAD");
+                this.assemble.getLabel().setText("LOAD");
                 if (this.keypunch.getCraftTabProperty().getValue()
                         && stack.getTagCompound().getInteger("cardTypeID") == CardDataStorage.ECardType.CRAFT
                         .getID()

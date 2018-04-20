@@ -49,6 +49,21 @@
                     slots: [0]
                 }
             ]
+            inputs: [
+                {
+                    pos: [1, 1, 1]
+                    facing: SOUTH
+                    slots: [0]
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 0]
+                    facing: WEST
+                }
+            ]
         }
     }
 }

@@ -1,6 +1,7 @@
 package net.qbar.common.item;
 
-public interface IItemModelProvider {
+public interface IItemModelProvider
+{
     default void registerModels()
     {
 

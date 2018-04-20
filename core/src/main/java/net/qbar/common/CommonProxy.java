@@ -16,7 +16,7 @@ import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.network.*;
 import net.qbar.common.recipe.QBarMaterials;
 import net.qbar.common.recipe.QBarRecipes;
-import net.qbar.common.steam.CapabilitySteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.world.QBarOreGenerator;
 
 public class CommonProxy
@@ -33,7 +33,7 @@ public class CommonProxy
         QBarConstants.network.register(ClientActionHolderPacket.class);
         QBarConstants.network.register(OpenGuiPacket.class);
 
-        CapabilitySteamHandler.register();
+        SteamCapabilities.register();
 
         QBarMaterials.initMaterials();
 
@@ -86,7 +86,7 @@ public class CommonProxy
         GridManager.getInstance().cableGrids.clear();
     }
 
-    public void registerItemRenderer(final Item item, final int meta, final String id)
+    public void registerItemRenderer(final Item item, final int meta)
     {
 
     }

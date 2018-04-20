@@ -35,5 +35,26 @@
                 ]
             }
         ]
+        fluid: [
+            {
+                name: water
+                capacity: 32000
+            }
+        ]
+        io: {
+            steam: [
+                {
+                    pos: [1, 0, -1]
+                    facing: EAST
+                }
+            ]
+            fluid: [
+                {
+                     pos: [-1, 0, -1]
+                     facing: WEST
+                     tank: water
+                }
+            ]
+        }
     }
 }
