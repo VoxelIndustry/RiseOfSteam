@@ -24,13 +24,14 @@ import net.qbar.common.grid.WorkshopMachine;
 import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.multiblock.ITileMultiblockCore;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
-import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
@@ -76,7 +77,8 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
 
         this.craftables.clear();
         this.recipes =
-                ((TileInventoryBase) this.getGridObject().getMachines().get(WorkshopMachine.CARDLIBRARY))
+                ((TileModularMachine) this.getGridObject().getMachines().get(WorkshopMachine.CARDLIBRARY))
+                        .getModule(InventoryModule.class).getInventory("basic")
                         .getStacks().stream().filter(card -> !card.isEmpty())
                         .map(card -> CardDataStorage.instance().read(card.getTagCompound(), CraftCard.class))
                         .collect(Collectors.toList());
@@ -91,8 +93,9 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
 
         if (this.getGridObject().getMachines().containsKey(WorkshopMachine.STORAGE))
         {
-            TileInventoryBase storage = (TileInventoryBase) this.getGridObject().getMachines().get(WorkshopMachine
-                    .STORAGE);
+            InventoryHandler storage = ((TileModularMachine) this.getGridObject().getMachines()
+                    .get(WorkshopMachine.STORAGE)).getModule(InventoryModule.class).getInventory("basic");
+
             this.craftables.stream().parallel().forEach(result ->
             {
                 int count = Integer.MAX_VALUE;
@@ -300,8 +303,8 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
 
                 for (ItemStack ingredient : recipe.getCompressedRecipe())
                 {
-                    TileInventoryBase storage = (TileInventoryBase) this.getGridObject().getMachines()
-                            .get(WorkshopMachine.STORAGE);
+                    InventoryHandler storage = ((TileModularMachine) this.getGridObject().getMachines()
+                            .get(WorkshopMachine.STORAGE)).getModule(InventoryModule.class).getInventory("basic");
 
                     int toConsume = ingredient.getCount() * (toMake / recipe.getResult().getCount());
                     for (ItemStack stack : storage.getStacks())

@@ -92,6 +92,11 @@ public class InventoryHandler extends ItemStackHandler
         return super.getSlotLimit(slot);
     }
 
+    public NonNullList<ItemStack> getStacks()
+    {
+        return this.stacks;
+    }
+
     public void setSlotLimit(int slot, int limit)
     {
         this.slotLimits.put(slot, limit);
