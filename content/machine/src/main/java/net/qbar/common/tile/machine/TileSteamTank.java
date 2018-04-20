@@ -18,7 +18,7 @@ import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.component.SteamComponent;
-import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.impl.FluidStorageModule;
 import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.machine.module.impl.SteamModule;
@@ -48,7 +48,7 @@ public class TileSteamTank extends TileModularMachine implements IContainerProvi
     {
         super.reloadModules();
 
-        this.addModule(new BasicInventoryModule(this, 0));
+        this.addModule(new InventoryModule(this, 0));
         this.addModule(new FluidStorageModule(this)
                 .addFilter("water", FluidUtils.WATER_FILTER));
         this.addModule(new SteamModule(this, this::createTank));
@@ -85,8 +85,8 @@ public class TileSteamTank extends TileModularMachine implements IContainerProvi
         FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
 
         return new ContainerBuilder("steamtank", player)
-                .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this.getModule(BasicInventoryModule.class))
+                .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
+                .tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,

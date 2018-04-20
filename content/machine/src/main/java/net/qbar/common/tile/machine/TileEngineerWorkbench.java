@@ -178,7 +178,7 @@ public class TileEngineerWorkbench extends QBarTileBase implements IContainerPro
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("engineerworkbench", player)
-                .player(player.inventory).inventory(19, 102).hotbar(19, 160)
+                .player(player).inventory(19, 102).hotbar(19, 160)
                 .addInventory().create();
     }
 

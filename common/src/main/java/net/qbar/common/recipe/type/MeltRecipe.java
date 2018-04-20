@@ -29,6 +29,6 @@ public class MeltRecipe extends QBarRecipe
 
     public FluidStack getOutput()
     {
-        return this.getRecipeOutputs(FluidStack.class).get(0).getRawIngredient();
+        return this.getRecipeOutputs(FluidStack.class).get(0).getRaw();
     }
 }

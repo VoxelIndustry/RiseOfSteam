@@ -1,16 +1,16 @@
 package net.qbar.common.container.slot;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.function.Consumer;
 
-public class ListenerSlot extends Slot
+public class ListenerSlot extends SlotItemHandler
 {
     private Consumer<ItemStack> onChange;
 
-    public ListenerSlot(final IInventory inventory, final int index, final int x, final int y)
+    public ListenerSlot(final IItemHandler inventory, final int index, final int x, final int y)
     {
         super(inventory, index, x, y);
     }

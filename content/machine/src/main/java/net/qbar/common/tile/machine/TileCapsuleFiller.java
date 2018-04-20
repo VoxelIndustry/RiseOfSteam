@@ -9,9 +9,10 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.machine.QBarMachines;
 import net.qbar.common.machine.component.SteamComponent;
-import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.steam.ISteamHandler;
@@ -31,8 +32,10 @@ public class TileCapsuleFiller extends TileTickingModularMachine implements ICon
     {
         super.reloadModules();
 
-        this.addModule(new BasicInventoryModule(this, 1)
-                .filter(0, stack -> stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH)));
+        this.addModule(new InventoryModule(this, 1));
+
+        this.getModule(InventoryModule.class).getInventory("basic")
+                .addSlotFilter(0, stack -> stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.NORTH));
         this.addModule(new SteamModule(this, SteamUtil::createTank));
         this.addModule(new IOModule(this));
     }
@@ -43,7 +46,7 @@ public class TileCapsuleFiller extends TileTickingModularMachine implements ICon
         if (this.isClient())
             return;
 
-        BasicInventoryModule inventory = this.getModule(BasicInventoryModule.class);
+        InventoryHandler inventory = this.getModule(InventoryModule.class).getInventory("basic");
         ISteamHandler steamHandler = this.getModule(SteamModule.class).getInternalSteamHandler();
         if (!inventory.getStackInSlot(0).isEmpty())
         {
@@ -70,8 +73,8 @@ public class TileCapsuleFiller extends TileTickingModularMachine implements ICon
         SteamModule steamEngine = this.getModule(SteamModule.class);
 
         return new ContainerBuilder("capsule_filler", player)
-                .player(player.inventory).inventory(8, 84).hotbar(8, 142).addInventory()
-                .tile(this.getModule(BasicInventoryModule.class))
+                .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
+                .tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .steamSlot(0, 80, 36)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)

@@ -58,7 +58,7 @@ public class ItemStackRecipeIngredient extends RecipeIngredient<ItemStack>
     }
 
     @Override
-    public ItemStack getRawIngredient()
+    public ItemStack getRaw()
     {
         if (!this.ingredient.isEmpty())
             return this.ingredient;

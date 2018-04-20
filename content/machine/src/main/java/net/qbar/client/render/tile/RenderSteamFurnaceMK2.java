@@ -3,7 +3,8 @@ package net.qbar.client.render.tile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.qbar.client.render.RenderUtil;
-import net.qbar.common.machine.module.impl.CraftingInventoryModule;
+import net.qbar.common.inventory.InventoryHandler;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.impl.CraftingModule;
 import net.qbar.common.tile.machine.TileSteamFurnaceMK2;
 
@@ -36,7 +37,7 @@ public class RenderSteamFurnaceMK2 extends TileEntitySpecialRenderer<TileSteamFu
         }
 
         CraftingModule crafter = tile.getModule(CraftingModule.class);
-        CraftingInventoryModule inventory = tile.getModule(CraftingInventoryModule.class);
+        InventoryHandler inventory = tile.getModule(InventoryModule.class).getInventory("crafting");
 
         if (!inventory.getStackInSlot(0).isEmpty())
             RenderUtil.handleRenderItem(inventory.getStackInSlot(0), true);

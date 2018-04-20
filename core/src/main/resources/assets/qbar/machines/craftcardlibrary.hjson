@@ -7,5 +7,22 @@
             height: 2
             length: 1
         }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, 0]
+                    facing: DOWN
+                    slots: 0..71
+                }
+            ]
+            inputs: [
+                {
+                    fromPos: [0, 0, 0]
+                    toPos: [0, 1, 0]
+                    facing: ["NORTH", "EAST", "SOUTH", "WEST", "UP"]
+                    slots: 0..71
+                }
+            ]
+        }
     }
 }

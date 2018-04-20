@@ -1,9 +1,9 @@
 package net.qbar.common.container;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.qbar.common.container.slot.ListenerSlot;
 import net.qbar.common.container.sync.SyncableProperty;
 import org.apache.commons.lang3.Range;
@@ -29,8 +29,8 @@ public class ContainerBuilder
 {
     private final String name;
 
-    private final EntityPlayer player;
-    private Predicate<EntityPlayer> canInteract = player -> true;
+    private final EntityPlayer            player;
+    private       Predicate<EntityPlayer> canInteract = player -> true;
 
     final List<ListenerSlot>   slots;
     final List<Range<Integer>> playerInventoryRanges, tileInventoryRanges;
@@ -39,7 +39,7 @@ public class ContainerBuilder
 
     final List<Consumer<InventoryCrafting>> craftEvents;
 
-    List<IInventory> inventories;
+    List<ItemStackHandler> inventories;
 
     /**
      * Creates a ContainerBuilder instance to produce a BuiltContainer
@@ -90,9 +90,9 @@ public class ContainerBuilder
      * @param player the inventory of the player to base this container on.
      * @return a {@link ContainerPlayerInventoryBuilder} marked as child of this builder
      */
-    public ContainerPlayerInventoryBuilder player(final InventoryPlayer player)
+    public ContainerPlayerInventoryBuilder player(final EntityPlayer player)
     {
-        return new ContainerPlayerInventoryBuilder(this, player);
+        return new ContainerPlayerInventoryBuilder(this, player, new PlayerInvWrapper(player.inventory));
     }
 
     /**
@@ -104,7 +104,7 @@ public class ContainerBuilder
      * @param tile an IInventory representing a tile inventory
      * @return a {@link ContainerTileInventoryBuilder} marked as child of this builder
      */
-    public ContainerTileInventoryBuilder tile(final IInventory tile)
+    public ContainerTileInventoryBuilder tile(final ItemStackHandler tile)
     {
         return new ContainerTileInventoryBuilder(this, tile);
     }

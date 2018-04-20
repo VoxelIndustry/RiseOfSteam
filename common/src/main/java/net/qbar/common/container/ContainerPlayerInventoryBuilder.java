@@ -1,27 +1,30 @@
 package net.qbar.common.container;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.qbar.common.container.slot.FilteredSlot;
 import net.qbar.common.container.slot.ListenerSlot;
 import org.apache.commons.lang3.Range;
 
 public final class ContainerPlayerInventoryBuilder
 {
-    private final InventoryPlayer  player;
+    private final EntityPlayer     player;
+    private final PlayerInvWrapper inventory;
     private final ContainerBuilder parent;
     private       Range<Integer>   main;
     private       Range<Integer>   hotbar;
     private       Range<Integer>   armor;
 
-    ContainerPlayerInventoryBuilder(final ContainerBuilder parent, final InventoryPlayer player)
+    ContainerPlayerInventoryBuilder(final ContainerBuilder parent, EntityPlayer player, PlayerInvWrapper inventory)
     {
+        this.inventory = inventory;
         this.player = player;
         this.parent = parent;
     }
 
     /**
-     * Utility method to add the entire main inventory of a player to the slot list.
+     * Utility method to add the entire main inventory of a inventory to the slot list.
      * Note that this does not include the hotbar nor the armor slots.
      *
      * @param xStart the horizontal position at which the inventory begins
@@ -33,13 +36,14 @@ public final class ContainerPlayerInventoryBuilder
         final int startIndex = this.parent.slots.size();
         for (int i = 0; i < 3; ++i)
             for (int j = 0; j < 9; ++j)
-                this.parent.slots.add(new ListenerSlot(this.player, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
+                this.parent.slots.add(new ListenerSlot(this.inventory, j + i * 9 + 9, xStart + j * 18, yStart + i *
+                        18));
         this.main = Range.between(startIndex, this.parent.slots.size() - 1);
         return this;
     }
 
     /**
-     * Utility method to add the entire hotbar of a player to the slot list.
+     * Utility method to add the entire hotbar of a inventory to the slot list.
      *
      * @param xStart the horizontal position at which the inventory begins
      * @param yStart the vertical position at which the inventory begins
@@ -49,13 +53,13 @@ public final class ContainerPlayerInventoryBuilder
     {
         final int startIndex = this.parent.slots.size();
         for (int i = 0; i < 9; ++i)
-            this.parent.slots.add(new ListenerSlot(this.player, i, xStart + i * 18, yStart));
+            this.parent.slots.add(new ListenerSlot(this.inventory, i, xStart + i * 18, yStart));
         this.hotbar = Range.between(startIndex, this.parent.slots.size() - 1);
         return this;
     }
 
     /**
-     * Utility method to add the entire main inventory of a player to the slot list.
+     * Utility method to add the entire main inventory of a inventory to the slot list.
      * Note that this does not include the hotbar nor the armor slots.
      * <p>
      * This method will use commonly used default values to position the slots.
@@ -68,7 +72,7 @@ public final class ContainerPlayerInventoryBuilder
     }
 
     /**
-     * Utility method to add the entire hotbar of a player to the slot list.
+     * Utility method to add the entire hotbar of a inventory to the slot list.
      * <p>
      * This method will use commonly used default values to position the slots.
      *
@@ -94,7 +98,7 @@ public final class ContainerPlayerInventoryBuilder
      * Close this builder and add the slot list to the current {@link BuiltContainer} construction.
      * <p>
      * A special case has been implemented with armor slots, they are considered as a tile slot range. Allowing
-     * shift-insert from a player inventory.
+     * shift-insert from a inventory inventory.
      *
      * @return the parent {@link ContainerBuilder} to resume the "Builder" pattern
      */
@@ -125,29 +129,29 @@ public final class ContainerPlayerInventoryBuilder
                                                            final EntityEquipmentSlot slotType)
         {
 
-            this.parent.parent.slots.add(new FilteredSlot(this.parent.player, index, xStart, yStart)
-                    .setFilter(stack -> stack.getItem().isValidArmor(stack, slotType, this.parent.player.player)));
+            this.parent.parent.slots.add(new FilteredSlot(this.parent.inventory, index, xStart, yStart)
+                    .setFilter(stack -> stack.getItem().isValidArmor(stack, slotType, parent.player)));
             return this;
         }
 
         public ContainerPlayerArmorInventoryBuilder helmet(final int xStart, final int yStart)
         {
-            return this.armor(this.parent.player.getSizeInventory() - 2, xStart, yStart, EntityEquipmentSlot.HEAD);
+            return this.armor(this.parent.inventory.getSlots() - 2, xStart, yStart, EntityEquipmentSlot.HEAD);
         }
 
         public ContainerPlayerArmorInventoryBuilder chestplate(final int xStart, final int yStart)
         {
-            return this.armor(this.parent.player.getSizeInventory() - 3, xStart, yStart, EntityEquipmentSlot.CHEST);
+            return this.armor(this.parent.inventory.getSlots() - 3, xStart, yStart, EntityEquipmentSlot.CHEST);
         }
 
         public ContainerPlayerArmorInventoryBuilder leggings(final int xStart, final int yStart)
         {
-            return this.armor(this.parent.player.getSizeInventory() - 4, xStart, yStart, EntityEquipmentSlot.LEGS);
+            return this.armor(this.parent.inventory.getSlots() - 4, xStart, yStart, EntityEquipmentSlot.LEGS);
         }
 
         public ContainerPlayerArmorInventoryBuilder boots(final int xStart, final int yStart)
         {
-            return this.armor(this.parent.player.getSizeInventory() - 5, xStart, yStart, EntityEquipmentSlot.FEET);
+            return this.armor(this.parent.inventory.getSlots() - 5, xStart, yStart, EntityEquipmentSlot.FEET);
         }
 
         public ContainerPlayerArmorInventoryBuilder complete(final int xStart, final int yStart)

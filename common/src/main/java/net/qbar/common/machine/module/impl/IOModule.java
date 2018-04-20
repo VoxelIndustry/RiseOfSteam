@@ -6,8 +6,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.fluid.RestrictedTank;
+import net.qbar.common.inventory.MappedInventoryHandler;
 import net.qbar.common.machine.FluidIOPoint;
 import net.qbar.common.machine.InputPoint;
 import net.qbar.common.machine.OutputPoint;
@@ -15,6 +15,7 @@ import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.component.IOComponent;
 import net.qbar.common.machine.module.ICapabilityModule;
 import net.qbar.common.machine.module.IModularMachine;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.MachineModule;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
@@ -26,9 +27,9 @@ import java.util.HashMap;
 
 public class IOModule extends MachineModule implements ICapabilityModule
 {
-    private HashMap<MultiblockSide, RestrictedTank>  tankWrappers;
+    private HashMap<MultiblockSide, RestrictedTank>         tankWrappers;
     @Getter
-    private HashMap<MultiblockSide, SidedInvWrapper> invWrappers;
+    private HashMap<MultiblockSide, MappedInventoryHandler> invWrappers;
 
     public IOModule(IModularMachine machine)
     {
@@ -53,17 +54,24 @@ public class IOModule extends MachineModule implements ICapabilityModule
             this.invWrappers = new HashMap<>();
 
             AutomationComponent automation = machine.getDescriptor().get(AutomationComponent.class);
-            CraftingInventoryModule inventory = machine.getModule(CraftingInventoryModule.class);
+            InventoryModule inventory = machine.getModule(InventoryModule.class);
 
             for (InputPoint point : automation.getInputs())
-                this.invWrappers.put(point.getSide(), new SidedInvWrapper(inventory, EnumFacing.UP));
+            {
+                String inventoryName = "undefined".equals(point.getInventory()) ?
+                        (machine.hasModule(CraftingModule.class) ? "crafting" : "basic") : point.getInventory();
+
+                this.invWrappers.put(point.getSide(), new MappedInventoryHandler(
+                        inventory.getInventory(inventoryName), point.getSlots(), true, false));
+            }
             for (OutputPoint point : automation.getOutputs())
             {
-                // Check if side is already an input and make it a union of both
-                if (this.invWrappers.containsKey(point.getSide()))
-                    this.invWrappers.put(point.getSide(), new SidedInvWrapper(inventory, EnumFacing.NORTH));
-                else
-                    this.invWrappers.put(point.getSide(), new SidedInvWrapper(inventory, EnumFacing.DOWN));
+                String inventoryName = "undefined".equals(point.getInventory()) ?
+                        (machine.hasModule(CraftingModule.class) ? "crafting" : "basic") : point.getInventory();
+
+                this.invWrappers.put(point.getSide(), new MappedInventoryHandler(
+                        inventory.getInventory(inventoryName), point.getSlots(),
+                        invWrappers.containsKey(point.getSide()), true));
             }
         }
     }

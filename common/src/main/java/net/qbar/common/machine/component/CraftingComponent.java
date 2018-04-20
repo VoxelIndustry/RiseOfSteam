@@ -13,11 +13,9 @@ public class CraftingComponent implements IMachineComponent
 {
     private String recipeCategory;
 
-    private int   inventorySize;
-    private int[] inputs;
-    private int[] outputs;
-    private int[] buffers;
-    private int[] ioUnion;
+    private int inventorySize;
+    private int inputs;
+    private int outputs;
 
     private float craftingSpeed;
 

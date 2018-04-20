@@ -7,14 +7,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.qbar.common.fluid.LimitedTank;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.machine.component.CraftingComponent;
 import net.qbar.common.machine.component.FluidComponent;
 import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.machine.event.RecipeChangeEvent;
-import net.qbar.common.machine.module.IModularMachine;
-import net.qbar.common.machine.module.ISerializableModule;
-import net.qbar.common.machine.module.ITickableModule;
-import net.qbar.common.machine.module.MachineModule;
+import net.qbar.common.machine.module.*;
 import net.qbar.common.recipe.QBarRecipe;
 import net.qbar.common.recipe.QBarRecipeHandler;
 import net.qbar.common.recipe.ingredient.RecipeIngredient;
@@ -34,11 +32,11 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                     machine.getDescriptor().get(SteamComponent.class).getWorkingPressure();
 
     @Getter
-    private final CraftingComponent       crafter;
+    private final CraftingComponent crafter;
     @Getter
-    private final SteamComponent          steamMachine;
-    private       ISteamHandler           steamHandler;
-    private       CraftingInventoryModule inventoryModule;
+    private final SteamComponent    steamMachine;
+    private       ISteamHandler     steamHandler;
+    private       InventoryHandler  inventory;
 
     @Getter
     @Setter
@@ -84,6 +82,24 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
             for (String name : this.crafter.getOutputTanks())
                 this.outputTanks.add((FluidTank) fluidStorage.getFluidHandler(name));
         }
+
+        if (machine.hasModule(InventoryModule.class))
+        {
+            InventoryHandler inventory = new InventoryHandler(crafter.getInventorySize());
+
+            for (int slot = 0; slot < inventory.getSlots(); slot++)
+            {
+                inventory.setSlotLimit(slot, 1);
+
+                if (slot < crafter.getInputs())
+                {
+                    int finalSlot = slot;
+                    inventory.addSlotFilter(slot, stack -> this.isBufferEmpty() && this.isOutputEmpty() &&
+                            QBarRecipeHandler.inputMatchWithoutCount(crafter.getRecipeCategory(), finalSlot, stack));
+                }
+            }
+            machine.getModule(InventoryModule.class).addInventory("crafting", inventory);
+        }
     }
 
     private ISteamHandler getSteamHandler()
@@ -93,11 +109,11 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
         return steamHandler;
     }
 
-    private CraftingInventoryModule getInventory()
+    private InventoryHandler getInventory()
     {
-        if (inventoryModule == null)
-            inventoryModule = this.getMachine().getModule(CraftingInventoryModule.class);
-        return inventoryModule;
+        if (inventory == null)
+            inventory = this.getMachine().getModule(InventoryModule.class).getInventory("crafting");
+        return inventory;
     }
 
     @Override
@@ -106,17 +122,17 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
         if (this.isClient())
             return;
 
-        if (this.currentRecipe == null && (!this.getInventory().isInputEmpty() || !this.getInventory().isBufferEmpty()))
+        if (this.currentRecipe == null && (!this.isInputEmpty() || !this.isBufferEmpty()))
         {
             if (this.getSteamHandler().getSteam() >= this.steamMachine.getSteamConsumption())
             {
-                if (this.getInventory().isBufferEmpty())
+                if (this.isBufferEmpty())
                 {
-                    final Object[] ingredients = new Object[this.crafter.getBuffers().length
+                    final Object[] ingredients = new Object[this.crafter.getInputs()
                             + this.crafter.getInputTanks().length];
 
-                    for (int i = 0; i < this.crafter.getInputs().length; i++)
-                        ingredients[i] = this.getInventory().getStackInSlot(this.crafter.getInputs()[i]);
+                    for (int i = 0; i < this.crafter.getInputs(); i++)
+                        ingredients[i] = this.getInventory().getStackInSlot(i);
                     for (int i = 0; i < this.crafter.getInputTanks().length; i++)
                         ingredients[this.crafter.getInputTanks().length + i] = this.getInputFluidStack(i);
 
@@ -129,10 +145,8 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                         for (final RecipeIngredient<ItemStack> stack : this.currentRecipe
                                 .getRecipeInputs(ItemStack.class))
                         {
-                            this.getInventory().decrStackSize(this.crafter.getInputs()[i], stack.getRawIngredient()
-                                    .getCount());
-                            this.getInventory().setInventorySlotContents(this.crafter.getBuffers()[i],
-                                    stack.getRawIngredient().copy());
+                            this.getInventory().extractItem(i, stack.getRaw().getCount(), false);
+                            this.getInventory().setStackInSlot(crafter.getInputs() + i, stack.getRaw().copy());
                             i++;
                         }
                         i = 0;
@@ -140,7 +154,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                                 .getRecipeInputs(FluidStack.class))
                         {
                             this.inputTanks.get(i).drainInternal(stack.getQuantity(), true);
-                            this.bufferFluidStacks.set(i, stack.getRawIngredient().copy());
+                            this.bufferFluidStacks.set(i, stack.getRaw().copy());
                             i++;
                         }
                         this.sync();
@@ -148,11 +162,11 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                 }
                 else
                 {
-                    final Object[] ingredients = new Object[this.crafter.getBuffers().length
+                    final Object[] ingredients = new Object[this.crafter.getInputs()
                             + this.crafter.getInputTanks().length];
 
-                    for (int i = 0; i < this.crafter.getBuffers().length; i++)
-                        ingredients[i] = this.getInventory().getStackInSlot(this.crafter.getBuffers()[i]);
+                    for (int i = 0; i < this.crafter.getInputs(); i++)
+                        ingredients[i] = this.getInventory().getStackInSlot(this.crafter.getInputs() + i);
                     for (int i = 0; i < this.crafter.getInputTanks().length; i++)
                         ingredients[this.crafter.getInputTanks().length + i] = this.bufferFluidStacks.get(i);
 
@@ -168,7 +182,7 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                 }
             }
         }
-        if (this.currentRecipe != null && !this.getInventory().isBufferEmpty())
+        if (this.currentRecipe != null && !this.isBufferEmpty())
         {
             if (this.getCurrentProgress() < this.getMaxProgress())
             {
@@ -184,39 +198,38 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                 int i = 0;
                 for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeOutputs(ItemStack.class))
                 {
-                    if (!ItemUtils.canMergeStacks(stack.getRawIngredient(),
-                            this.getInventory().getStackInSlot(this.crafter.getOutputs()[i])))
+                    if (!ItemUtils.canMergeStacks(stack.getRaw(),
+                            this.getInventory().getStackInSlot(this.crafter.getInputs() * 2 + i)))
                         return;
                     i++;
                 }
                 i = 0;
                 for (final RecipeIngredient<FluidStack> stack : this.currentRecipe.getRecipeOutputs(FluidStack.class))
                 {
-                    if (this.outputTanks.get(i).fill(stack.getRawIngredient(), false) == 0)
+                    if (this.outputTanks.get(i).fill(stack.getRaw(), false) == 0)
                         return;
                     i++;
                 }
 
-                for (final int buffer : this.crafter.getBuffers())
-                    this.getInventory().setInventorySlotContents(buffer, ItemStack.EMPTY);
+                for (int buffer = crafter.getInputs(); buffer < crafter.getInputs() * 2; buffer++)
+                    this.getInventory().setStackInSlot(buffer, ItemStack.EMPTY);
                 for (int j = 0; j < this.crafter.getInputTanks().length; j++)
                     this.bufferFluidStacks.set(j, null);
 
                 i = 0;
                 for (final RecipeIngredient<ItemStack> stack : this.currentRecipe.getRecipeOutputs(ItemStack.class))
                 {
-                    if (!this.getInventory().getStackInSlot(this.crafter.getOutputs()[i]).isEmpty())
-                        this.getInventory().getStackInSlot(this.crafter.getOutputs()[i]).grow(
-                                stack.getRawIngredient().getCount());
+                    if (!this.getInventory().getStackInSlot(this.crafter.getInputs() * 2 + i).isEmpty())
+                        this.getInventory().getStackInSlot(this.crafter.getInputs() * 2 + i).grow(
+                                stack.getRaw().getCount());
                     else
-                        this.getInventory().setInventorySlotContents(this.crafter.getOutputs()[i],
-                                stack.getRawIngredient().copy());
+                        this.getInventory().setStackInSlot(this.crafter.getInputs() * 2 + i, stack.getRaw().copy());
                     i++;
                 }
                 i = 0;
                 for (final RecipeIngredient<FluidStack> stack : this.currentRecipe.getRecipeOutputs(FluidStack.class))
                 {
-                    this.outputTanks.get(i).fillInternal(stack.getRawIngredient(), true);
+                    this.outputTanks.get(i).fillInternal(stack.getRaw(), true);
                     i++;
                 }
                 this.setCurrentRecipe(null);
@@ -337,5 +350,40 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
     private FluidStack getInputFluidStack(int index)
     {
         return this.inputTanks.get(index).getFluid();
+    }
+
+
+    ///////////////
+    // INVENTORY //
+    ///////////////
+
+    public boolean isBufferEmpty()
+    {
+        for (int slot = 0; slot < this.crafter.getInputs(); slot++)
+        {
+            if (!this.getInventory().getStackInSlot(this.crafter.getInputs() + slot).isEmpty())
+                return false;
+        }
+        return true;
+    }
+
+    public boolean isInputEmpty()
+    {
+        for (int i = 0; i < this.crafter.getInputs(); i++)
+        {
+            if (!this.getInventory().getStackInSlot(i).isEmpty())
+                return false;
+        }
+        return true;
+    }
+
+    public boolean isOutputEmpty()
+    {
+        for (int i = 0; i < this.crafter.getOutputs(); i++)
+        {
+            if (!this.getInventory().getStackInSlot(this.crafter.getInputs() * 2 + i).isEmpty())
+                return false;
+        }
+        return true;
     }
 }

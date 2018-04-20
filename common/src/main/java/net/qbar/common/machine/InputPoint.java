@@ -7,5 +7,6 @@ import net.qbar.common.multiblock.MultiblockSide;
 public class InputPoint
 {
     private MultiblockSide side;
-    private Integer[]      slots;
+    private int[]      slots;
+    private String         inventory;
 }

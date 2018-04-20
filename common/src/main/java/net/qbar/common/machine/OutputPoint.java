@@ -7,6 +7,7 @@ import net.qbar.common.multiblock.MultiblockSide;
 public class OutputPoint
 {
     private MultiblockSide side;
-    private Integer[]      slots;
+    private int[]      slots;
     private boolean        roundRobin;
+    private String         inventory;
 }

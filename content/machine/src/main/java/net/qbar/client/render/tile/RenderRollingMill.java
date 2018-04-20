@@ -4,7 +4,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.client.render.RenderUtil;
-import net.qbar.common.machine.module.impl.CraftingInventoryModule;
+import net.qbar.common.inventory.InventoryHandler;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.impl.CraftingModule;
 import net.qbar.common.tile.machine.TileRollingMill;
 
@@ -37,7 +38,7 @@ public class RenderRollingMill extends FastTESR<TileRollingMill>
         }
 
         CraftingModule crafter = tile.getModule(CraftingModule.class);
-        CraftingInventoryModule inventory = tile.getModule(CraftingInventoryModule.class);
+        InventoryHandler inventory = tile.getModule(InventoryModule.class).getInventory("crafting");
 
         if (!inventory.getStackInSlot(0).isEmpty())
             RenderUtil.handleRenderItem(inventory.getStackInSlot(0), true);

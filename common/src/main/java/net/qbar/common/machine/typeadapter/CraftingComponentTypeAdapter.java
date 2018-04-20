@@ -6,7 +6,6 @@ import com.google.gson.stream.JsonWriter;
 import net.qbar.common.QBarConstants;
 import net.qbar.common.machine.component.CraftingComponent;
 import net.qbar.common.recipe.QBarRecipeHandler;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,11 +55,10 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
                     component.setCraftingSpeed((float) in.nextDouble());
                     break;
                 case "itemInput":
-                    component.setInputs(new int[in.nextInt()]);
-                    component.setBuffers(new int[component.getInputs().length]);
+                    component.setInputs(in.nextInt());
                     break;
                 case "itemOutput":
-                    component.setOutputs(new int[in.nextInt()]);
+                    component.setOutputs(in.nextInt());
                     break;
                 case "tankInput":
                     in.beginArray();
@@ -90,20 +88,10 @@ public class CraftingComponentTypeAdapter extends TypeAdapter<CraftingComponent>
         }
         in.endObject();
 
-        for (int i = 0; i < component.getInputs().length; i++)
-        {
-            component.getInputs()[i] = i;
-            component.getBuffers()[i] = i + component.getInputs().length + component.getOutputs().length;
-        }
-        for (int i = 0; i < component.getOutputs().length; i++)
-            component.getOutputs()[i] = i + component.getInputs().length;
-        component.setIoUnion(ArrayUtils.addAll(component.getInputs(), component.getOutputs()));
-
         if (inventorySize != 0)
             component.setInventorySize(inventorySize);
         else
-            component.setInventorySize(component.getInputs().length +
-                    component.getOutputs().length + component.getBuffers().length);
+            component.setInventorySize(component.getInputs() * 2 + component.getOutputs());
 
         if (component.getInputTanks() == null)
             component.setInputTanks(new String[0]);

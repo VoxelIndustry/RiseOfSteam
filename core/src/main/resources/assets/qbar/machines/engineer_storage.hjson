@@ -2,24 +2,20 @@
     tier: 0
     type: UTILITY
     components: {
-        multiblock: {
-            width: 1
-            height: 2
-            length: 1
-        }
         automation: {
             outputs: [
                 {
                     pos: [0, 0, 0]
-                    facing: DOWN
-                    slots: [0]
+                    facing: ["NORTH", "EAST", "SOUTH", "WEST", "UP", "DOWN"]
+                    slots: 0..31
+                    order: balanced
                 }
             ]
             inputs: [
                 {
                     pos: [0, 0, 0]
-                    facing: NORTH
-                    slots: [0]
+                    facing: ["NORTH", "EAST", "SOUTH", "WEST", "UP", "DOWN"]
+                    slots: 0..31
                 }
             ]
         }

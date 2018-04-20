@@ -30,7 +30,7 @@ public class SteamStackRecipeIngredient extends RecipeIngredient<SteamStack>
     }
 
     @Override
-    public SteamStack getRawIngredient()
+    public SteamStack getRaw()
     {
         return this.ingredient;
     }

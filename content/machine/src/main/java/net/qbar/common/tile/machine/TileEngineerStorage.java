@@ -4,47 +4,48 @@ import com.google.common.collect.LinkedListMultimap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.container.BuiltContainer;
 import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.node.ITileWorkshop;
 import net.qbar.common.grid.WorkshopMachine;
+import net.qbar.common.grid.node.ITileWorkshop;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.InventoryModule;
+import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.ClientActionBuilder;
 import net.qbar.common.network.action.IActionReceiver;
-import net.qbar.common.tile.TileInventoryBase;
 
-import javax.annotation.Nullable;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.stream.IntStream;
 
-public class TileEngineerStorage extends TileInventoryBase implements IContainerProvider, ISidedInventory,
-        ITileWorkshop, IActionReceiver
+public class TileEngineerStorage extends TileModularMachine
+        implements IContainerProvider, ITileWorkshop, IActionReceiver
 {
-    private final EnumMap<EnumFacing, SidedInvWrapper> inventoryWrapperCache;
     @Getter
     private final LinkedListMultimap<BlockPos, ITileWorkshop> connectionsMap = LinkedListMultimap.create();
     @Getter
     @Setter
-    private int grid;
+    private       int                                         grid;
 
     public TileEngineerStorage()
     {
-        super("engineerstorage", 32);
+        super(QBarMachines.ENGINEER_STORAGE);
 
-        this.inventoryWrapperCache = new EnumMap<>(EnumFacing.class);
         this.grid = -1;
+    }
+
+    @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new InventoryModule(this, 32));
+        this.addModule(new IOModule(this));
     }
 
     private void reloadWorkbench()
@@ -78,58 +79,16 @@ public class TileEngineerStorage extends TileInventoryBase implements IContainer
     }
 
     @Override
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return IntStream.range(0, 32).toArray();
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
-    {
-        return index >= 0 && index <= 31;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        return index >= 0 && index <= 31;
-    }
-
-    @Override
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("engineerstorage", player)
-                .player(player.inventory).inventory(19, 84).hotbar(19, 142)
-                .addInventory().tile(this)
+                .player(player).inventory(19, 84).hotbar(19, 142)
+                .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .slotLine(0, 27, 8, 8, EnumFacing.Axis.X)
                 .slotLine(8, 27, 26, 8, EnumFacing.Axis.X)
                 .slotLine(16, 27, 44, 8, EnumFacing.Axis.X)
                 .slotLine(24, 27, 62, 8, EnumFacing.Axis.X)
                 .addInventory().create();
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return true;
-        return super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-    {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return (T) this.getInventoryWrapper(facing);
-        return super.getCapability(capability, facing);
-    }
-
-    protected SidedInvWrapper getInventoryWrapper(EnumFacing side)
-    {
-        if (!this.inventoryWrapperCache.containsKey(side))
-            this.inventoryWrapperCache.put(side, new SidedInvWrapper(this, side));
-        return this.inventoryWrapperCache.get(side);
     }
 
     @Override

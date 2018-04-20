@@ -8,7 +8,9 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.ItemStackHandler;
 import net.qbar.common.container.sync.SyncableProperty;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.network.ContainerUpdatePacket;
 import org.apache.commons.lang3.Range;
 
@@ -31,9 +33,9 @@ public class BuiltContainer extends Container
     private List<SyncableProperty<?>>         syncablesValues;
     private List<Consumer<InventoryCrafting>> craftEvents;
 
-    private final List<IInventory> inventories;
+    private final List<ItemStackHandler> inventories;
 
-    BuiltContainer(String name, EntityPlayer player, List<IInventory> inventories,
+    BuiltContainer(String name, EntityPlayer player, List<ItemStackHandler> inventories,
                    Predicate<EntityPlayer> canInteract, List<Range<Integer>> playerSlotRange,
                    List<Range<Integer>> tileSlotRange)
     {
@@ -49,8 +51,8 @@ public class BuiltContainer extends Container
 
         this.inventories.forEach(inventory ->
         {
-            if (inventory != null)
-                inventory.openInventory(player);
+            if (inventory instanceof InventoryHandler)
+                ((InventoryHandler) inventory).openInventory(player);
         });
     }
 
@@ -246,8 +248,8 @@ public class BuiltContainer extends Container
         super.onContainerClosed(player);
         this.inventories.forEach(inventory ->
         {
-            if (inventory != null)
-                inventory.closeInventory(player);
+            if (inventory instanceof InventoryHandler)
+                ((InventoryHandler) inventory).closeInventory(player);
         });
     }
 }

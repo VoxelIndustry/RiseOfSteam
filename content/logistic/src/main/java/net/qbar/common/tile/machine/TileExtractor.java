@@ -1,6 +1,8 @@
 package net.qbar.common.tile.machine;
 
 import fr.ourten.teabeans.value.BaseProperty;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,31 +21,37 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
+import net.qbar.common.machine.QBarMachines;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.network.action.ActionSender;
 import net.qbar.common.network.action.IActionReceiver;
-import net.qbar.common.tile.TileInventoryBase;
 import net.qbar.common.util.ItemUtils;
 
 import java.util.List;
 
-public class TileExtractor extends TileInventoryBase implements IContainerProvider, ITickable, IActionReceiver
+public class TileExtractor extends TileModularMachine implements IContainerProvider, ITickable, IActionReceiver
 {
+    @Getter
+    @Setter
     private EnumFacing facing;
 
+    @Setter
     private       boolean               hasFilter;
+    @Getter
     private final BaseProperty<Boolean> whitelistProperty;
 
+    @Getter
     private FilterCard filter;
-    private ItemStack cached = ItemStack.EMPTY;
+    private ItemStack  cached = ItemStack.EMPTY;
 
     public TileExtractor(final boolean hasFilter)
     {
-        super("itemextractor", 1);
+        super(QBarMachines.ITEM_EXTRACTOR);
 
         this.facing = EnumFacing.UP;
 
         this.hasFilter = hasFilter;
-
         this.whitelistProperty = new BaseProperty<>(true, "whitelistProperty");
     }
 
@@ -53,17 +61,27 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
     }
 
     @Override
+    protected void reloadModules()
+    {
+        super.reloadModules();
+
+        this.addModule(new InventoryModule(this, 1));
+    }
+
+    @Override
     public void update()
     {
-        if (this.hasFilter() && !ItemUtils.deepEquals(this.cached, this.getStackInSlot(0)))
+        InventoryHandler inventory = this.getModule(InventoryModule.class).getInventory("basic");
+
+        if (this.hasFilter() && !ItemUtils.deepEquals(this.cached, inventory.getStackInSlot(0)))
         {
             final boolean had = this.filter == null;
             this.filter = null;
-            this.cached = this.getStackInSlot(0).copy();
+            this.cached = inventory.getStackInSlot(0).copy();
             if (this.cached.hasTagCompound())
             {
                 final IPunchedCard card = CardDataStorage.instance()
-                        .read(this.getStackInSlot(0).getTagCompound());
+                        .read(inventory.getStackInSlot(0).getTagCompound());
                 if (card.getID() == ECardType.FILTER.getID())
                     this.filter = (FilterCard) card;
             }
@@ -182,21 +200,11 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("itemextractor", player).player(player.inventory).inventory(8, 95).hotbar(8, 153)
-                .addInventory().tile(this)
-                .filterSlot(0, 80, 73, stack -> !stack.isEmpty() && stack.getItem().equals(QBarItems.PUNCHED_CARD))
+        return new ContainerBuilder("itemextractor", player).player(player).inventory(8, 95).hotbar(8, 153)
+                .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .filterSlot(0, 80, 73, stack -> stack.getItem().equals(QBarItems.PUNCHED_CARD))
                 .syncBooleanValue(this.getWhitelistProperty()::getValue, this.getWhitelistProperty()::setValue)
                 .addInventory().create();
-    }
-
-    public void setFacing(final EnumFacing facing)
-    {
-        this.facing = facing;
-    }
-
-    public EnumFacing getFacing()
-    {
-        return this.facing;
     }
 
     @Override
@@ -204,21 +212,6 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
     {
         if (this.isClient())
             this.forceSync();
-    }
-
-    public boolean hasFilter()
-    {
-        return this.hasFilter;
-    }
-
-    public void setHasFilter(final boolean hasFilter)
-    {
-        this.hasFilter = hasFilter;
-    }
-
-    public BaseProperty<Boolean> getWhitelistProperty()
-    {
-        return this.whitelistProperty;
     }
 
     public boolean isWhitelist(final EnumFacing facing)
@@ -231,9 +224,9 @@ public class TileExtractor extends TileInventoryBase implements IContainerProvid
         this.getWhitelistProperty().setValue(isWhitelist);
     }
 
-    public FilterCard getFilter(final EnumFacing facing)
+    public boolean hasFilter()
     {
-        return this.filter;
+        return this.hasFilter;
     }
 
     ////////////

@@ -4,33 +4,40 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.qbar.common.grid.node.IBelt;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.machine.OutputPoint;
 import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.module.IModularMachine;
 import net.qbar.common.machine.module.ITickableModule;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.MachineModule;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class AutomationModule extends MachineModule implements ITickableModule
 {
     private final HashMap<OutputPoint, Integer> lastOutput;
 
-    private final CraftingInventoryModule inventory;
-
-    private final SidedInvWrapper outputWrapper;
+    private final Map<OutputPoint, InventoryHandler> outputWrappers;
 
     public AutomationModule(IModularMachine machine)
     {
         super(machine, "AutomationModule");
 
         this.lastOutput = new HashMap<>();
-        this.inventory = machine.getModule(CraftingInventoryModule.class);
-        this.outputWrapper = new SidedInvWrapper(this.inventory, EnumFacing.NORTH);
+        this.outputWrappers = new HashMap<>();
+
+        for (OutputPoint point : getMachine().getDescriptor().get(AutomationComponent.class).getOutputs())
+        {
+            String inventoryName = "undefined".equals(point.getInventory()) ?
+                    (machine.hasModule(CraftingModule.class) ? "crafting" : "basic") : point.getInventory();
+
+            this.outputWrappers.put(point, machine.getModule(InventoryModule.class).getInventory(inventoryName));
+        }
     }
 
     @Override
@@ -47,6 +54,7 @@ public class AutomationModule extends MachineModule implements ITickableModule
             BlockPos computedPos = this.getMachineTile().getPos().add(side.getPos());
             if (this.hasBelt(this.getMachineTile().getWorld(), computedPos))
             {
+                InventoryHandler inventory = this.outputWrappers.get(point);
                 int slot;
 
                 if (point.getSlots().length > 1)
@@ -57,7 +65,7 @@ public class AutomationModule extends MachineModule implements ITickableModule
                         slot = this.getFirstFullSlot(point);
                 }
                 else
-                    slot = inventory.getOutputSlots()[point.getSlots()[0]];
+                    slot = point.getSlots()[0];
 
                 if (slot == -1)
                     continue;
@@ -66,10 +74,7 @@ public class AutomationModule extends MachineModule implements ITickableModule
                 IBelt belt = (IBelt) this.getMachineTile().getWorld().getTileEntity(computedPos);
 
                 if (this.canInsert(belt, toTransfer, side.getFacing()))
-                {
-                    this.insert(belt,
-                            this.outputWrapper.extractItem(slot, 1, false), side.getFacing());
-                }
+                    this.insert(belt, inventory.extractItem(slot, 1, false), side.getFacing());
             }
         }
         this.getMachineTile().sync();
@@ -106,7 +111,7 @@ public class AutomationModule extends MachineModule implements ITickableModule
     {
         for (int slot : point.getSlots())
         {
-            if (!inventory.getStackInSlot(inventory.getOutputSlots()[slot]).isEmpty())
+            if (!outputWrappers.get(point).getStackInSlot(slot).isEmpty())
                 return true;
         }
         return false;
@@ -124,10 +129,11 @@ public class AutomationModule extends MachineModule implements ITickableModule
 
         while (start < point.getSlots().length)
         {
-            if (!inventory.getStackInSlot(inventory.getOutputSlots()[point.getSlots()[start]]).isEmpty())
+            InventoryHandler inventory = outputWrappers.get(point);
+            if (!inventory.getStackInSlot(point.getSlots()[start]).isEmpty())
             {
                 this.lastOutput.put(point, start);
-                return inventory.getOutputSlots()[point.getSlots()[start]];
+                return point.getSlots()[start];
             }
             start++;
 
@@ -141,8 +147,8 @@ public class AutomationModule extends MachineModule implements ITickableModule
     {
         for (int slot : point.getSlots())
         {
-            if (!inventory.getStackInSlot(inventory.getOutputSlots()[slot]).isEmpty())
-                return inventory.getOutputSlots()[slot];
+            if (!outputWrappers.get(point).getStackInSlot(slot).isEmpty())
+                return slot;
         }
         return -1;
     }

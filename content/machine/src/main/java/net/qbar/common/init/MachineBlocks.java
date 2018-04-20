@@ -19,8 +19,8 @@ public class MachineBlocks
         QBarBlocks.registerBlock(new BlockTank("fluidtank_medium", 1));
         QBarBlocks.registerBlock(new BlockTank("fluidtank_big", 2));
         QBarBlocks.registerBlock(new BlockSolidBoiler());
-       /* QBarBlocks.registerBlock(
-                new BlockMultiblockMachine<>("assembler", Material.IRON, TileAssembler::new, TileAssembler.class));*/
+        QBarBlocks.registerBlock(
+                new BlockMultiModularMachine<>("assembler", Material.IRON, TileAssembler::new, TileAssembler.class));
         QBarBlocks.registerBlock(new BlockCreativeSteamGenerator());
         QBarBlocks.registerBlock(new BlockCreativeWaterGenerator());
         QBarBlocks.registerBlock(new BlockStructure());
@@ -41,9 +41,9 @@ public class MachineBlocks
                 TileSortingMachine::new, TileSortingMachine.class));
         QBarBlocks.registerBlock(new BlockMultiModularMachine<>("smallminingdrill", Material.IRON,
                 TileSmallMiningDrill::new, TileSmallMiningDrill.class));
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("tinyminingdrill", Material.IRON,
+        QBarBlocks.registerBlock(new BlockMultiModularMachine<>("tinyminingdrill", Material.IRON,
                 TileTinyMiningDrill::new, TileTinyMiningDrill.class));
-        QBarBlocks.registerBlock(new BlockMultiblockMachine<>("alloycauldron", Material.IRON, TileAlloyCauldron::new,
+        QBarBlocks.registerBlock(new BlockMultiModularMachine<>("alloycauldron", Material.IRON, TileAlloyCauldron::new,
                 TileAlloyCauldron.class));
         QBarBlocks.registerBlock(new BlockMultiModularMachine<>("capsulefiller", Material.IRON, TileCapsuleFiller::new,
                 TileCapsuleFiller.class));

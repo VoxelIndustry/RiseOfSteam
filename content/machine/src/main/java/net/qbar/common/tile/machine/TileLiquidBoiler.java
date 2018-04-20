@@ -19,7 +19,7 @@ import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.impl.FluidStorageModule;
 import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.machine.module.impl.SteamModule;
@@ -56,7 +56,7 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
     {
         super.reloadModules();
 
-        this.addModule(new BasicInventoryModule(this, 0));
+        this.addModule(new InventoryModule(this, 0));
         this.addModule(new SteamModule(this, SteamUtil::createTank));
         this.addModule(new FluidStorageModule(this)
                 .addFilter("water", FluidUtils.WATER_FILTER)
@@ -104,7 +104,7 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
                 toConsume = Math.min((int) pendingFuel, fuelTank.getFluidAmount());
 
                 boiler.addHeat(
-                        recipe.getRecipeOutputs(SteamStack.class).get(0).getRawIngredient().getAmount() * toConsume);
+                        recipe.getRecipeOutputs(SteamStack.class).get(0).getRaw().getAmount() * toConsume);
                 fuelTank.drain((int) toConsume, true);
                 this.pendingFuel -= toConsume;
             }
@@ -157,8 +157,8 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
         SteamBoilerModule boiler = this.getModule(SteamBoilerModule.class);
         FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
 
-        return new ContainerBuilder("liquidboiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this.getModule(BasicInventoryModule.class))
+        return new ContainerBuilder("liquidboiler", player).player(player).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .syncFloatValue(boiler::getCurrentHeat, boiler::setCurrentHeat)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)

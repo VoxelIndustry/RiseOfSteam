@@ -36,5 +36,30 @@
             itemInput: 1
             itemOutput: 1
         }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, 2]
+                    facing: NORTH
+                    slots: 11..20
+                    order: balanced
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 1, 0]
+                    facing: NORTH
+                    slots: 1..10
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 1]
+                    facing: EAST
+                }
+            ]
+        }
     }
 }

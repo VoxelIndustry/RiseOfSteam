@@ -15,8 +15,9 @@ import net.qbar.common.container.ContainerBuilder;
 import net.qbar.common.container.IContainerProvider;
 import net.qbar.common.gui.MachineGui;
 import net.qbar.common.init.QBarItems;
+import net.qbar.common.inventory.InventoryHandler;
 import net.qbar.common.machine.QBarMachines;
-import net.qbar.common.machine.module.impl.BasicInventoryModule;
+import net.qbar.common.machine.module.InventoryModule;
 import net.qbar.common.machine.module.impl.FluidStorageModule;
 import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.machine.module.impl.SteamModule;
@@ -41,7 +42,7 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
     {
         super.reloadModules();
 
-        this.addModule(new BasicInventoryModule(this, 1));
+        this.addModule(new InventoryModule(this, 1));
         this.addModule(new SteamModule(this, SteamUtil::createTank));
         this.addModule(new FluidStorageModule(this)
                 .addFilter("water", FluidUtils.WATER_FILTER));
@@ -62,12 +63,12 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
         if (this.isClient())
             return;
 
-        BasicInventoryModule inventory = this.getModule(BasicInventoryModule.class);
+        InventoryHandler inventory = this.getModule(InventoryModule.class).getInventory("basic");
         if (this.maxBurnTime == 0 && !inventory.getStackInSlot(0).isEmpty())
         {
             this.maxBurnTime = TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0)) / 2;
             if (this.maxBurnTime != 0)
-                inventory.decrStackSize(0, 1);
+                inventory.extractItem(0, 1, false);
         }
         if (this.currentBurnTime < this.maxBurnTime)
         {
@@ -108,8 +109,8 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
         SteamBoilerModule boiler = this.getModule(SteamBoilerModule.class);
         FluidStorageModule fluidStorage = this.getModule(FluidStorageModule.class);
 
-        return new ContainerBuilder("solidboiler", player).player(player.inventory).inventory(8, 84).hotbar(8, 142)
-                .addInventory().tile(this.getModule(BasicInventoryModule.class))
+        return new ContainerBuilder("solidboiler", player).player(player).inventory(8, 84).hotbar(8, 142)
+                .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .fuelSlot(0, 80, 43)
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
