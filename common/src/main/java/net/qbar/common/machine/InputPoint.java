@@ -7,6 +7,8 @@ import net.qbar.common.multiblock.MultiblockSide;
 public class InputPoint
 {
     private MultiblockSide side;
-    private int[]      slots;
+    private int[]          slots;
     private String         inventory;
+    // Used for belt placement preview
+    private String         connText;
 }

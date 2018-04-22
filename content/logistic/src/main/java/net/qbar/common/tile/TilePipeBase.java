@@ -8,9 +8,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.qbar.client.render.model.obj.PipeOBJStates;
 import net.qbar.client.render.model.obj.QBarOBJState;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.*;
+import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.IConnectionAware;
 import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.node.ITileCable;
 import net.qbar.common.grid.node.ITileNode;
@@ -21,7 +23,7 @@ import java.util.Map.Entry;
 
 public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
-    protected final EnumSet<EnumFacing> renderConnections;
+    protected final EnumSet<EnumFacing>                renderConnections;
     @Getter
     protected final EnumMap<EnumFacing, ITileCable<G>> connectionsMap;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;
@@ -184,100 +186,9 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     // RENDER //
     ////////////
 
-    private static final HashMap<String, QBarOBJState> variants = new HashMap<>();
-
     public QBarOBJState getVisibilityState()
     {
-        String key = this.getVariantKey();
-
-        if (!this.variants.containsKey(key))
-            this.variants.put(key, buildVisibilityState());
-        return this.variants.get(key);
-    }
-
-    public String getVariantKey()
-    {
-        StringBuilder rtn = new StringBuilder(12);
-
-        if (this.isConnected(EnumFacing.EAST))
-            rtn.append("x+");
-        if (this.isConnected(EnumFacing.WEST))
-            rtn.append("x-");
-        if (this.isConnected(EnumFacing.UP))
-            rtn.append("y+");
-        if (this.isConnected(EnumFacing.DOWN))
-            rtn.append("y-");
-        if (this.isConnected(EnumFacing.SOUTH))
-            rtn.append("z+");
-        if (this.isConnected(EnumFacing.NORTH))
-            rtn.append("z-");
-        return rtn.toString();
-    }
-
-    private QBarOBJState buildVisibilityState()
-    {
-        List<String> parts = new ArrayList<>();
-
-        if (this.renderConnections.isEmpty())
-        {
-            parts.add("armx1");
-            parts.add("armx2");
-            parts.add("army1");
-            parts.add("army2");
-            parts.add("armz1");
-            parts.add("armz2");
-            parts.add("straightx");
-            parts.add("straighty");
-            parts.add("straightz");
-        }
-        else if (this.isStraight())
-        {
-            parts.add("center");
-            parts.add("armx1");
-            parts.add("armx2");
-
-            parts.add("army1");
-            parts.add("army2");
-
-            parts.add("armz1");
-            parts.add("armz2");
-
-            if (this.isConnected(EnumFacing.WEST))
-            {
-                parts.add("straighty");
-                parts.add("straightz");
-            }
-            else if (this.isConnected(EnumFacing.NORTH))
-            {
-                parts.add("straighty");
-                parts.add("straightx");
-            }
-            else if (this.isConnected(EnumFacing.UP))
-            {
-                parts.add("straightx");
-                parts.add("straightz");
-            }
-        }
-        else
-        {
-            parts.add("straightx");
-            parts.add("straighty");
-            parts.add("straightz");
-
-            if (!this.isConnected(EnumFacing.UP))
-                parts.add("army1");
-            if (!this.isConnected(EnumFacing.DOWN))
-                parts.add("army2");
-            if (!this.isConnected(EnumFacing.NORTH))
-                parts.add("armz1");
-            if (!this.isConnected(EnumFacing.SOUTH))
-                parts.add("armz2");
-            if (!this.isConnected(EnumFacing.EAST))
-                parts.add("armx1");
-            if (!this.isConnected(EnumFacing.WEST))
-                parts.add("armx2");
-        }
-        return new QBarOBJState(parts, false);
+        return PipeOBJStates.getVisibilityState(this.renderConnections.toArray(new EnumFacing[0]));
     }
 
     public void updateState()
@@ -289,15 +200,6 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         }
 
         this.world.markBlockRangeForRenderUpdate(this.getPos(), this.getPos());
-    }
-
-    public boolean isStraight()
-    {
-        if (this.renderConnections.size() == 2)
-            return this.isConnected(EnumFacing.NORTH) && this.isConnected(EnumFacing.SOUTH)
-                    || this.isConnected(EnumFacing.WEST) && this.isConnected(EnumFacing.EAST)
-                    || this.isConnected(EnumFacing.UP) && this.isConnected(EnumFacing.DOWN);
-        return false;
     }
 
     public boolean isConnected(final EnumFacing facing)

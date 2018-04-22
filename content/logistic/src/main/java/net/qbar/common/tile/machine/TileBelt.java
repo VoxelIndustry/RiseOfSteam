@@ -9,16 +9,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.client.render.model.obj.QBarOBJState;
-import net.qbar.common.block.BlockBelt.EBeltSlope;
+import net.qbar.common.block.property.BeltSlope;
 import net.qbar.common.event.TickHandler;
-import net.qbar.common.grid.*;
+import net.qbar.common.grid.GridManager;
+import net.qbar.common.grid.IConnectionAware;
+import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.grid.impl.BeltGrid;
 import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.node.IBelt;
 import net.qbar.common.grid.node.ITileCable;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.ISteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamUtil;
 import net.qbar.common.tile.ILoadable;
 import net.qbar.common.tile.QBarTileBase;
@@ -47,7 +49,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
 
     private final EnumMap<EnumFacing, ISteamHandler> steamConnections;
 
-    private EBeltSlope slopeState;
+    private BeltSlope slopeState;
 
     private long lastWorkStateChange;
 
@@ -62,7 +64,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
 
         this.items = new ItemBelt[3];
 
-        this.slopeState = EBeltSlope.NORMAL;
+        this.slopeState = BeltSlope.NORMAL;
     }
 
     public TileBelt()
@@ -135,7 +137,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
 
         this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
         this.beltSpeed = tag.getFloat("beltSpeed");
-        this.slopeState = EBeltSlope.values()[tag.getInteger("isSlope")];
+        this.slopeState = BeltSlope.values()[tag.getInteger("isSlope")];
 
         for (int i = 0; i < 3; i++)
         {
@@ -288,9 +290,9 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     @Override
     public BlockPos getAdjacentPos(final EnumFacing facing)
     {
-        if (this.slopeState.equals(EBeltSlope.DOWN) && facing == this.getFacing())
+        if (this.slopeState.equals(BeltSlope.DOWN) && facing == this.getFacing())
             return this.getBlockPos().down().offset(facing);
-        else if (this.slopeState.equals(EBeltSlope.UP) && facing == this.getFacing().getOpposite())
+        else if (this.slopeState.equals(BeltSlope.UP) && facing == this.getFacing().getOpposite())
             return this.getBlockPos().down().offset(facing);
         return this.getBlockPos().offset(facing);
     }
@@ -351,12 +353,12 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         return this.slopeState.isSlope();
     }
 
-    public EBeltSlope getSlopeState()
+    public BeltSlope getSlopeState()
     {
         return this.slopeState;
     }
 
-    public void setSlope(final EBeltSlope slope)
+    public void setSlope(final BeltSlope slope)
     {
         this.slopeState = slope;
     }

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RenderStructureOverlay
 {
-    public static final void renderStructureOverlay(final EntityPlayer player, final BlockPos pos,
+    public static void renderStructureOverlay(final EntityPlayer player, final BlockPos pos,
             final float partialTicks)
     {
         final TileEntity tile = player.getEntityWorld().getTileEntity(pos);

@@ -12,12 +12,15 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.qbar.client.render.model.FlattenedModelCache;
 import net.qbar.client.render.tile.VisibilityModelState;
 import net.qbar.common.multiblock.BlockMultiblockBase;
 import org.lwjgl.opengl.GL11;
+import org.yggard.brokkgui.paint.Color;
 
 import java.util.List;
 
@@ -128,7 +131,7 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    private static void renderQuads(final List<BakedQuad> quads, final int alpha)
+    public static void renderQuads(final List<BakedQuad> quads, final int alpha)
     {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder buffer = tessellator.getBuffer();
@@ -159,5 +162,51 @@ public class RenderUtil
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+    }
+
+    public static void renderTexOnSide(double x, double y, double z, double width, double height, double offset,
+                                       EnumFacing facing, ResourceLocation tex)
+    {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translate(x, y, z);
+
+        GlStateManager.rotate(180 - facing.getHorizontalAngle(), 0, 1, 0);
+
+        if (facing.getAxis().isVertical())
+            GlStateManager.rotate(facing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 90 : -90, 1, 0, 0);
+
+        Tessellator t = Tessellator.getInstance();
+        BufferBuilder buffer = t.getBuffer();
+        buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        buffer.pos(width / 2, -height / 2, offset).tex(1, 0).endVertex();
+        buffer.pos(-width / 2, -height / 2, offset).tex(0, 0).endVertex();
+        buffer.pos(-width / 2, height / 2, offset).tex(0, 1).endVertex();
+        buffer.pos(width / 2, height / 2, offset).tex(1, 1).endVertex();
+        t.draw();
+
+        GlStateManager.popMatrix();
+    }
+
+    public static void renderTextOnSide(double x, double y, double z, double scale, double offset,
+                                        EnumFacing facing, String text, Color color)
+    {
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translate(x, y, z);
+
+        GlStateManager.rotate(180 - facing.getHorizontalAngle(), 0, 1, 0);
+        GlStateManager.rotate(180, 0, 0, 1);
+        if (facing.getAxis().isVertical())
+            GlStateManager.rotate(facing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 90 : -90, 1, 0, 0);
+
+        GlStateManager.translate(0, 0, offset);
+        GlStateManager.scale(scale, scale, scale);
+        Minecraft.getMinecraft().fontRenderer.drawString(text,
+                -Minecraft.getMinecraft().fontRenderer.getStringWidth(text) / 2, 0, color.toRGBInt());
+
+        GlStateManager.popMatrix();
     }
 }

@@ -10,4 +10,6 @@ public class OutputPoint
     private int[]      slots;
     private boolean        roundRobin;
     private String         inventory;
+    // Used for belt placement preview
+    private String         connText;
 }

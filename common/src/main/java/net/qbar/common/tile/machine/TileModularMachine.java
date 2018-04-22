@@ -108,13 +108,14 @@ public class TileModularMachine extends QBarTileBase implements IModularMachine,
 
     public boolean hasCapability(Capability<?> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        return this.hasModule(IOModule.class) && this.getModule(IOModule.class).hasCapability(capability, from, facing);
+        return this.hasModule(IOModule.class) && this.getDescriptor() != null &&
+                this.getModule(IOModule.class).hasCapability(capability, from, facing);
     }
 
     @Nullable
     public <T> T getCapability(Capability<T> capability, BlockPos from, @Nullable EnumFacing facing)
     {
-        if (this.hasModule(IOModule.class))
+        if (this.hasModule(IOModule.class) && this.getDescriptor() != null)
         {
             T result = this.getModule(IOModule.class).getCapability(capability, from, facing);
             if (result != null)

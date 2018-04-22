@@ -104,6 +104,10 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
                     break;
                 case "inventory":
                     outputPoint.setInventory(in.nextString());
+                    break;
+                case "connText":
+                    outputPoint.setConnText(in.nextString());
+                    break;
                 default:
                     if (sideParser.isKey(key))
                         sideParser.parse(key, in);
@@ -117,6 +121,7 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
             copy.setInventory(outputPoint.getInventory());
             copy.setSlots(outputPoint.getSlots());
             copy.setRoundRobin(outputPoint.isRoundRobin());
+            copy.setConnText(outputPoint.getConnText());
             copy.setSide(side);
 
             return copy;
@@ -156,6 +161,10 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
                     break;
                 case "inventory":
                     inputPoint.setInventory(in.nextString());
+                    break;
+                case "connText":
+                    inputPoint.setConnText(in.nextString());
+                    break;
                 default:
                     if (sideParser.isKey(key))
                         sideParser.parse(key, in);
@@ -168,6 +177,7 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
             InputPoint copy = new InputPoint();
             copy.setInventory(inputPoint.getInventory());
             copy.setSlots(inputPoint.getSlots());
+            copy.setConnText(inputPoint.getConnText());
             copy.setSide(side);
 
             return copy;

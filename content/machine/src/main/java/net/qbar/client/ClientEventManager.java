@@ -3,6 +3,7 @@ package net.qbar.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -10,7 +11,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.qbar.client.render.RenderIOOverlay;
 import net.qbar.client.render.RenderStructureOverlay;
 import net.qbar.client.render.RenderUtil;
 import net.qbar.common.init.QBarBlocks;
@@ -21,9 +24,28 @@ import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.blueprint.Blueprint;
 import net.qbar.common.util.ItemUtils;
 
+import java.util.concurrent.ExecutionException;
+
 public class ClientEventManager
 {
     private final BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+    @SubscribeEvent
+    public void onRenderWorldLast(RenderWorldLastEvent e)
+    {
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        double playerX = player.prevPosX + (player.posX - player.prevPosX) * e.getPartialTicks();
+        double playerY = player.prevPosY + (player.posY - player.prevPosY) * e.getPartialTicks();
+        double playerZ = player.prevPosZ + (player.posZ - player.prevPosZ) * e.getPartialTicks();
+
+        try
+        {
+            RenderIOOverlay.renderIO(player, playerX, playerY, playerZ, e.getPartialTicks());
+        } catch (ExecutionException e1)
+        {
+            e1.printStackTrace();
+        }
+    }
 
     @SubscribeEvent
     public void onDrawblockHightlight(final DrawBlockHighlightEvent e)

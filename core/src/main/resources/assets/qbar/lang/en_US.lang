@@ -203,3 +203,13 @@ tile.oresand.tin_sand.name=Tin Sand
 tile.orestone.gold_rock.name=Gold Bearing Rock
 tile.energizedtallgrass.tall_grass.name=Energized Tall Grass
 tile.energizedtallgrass.fern.name=Energized Fern
+
+#Conn labels
+conn.water.name=Water
+conn.fuel.name=Fuel
+conn.washer.name=Washing Fluid
+conn.fluid.name=Fluid
+
+conn.washer.oresinput.name=Sludge
+conn.washer.oresoutput.name=Raw Ores
+conn.washer.junkoutput.name=Random Wastes

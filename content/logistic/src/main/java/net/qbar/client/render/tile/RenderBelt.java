@@ -8,7 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.animation.FastTESR;
 import net.qbar.client.render.RenderUtil;
-import net.qbar.common.block.BlockBelt.EBeltSlope;
+import net.qbar.common.block.property.BeltSlope;
 import net.qbar.common.grid.ItemBelt;
 import net.qbar.common.tile.machine.TileBelt;
 import org.lwjgl.opengl.GL11;
@@ -57,7 +57,7 @@ public class RenderBelt extends FastTESR<TileBelt>
         GlStateManager.translate(0, 1.438, 0);
         if (belt.isSlope())
         {
-            if (belt.getSlopeState().equals(EBeltSlope.DOWN))
+            if (belt.getSlopeState().equals(BeltSlope.DOWN))
             {
                 GL11.glRotated(-45, 0, 0, 1);
                 GlStateManager.translate(5 / 16F, 2 / 16F, 0);
