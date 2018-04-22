@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -29,6 +30,7 @@ import net.qbar.common.block.property.BeltProperties;
 import net.qbar.common.init.QBarBlocks;
 import net.qbar.common.machine.FluidIOPoint;
 import net.qbar.common.machine.InputPoint;
+import net.qbar.common.machine.MachineDescriptor;
 import net.qbar.common.machine.OutputPoint;
 import net.qbar.common.machine.component.AutomationComponent;
 import net.qbar.common.machine.component.IOComponent;
@@ -36,6 +38,8 @@ import net.qbar.common.machine.module.impl.IOModule;
 import net.qbar.common.multiblock.MultiblockComponent;
 import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.multiblock.TileMultiblockGag;
+import net.qbar.common.multiblock.blueprint.Blueprint;
+import net.qbar.common.tile.TileStructure;
 import net.qbar.common.tile.machine.TileModularMachine;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
@@ -99,6 +103,7 @@ public class RenderIOOverlay
             return;
 
         List<TileModularMachine> tiles = new ArrayList<>();
+        List<TileStructure> structureTiles = new ArrayList<>();
 
         BlockPos.getAllInBoxMutable(player.getPosition().add(-8, -4, -8), player.getPosition().add(8, 4, 8))
                 .forEach(pos ->
@@ -113,11 +118,29 @@ public class RenderIOOverlay
                                 ((TileModularMachine) ((TileMultiblockGag) tile).getCore()).getDescriptor() != null)
                             tiles.add((TileModularMachine) ((TileMultiblockGag) tile).getCore());
                     }
-                    else if (tile instanceof TileModularMachine && tiles.contains(tile))
+                    else if (tile instanceof TileModularMachine && !tiles.contains(tile))
                     {
                         if (((TileModularMachine) tile).hasModule(IOModule.class) &&
                                 ((TileModularMachine) tile).getDescriptor() != null)
                             tiles.add((TileModularMachine) tile);
+                    }
+                    else if (tile instanceof TileMultiblockGag &&
+                            ((TileMultiblockGag) tile).getCore() instanceof TileStructure
+                            && !structureTiles.contains(((TileMultiblockGag) tile).getCore()))
+                    {
+                        Blueprint blueprint = ((TileStructure) ((TileMultiblockGag) tile).getCore()).getBlueprint();
+                        if (blueprint != null && blueprint.getDescriptor() != null &&
+                                (blueprint.getDescriptor().has(IOComponent.class) ||
+                                        blueprint.getDescriptor().has(AutomationComponent.class)))
+                            structureTiles.add((TileStructure) ((TileMultiblockGag) tile).getCore());
+                    }
+                    else if (tile instanceof TileStructure && !structureTiles.contains(tile))
+                    {
+                        Blueprint blueprint = ((TileStructure) tile).getBlueprint();
+                        if (blueprint != null && blueprint.getDescriptor() != null &&
+                                (blueprint.getDescriptor().has(IOComponent.class) ||
+                                        blueprint.getDescriptor().has(AutomationComponent.class)))
+                            structureTiles.add((TileStructure) tile);
                     }
                 });
 
@@ -140,93 +163,100 @@ public class RenderIOOverlay
         GlStateManager.colorMask(true, true, true, true);
 
         for (TileModularMachine tile : tiles)
-        {
-            if (tile.getDescriptor().has(IOComponent.class))
-            {
-                IOComponent io = tile.getDescriptor().get(IOComponent.class);
-
-                if (player.getHeldItemMainhand().getItem() == Item.getItemFromBlock(QBarBlocks.STEAM_PIPE))
-                {
-                    for (MultiblockSide point : io.getSteamIO())
-                    {
-                        MultiblockSide side = tile.getDescriptor().get(MultiblockComponent.class)
-                                .multiblockSideToWorldSide(point, tile.getFacing());
-
-                        BlockPos offset = side.getPos().offset(side.getFacing()).add(tile.getPos());
-
-                        if (!player.getEntityWorld().isAirBlock(offset))
-                            continue;
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
-
-                        renderSteam(player.getEntityWorld(), offset, side);
-                        GlStateManager.popMatrix();
-                    }
-                }
-                else if (player.getHeldItemMainhand().getItem() == Item.getItemFromBlock(QBarBlocks.FLUID_PIPE))
-                {
-                    for (FluidIOPoint point : io.getFluidIO())
-                    {
-                        MultiblockSide side = tile.getDescriptor().get(MultiblockComponent.class)
-                                .multiblockSideToWorldSide(point.getSide(), tile.getFacing());
-
-                        BlockPos offset = side.getPos().offset(side.getFacing()).add(tile.getPos());
-
-                        if (!player.getEntityWorld().getBlockState(offset).getBlock()
-                                .isReplaceable(player.getEntityWorld(), offset))
-                            continue;
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
-
-                        renderFluid(player.getEntityWorld(), offset, side, point);
-                        GlStateManager.popMatrix();
-                    }
-                }
-                else if (tile.getDescriptor().has(AutomationComponent.class))
-                {
-                    AutomationComponent automation = tile.getDescriptor().get(AutomationComponent.class);
-
-                    for (InputPoint point : automation.getInputs())
-                    {
-                        MultiblockSide side = tile.getDescriptor().get(MultiblockComponent.class)
-                                .multiblockSideToWorldSide(point.getSide(), tile.getFacing());
-
-                        BlockPos offset = side.getPos().offset(side.getFacing()).add(tile.getPos()).down();
-
-                        if (!player.getEntityWorld().isAirBlock(offset))
-                            continue;
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
-
-                        renderBelt(player.getEntityWorld(), offset, point.getConnText(),
-                                side.getFacing().getOpposite());
-                        GlStateManager.popMatrix();
-                    }
-                    for (OutputPoint point : automation.getOutputs())
-                    {
-                        MultiblockSide side = tile.getDescriptor().get(MultiblockComponent.class)
-                                .multiblockSideToWorldSide(point.getSide(), tile.getFacing());
-
-                        BlockPos offset = side.getPos().add(tile.getPos());
-
-                        if (!player.getEntityWorld().isAirBlock(offset))
-                            continue;
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
-
-                        renderBelt(player.getEntityWorld(), offset, point.getConnText(),
-                                side.getFacing().getOpposite());
-                        GlStateManager.popMatrix();
-                    }
-                }
-            }
-        }
+            renderTile(tile.getDescriptor(), tile.getFacing(), tile.getPos(), player);
+        for (TileStructure structure : structureTiles)
+            renderTile(structure.getBlueprint().getDescriptor(), EnumFacing.VALUES[structure.getMeta()],
+                    structure.getPos(), player);
 
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
         GL11.glEnable(GL11.GL_LIGHTING);
 
         GlStateManager.popMatrix();
+    }
+
+    private static void renderTile(MachineDescriptor descriptor, EnumFacing tileFacing, BlockPos tilePos,
+                                   EntityPlayer player) throws ExecutionException
+    {
+        if (descriptor.has(IOComponent.class))
+        {
+            IOComponent io = descriptor.get(IOComponent.class);
+
+            if (player.getHeldItemMainhand().getItem() == Item.getItemFromBlock(QBarBlocks.STEAM_PIPE))
+            {
+                for (MultiblockSide point : io.getSteamIO())
+                {
+                    MultiblockSide side = descriptor.get(MultiblockComponent.class)
+                            .multiblockSideToWorldSide(point, tileFacing);
+
+                    BlockPos offset = side.getPos().offset(side.getFacing()).add(tilePos);
+
+                    if (!player.getEntityWorld().isAirBlock(offset))
+                        continue;
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
+
+                    renderSteam(player.getEntityWorld(), offset, side);
+                    GlStateManager.popMatrix();
+                }
+            }
+            else if (player.getHeldItemMainhand().getItem() == Item.getItemFromBlock(QBarBlocks.FLUID_PIPE))
+            {
+                for (FluidIOPoint point : io.getFluidIO())
+                {
+                    MultiblockSide side = descriptor.get(MultiblockComponent.class)
+                            .multiblockSideToWorldSide(point.getSide(), tileFacing);
+
+                    BlockPos offset = side.getPos().offset(side.getFacing()).add(tilePos);
+
+                    if (!player.getEntityWorld().getBlockState(offset).getBlock()
+                            .isReplaceable(player.getEntityWorld(), offset))
+                        continue;
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
+
+                    renderFluid(player.getEntityWorld(), offset, side, point);
+                    GlStateManager.popMatrix();
+                }
+            }
+            else if (descriptor.has(AutomationComponent.class))
+            {
+                AutomationComponent automation = descriptor.get(AutomationComponent.class);
+
+                for (InputPoint point : automation.getInputs())
+                {
+                    MultiblockSide side = descriptor.get(MultiblockComponent.class)
+                            .multiblockSideToWorldSide(point.getSide(), tileFacing);
+
+                    BlockPos offset = side.getPos().offset(side.getFacing()).add(tilePos).down();
+
+                    if (!player.getEntityWorld().isAirBlock(offset))
+                        continue;
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
+
+                    renderBelt(player.getEntityWorld(), offset, point.getConnText(),
+                            side.getFacing().getOpposite());
+                    GlStateManager.popMatrix();
+                }
+                for (OutputPoint point : automation.getOutputs())
+                {
+                    MultiblockSide side = descriptor.get(MultiblockComponent.class)
+                            .multiblockSideToWorldSide(point.getSide(), tileFacing);
+
+                    BlockPos offset = side.getPos().add(tilePos);
+
+                    if (!player.getEntityWorld().isAirBlock(offset))
+                        continue;
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(offset.getX(), offset.getY(), offset.getZ());
+
+                    renderBelt(player.getEntityWorld(), offset, point.getConnText(),
+                            side.getFacing().getOpposite());
+                    GlStateManager.popMatrix();
+                }
+            }
+        }
     }
 
     private static void renderSteam(World w, BlockPos pos, MultiblockSide side)
