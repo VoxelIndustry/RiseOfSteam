@@ -43,6 +43,7 @@
                     facing: NORTH
                     slots: 11..20
                     order: balanced
+                    connText: assembler.results
                 }
             ]
             inputs: [
@@ -50,6 +51,7 @@
                     pos: [0, 1, 0]
                     facing: NORTH
                     slots: 1..10
+                    connText: assembler.ingredients
                 }
             ]
         }

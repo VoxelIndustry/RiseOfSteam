@@ -40,6 +40,7 @@
                     pos: [0, 0, -2]
                     facing: SOUTH
                     slots: [0]
+                    connText: steamfurnace.output
                 }
             ]
             inputs: [
@@ -47,6 +48,7 @@
                     pos: [0, 1, 1]
                     facing: SOUTH
                     slots: [0]
+                    connText: steamfurnace.input
                 }
             ]
         }

@@ -213,3 +213,20 @@ conn.fluid.name=Fluid
 conn.washer.oresinput.name=Sludge
 conn.washer.oresoutput.name=Raw Ores
 conn.washer.junkoutput.name=Random Wastes
+
+conn.assembler.results.name=Craft Outputs
+conn.assembler.ingredients.name=Craft Ingredients
+
+conn.splitter.name=Splitter Input
+
+conn.rollingmill.output.name=Plates Output
+conn.rollingmill.input.name=Metal Input
+
+conn.sawmill.output.name=Sawed Output
+conn.sawmill.input.name=Wood Input
+
+conn.sortingmachine.output.name=Raw Ore Output
+conn.sortingmachine.input.name=Mixed Raw Ore Input
+
+conn.steamfurnace.output.name=Smelted Output
+conn.steamfurnace.input.name=Input

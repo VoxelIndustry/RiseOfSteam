@@ -45,6 +45,7 @@
                     pos: [0, 0, -2]
                     facing: SOUTH
                     slots: [0]
+                    connText: sawmill.input
                 }
             ]
             inputs: [
@@ -52,6 +53,7 @@
                     pos: [0, 1, 1]
                     facing: SOUTH
                     slots: [0]
+                    connText: sawmill.output
                 }
             ]
         }
@@ -59,15 +61,7 @@
             steam: [
                 {
                     pos: [0, 0, 0]
-                    facing: WEST
-                }
-                {
-                    pos: [0, 0, 0]
-                    facing: EAST
-                }
-                {
-                    pos: [0, 0, 0]
-                    facing: DOWN
+                    facing: ["WEST", "EAST", "DOWN"]
                 }
                 {
                     pos: [0, 0, 1]

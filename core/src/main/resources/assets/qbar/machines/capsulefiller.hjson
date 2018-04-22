@@ -18,19 +18,7 @@
             steam: [
                 {
                     pos: [0, 0, 0]
-                    facing: NORTH
-                }
-                {
-                    pos: [0, 0, 0]
-                    facing: EAST
-                }
-                {
-                    pos: [0, 0, 0]
-                    facing: WEST
-                }
-                {
-                    pos: [0, 0, 0]
-                    facing: SOUTH
+                    facing: ["NORTH", "EAST", "WEST", "SOUTH"]
                 }
             ]
         }

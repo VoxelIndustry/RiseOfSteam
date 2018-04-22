@@ -44,6 +44,7 @@
                     facing: NORTH
                     slots: [0, 1, 2, 3]
                     order: balanced
+                    connText: sortingmachine.output
                 }
             ]
             inputs: [
@@ -51,6 +52,7 @@
                     pos: [0, 1, 0]
                     facing: NORTH
                     slots: [0]
+                    connText: sortingmachine.input
                 }
             ]
         }

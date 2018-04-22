@@ -8,6 +8,7 @@
                     pos: [0, 0, 0]
                     facing: ["NORTH", "EAST", "SOUTH", "WEST", "UP", "DOWN"]
                     slots: [3]
+                    connText: splitter
                 }
             ]
         }
