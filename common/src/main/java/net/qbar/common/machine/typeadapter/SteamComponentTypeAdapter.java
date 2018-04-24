@@ -28,6 +28,7 @@ public class SteamComponentTypeAdapter extends TypeAdapter<SteamComponent>
     public SteamComponent read(JsonReader in) throws IOException
     {
         SteamComponent component = new SteamComponent();
+        component.setSafePressureCapacity(-1);
 
         in.beginObject();
         while (in.hasNext())
@@ -46,6 +47,9 @@ public class SteamComponentTypeAdapter extends TypeAdapter<SteamComponent>
                 case "maxPressure":
                     component.setMaxPressureCapacity(parsePressure(in.nextString()));
                     break;
+                case "safePressure":
+                    component.setSafePressureCapacity(parsePressure(in.nextString()));
+                    break;
                 case "overcharge":
                     component.setAllowOvercharge(in.nextBoolean());
                     break;
@@ -55,6 +59,8 @@ public class SteamComponentTypeAdapter extends TypeAdapter<SteamComponent>
         }
         in.endObject();
 
+        if (component.getSafePressureCapacity() == -1)
+            component.setSafePressureCapacity(component.getMaxPressureCapacity());
         return component;
     }
 

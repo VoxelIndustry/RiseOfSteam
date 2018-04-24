@@ -11,9 +11,9 @@ public abstract class MachineModule
     private IModularMachine machine;
     private String          name;
 
-    public QBarTileBase getMachineTile()
+    public <T extends QBarTileBase & IModularMachine> T getMachineTile()
     {
-        return (QBarTileBase) this.machine;
+        return (T) this.machine;
     }
 
     public boolean isClient()

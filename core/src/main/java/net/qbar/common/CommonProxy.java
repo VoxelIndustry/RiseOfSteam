@@ -32,6 +32,7 @@ public class CommonProxy
         QBarConstants.network.register(ServerActionHolderPacket.class);
         QBarConstants.network.register(ClientActionHolderPacket.class);
         QBarConstants.network.register(OpenGuiPacket.class);
+        QBarConstants.network.register(SteamEffectPacket.class);
 
         SteamCapabilities.register();
 

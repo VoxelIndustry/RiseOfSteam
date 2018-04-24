@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 public class SteamMesh implements ISteamHandler
 {
+    @Getter
     private List<ISteamHandler> handlers;
     @Getter
     private int                 throttle;

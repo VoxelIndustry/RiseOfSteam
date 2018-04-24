@@ -184,14 +184,15 @@ public abstract class GuiMachineBase<T extends QBarTileBase & IContainerProvider
                 final List<String> lines = new ArrayList<>();
                 if (steamTank.getKey().getSteam() == 0)
                     lines.add("Empty");
-                else if (steamTank.getKey().getSteam() / steamTank.getKey().getCapacity() < 1)
+                else if (steamTank.getKey().getSteam() / steamTank.getKey().getActualCapacity() < 1)
                     lines.add(TextFormatting.GOLD + "" + steamTank.getKey().getSteam() + " / "
-                            + steamTank.getKey().getCapacity());
+                            + steamTank.getKey().getActualCapacity());
                 else
                 {
                     lines.add(
                             (this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
-                                    + "" + steamTank.getKey().getSteam() + " / " + steamTank.getKey().getCapacity());
+                                    + "" + steamTank.getKey().getSteam() + " / " +
+                                    steamTank.getKey().getActualCapacity());
                     lines.add(
                             (this.mc.world.getTotalWorldTime() / 10 % 2 == 0 ? TextFormatting.RED : TextFormatting.GOLD)
                                     + "Overload!");
@@ -314,8 +315,7 @@ public abstract class GuiMachineBase<T extends QBarTileBase & IContainerProvider
             if (steamTank.getKey().getSteam() != 0 && steamTank.getKey().getCapacity() != 0)
                 this.drawFluid(steamTank.getKey().toFluidStack(), x + steamTank.getValue().getX(),
                         y + steamTank.getValue().getY(), steamTank.getValue().getWidth(),
-                        steamTank.getValue().getHeight(),
-                        (int) (steamTank.getKey().getCapacity() * steamTank.getKey().getMaxPressure()));
+                        steamTank.getValue().getHeight(), steamTank.getKey().getActualCapacity());
         }
 
         for (Pair<MultiFluidTank, GuiSpace> multiFluidTank : multiFluidTanks)
@@ -358,7 +358,7 @@ public abstract class GuiMachineBase<T extends QBarTileBase & IContainerProvider
     protected void drawFluid(final FluidStack fluid, final int x, final int y, final int width, final int height,
                              final int maxCapacity)
     {
-        int offsetHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
+        int offsetHeight = (int) (fluid.amount > maxCapacity ? height : (fluid.amount / (maxCapacity * 1F) * height));
         this.drawFluid(fluid, x, y + height - offsetHeight, width, offsetHeight);
     }
 

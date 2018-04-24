@@ -3,7 +3,6 @@ package net.qbar.common.grid.impl;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import net.qbar.common.grid.GridManager;
 import net.qbar.common.grid.node.ITileNode;
 
 import javax.annotation.Nonnull;
@@ -71,13 +70,7 @@ public abstract class CableGrid
 
     public boolean removeCable(final ITileNode<?> cable)
     {
-        if (this.cables.remove(cable))
-        {
-            if (this.cables.isEmpty())
-                GridManager.getInstance().removeGrid(this.identifier);
-            return true;
-        }
-        return false;
+        return this.cables.remove(cable);
     }
 
     public void removeCables(final Collection<ITileNode<?>> cables)

@@ -70,10 +70,18 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
             if (this.maxBurnTime != 0)
                 inventory.extractItem(0, 1, false);
         }
+
+        SteamBoilerModule boiler = this.getModule(SteamBoilerModule.class);
+
         if (this.currentBurnTime < this.maxBurnTime)
         {
-            this.currentBurnTime++;
-            this.getModule(SteamBoilerModule.class).addHeat(1);
+            if (boiler.getCurrentHeat() < boiler.getMaxHeat())
+            {
+                this.currentBurnTime++;
+                boiler.addHeat(0.1f);
+            }
+            else
+                boiler.setCurrentHeat(boiler.getMaxHeat());
         }
         else
         {

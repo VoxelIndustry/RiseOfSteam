@@ -30,6 +30,16 @@ public interface ISteamHandler
 
     int getCapacity();
 
+    default float getSafePressure()
+    {
+        return getMaxPressure();
+    }
+
+    default int getActualCapacity()
+    {
+        return (int) (getCapacity() * getSafePressure());
+    }
+
     default int getFreeSpace()
     {
         return (int) (this.getCapacity() * this.getMaxPressure() - this.getSteam());

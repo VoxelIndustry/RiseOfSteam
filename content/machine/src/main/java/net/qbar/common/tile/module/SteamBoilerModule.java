@@ -56,7 +56,7 @@ public class SteamBoilerModule extends MachineModule implements ITickableModule,
 
             this.getMachine().getModule(SteamModule.class).getInternalSteamHandler().fillSteam(toProduce, true);
             if (toProduce != 0 && this.getMachineTile().getWorld().getTotalWorldTime() % 2 == 0)
-                this.currentHeat--;
+                this.currentHeat -= 0.075;
             this.sync();
         }
     }

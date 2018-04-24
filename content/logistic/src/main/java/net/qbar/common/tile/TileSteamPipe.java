@@ -1,5 +1,6 @@
 package net.qbar.common.tile;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -7,22 +8,44 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.qbar.common.grid.impl.SteamGrid;
 import net.qbar.common.grid.node.ISteamPipe;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.ISteamHandler;
+import net.qbar.common.steam.SteamCapabilities;
 import net.qbar.common.steam.SteamUtil;
 
 import java.util.List;
 
 public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implements ISteamPipe
 {
-    public TileSteamPipe(final int transferCapacity)
+    private float maxPressure;
+
+    public TileSteamPipe(final int transferCapacity, float maxPressure)
     {
         super(transferCapacity, SteamCapabilities.STEAM_HANDLER);
+
+        this.maxPressure = maxPressure;
     }
 
     public TileSteamPipe()
     {
-        this(0);
+        this(0, 0);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
+    {
+        super.readFromNBT(tag);
+
+        this.maxPressure = tag.getFloat("maxPressure");
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
+    {
+        super.writeToNBT(tag);
+
+        tag.setFloat("maxPressure", this.maxPressure);
+
+        return tag;
     }
 
     @SuppressWarnings("unchecked")
@@ -102,6 +125,6 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Override
     public SteamGrid createGrid(final int id)
     {
-        return new SteamGrid(id, this.transferCapacity);
+        return new SteamGrid(id, this.transferCapacity, this.maxPressure);
     }
 }

@@ -4,6 +4,7 @@ import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.node.ITileNode;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GridManager
 {
@@ -20,11 +21,11 @@ public class GridManager
         return GridManager.instance;
     }
 
-    public HashMap<Integer, CableGrid> cableGrids;
+    public Map<Integer, CableGrid> cableGrids;
 
     private GridManager()
     {
-        this.cableGrids = new HashMap<>();
+        this.cableGrids = new ConcurrentHashMap<>();
     }
 
     public CableGrid addGrid(final CableGrid grid)
@@ -61,6 +62,8 @@ public class GridManager
 
     public void tickGrids()
     {
+        this.cableGrids.values().removeIf(grid -> grid.getCables().isEmpty());
+
         final Iterator<CableGrid> cableGrid = this.cableGrids.values().iterator();
 
         while (cableGrid.hasNext())

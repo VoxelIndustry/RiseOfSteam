@@ -7,18 +7,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.qbar.common.grid.node.ISteamMachine;
+import net.qbar.common.machine.SteamOverloadManager;
 import net.qbar.common.machine.component.SteamComponent;
 import net.qbar.common.machine.module.IModularMachine;
 import net.qbar.common.machine.module.ISerializableModule;
 import net.qbar.common.machine.module.MachineModule;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.steam.ISteamTank;
+import net.qbar.common.steam.ListenerSteamTank;
 
 import java.util.function.Function;
 
 public class SteamModule extends MachineModule implements ISerializableModule, ISteamMachine
 {
-    private final ISteamTank tank;
+    private final ListenerSteamTank tank;
 
     @Getter
     @Setter
@@ -31,9 +33,22 @@ public class SteamModule extends MachineModule implements ISerializableModule, I
         super(machine, "SteamModule");
 
         SteamComponent component = machine.getDescriptor().get(SteamComponent.class);
-        this.tank = tankSupplier.apply(component);
+        this.tank = new ListenerSteamTank(tankSupplier.apply(component));
+
+        this.tank.setOnSteamChange(this::refreshSteam);
 
         this.grid = -1;
+    }
+
+    private void refreshSteam()
+    {
+        if (this.getInternalSteamHandler().getPressure() >= this.getInternalSteamHandler().getSafePressure())
+        {
+            if (!SteamOverloadManager.getInstance().hasMachine(this.getMachineTile()))
+                SteamOverloadManager.getInstance().addMachine(this.getMachineTile());
+        }
+        else if (SteamOverloadManager.getInstance().hasMachine(this.getMachineTile()))
+            SteamOverloadManager.getInstance().removeMachine(this.getMachineTile());
     }
 
     public ISteamHandler getSteamHandler()

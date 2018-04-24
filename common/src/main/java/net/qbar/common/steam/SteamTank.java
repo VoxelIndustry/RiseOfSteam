@@ -19,12 +19,21 @@ public class SteamTank implements ISteamTank
     private int   capacity;
     @Getter
     private float maxPressure;
+    @Getter
+    private float safePressure;
 
-    public SteamTank(final int steamAmount, final int capacity, final float maxPressure)
+
+    public SteamTank(int steamAmount, int capacity, float maxPressure, float safePressure)
     {
         this.steam = steamAmount;
         this.capacity = capacity;
         this.maxPressure = maxPressure;
+        this.safePressure = safePressure;
+    }
+
+    public SteamTank(int steamAmount, int capacity, float maxPressure)
+    {
+        this(steamAmount, capacity, maxPressure, maxPressure);
     }
 
     public SteamTank(NBTTagCompound tag)

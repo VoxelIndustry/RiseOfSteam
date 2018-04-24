@@ -21,6 +21,7 @@ public class SteamUtil
     {
         if (component == null)
             return null;
-        return new SteamTank(0, component.getSteamCapacity(), component.getMaxPressureCapacity());
+        return new SteamTank(0, component.getSteamCapacity(), component.getMaxPressureCapacity(),
+                component.getSafePressureCapacity());
     }
 }
