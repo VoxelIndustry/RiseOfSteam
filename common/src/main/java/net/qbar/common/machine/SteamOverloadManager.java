@@ -8,6 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.qbar.common.machine.module.impl.SteamModule;
 import net.qbar.common.multiblock.MultiblockComponent;
+import net.qbar.common.multiblock.MultiblockSide;
 import net.qbar.common.network.SteamEffectPacket;
 import net.qbar.common.steam.ISteamHandler;
 import net.qbar.common.tile.machine.TileModularMachine;
@@ -61,14 +62,17 @@ public class SteamOverloadManager
             {
                 MultiblockComponent multiblock = machine.getDescriptor().get(MultiblockComponent.class);
 
-                origin = machine.getPos().add(-rand.nextInt(multiblock.getWidth()) + multiblock.getOffsetX(),
-                        rand.nextInt(multiblock.getHeight()) - multiblock.getOffsetY(),
-                        -rand.nextInt(multiblock.getLength()) + multiblock.getOffsetZ());
+                BlockPos offset = multiblock.multiblockSideToWorldSide(
+                        new MultiblockSide(new BlockPos(rand.nextInt(multiblock.getWidth()),
+                                rand.nextInt(multiblock.getHeight()),
+                                rand.nextInt(multiblock.getLength())), EnumFacing.NORTH), machine.getFacing()).getPos();
+
+                origin = machine.getPos().add(offset)
+                        .add(-multiblock.getOffsetX(), -multiblock.getOffsetY(), -multiblock.getOffsetZ());
             }
             BlockPos target = origin.add(rand.nextInt(4) - 2, rand.nextInt(4) - 2, rand.nextInt(4) - 2);
 
-            float pressureDiff = steam.getPressure() /
-                    steam.getSafePressure() - 1;
+            float pressureDiff = steam.getPressure() / steam.getSafePressure() - 1;
             int smallJetWeight = (int) Math.ceil(pressureDiff / 0.02f);
 
             if (rand.nextInt(200) < smallJetWeight)
