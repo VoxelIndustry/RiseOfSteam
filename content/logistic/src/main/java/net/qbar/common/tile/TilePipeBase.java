@@ -108,7 +108,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.adjacentHandler.keySet().forEach(facing ->
         {
             final TileEntity handler = this.getBlockWorld().getTileEntity(this.getBlockPos().offset(facing));
-            if (handler != null && handler instanceof IConnectionAware)
+            if (handler instanceof IConnectionAware)
                 ((IConnectionAware) handler).disconnectTrigger(facing.getOpposite(), this.getGridObject());
         });
     }
@@ -233,7 +233,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         for (final EnumFacing facing : EnumFacing.VALUES)
         {
             final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
-            if (adjacent != null && adjacent instanceof TilePipeBase && this.canConnect((ITileCable<?>) adjacent)
+            if (adjacent instanceof TilePipeBase && this.canConnect((ITileCable<?>) adjacent)
                     && ((ITileCable<?>) adjacent).canConnect(this))
             {
                 this.connect(facing, (TilePipeBase) adjacent);

@@ -168,6 +168,8 @@ public class SteamMesh implements ISteamHandler
     @Override
     public float getPressure()
     {
+        if (this.handlers.isEmpty())
+            return 0;
         return (float) this.getSteam() / this.getCapacity();
     }
 
@@ -175,6 +177,10 @@ public class SteamMesh implements ISteamHandler
     public float getMaxPressure()
     {
         int maxPressure = 0;
+
+        if (this.handlers.isEmpty())
+            return maxPressure;
+
         for (ISteamHandler handler : this.handlers)
             maxPressure += handler.getMaxPressure();
         return maxPressure / handlers.size();

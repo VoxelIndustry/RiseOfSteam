@@ -36,7 +36,7 @@ public class TileSteamFurnace extends TileTickingModularMachine implements ICont
                 .addInventory().tile(inventory.getInventory("crafting"))
                 .recipeSlot(0, QBarRecipeHandler.FURNACE_UID, 0, 47, 36,
                         slot -> crafter.isBufferEmpty() && crafter.isOutputEmpty())
-                .outputSlot(1, 116, 35).displaySlot(2, -1000, 0)
+                .outputSlot(2, 116, 35).displaySlot(1, -1000, 0)
                 .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
                 .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,

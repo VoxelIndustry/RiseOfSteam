@@ -1,15 +1,19 @@
 package net.qbar.common.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.qbar.common.tile.TilePipeBase;
 import net.qbar.common.tile.TileSteamValve;
 
 import javax.annotation.Nullable;
@@ -26,6 +30,39 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.X)
                 .withProperty(FACING, EnumFacing.NORTH));
+    }
+
+    @Override
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+                                    EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+
+        if (!w.isRemote)
+        {
+            TileSteamValve valve = (TileSteamValve) w.getTileEntity(pos);
+            if (valve == null)
+                return false;
+            valve.setOpen(!valve.isOpen());
+        }
+        return true;
+    }
+
+    @Override
+    public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
+                                final BlockPos posNeighbor)
+    {
+        if (!w.isRemote)
+            ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandlers(posNeighbor);
+    }
+
+    @Override
+    public void breakBlock(final World w, final BlockPos pos, final IBlockState state)
+    {
+        ((TilePipeBase<?, ?>) w.getTileEntity(pos)).disconnectItself();
+
+        super.breakBlock(w, pos, state);
     }
 
     @Override
@@ -74,6 +111,6 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileSteamValve();
+        return new TileSteamValve(64, 1.5f);
     }
 }

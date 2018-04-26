@@ -61,7 +61,7 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     public void addSpecificInfo(final List<String> lines)
     {
         lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure()) + " / "
-                + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getMaxPressure()));
+                + SteamUtil.pressureFormat.format(maxPressure));
     }
 
     @Override

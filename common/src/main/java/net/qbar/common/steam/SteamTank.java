@@ -112,4 +112,15 @@ public class SteamTank implements ISteamTank
     {
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "SteamTank{" +
+                "steam=" + steam +
+                ", capacity=" + capacity +
+                ", maxPressure=" + maxPressure +
+                ", safePressure=" + safePressure +
+                '}';
+    }
 }
