@@ -1,5 +1,7 @@
 package net.qbar.common.block;
 
+import com.google.common.collect.EnumBiMap;
+import com.google.common.collect.EnumHashBiMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -30,16 +32,16 @@ import java.util.function.Supplier;
 
 public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> implements IComplexSelectBox
 {
-    private final EnumMap<EnumFacing, AxisAlignedBB> boxes;
-    private final AxisAlignedBB                      BOX_NONE;
-    private final Supplier<T>                        tileSupplier;
+    private final EnumHashBiMap<EnumFacing, AxisAlignedBB> boxes;
+    private final AxisAlignedBB                            BOX_NONE;
+    private final Supplier<T>                              tileSupplier;
 
     public BlockPipeBase(String name, double width, Supplier<T> tileSupplier, Class<T> tileClass)
     {
         super(name, Material.IRON, tileClass);
 
         this.tileSupplier = tileSupplier;
-        this.boxes = new EnumMap<>(EnumFacing.class);
+        this.boxes = EnumHashBiMap.create(EnumFacing.class);
 
         BOX_NONE = new AxisAlignedBB(0.5 - width / 2, 0.5 - width / 2, 0.5 - width / 2,
                 0.5 + width / 2, 0.5 + width / 2, 0.5 + width / 2);
@@ -68,7 +70,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
         {
             for (EnumFacing facing : EnumFacing.VALUES)
             {
-                if (tile.isConnected(facing))
+                if (tile.isConnected(facing) || tile.isConnectionForbidden(facing))
                     res = res.union(this.boxes.get(facing));
             }
         }
@@ -133,6 +135,24 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
     {
         if (player.isSneaking() || player.getHeldItemMainhand().getItem() != QBarItems.WRENCH)
             return false;
+
+        AxisAlignedBB box = this.getSelectedBox(player, pos, 0);
+
+        if (box == null)
+            return false;
+        box = box.offset(new BlockPos(-pos.getX(), -pos.getY(), -pos.getZ()));
+
+        if (!boxes.containsValue(box))
+            return false;
+
+        if (!world.isRemote)
+        {
+            EnumFacing target = boxes.inverse().get(box);
+
+            TilePipeBase pipe = this.getWorldTile(world, pos);
+            pipe.forbidConnection(target, !pipe.isConnectionForbidden(target));
+        }
+
         return true;
     }
 
@@ -156,7 +176,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
 
         for (EnumFacing facing : EnumFacing.VALUES)
         {
-            if (pipe.isConnected(facing))
+            if (pipe.isConnected(facing) || pipe.isConnectionForbidden(facing))
                 candidates.add(this.boxes.get(facing).offset(pos));
         }
 

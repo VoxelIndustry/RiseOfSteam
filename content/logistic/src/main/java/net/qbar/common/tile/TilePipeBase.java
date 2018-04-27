@@ -142,11 +142,11 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     }
 
     @Override
-    public void readFromNBT(final NBTTagCompound tagCompound)
+    public void readFromNBT(final NBTTagCompound tag)
     {
-        super.readFromNBT(tagCompound);
+        super.readFromNBT(tag);
 
-        this.transferCapacity = tagCompound.getInteger("transferCapacity");
+        this.transferCapacity = tag.getInteger("transferCapacity");
 
         final int previousConnections = this.renderConnections.size();
 
@@ -155,29 +155,38 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
             this.renderConnections.clear();
             for (final EnumFacing facing : EnumFacing.VALUES)
             {
-                if (tagCompound.hasKey("connected" + facing.ordinal()))
+                if (tag.hasKey("connected" + facing.ordinal()))
                     this.renderConnections.add(facing);
             }
             if (this.renderConnections.size() != previousConnections)
                 this.updateState();
         }
+
+        for (EnumFacing facing : EnumFacing.VALUES)
+        {
+            if (tag.getBoolean("forbid" + facing.ordinal()))
+                this.forbiddenConnections.add(facing);
+        }
     }
 
     @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound)
+    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
-        super.writeToNBT(tagCompound);
+        super.writeToNBT(tag);
 
-        tagCompound.setInteger("transferCapacity", this.transferCapacity);
+        tag.setInteger("transferCapacity", this.transferCapacity);
 
         if (this.isServer())
         {
             for (final Entry<EnumFacing, ITileCable<G>> entry : this.connectionsMap.entrySet())
-                tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
+                tag.setBoolean("connected" + entry.getKey().ordinal(), true);
             for (final Entry<EnumFacing, H> entry : this.adjacentHandler.entrySet())
-                tagCompound.setBoolean("connected" + entry.getKey().ordinal(), true);
+                tag.setBoolean("connected" + entry.getKey().ordinal(), true);
         }
-        return tagCompound;
+
+        for (EnumFacing facing : EnumFacing.VALUES)
+            tag.setBoolean("forbid" + facing.ordinal(), this.forbiddenConnections.contains(facing));
+        return tag;
     }
 
     public void scanHandlers(final BlockPos posNeighbor)
@@ -230,6 +239,8 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     {
         if (forbidden)
         {
+            this.forbiddenConnections.add(facing);
+
             if (this.isConnected(facing))
             {
                 this.disconnectItself();
@@ -239,13 +250,12 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
                 this.setGrid(-1);
                 GridManager.getInstance().connectCable(this);
             }
-            this.forbiddenConnections.add(facing);
         }
         else
         {
-            if (this.isConnected(facing))
-                GridManager.getInstance().connectCable(this);
             this.forbiddenConnections.remove(facing);
+
+            GridManager.getInstance().connectCable(this);
         }
     }
 
@@ -276,7 +286,9 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
 
     public boolean isConnected(final EnumFacing facing)
     {
-        return this.renderConnections.contains(facing);
+        if (this.isClient())
+            return this.renderConnections.contains(facing);
+        return this.connectionsMap.containsKey(facing) || this.adjacentHandler.containsKey(facing);
     }
 
     public NBTTagCompound writeRenderConnections(NBTTagCompound tag)

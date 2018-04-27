@@ -65,12 +65,12 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public void readFromNBT(final NBTTagCompound tagCompound)
+    public void readFromNBT(final NBTTagCompound tag)
     {
-        super.readFromNBT(tagCompound);
+        super.readFromNBT(tag);
 
-        if (tagCompound.hasKey("coldStorage"))
-            this.coldStorage = FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag("coldStorage"));
+        if (tag.hasKey("coldStorage"))
+            this.coldStorage = FluidStack.loadFluidStackFromNBT(tag.getCompoundTag("coldStorage"));
     }
 
     @Override

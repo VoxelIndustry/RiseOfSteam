@@ -78,15 +78,13 @@ public class GridManager
         {
             final ITileNode<T> adjacent = added.getConnected(edge);
 
-            if (adjacent.getGrid() != -1)
+            if (adjacent.getGrid() != -1 &&
+                    added.canConnect(edge, adjacent) && adjacent.canConnect(adjacent.invertEdge(edge), added))
             {
                 if (added.getGrid() == -1 && this.getGrid(adjacent.getGrid()) != null)
                 {
-                    if (added.canConnect(edge, adjacent))
-                    {
-                        added.setGrid(adjacent.getGrid());
-                        this.getGrid(adjacent.getGrid()).addCable(added);
-                    }
+                    added.setGrid(adjacent.getGrid());
+                    this.getGrid(adjacent.getGrid()).addCable(added);
                 }
                 else if (this.getGrid(added.getGrid()).canMerge(this.getGrid(adjacent.getGrid())))
                     this.mergeGrids(this.getGrid(added.getGrid()), this.getGrid(adjacent.getGrid()));

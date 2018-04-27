@@ -94,7 +94,8 @@ public class GridManagerTest
                 return null;
             }
         });
-        when(cable.canConnect(any(), any())).thenReturn(true);
+        when(cable.canConnect(anyInt(), any())).thenReturn(true);
+        when(upperCable.canConnect(anyInt(), any())).thenReturn(true);
 
         GridManager.getInstance().connectCable(cable);
         assertThat(GridManager.getInstance().cableGrids).hasSize(1);
