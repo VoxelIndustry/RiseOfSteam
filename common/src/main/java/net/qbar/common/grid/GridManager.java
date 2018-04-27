@@ -80,7 +80,8 @@ public class GridManager
 
             if (adjacent.getGrid() != -1)
             {
-                if (added.getGrid() == -1 && this.getGrid(adjacent.getGrid()) != null && added.canConnect(adjacent))
+                if (added.getGrid() == -1 && this.getGrid(adjacent.getGrid()) != null &&
+                        added.canConnect(edge, adjacent))
                 {
                     added.setGrid(adjacent.getGrid());
                     this.getGrid(adjacent.getGrid()).addCable(added);

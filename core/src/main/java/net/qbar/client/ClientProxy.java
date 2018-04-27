@@ -87,7 +87,8 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileRollingMill.class, new RenderRollingMill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSteamFurnaceMK2.class, new RenderSteamFurnaceMK2());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSawMill.class, new RenderSawMill());
-        MinecraftForge.EVENT_BUS.register(new ClientEventManager());
+        MinecraftForge.EVENT_BUS.register(new MachineClientEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
     }
 
     @Override

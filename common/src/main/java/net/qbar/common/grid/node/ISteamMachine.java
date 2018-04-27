@@ -36,8 +36,10 @@ public interface ISteamMachine extends ITileNode<SteamMachineGrid>
         GridManager.getInstance().connectCable(this);
     }
 
+    // ISteamMachine use incoherent edges for canConnect check.
+    // Due to their multiblock nature they cannot translate edges before an actual connexion.
     @Override
-    default boolean canConnect(ITileNode<?> to)
+    default boolean canConnect(int edge, ITileNode<?> to)
     {
         return to instanceof ISteamMachine;
     }
@@ -82,7 +84,7 @@ public interface ISteamMachine extends ITileNode<SteamMachineGrid>
 
         toConnect.forEach(tile ->
         {
-            if (this.canConnect(tile) && tile.canConnect(this))
+            if (this.canConnect(0, tile) && tile.canConnect(0, this))
             {
                 this.connect(tile.getBlockPos(), tile);
                 tile.connect(this.getBlockPos(), this);

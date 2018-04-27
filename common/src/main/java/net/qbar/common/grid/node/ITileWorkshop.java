@@ -37,7 +37,7 @@ public interface ITileWorkshop extends ITileNode<WorkshopGrid>, ILoadable
     }
 
     @Override
-    default boolean canConnect(ITileNode<?> to)
+    default boolean canConnect(int edge, ITileNode<?> to)
     {
         return to instanceof ITileWorkshop && ((ITileWorkshop) to).getType() != this.getType() &&
                 (!this.hasGrid() || !this.getGridObject().getMachines().containsKey(((ITileWorkshop) to).getType()) ||
@@ -86,7 +86,7 @@ public interface ITileWorkshop extends ITileNode<WorkshopGrid>, ILoadable
 
         toConnect.forEach(tile ->
         {
-            if (this.canConnect(tile) && tile.canConnect(this))
+            if (this.canConnect(0, tile) && tile.canConnect(0, this))
             {
                 this.connect(tile.getBlockPos(), tile);
                 tile.connect(this.getBlockPos(), this);

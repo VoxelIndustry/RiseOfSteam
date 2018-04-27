@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
     protected final EnumSet<EnumFacing>                renderConnections;
+    protected final EnumSet<EnumFacing>                forbiddenConnections;
     @Getter
     protected final EnumMap<EnumFacing, ITileCable<G>> connectionsMap;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;
@@ -44,6 +45,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         this.grid = -1;
 
         this.renderConnections = EnumSet.noneOf(EnumFacing.class);
+        this.forbiddenConnections = EnumSet.noneOf(EnumFacing.class);
     }
 
     @Override
@@ -182,6 +184,76 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     {
     }
 
+    @Override
+    public void adjacentConnect()
+    {
+        List<TilePipeBase> adjacents = new ArrayList<>(6);
+        for (final EnumFacing facing : EnumFacing.VALUES)
+        {
+            final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
+            if (adjacent instanceof TilePipeBase && this.canConnect(facing, (ITileCable<?>) adjacent)
+                    && ((ITileCable<?>) adjacent).canConnect(facing.getOpposite(), this))
+            {
+                this.connect(facing, (TilePipeBase) adjacent);
+                ((TilePipeBase) adjacent).connect(facing.getOpposite(), this);
+                adjacents.add((TilePipeBase) adjacent);
+            }
+        }
+        new PipeUpdatePacket(this, adjacents).sendToAllIn(this.getWorld());
+    }
+
+    @Override
+    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
+    {
+        return !this.forbiddenConnections.contains(facing);
+    }
+
+    @Override
+    public G createGrid(final int nextID)
+    {
+        return null;
+    }
+
+    @Override
+    public BlockPos getBlockPos()
+    {
+        return this.getPos();
+    }
+
+    @Override
+    public World getBlockWorld()
+    {
+        return this.getWorld();
+    }
+
+    public void forbidConnection(EnumFacing facing, boolean forbidden)
+    {
+        if (forbidden)
+        {
+            if (this.isConnected(facing))
+            {
+                this.disconnectItself();
+
+                for (EnumFacing side : EnumFacing.VALUES)
+                    this.disconnect(side);
+                this.setGrid(-1);
+                GridManager.getInstance().connectCable(this);
+            }
+            this.forbiddenConnections.add(facing);
+        }
+        else
+        {
+            if (this.isConnected(facing))
+                GridManager.getInstance().connectCable(this);
+            this.forbiddenConnections.remove(facing);
+        }
+    }
+
+    public boolean isConnectionForbidden(EnumFacing facing)
+    {
+        return this.forbiddenConnections.contains(facing);
+    }
+
     ////////////
     // RENDER //
     ////////////
@@ -224,47 +296,5 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
             if (tag.hasKey("connected" + facing.ordinal()))
                 this.renderConnections.add(facing);
         }
-    }
-
-    @Override
-    public void adjacentConnect()
-    {
-        List<TilePipeBase> adjacents = new ArrayList<>(6);
-        for (final EnumFacing facing : EnumFacing.VALUES)
-        {
-            final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
-            if (adjacent instanceof TilePipeBase && this.canConnect((ITileCable<?>) adjacent)
-                    && ((ITileCable<?>) adjacent).canConnect(this))
-            {
-                this.connect(facing, (TilePipeBase) adjacent);
-                ((TilePipeBase) adjacent).connect(facing.getOpposite(), this);
-                adjacents.add((TilePipeBase) adjacent);
-            }
-        }
-        new PipeUpdatePacket(this, adjacents).sendToAllIn(this.getWorld());
-    }
-
-    @Override
-    public boolean canConnect(final ITileNode<?> to)
-    {
-        return false;
-    }
-
-    @Override
-    public G createGrid(final int nextID)
-    {
-        return null;
-    }
-
-    @Override
-    public BlockPos getBlockPos()
-    {
-        return this.getPos();
-    }
-
-    @Override
-    public World getBlockWorld()
-    {
-        return this.getWorld();
     }
 }

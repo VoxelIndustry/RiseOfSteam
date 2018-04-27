@@ -11,7 +11,7 @@ import java.util.EnumMap;
 
 public class ITileCableTestImpl implements ITileCable
 {
-    private int                             grid       = -1;
+    private int grid = -1;
 
     private EnumMap<EnumFacing, ITileCable> connecteds = new EnumMap<>(EnumFacing.class);
 
@@ -46,7 +46,7 @@ public class ITileCableTestImpl implements ITileCable
     }
 
     @Override
-    public boolean canConnect(ITileNode to)
+    public boolean canConnect(EnumFacing facing, ITileNode to)
     {
         return true;
     }

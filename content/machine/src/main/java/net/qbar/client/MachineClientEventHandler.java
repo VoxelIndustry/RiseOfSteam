@@ -26,7 +26,7 @@ import net.qbar.common.util.ItemUtils;
 
 import java.util.concurrent.ExecutionException;
 
-public class ClientEventManager
+public class MachineClientEventHandler
 {
     private final BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 

@@ -8,9 +8,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.qbar.common.grid.impl.PipeGrid;
 import net.qbar.common.grid.node.IFluidPipe;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.common.grid.impl.PipeGrid;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public boolean canConnect(final ITileNode<?> to)
+    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
         if (to instanceof TileFluidPipe)
         {
@@ -98,12 +98,11 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
             {
                 if (this.coldStorage != null)
                 {
-                    if (grid.getFluid() == null || grid.getFluid().equals(this.coldStorage.getFluid()))
-                        return true;
-                    return false;
+                    return (grid.getFluid() == null || grid.getFluid().equals(this.coldStorage.getFluid())) &&
+                            super.canConnect(facing, to);
                 }
             }
-            return true;
+            return super.canConnect(facing, to);
         }
         return false;
     }

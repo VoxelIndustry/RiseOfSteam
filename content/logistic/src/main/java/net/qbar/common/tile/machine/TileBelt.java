@@ -236,14 +236,12 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public boolean canConnect(final ITileNode<?> to)
+    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
         if (to instanceof TileBelt)
         {
             final IBelt adjacentBelt = (IBelt) to;
-            if (adjacentBelt.getFacing() != this.getFacing().getOpposite())
-                return true;
-            return false;
+            return adjacentBelt.getFacing() != this.getFacing().getOpposite();
         }
         return false;
     }
@@ -303,8 +301,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
         for (final EnumFacing facing : EnumFacing.HORIZONTALS)
         {
             final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing).up());
-            if (adjacent != null && adjacent instanceof IBelt && ((IBelt) adjacent).isSlope()
-                    && this.canConnect((IBelt) adjacent) && ((IBelt) adjacent).canConnect(this))
+            if (adjacent instanceof IBelt && ((IBelt) adjacent).isSlope() && this.canConnect(facing, (IBelt) adjacent)
+                    && ((IBelt) adjacent).canConnect(facing.getOpposite(), this))
             {
                 this.connect(facing, (IBelt) adjacent);
                 ((IBelt) adjacent).connect(facing.getOpposite(), this);
@@ -316,8 +314,8 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
             if (this.isConnected(facing))
                 continue;
             final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
-            if (adjacent != null && adjacent instanceof IBelt && this.canConnect((IBelt) adjacent)
-                    && ((IBelt) adjacent).canConnect(this))
+            if (adjacent instanceof IBelt && this.canConnect(facing, (IBelt) adjacent)
+                    && ((IBelt) adjacent).canConnect(facing.getOpposite(), this))
             {
                 this.connect(facing, (IBelt) adjacent);
                 ((IBelt) adjacent).connect(facing.getOpposite(), this);
@@ -364,7 +362,7 @@ public class TileBelt extends QBarTileBase implements IBelt, ILoadable, IConnect
     }
 
     @Override
-    public boolean insert( ItemStack stack, float posX, float posY, boolean doInsert)
+    public boolean insert(ItemStack stack, float posX, float posY, boolean doInsert)
     {
         if (this.getGridObject() != null)
             return this.getGridObject().insert(this, stack, posX, posY, doInsert);

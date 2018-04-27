@@ -74,9 +74,9 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     }
 
     @Override
-    public boolean canConnect(final ITileNode<?> to)
+    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
-        return to instanceof TileSteamPipe;
+        return to instanceof TileSteamPipe && super.canConnect(facing, to);
     }
 
     @Override

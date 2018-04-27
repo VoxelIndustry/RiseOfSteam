@@ -15,7 +15,7 @@ public interface ITileNode<T extends CableGrid>
 
     void setGrid(int gridIdentifier);
 
-    boolean canConnect(ITileNode<?> to);
+    boolean canConnect(int edge, ITileNode<?> to);
 
     World getBlockWorld();
 

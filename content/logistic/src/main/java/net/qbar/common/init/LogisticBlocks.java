@@ -11,8 +11,10 @@ public class LogisticBlocks
 {
     public static void init()
     {
-        QBarBlocks.registerBlock(new BlockFluidPipe());
-        QBarBlocks.registerBlock(new BlockSteamPipe());
+        QBarBlocks.registerBlock(new BlockPipeBase<>("fluidpipe", 6 / 16D,
+                () -> new TileFluidPipe(64), TileFluidPipe.class));
+        QBarBlocks.registerBlock(new BlockPipeBase<>("steampipe", 5 / 16D,
+                () -> new TileSteamPipe(64, 1.5f), TileSteamPipe.class));
         QBarBlocks.registerBlock(new BlockFluidPump());
         QBarBlocks.registerBlock(new BlockOffshorePump());
 

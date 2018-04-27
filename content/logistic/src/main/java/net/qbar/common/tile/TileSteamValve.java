@@ -102,7 +102,7 @@ public class TileSteamValve extends TileSteamPipe
     }
 
     @Override
-    public boolean canConnect(ITileNode<?> to)
+    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
         if (this.getAxis() == EnumFacing.Axis.X && to.getBlockPos().getZ() != this.getPos().getZ())
             return false;
@@ -111,6 +111,6 @@ public class TileSteamValve extends TileSteamPipe
         if (this.getAxis() == EnumFacing.Axis.Y && to.getBlockPos().getY() != this.getPos().getY())
             return false;
 
-        return this.isOpen && super.canConnect(to);
+        return this.isOpen && super.canConnect(facing, to);
     }
 }
