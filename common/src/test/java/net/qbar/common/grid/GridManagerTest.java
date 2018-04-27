@@ -61,6 +61,7 @@ public class GridManagerTest
         assertThat(GridManager.getInstance().cableGrids).containsValue(grid);
 
         grid.removeCable(cable);
+        GridManager.getInstance().tickGrids();
 
         assertThat(GridManager.getInstance().cableGrids).doesNotContainValue(grid);
     }
@@ -70,6 +71,7 @@ public class GridManagerTest
     {
         CableGrid grid = mock(CableGrid.class);
         when(grid.getIdentifier()).thenReturn(0);
+        when(grid.isEmpty()).thenReturn(false);
 
         GridManager.getInstance().addGrid(grid);
         GridManager.getInstance().tickGrids();

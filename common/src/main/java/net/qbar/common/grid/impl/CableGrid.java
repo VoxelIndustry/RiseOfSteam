@@ -82,4 +82,9 @@ public abstract class CableGrid
     {
         return this.cables.contains(cable);
     }
+
+    public boolean isEmpty()
+    {
+        return this.getCables().isEmpty();
+    }
 }

@@ -62,7 +62,7 @@ public class GridManager
 
     public void tickGrids()
     {
-        this.cableGrids.values().removeIf(grid -> grid.getCables().isEmpty());
+        this.cableGrids.values().removeIf(CableGrid::isEmpty);
 
         final Iterator<CableGrid> cableGrid = this.cableGrids.values().iterator();
 
@@ -80,11 +80,13 @@ public class GridManager
 
             if (adjacent.getGrid() != -1)
             {
-                if (added.getGrid() == -1 && this.getGrid(adjacent.getGrid()) != null &&
-                        added.canConnect(edge, adjacent))
+                if (added.getGrid() == -1 && this.getGrid(adjacent.getGrid()) != null)
                 {
-                    added.setGrid(adjacent.getGrid());
-                    this.getGrid(adjacent.getGrid()).addCable(added);
+                    if (added.canConnect(edge, adjacent))
+                    {
+                        added.setGrid(adjacent.getGrid());
+                        this.getGrid(adjacent.getGrid()).addCable(added);
+                    }
                 }
                 else if (this.getGrid(added.getGrid()).canMerge(this.getGrid(adjacent.getGrid())))
                     this.mergeGrids(this.getGrid(added.getGrid()), this.getGrid(adjacent.getGrid()));
