@@ -21,7 +21,7 @@ import net.qbar.common.network.PipeUpdatePacket;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
+public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implements ILoadable, ITileCable<G>
 {
     protected final EnumSet<EnumFacing>                renderConnections;
     protected final EnumSet<EnumFacing>                forbiddenConnections;
@@ -138,7 +138,7 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
     {
         GridManager.getInstance().connectCable(this);
         for (final EnumFacing facing : EnumFacing.VALUES)
-            this.scanHandlers(this.pos.offset(facing));
+            this.scanHandler(facing);
     }
 
     @Override
@@ -189,9 +189,13 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         return tag;
     }
 
-    public void scanHandlers(final BlockPos posNeighbor)
+    public void scanHandler(EnumFacing facing)
     {
+        if (!this.forbiddenConnections.contains(facing))
+            this.scanHandler(this.getPos().offset(facing));
     }
+
+    protected abstract void scanHandler(BlockPos posNeighbor);
 
     @Override
     public void adjacentConnect()
@@ -241,21 +245,57 @@ public class TilePipeBase<G extends CableGrid, H> extends QBarTileBase implement
         {
             this.forbiddenConnections.add(facing);
 
-            if (this.isConnected(facing))
+            if (this.getConnectionsMap().containsKey(facing))
             {
-                this.disconnectItself();
+                this.getConnected(facing).disconnect(facing.getOpposite());
+                this.disconnect(facing);
 
-                for (EnumFacing side : EnumFacing.VALUES)
-                    this.disconnect(side);
-                this.setGrid(-1);
-                GridManager.getInstance().connectCable(this);
+                CableGrid newGrid = GridManager.getInstance().addGrid(this.getGridObject().copy(GridManager
+                        .getInstance().getNextID()));
+
+                if (this.getConnections().length == 0)
+                {
+                    this.getGridObject().removeCable(this);
+
+                    this.setGrid(newGrid.getIdentifier());
+                    newGrid.addCable(this);
+                }
+                else
+                {
+                    GridManager.getInstance().getOrphans(this.getGridObject(), this).forEach(orphan ->
+                    {
+                        this.getGridObject().removeCable(orphan);
+
+                        orphan.setGrid(newGrid.getIdentifier());
+                        newGrid.addCable(orphan);
+                    });
+                }
             }
+            else if (this.adjacentHandler.containsKey(facing))
+                this.disconnectHandler(facing, this.world.getTileEntity(this.getAdjacentPos(facing)));
         }
         else
         {
             this.forbiddenConnections.remove(facing);
 
-            GridManager.getInstance().connectCable(this);
+            TileEntity node = this.world.getTileEntity(this.getAdjacentPos(facing));
+            if (node instanceof ITileCable && this.canConnect(facing, (ITileNode<?>) node) &&
+                    ((ITileCable) node).canConnect(facing.getOpposite(), this) &&
+                    this.getGridObject().canMerge(((ITileCable) node).getGridObject()))
+            {
+                if (this.getConnections().length == 0)
+                    GridManager.getInstance().mergeGrids(((ITileCable) node).getGridObject(), this.getGridObject());
+                else
+                    GridManager.getInstance().mergeGrids(this.getGridObject(), ((ITileCable) node).getGridObject());
+
+                ((ITileCable) node).connect(facing.getOpposite(), this);
+                this.connect(facing, (ITileCable<G>) node);
+
+                this.updateState();
+                ((ITileCable<G>) node).updateState();
+            }
+            else
+                this.scanHandler(facing);
         }
     }
 

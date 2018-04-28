@@ -1,6 +1,5 @@
 package net.qbar.common.block;
 
-import com.google.common.collect.EnumBiMap;
 import com.google.common.collect.EnumHashBiMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -25,7 +24,6 @@ import net.qbar.common.tile.TilePipeBase;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -118,7 +116,11 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
                                 BlockPos posNeighbor)
     {
         if (!w.isRemote)
-            ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandlers(posNeighbor);
+        {
+            BlockPos offset = pos.subtract(posNeighbor);
+            ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandler(
+                    EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()));
+        }
     }
 
     @Override

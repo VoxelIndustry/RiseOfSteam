@@ -108,7 +108,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public void scanHandlers(final BlockPos posNeighbor)
+    public void scanHandler(final BlockPos posNeighbor)
     {
         final TileEntity tile = this.world.getTileEntity(posNeighbor);
 

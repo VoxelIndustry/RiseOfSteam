@@ -2,6 +2,7 @@ package net.qbar.common.grid;
 
 import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.node.ITileNode;
+import net.qbar.debug.common.marker.MarkerDataHandler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -145,7 +146,7 @@ public class GridManager
         destination.onMerge(source);
     }
 
-    <T extends CableGrid> List<ITileNode<T>> getOrphans(final CableGrid grid, final ITileNode<T> cable)
+    public <T extends CableGrid> List<ITileNode<T>> getOrphans(final CableGrid grid, final ITileNode<T> cable)
     {
         final List<ITileNode<T>> toScan = new ArrayList<>();
         // Only here to calm down javac
@@ -182,7 +183,7 @@ public class GridManager
         frontier.add(cable);
         while (!frontier.isEmpty())
         {
-            final Set<ITileNode<T>> frontierCpy = new HashSet<>(frontier);
+            Set<ITileNode<T>> frontierCpy = new HashSet<>(frontier);
             for (final ITileNode<T> current : frontierCpy)
             {
                 openset.add(current);
@@ -190,8 +191,9 @@ public class GridManager
                 grid.addCable(current);
                 for (int edge : current.getConnections())
                 {
-                    final ITileNode<T> facingCable = current.getConnected(edge);
-                    if (!openset.contains(facingCable) && !frontier.contains(facingCable))
+                    ITileNode<T> facingCable = current.getConnected(edge);
+
+                    if (!openset.contains(facingCable))
                         frontier.add(facingCable);
                 }
                 frontier.remove(current);

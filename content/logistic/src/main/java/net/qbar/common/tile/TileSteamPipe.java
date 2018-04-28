@@ -80,14 +80,13 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     }
 
     @Override
-    public void scanHandlers(final BlockPos posNeighbor)
+    public void scanHandler(final BlockPos posNeighbor)
     {
         final TileEntity tile = this.world.getTileEntity(posNeighbor);
 
         final BlockPos substracted = posNeighbor.subtract(this.pos);
         final EnumFacing facing = EnumFacing.getFacingFromVector(
-                substracted.getX(), substracted.getY(), substracted.getZ())
-                .getOpposite();
+                substracted.getX(), substracted.getY(), substracted.getZ()).getOpposite();
 
         if (this.adjacentHandler.containsKey(facing.getOpposite()))
         {

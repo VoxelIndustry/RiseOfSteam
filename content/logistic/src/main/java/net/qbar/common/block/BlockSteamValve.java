@@ -54,7 +54,11 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
                                 final BlockPos posNeighbor)
     {
         if (!w.isRemote)
-            ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandlers(posNeighbor);
+        {
+            BlockPos offset = pos.subtract(posNeighbor);
+            ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandler(
+                    EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()));
+        }
     }
 
     @Override
