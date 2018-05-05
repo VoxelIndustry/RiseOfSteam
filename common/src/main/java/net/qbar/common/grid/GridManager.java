@@ -2,7 +2,6 @@ package net.qbar.common.grid;
 
 import net.qbar.common.grid.impl.CableGrid;
 import net.qbar.common.grid.node.ITileNode;
-import net.qbar.debug.common.marker.MarkerDataHandler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,12 +62,16 @@ public class GridManager
 
     public void tickGrids()
     {
-        this.cableGrids.values().removeIf(CableGrid::isEmpty);
+        Iterator<CableGrid> gridIterator = this.cableGrids.values().iterator();
 
-        final Iterator<CableGrid> cableGrid = this.cableGrids.values().iterator();
-
-        while (cableGrid.hasNext())
-            cableGrid.next().tick();
+        while (gridIterator.hasNext())
+        {
+            CableGrid next = gridIterator.next();
+            if (next.isMarkedForRemoval())
+                gridIterator.remove();
+            else
+                next.tick();
+        }
     }
 
     public <T extends CableGrid> void connectCable(final ITileNode<T> added)

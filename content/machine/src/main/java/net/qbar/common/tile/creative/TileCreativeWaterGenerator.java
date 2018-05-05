@@ -1,8 +1,5 @@
 package net.qbar.common.tile.creative;
 
-import java.util.EnumMap;
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -16,6 +13,9 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.qbar.common.fluid.CreativeFluidTank;
 import net.qbar.common.tile.QBarTileBase;
+
+import java.util.EnumMap;
+import java.util.List;
 
 public class TileCreativeWaterGenerator extends QBarTileBase implements ITickable
 {
@@ -101,9 +101,7 @@ public class TileCreativeWaterGenerator extends QBarTileBase implements ITickabl
         final TileEntity tile = this.world.getTileEntity(posNeighbor);
 
         if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
-        {
             this.handler.put(facing, tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing));
-        }
         else if(this.handler.containsKey(facing))
             this.handler.remove(facing);
     }

@@ -18,6 +18,11 @@ public class TileSteamValve extends TileSteamPipe
         super(transferCapacity, maxPressure);
     }
 
+    public TileSteamValve()
+    {
+        this(0, 0);
+    }
+
     @Getter
     private boolean isOpen;
 

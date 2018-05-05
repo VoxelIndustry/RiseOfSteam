@@ -18,6 +18,8 @@ public abstract class CableGrid
 
     private final HashSet<ITileNode<?>> cables;
 
+    private boolean markedForRemoval;
+
     public CableGrid(final int identifier)
     {
         this.identifier = identifier;
@@ -70,7 +72,13 @@ public abstract class CableGrid
 
     public boolean removeCable(final ITileNode<?> cable)
     {
-        return this.cables.remove(cable);
+        if (this.cables.remove(cable))
+        {
+            if (this.cables.isEmpty())
+                this.markedForRemoval = true;
+            return true;
+        }
+        return false;
     }
 
     public void removeCables(final Collection<ITileNode<?>> cables)

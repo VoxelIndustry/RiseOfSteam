@@ -52,7 +52,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase 
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
         if (capability == this.capability)
-            return this.getGrid() != -1 && this.getGridObject() != null;
+            return this.getGrid() != -1 && this.getGridObject() != null && !this.forbiddenConnections.contains(facing);
         return super.hasCapability(capability, facing);
     }
 
@@ -280,13 +280,17 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends QBarTileBase 
 
             TileEntity node = this.world.getTileEntity(this.getAdjacentPos(facing));
             if (node instanceof ITileCable && this.canConnect(facing, (ITileNode<?>) node) &&
-                    ((ITileCable) node).canConnect(facing.getOpposite(), this) &&
-                    this.getGridObject().canMerge(((ITileCable) node).getGridObject()))
+                    ((ITileCable) node).canConnect(facing.getOpposite(), this))
             {
-                if (this.getConnections().length == 0)
-                    GridManager.getInstance().mergeGrids(((ITileCable) node).getGridObject(), this.getGridObject());
-                else
-                    GridManager.getInstance().mergeGrids(this.getGridObject(), ((ITileCable) node).getGridObject());
+                if (this.getGridObject().canMerge(((ITileCable) node).getGridObject()))
+                {
+                    if (this.getConnections().length == 0)
+                        GridManager.getInstance().mergeGrids(((ITileCable) node).getGridObject(), this.getGridObject());
+                    else
+                        GridManager.getInstance().mergeGrids(this.getGridObject(), ((ITileCable) node).getGridObject());
+                }
+                else if (((ITileCable) node).getGrid() != this.getGrid())
+                    return;
 
                 ((ITileCable) node).connect(facing.getOpposite(), this);
                 this.connect(facing, (ITileCable<G>) node);
