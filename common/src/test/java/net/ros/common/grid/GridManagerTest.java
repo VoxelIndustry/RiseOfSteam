@@ -71,7 +71,6 @@ public class GridManagerTest
     {
         CableGrid grid = mock(CableGrid.class);
         when(grid.getIdentifier()).thenReturn(0);
-        when(grid.isEmpty()).thenReturn(false);
 
         GridManager.getInstance().addGrid(grid);
         GridManager.getInstance().tickGrids();
