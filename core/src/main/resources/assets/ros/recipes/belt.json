@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "ros:belt",
+    "data": 0,
+    "count": 3
+  },
+  "pattern": [
+    "XXX",
+    "IGI",
+    "PPP"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "G": {
+      "item": "ros:gearbox",
+      "data": 0
+    },
+    "P": {
+      "item": "ros:steampipe",
+      "data": 0
+    }
+  }
+}

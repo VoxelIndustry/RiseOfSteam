@@ -1,0 +1,50 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "ros:offshore_pump.obj",
+    "custom": {
+      "flip-v": true
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 180
+      },
+      "south": {},
+      "east": {
+        "y": 270
+      },
+      "west": {
+        "y": 90
+      },
+      "up": {},
+      "down": {}
+    },
+    "inventory": {
+      "model": "ros:offshore_pump.obj",
+      "transform": {
+        "scale": 0.85,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.025,
+          0
+        ]
+      }
+    }
+  }
+}

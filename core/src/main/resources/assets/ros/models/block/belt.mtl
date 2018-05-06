@@ -1,0 +1,5 @@
+newmtl None
+map_Kd ros:blocks/belt
+
+newmtl Top
+map_Kd ros:blocks/belt_top

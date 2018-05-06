@@ -1,0 +1,44 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ros:items/steamcapsule"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "time": 0.0
+      },
+      "model": "ros:item/steamcapsule"
+    },
+    {
+      "predicate": {
+        "time": 0.20
+      },
+      "model": "ros:item/steamcapsule_20"
+    },
+    {
+      "predicate": {
+        "time": 0.40
+      },
+      "model": "ros:item/steamcapsule_40"
+    },
+    {
+      "predicate": {
+        "time": 0.60
+      },
+      "model": "ros:item/steamcapsule_60"
+    },
+    {
+      "predicate": {
+        "time": 0.80
+      },
+      "model": "ros:item/steamcapsule_80"
+    },
+    {
+      "predicate": {
+        "time": 1
+      },
+      "model": "ros:item/steamcapsule_100"
+    }
+  ]
+}

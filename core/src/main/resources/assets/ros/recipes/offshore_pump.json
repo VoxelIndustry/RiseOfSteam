@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "ros:offshore_pump",
+    "data": 0
+  },
+  "pattern": [
+    " P ",
+    " GS",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "ros:fluidpipe",
+      "data": 0
+    },
+    "G": {
+      "item": "ros:gearbox",
+      "data": 0
+    },
+    "S": {
+      "item": "ros:steampipe",
+      "data":0
+    }
+  }
+}

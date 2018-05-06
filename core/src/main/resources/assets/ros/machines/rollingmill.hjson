@@ -1,0 +1,67 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 3
+            height: 2
+            length: 2
+            offsetX: 1
+        }
+        blueprint: [
+            {
+                time: 30
+                items: [
+                    10x(plateBrass)
+                    10x(plateIron)
+                ]
+            }
+            {
+                time: 20
+                items: [
+                    2xros:gearbox
+                    ros:belt
+                ]
+            }
+        ]
+        crafter: {
+            category: ros.rollingmill
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 1
+        }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, -1]
+                    facing: SOUTH
+                    slots: [0]
+                    connText: rollingmill.output
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 1, 1]
+                    facing: SOUTH
+                    slots: [0]
+                    connText: rollingmill.input
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [-1, 0, 0]
+                    facing: WEST
+                }
+            ]
+        }
+    }
+}

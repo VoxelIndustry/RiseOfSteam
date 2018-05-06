@@ -1,0 +1,71 @@
+{
+    tier: 2
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 30
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 2
+            height: 2
+            length: 3
+            offsetZ: 1
+        }
+        blueprint: [
+            {
+                time: 20
+                item: 20xminecraft:brick_block
+            }
+            {
+                time: 30
+                items: [
+                    20x(plateBronze)
+                    10x(plateSteel)
+                ]
+            }
+            {
+                time: 15
+                items: [
+                    4xros:steampipe
+                    3xros:belt
+                ]
+            }
+        ]
+        crafter: {
+            category: ros.furnace
+            speed: 3
+            itemInput: 1
+            itemOutput: 1
+        }
+        automation: {
+            outputs: [
+                {
+                    pos: [1, 0, -2]
+                    facing: SOUTH
+                    slots: [0]
+                    connText: steamfurnace.input
+                }
+            ]
+            inputs: [
+                {
+                    pos: [1, 1, 1]
+                    facing: SOUTH
+                    slots: [0]
+                    connText: steamfurnace.input
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 0]
+                    facing: WEST
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,90 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 3
+            height: 2
+            length: 3
+            offsetX: 1
+            offsetZ: 1
+        }
+        blueprint: [
+            {
+                time: 15
+                item: 20xminecraft:iron_ingot
+            }
+            {
+                time: 20
+                item: 20x(plateBronze)
+            }
+            {
+                time: 15
+                items: [
+                    4xros:steampipe
+                    2xros:fluidpipe
+                    3xros:belt
+                ]
+            }
+        ]
+        crafter: {
+            category: ros.orewasher
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 2
+            tankInput: [ "washer" ]
+        }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, 2]
+                    facing: NORTH
+                    slots: [0]
+                    connText: washer.oresoutput
+                }
+                {
+                    pos: [-2, 0, 1]
+                    facing: EAST
+                    slots: [1]
+                    connText: washer.junkoutput
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 1, -1]
+                    facing: NORTH
+                    slots: [0]
+                    connText: washer.oresinput
+                }
+            ]
+        }
+        fluid: [
+            {
+                name: washer
+                capacity: 8000
+            }
+        ]
+        io: {
+            steam: [
+                {
+                    pos: [-1, 0, 0]
+                    facing: WEST
+                }
+            ]
+            fluid: [
+                {
+                    pos: [1, 0, -1]
+                    facing: EAST
+                    tank: washer
+                }
+            ]
+        }
+    }
+}

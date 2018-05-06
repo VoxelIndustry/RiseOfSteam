@@ -1,0 +1,51 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "ros:steamfurnacemk1.obj",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 180
+      },
+      "south": {},
+      "east": {
+        "y": 270
+      },
+      "west": {
+        "y": 90
+      }
+    },
+    "multiblockgag": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": {
+      "model": "ros:steamfurnacemk1.obj",
+      "transform": {
+        "scale": 0.23,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.3,
+          0
+        ]
+      }
+    }
+  }
+}

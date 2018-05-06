@@ -1,0 +1,57 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "transform": "forge:default-block",
+    "custom": {
+      "flip-v": true
+    },
+    "model": "ros:steamvalve.obj"
+  },
+  "variants": {
+    "axis": {
+      "x": {
+        "x": -90
+      },
+      "y": {
+        "transform": {
+          "rotation": [
+            {
+              "z": -90
+            }
+          ]
+        }
+      },
+      "z": {
+      }
+    },
+    "facing": {
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    },
+    "axis=y,facing=east": {
+      "transform": {
+        "rotation": [
+          {
+            "z": -90,
+            "x": 45
+          }
+        ]
+      }
+    },
+    "inventory": {
+      "model": "ros:steamvalve.obj"
+    }
+  }
+}

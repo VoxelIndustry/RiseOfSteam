@@ -1,0 +1,25 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant=tin_sand": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/tin_sand"
+      }
+    },
+    "variant=copper_sand": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/copper_sand"
+      }
+    }
+  },
+  "forge_marker": 1
+}

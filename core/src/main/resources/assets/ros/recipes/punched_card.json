@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "ros:punched_card",
+    "data": 0
+  },
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:paper"
+    }
+  }
+}

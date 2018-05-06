@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "ros:keypunch",
+    "data": 0
+  },
+  "pattern": [
+    "I I",
+    "SSS",
+    "P P"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "slabWood"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    }
+  }
+}

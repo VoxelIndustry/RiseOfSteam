@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "ros:redstone_card",
+    "data": 0,
+    "count": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "ros:punched_card",
+      "data": 0
+    }
+  ]
+}

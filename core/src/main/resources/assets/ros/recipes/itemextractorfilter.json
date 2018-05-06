@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "ros:itemextractor",
+    "data": 1
+  },
+  "pattern": [
+    " H ",
+    "IGI",
+    " L "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "G": {
+      "item": "ros:gearbox",
+      "data": 0
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "ros:logicbox",
+      "data": 0
+    }
+  }
+}

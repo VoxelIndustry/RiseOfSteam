@@ -1,8 +1,8 @@
 [
 {
-  "modid": "qbar",
-  "name": "Steam and Gears",
-  "description": "STEAM EVERYWHERE",
+  "modid": "ros",
+  "name": "Rise Of Steam",
+  "description": "The dawn of a steam age",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

@@ -1,0 +1,69 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": {
+      "textures": {
+        "all": "ros:blocks/pentlandite"
+      }
+    },
+    "ores=pentlandite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/pentlandite_poor"
+      }
+    },
+    "ores=pentlandite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/pentlandite_normal"
+      }
+    },
+    "ores=pentlandite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/pentlandite_rich"
+      }
+    },
+    "ores=laterite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/laterite_poor"
+      }
+    },
+    "ores=laterite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/laterite_normal"
+      }
+    },
+    "ores=laterite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/laterite_rich"
+      }
+    },
+    "ores=garnierite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/garnierite_poor"
+      }
+    },
+    "ores=garnierite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/garnierite_normal"
+      }
+    },
+    "ores=garnierite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/garnierite_rich"
+      }
+    }
+  },
+  "forge_marker": 1
+}

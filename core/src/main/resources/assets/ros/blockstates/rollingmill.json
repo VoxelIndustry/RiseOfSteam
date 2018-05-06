@@ -1,0 +1,51 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "ros:rollingmill.obj",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {},
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    },
+    "multiblockgag": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": {
+      "model": "ros:rollingmill.obj",
+      "transform": {
+        "scale": 0.23,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.3,
+          0
+        ]
+      }
+    }
+  }
+}

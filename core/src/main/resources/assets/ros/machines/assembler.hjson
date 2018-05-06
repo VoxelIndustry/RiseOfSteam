@@ -1,0 +1,67 @@
+{
+    tier: 1
+    type: CRAFTER
+    components: {
+        steam: {
+            capacity: 2000
+            consumption: 10
+            workingPressure: BASE_PRESSURE
+            maxPressure: 1.5xBASE_PRESSURE
+            overcharge: true
+        }
+        multiblock: {
+            width: 1
+            height: 2
+            length: 2
+        }
+        blueprint: [
+            {
+                time: 15
+                items: [
+                    16x(plateIron)
+                    ros:gearbox
+                    ros:logicbox
+                ]
+            }
+            {
+                time: 10
+                items: [
+                    10xros:steampipe
+                    ros:belt
+                ]
+            }
+        ]
+        crafter: {
+            speed: 1.0
+            itemInput: 1
+            itemOutput: 1
+        }
+        automation: {
+            outputs: [
+                {
+                    pos: [0, 0, 2]
+                    facing: NORTH
+                    slots: 11..20
+                    order: balanced
+                    connText: assembler.results
+                }
+            ]
+            inputs: [
+                {
+                    pos: [0, 1, 0]
+                    facing: NORTH
+                    slots: 1..10
+                    connText: assembler.ingredients
+                }
+            ]
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 1]
+                    facing: EAST
+                }
+            ]
+        }
+    }
+}

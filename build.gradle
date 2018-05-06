@@ -20,8 +20,8 @@ allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     version = "0.1.0" + "-" + (System.env.TRAVIS_BRANCH == null ? "local" : System.env.TRAVIS_BRANCH.replaceAll("/", "-")) + "-r" + System.env.TRAVIS_BUILD_NUMBER
-    group = "net.qbar"
-    archivesBaseName = "qbar"
+    group = "net.ros"
+    archivesBaseName = "riseofsteam"
 
     compileJava.options.encoding = 'UTF-8'
     sourceCompatibility = targetCompatibility = "1.8"
@@ -70,7 +70,7 @@ allprojects {
 
     shadowJar {
         classifier = 'fat'
-        relocate 'com.elytradev.concrete', 'net.qbar.com.elytradev.concrete'
+        relocate 'com.elytradev.concrete', 'net.ros.com.elytradev.concrete'
         configurations = [project.configurations.shadow]
         dependencies {
             exclude(dependency {
@@ -158,7 +158,7 @@ project('core') {
     apply plugin: 'net.opmcorp.craftystates'
 
     statesTranspiling {
-        blockstatesPath = "src/main/resources/assets/qbar/blockstates/"
+        blockstatesPath = "src/main/resources/assets/ros/blockstates/"
         prettyPrinting = true
     }
 
@@ -190,7 +190,7 @@ shadowJar.dependsOn subprojects.tasks['classes']
 
 shadowJar {
     classifier = 'fat'
-    relocate 'com.elytradev.concrete', 'net.qbar.com.elytradev.concrete'
+    relocate 'com.elytradev.concrete', 'net.ros.com.elytradev.concrete'
     configurations = [project.configurations.shadow]
     dependencies {
         exclude(dependency {

@@ -1,0 +1,19 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant=iron_dirt": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/iron_dirt"
+      }
+    }
+  },
+  "forge_marker": 1
+}

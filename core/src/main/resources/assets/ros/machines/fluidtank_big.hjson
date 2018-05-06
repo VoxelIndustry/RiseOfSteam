@@ -1,0 +1,71 @@
+{
+    tier: 1
+    type: LOGISTIC
+    components: {
+        multiblock: {
+            width: 3
+            height: 4
+            length: 3
+            offsetX: 1
+            offsetZ: 1
+        }
+        fluid: [
+            {
+                name: fluid
+                capacity: 432000
+            }
+        ]
+        blueprint: [
+            {
+                time: 40
+                item: 64x(plateBronze)
+            }
+            {
+                time: 30
+                items: [
+                    16xros:fluidpipe
+                    minecraft:glass_pane
+                ]
+            }
+        ]
+        io: {
+            fluid: [
+                {
+                    fromPos: [-1, 0, -1]
+                    toPos: [1, 0, -1]
+                    facing: NORTH
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [1, 0, -1]
+                    toPos: [1, 0, 1]
+                    facing: EAST
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [-1, 0, -1]
+                    toPos: [-1, 0, 1]
+                    facing: WEST
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [-1, 0, 1]
+                    toPos: [1, 0, 1]
+                    facing: SOUTH
+                    tank: fluid
+                    restriction: output-only
+                }
+                {
+                    fromPos: [-1, 3, -1]
+                    toPos: [1, 3, 1]
+                    facing: UP
+                    tank: fluid
+                    restriction: input-only
+                }
+            ]
+        }
+    }
+}

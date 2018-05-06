@@ -1,0 +1,61 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant=copper": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_copper"
+      }
+    },
+    "variant=tin": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_tin"
+      }
+    },
+    "variant=zinc": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_zinc"
+      }
+    },
+    "variant=nickel": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_nickel"
+      }
+    },
+    "variant=steel": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_steel"
+      }
+    },
+    "variant=bronze": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_bronze"
+      }
+    },
+    "variant=brass": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_brass"
+      }
+    },
+    "variant=lead": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_lead"
+      }
+    }
+  },
+  "forge_marker": 1
+}

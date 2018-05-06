@@ -1,0 +1,7 @@
+button.tab:enabled {
+    -background-texture: url("ros:textures/gui/tab_inactive.png");
+}
+
+button.tab:disabled {
+    -background-texture: url("ros:textures/gui/tab_active.png");
+}

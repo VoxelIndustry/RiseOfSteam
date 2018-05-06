@@ -1,0 +1,17 @@
+{
+  "craftystates_marker": 1,
+  "defaults": {
+    "model": "cube_all"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "matcher": {
+      "variant": ["iron_dirt"],
+      "values": {
+        "texture#all": "ros:blocks/ores/#variant"
+      }
+    }
+  }
+}

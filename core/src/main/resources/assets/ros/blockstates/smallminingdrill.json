@@ -1,0 +1,51 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "ros:small_mining_drill.obj",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 270
+      },
+      "south": {
+        "y": 90
+      },
+      "east": {},
+      "west": {
+        "y": 180
+      }
+    },
+    "multiblockgag": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": {
+      "model": "ros:small_mining_drill.obj",
+      "transform": {
+        "scale": 0.23,
+        "rotation": [
+          {
+            "x": 20
+          },
+          {
+            "y": -45
+          }
+        ],
+        "translation": [
+          0,
+          -0.3,
+          0
+        ]
+      }
+    }
+  }
+}

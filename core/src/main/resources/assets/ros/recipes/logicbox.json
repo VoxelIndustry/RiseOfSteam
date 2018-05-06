@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "ros:logicbox",
+    "data": 0
+  },
+  "pattern": [
+    "SIS",
+    "IRI",
+    "SIS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "ros:redstone_card"
+    },
+    "R": {
+      "item": "ros:ironrod"
+    }
+  }
+}

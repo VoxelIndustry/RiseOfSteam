@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "ros:fluidpump",
+    "data": 0
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ros:gearbox",
+      "data": 0
+    },
+    {
+      "item": "ros:fluidpipe",
+      "data": 0
+    }
+  ]
+}

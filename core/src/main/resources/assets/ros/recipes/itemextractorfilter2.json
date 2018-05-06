@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "ros:itemextractor",
+    "data": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ros:itemextractor",
+      "data": 0
+    },
+    {
+      "item": "ros:logicbox",
+      "data": 0
+    }
+  ]
+}

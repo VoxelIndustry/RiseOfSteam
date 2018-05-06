@@ -1,0 +1,24 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "transform": "forge:default-block",
+    "custom": {
+      "flip-v": true
+    },
+    "model": "ros:structure.obj"
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "multiblockgag": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": {
+      "model": "ros:structure.obj"
+    }
+  }
+}

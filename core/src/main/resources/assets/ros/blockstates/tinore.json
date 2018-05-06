@@ -1,0 +1,49 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "ores=cassiterite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/cassiterite_poor"
+      }
+    },
+    "ores=cassiterite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/cassiterite_normal"
+      }
+    },
+    "ores=cassiterite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/cassiterite_rich"
+      }
+    },
+    "ores=teallite,richness=poor": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/teallite_poor"
+      }
+    },
+    "ores=teallite,richness=normal": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/teallite_normal"
+      }
+    },
+    "ores=teallite,richness=rich": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/ores/teallite_rich"
+      }
+    }
+  },
+  "forge_marker": 1
+}

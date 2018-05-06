@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "ros:gearbox",
+    "data": 0
+  },
+  "pattern": [
+    "GIG",
+    "IRI",
+    "GIG"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "gearBronze"
+    },
+    "R": {
+      "item": "ros:ironrod"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "ros:engineer_storage.obj",
+    "transform": "forge:default-block",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": {
+      "transform": "forge:default-block"
+    },
+    "facing": {
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      },
+      "up": {},
+      "down": {}
+    },
+    "inventory": {
+      "model": "ros:engineer_storage.obj"
+    }
+  }
+}

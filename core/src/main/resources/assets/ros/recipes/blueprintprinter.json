@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "ros:blueprintprinter",
+    "data": 0
+  },
+  "pattern": [
+    " G ",
+    " G ",
+    " C "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "gearIron"
+    },
+    "C": {
+      "item": "minecraft:crafting_table"
+    }
+  }
+}
