@@ -17,10 +17,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.ros.common.init.ROSItems;
-import net.ros.common.tile.TilePipeBase;
 import net.ros.client.AABBRaytracer;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.init.ROSItems;
+import net.ros.common.tile.TilePipeBase;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -118,8 +118,11 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
         if (!w.isRemote)
         {
             BlockPos offset = pos.subtract(posNeighbor);
-            ((TilePipeBase<?, ?>) w.getTileEntity(pos)).scanHandler(
-                    EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()));
+            EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ());
+
+            T pipe = this.getWorldTile(w, pos);
+            pipe.scanHandler(facing);
+            pipe.scanValve(facing.getOpposite());
         }
     }
 

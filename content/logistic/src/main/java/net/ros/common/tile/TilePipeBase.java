@@ -21,10 +21,12 @@ import net.ros.common.network.PipeUpdatePacket;
 import java.util.*;
 import java.util.Map.Entry;
 
-public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase implements ILoadable, ITileCable<G>
+public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
+        implements ILoadable, ITileCable<G>
 {
     protected final EnumSet<EnumFacing>                renderConnections;
     protected final EnumSet<EnumFacing>                forbiddenConnections;
+    protected final EnumSet<EnumFacing>                valveOverrides;
     @Getter
     protected final EnumMap<EnumFacing, ITileCable<G>> connectionsMap;
     protected final EnumMap<EnumFacing, H>             adjacentHandler;
@@ -46,6 +48,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
 
         this.renderConnections = EnumSet.noneOf(EnumFacing.class);
         this.forbiddenConnections = EnumSet.noneOf(EnumFacing.class);
+        this.valveOverrides = EnumSet.noneOf(EnumFacing.class);
     }
 
     @Override
@@ -67,6 +70,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
             lines.add("Errored grid!");
         this.connectionsMap.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
         this.adjacentHandler.forEach((facing, handler) -> lines.add("Handler " + facing + ": " + (handler != null)));
+        this.valveOverrides.forEach(facing -> lines.add("Valve " + facing + ": true"));
     }
 
     public void addSpecificInfo(final List<String> lines)
@@ -79,10 +83,20 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
     }
 
     @Override
+    public void connect(EnumFacing facing, ITileCable<G> to)
+    {
+        this.getConnectionsMap().put(facing, to);
+
+        this.valveOverrides.remove(facing);
+    }
+
+    @Override
     public void disconnect(final EnumFacing facing)
     {
         this.connectionsMap.remove(facing);
         this.updateState();
+
+        this.scanValve(facing);
     }
 
     public void connectHandler(final EnumFacing facing, final H to, final TileEntity tile)
@@ -109,7 +123,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
 
         this.adjacentHandler.keySet().forEach(facing ->
         {
-            final TileEntity handler = this.getBlockWorld().getTileEntity(this.getBlockPos().offset(facing));
+            TileEntity handler = this.getBlockWorld().getTileEntity(this.getBlockPos().offset(facing));
             if (handler instanceof IConnectionAware)
                 ((IConnectionAware) handler).disconnectTrigger(facing.getOpposite(), this.getGridObject());
         });
@@ -137,12 +151,15 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
     public void load()
     {
         GridManager.getInstance().connectCable(this);
-        for (final EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing : EnumFacing.VALUES)
+        {
             this.scanHandler(facing);
+            this.scanValve(facing);
+        }
     }
 
     @Override
-    public void readFromNBT(final NBTTagCompound tag)
+    public void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
 
@@ -153,7 +170,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
         if (this.isClient())
         {
             this.renderConnections.clear();
-            for (final EnumFacing facing : EnumFacing.VALUES)
+            for (EnumFacing facing : EnumFacing.VALUES)
             {
                 if (tag.hasKey("connected" + facing.ordinal()))
                     this.renderConnections.add(facing);
@@ -170,7 +187,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
     }
 
     @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
 
@@ -178,10 +195,11 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
 
         if (this.isServer())
         {
-            for (final Entry<EnumFacing, ITileCable<G>> entry : this.connectionsMap.entrySet())
+            for (Entry<EnumFacing, ITileCable<G>> entry : this.connectionsMap.entrySet())
                 tag.setBoolean("connected" + entry.getKey().ordinal(), true);
-            for (final Entry<EnumFacing, H> entry : this.adjacentHandler.entrySet())
+            for (Entry<EnumFacing, H> entry : this.adjacentHandler.entrySet())
                 tag.setBoolean("connected" + entry.getKey().ordinal(), true);
+            this.valveOverrides.forEach(facing -> tag.setBoolean("connected" + facing.ordinal(), true));
         }
 
         for (EnumFacing facing : EnumFacing.VALUES)
@@ -196,6 +214,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
     }
 
     protected abstract void scanHandler(BlockPos posNeighbor);
+
+    public abstract void scanValve(EnumFacing facing);
 
     @Override
     public void adjacentConnect()
@@ -271,8 +291,10 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
                     });
                 }
             }
-            else if (this.adjacentHandler.containsKey(facing))
+            if (this.adjacentHandler.containsKey(facing))
                 this.disconnectHandler(facing, this.world.getTileEntity(this.getAdjacentPos(facing)));
+            if (this.valveOverrides.remove(facing))
+                this.updateState();
         }
         else
         {
@@ -299,7 +321,10 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
                 ((ITileCable<G>) node).updateState();
             }
             else
+            {
                 this.scanHandler(facing);
+                this.scanValve(facing);
+            }
         }
     }
 
@@ -332,7 +357,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase impl
     {
         if (this.isClient())
             return this.renderConnections.contains(facing);
-        return this.connectionsMap.containsKey(facing) || this.adjacentHandler.containsKey(facing);
+        return this.connectionsMap.containsKey(facing) || this.adjacentHandler.containsKey(facing)
+                || this.valveOverrides.contains(facing);
     }
 
     public NBTTagCompound writeRenderConnections(NBTTagCompound tag)

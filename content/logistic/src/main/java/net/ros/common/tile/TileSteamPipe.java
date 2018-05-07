@@ -8,9 +8,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.grid.impl.SteamGrid;
 import net.ros.common.grid.node.ISteamPipe;
 import net.ros.common.grid.node.ITileNode;
-import net.ros.common.steam.SteamUtil;
 import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamCapabilities;
+import net.ros.common.steam.SteamUtil;
 
 import java.util.List;
 
@@ -119,6 +119,24 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
                 }
             }
         }
+    }
+
+    @Override
+    public void scanValve(EnumFacing facing)
+    {
+        if(this.forbiddenConnections.contains(facing))
+            return;
+        TileEntity tile = this.getWorld().getTileEntity(pos.offset(facing));
+
+        if (!(tile instanceof TileSteamValve) || ((TileSteamValve) tile).isOpen())
+        {
+            this.valveOverrides.remove(facing);
+            this.updateState();
+            return;
+        }
+
+        valveOverrides.add(facing);
+        this.updateState();
     }
 
     @Override

@@ -8,6 +8,8 @@ public class SteamUtil
 {
     public static final int BASE_PRESSURE = 1;
 
+    public static final SteamTank EMPTY_TANK = new SteamTank(0, 0, 0);
+
     public static final NumberFormat pressureFormat;
 
     static

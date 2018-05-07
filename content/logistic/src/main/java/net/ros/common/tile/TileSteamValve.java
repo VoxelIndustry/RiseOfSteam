@@ -4,9 +4,11 @@ import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.ros.common.block.BlockSteamValve;
 import net.ros.common.grid.GridManager;
 import net.ros.common.grid.node.ITileNode;
-import net.ros.common.block.BlockSteamValve;
+import net.ros.common.steam.SteamCapabilities;
+import net.ros.common.steam.SteamUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,17 +47,11 @@ public class TileSteamValve extends TileSteamPipe
     @Override
     public void addInfo(final List<String> lines)
     {
-        try
-        {
-            super.addInfo(lines);
+        super.addInfo(lines);
 
-            lines.add("Axis: " + this.getAxis());
-            lines.add("Facing: " + this.getFacing());
-            lines.add("Open: " + this.isOpen());
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        lines.add("Axis: " + this.getAxis());
+        lines.add("Facing: " + this.getFacing());
+        lines.add("Open: " + this.isOpen());
     }
 
     @Override
@@ -66,12 +62,16 @@ public class TileSteamValve extends TileSteamPipe
         return super.hasCapability(capability, facing);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability && facing.getAxis() == this.getAxis())
-            return (T) this.getGridObject().getTank();
+        {
+            if (this.isOpen())
+                return SteamCapabilities.STEAM_HANDLER.cast(this.getGridObject().getTank());
+            else
+                return SteamCapabilities.STEAM_HANDLER.cast(SteamUtil.EMPTY_TANK);
+        }
         return super.getCapability(capability, facing);
     }
 
@@ -99,7 +99,12 @@ public class TileSteamValve extends TileSteamPipe
                 this.disconnectItself();
 
                 for (EnumFacing facing : EnumFacing.VALUES)
+                {
+                    if (!this.isConnected(facing))
+                        continue;
+
                     this.disconnect(facing);
+                }
                 this.setGrid(-1);
                 GridManager.getInstance().connectCable(this);
             }
