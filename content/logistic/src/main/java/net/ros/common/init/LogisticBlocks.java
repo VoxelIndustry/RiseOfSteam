@@ -21,6 +21,7 @@ public class LogisticBlocks
         ROSBlocks.registerBlock(new BlockOffshorePump());
 
         ROSBlocks.registerBlock(new BlockSteamValve());
+        ROSBlocks.registerBlock(new BlockFluidValve());
 
         ROSBlocks.registerBlock(new BlockBelt());
         ROSBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
@@ -34,5 +35,6 @@ public class LogisticBlocks
         ROSBlocks.registerTile(TileExtractor.class, "itemextractor");
         ROSBlocks.registerTile(TileSplitter.class, "itemsplitter");
         ROSBlocks.registerTile(TileSteamValve.class, "steamvalve");
+        ROSBlocks.registerTile(TileFluidValve.class, "fluidvalve");
     }
 }
