@@ -1,0 +1,18 @@
+{
+    tier: 1
+    type: LOGISTIC
+    components: {
+        steam: {
+            capacity: 2048
+            maxPressure: 1x5BASE_PRESSURE
+        }
+        io: {
+            steam: [
+                {
+                    pos: [0, 0, 0]
+                    facing: ["WEST", "EAST", "NORTH", "SOUTH", "DOWN"]
+                }
+            ]
+        }
+    }
+}

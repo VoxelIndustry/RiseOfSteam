@@ -4,37 +4,41 @@ import net.ros.common.block.*;
 import net.ros.common.block.item.ItemBlockMetadata;
 import net.ros.common.tile.*;
 import net.ros.common.tile.machine.TileBelt;
-import net.ros.common.tile.TileFluidPipe;
-import net.ros.common.tile.TileFluidPump;
 import net.ros.common.tile.machine.TileExtractor;
 import net.ros.common.tile.machine.TileSplitter;
+
+import static net.ros.common.init.ROSBlocks.registerBlock;
+import static net.ros.common.init.ROSBlocks.registerTile;
 
 public class LogisticBlocks
 {
     public static void init()
     {
-        ROSBlocks.registerBlock(new BlockPipeBase<>("fluidpipe", 6 / 16D,
+        registerBlock(new BlockPipeBase<>("fluidpipe", 6 / 16D,
                 () -> new TileFluidPipe(64), TileFluidPipe.class));
-        ROSBlocks.registerBlock(new BlockPipeBase<>("steampipe", 5 / 16D,
+        registerBlock(new BlockPipeBase<>("steampipe", 5 / 16D,
                 () -> new TileSteamPipe(64, 1.5f), TileSteamPipe.class));
-        ROSBlocks.registerBlock(new BlockFluidPump());
-        ROSBlocks.registerBlock(new BlockOffshorePump());
+        registerBlock(new BlockFluidPump());
+        registerBlock(new BlockOffshorePump());
 
-        ROSBlocks.registerBlock(new BlockSteamValve());
-        ROSBlocks.registerBlock(new BlockFluidValve());
+        registerBlock(new BlockSteamValve());
+        registerBlock(new BlockFluidValve());
 
-        ROSBlocks.registerBlock(new BlockBelt());
-        ROSBlocks.registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
-        ROSBlocks.registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
+        registerBlock(new BlockBelt());
+        registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
+        registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
 
-        ROSBlocks.registerTile(TileFluidPipe.class, "fluidpipe");
-        ROSBlocks.registerTile(TileSteamPipe.class, "steampipe");
-        ROSBlocks.registerTile(TileFluidPump.class, "fluidpump");
-        ROSBlocks.registerTile(TileOffshorePump.class, "offshore_pump");
-        ROSBlocks.registerTile(TileBelt.class, "belt");
-        ROSBlocks.registerTile(TileExtractor.class, "itemextractor");
-        ROSBlocks.registerTile(TileSplitter.class, "itemsplitter");
-        ROSBlocks.registerTile(TileSteamValve.class, "steamvalve");
-        ROSBlocks.registerTile(TileFluidValve.class, "fluidvalve");
+        registerBlock(new BlockSteamVent());
+
+        registerTile(TileFluidPipe.class, "fluidpipe");
+        registerTile(TileSteamPipe.class, "steampipe");
+        registerTile(TileFluidPump.class, "fluidpump");
+        registerTile(TileOffshorePump.class, "offshore_pump");
+        registerTile(TileBelt.class, "belt");
+        registerTile(TileExtractor.class, "itemextractor");
+        registerTile(TileSplitter.class, "itemsplitter");
+        registerTile(TileSteamValve.class, "steamvalve");
+        registerTile(TileFluidValve.class, "fluidvalve");
+        registerTile(TileSteamVent.class, "steamvent");
     }
 }

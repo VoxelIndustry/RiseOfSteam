@@ -48,6 +48,7 @@ public class Machines
     public static MachineDescriptor MEDIUM_STEAM_TANK;
     public static MachineDescriptor ITEM_SPLITTER;
     public static MachineDescriptor ITEM_EXTRACTOR;
+    public static MachineDescriptor STEAM_VENT;
 
     private static HashMap<String, MachineDescriptor>                                  machines = new HashMap<>();
     private static HashMap<Class<? extends IMachineComponent>, Set<MachineDescriptor>> subLists = new HashMap<>();
@@ -104,6 +105,7 @@ public class Machines
         MEDIUM_STEAM_TANK = loadMachine("steamtank_medium");
         ITEM_SPLITTER = loadMachine("item_splitter");
         ITEM_EXTRACTOR = loadMachine("item_extractor");
+        STEAM_VENT = loadMachine("steam_vent");
 
         if (!isPreloading())
             getAllByComponent(Blueprint.class).forEach(new BlueprintLoader());

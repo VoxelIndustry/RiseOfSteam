@@ -1,21 +1,22 @@
 package net.ros.common.tile.machine;
 
 import lombok.Getter;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.ros.common.machine.MachineDescriptor;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.IModularMachine;
+import net.ros.common.machine.module.ISerializableModule;
+import net.ros.common.machine.module.MachineModule;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ITileMultiblockCore;
 import net.ros.common.tile.TileBase;
-import net.ros.common.machine.MachineDescriptor;
-import net.ros.common.machine.module.ISerializableModule;
-import net.ros.common.machine.module.MachineModule;
 import org.yggard.hermod.EventDispatcher;
 
 import javax.annotation.Nullable;
@@ -146,7 +147,11 @@ public class TileModularMachine extends TileBase implements IModularMachine, ITi
     @Override
     public EnumFacing getFacing()
     {
-        return this.world.getBlockState(this.pos).getValue(BlockMultiblockBase.FACING);
+        IBlockState state = this.world.getBlockState(this.pos);
+        if (state.getPropertyKeys().contains(BlockMultiblockBase.FACING))
+            return state.getValue(BlockMultiblockBase.FACING);
+        else
+            return EnumFacing.UP;
     }
 
     @Nullable
