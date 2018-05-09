@@ -118,11 +118,11 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
         if (!w.isRemote)
         {
             BlockPos offset = pos.subtract(posNeighbor);
-            EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ());
+            EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ()).getOpposite();
 
             T pipe = this.getWorldTile(w, pos);
             pipe.scanHandler(facing);
-            pipe.scanValve(facing.getOpposite());
+            pipe.scanValve(facing);
         }
     }
 
