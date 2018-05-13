@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockMachineBase;
+import net.ros.common.block.BlockMetal;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ItemBlockMultiblockBase;
 
@@ -95,7 +96,9 @@ public class ROSBlocks
     public static final Block ENERGIZED_TALL_GRASS = null;
 
     @ObjectHolder("blockmetal")
-    public static final Block            METALBLOCK         = null;
+    public static final BlockMetal       METALBLOCK         = null;
+    @ObjectHolder("blockmetalplate")
+    public static final BlockMetal       METALPLATEBLOCK         = null;
     @ObjectHolder("sawmill")
     public static final BlockMachineBase SAWMILL            = null;
     @ObjectHolder("alloycauldron")

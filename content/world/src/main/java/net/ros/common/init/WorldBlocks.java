@@ -38,8 +38,11 @@ public class WorldBlocks
         registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"),
                 block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
 
-        registerBlock(new BlockMetal(), block -> new ItemBlockMetadata(block,
-                Materials.metals.toArray(new String[BlockMetal.VARIANTS.getAllowedValues().size()]))
+        registerBlock(BlockMetal.build("blockmetal").type("block").create(), block -> new ItemBlockMetadata(block,
+                Materials.metals.toArray(new String[block.getVariants().getAllowedValues().size()]))
                 .setFirstVariation(true));
+        registerBlock(BlockMetal.build("blockmetalplate").type("blockPlate").create(), block ->
+                new ItemBlockMetadata(block, Materials.metals.toArray(new String[block.getVariants()
+                        .getAllowedValues().size()])).setFirstVariation(true));
     }
 }

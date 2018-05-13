@@ -1,5 +1,6 @@
 package net.ros.common.block;
 
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -21,30 +22,31 @@ import java.util.function.BiConsumer;
 
 public class BlockMetal extends BlockBase implements IModelProvider
 {
-    public static PropertyString VARIANTS = new PropertyString("variant",
-            Materials.metals.stream().filter(metal ->
-                    !OreDictionary.doesOreNameExist("block" + StringUtils.capitalize(metal))).toArray(String[]::new));
+    private static PropertyString FAKE_VARIANTS;
 
-    public BlockMetal()
+    @Getter
+    public final PropertyString variants;
+
+    private BlockMetal(String name, PropertyString variants)
     {
-        super("blockmetal", Material.IRON);
+        super(name, Material.IRON);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, VARIANTS.getByIndex(0)));
-
+        this.variants = variants;
+        this.setDefaultState(this.blockState.getBaseState().withProperty(variants, variants.getByIndex(0)));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public int getItemModelCount()
     {
-        return VARIANTS.getAllowedValues().size();
+        return variants.getAllowedValues().size();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public String getItemModelByIndex(int index)
     {
-        return "variant=" + this.getStateFromMeta(index).getValue(VARIANTS);
+        return "variant=" + this.getStateFromMeta(index).getValue(variants);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class BlockMetal extends BlockBase implements IModelProvider
     {
         return (i, block) ->
         {
-            int index = Materials.metals.indexOf(VARIANTS.getByIndex(i));
+            int index = Materials.metals.indexOf(variants.getByIndex(i));
 
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), index, new ModelResourceLocation(
                     block.getRegistryName(), this.getItemModelByIndex(index)));
@@ -71,7 +73,7 @@ public class BlockMetal extends BlockBase implements IModelProvider
     {
         for (int i = 0; i < Materials.metals.size(); i++)
         {
-            if (VARIANTS.getAllowedValues().contains(Materials.metals.get(i)))
+            if (variants.getAllowedValues().contains(Materials.metals.get(i)))
                 items.add(new ItemStack(this, 1, i));
         }
     }
@@ -79,18 +81,51 @@ public class BlockMetal extends BlockBase implements IModelProvider
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(VARIANTS, Materials.metals.get(meta));
+        return this.getDefaultState().withProperty(variants, Materials.metals.get(meta));
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return Materials.metals.indexOf(state.getValue(VARIANTS));
+        return Materials.metals.indexOf(state.getValue(variants));
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, VARIANTS);
+        return new BlockStateContainer(this, FAKE_VARIANTS);
+    }
+
+    public static Builder build(String name)
+    {
+        return new Builder(name);
+    }
+
+    public static class Builder
+    {
+        private String name;
+        private String type;
+
+        public Builder(String name)
+        {
+            this.name = name;
+        }
+
+        public Builder type(String type)
+        {
+            this.type = type;
+            return this;
+        }
+
+        public BlockMetal create()
+        {
+            PropertyString variants = new PropertyString("variant",
+                    Materials.metals.stream().filter(metal ->
+                            !OreDictionary.doesOreNameExist(type + StringUtils.capitalize(metal)))
+                            .toArray(String[]::new));
+            FAKE_VARIANTS = variants;
+
+            return new BlockMetal(name, variants);
+        }
     }
 }

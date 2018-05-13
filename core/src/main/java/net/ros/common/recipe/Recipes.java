@@ -12,7 +12,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.ros.common.ROSConstants;
-import net.ros.common.block.BlockMetal;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
 import net.ros.common.ore.MineralDensity;
@@ -139,7 +138,8 @@ public class Recipes
             OreDictionary.registerOre("nugget" + StringUtils.capitalize(metal), nugget);
         });
 
-        BlockMetal.VARIANTS.getAllowedValues().forEach(metal ->
+
+        ROSBlocks.METALBLOCK.getVariants().getAllowedValues().forEach(metal ->
                 OreDictionary.registerOre("block" + StringUtils.capitalize(metal),
                         new ItemStack(ROSBlocks.METALBLOCK, 1, Materials.metals.indexOf(metal))));
     }
