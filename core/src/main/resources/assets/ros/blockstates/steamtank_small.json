@@ -3,7 +3,7 @@
   "defaults": {
     "textures": {
     },
-    "model": "ros:solar_mirror.obj",
+    "model": "ros:steamtank_small.obj",
     "custom": {
       "flip-v": true
     }
@@ -29,7 +29,7 @@
       "false": {}
     },
     "inventory": {
-      "model": "ros:solar_mirror.obj",
+      "model": "ros:steamtank_small.obj",
       "transform": {
         "scale": 0.23,
         "rotation": [
