@@ -45,7 +45,18 @@ tile.craftcardlibrary.name=Craft Card Library
 tile.blueprintprinter.name=Blueprint Printer
 tile.engineerstorage.name=Engineer Storage
 
+tile.steamtank_small.name=Small Steam Tank
+tile.steamtank_medium.name=Medium Steam Tank
+tile.capsulefiller.name=Capsule Filler
+
+tile.fluidvalve.name=Fluid Valve
+tile.steamvalve.name=Steam Valve
+tile.steamvent.name=Steam Vent
+
 #Blocks
+tile.gearbox.name=Gear Box
+tile.logicbox.name=Logic Box
+
 tile.blockmetal.copper.name=Copper Block
 tile.blockmetal.bronze.name=Bronze Block
 tile.blockmetal.brass.name=Brass Block
@@ -54,6 +65,17 @@ tile.blockmetal.zinc.name=Zinc Block
 tile.blockmetal.nickel.name=Nickel Block
 tile.blockmetal.steel.name=Steel Block
 tile.blockmetal.lead.name=Lead Block
+
+tile.blockmetalplate.iron.name=Iron Plated Block
+tile.blockmetalplate.gold.name=Gold Plated Block
+tile.blockmetalplate.copper.name=Copper Plated Block
+tile.blockmetalplate.bronze.name=Bronze Plated Block
+tile.blockmetalplate.brass.name=Brass Plated Block
+tile.blockmetalplate.tin.name=Tin Plated Block
+tile.blockmetalplate.zinc.name=Zinc Plated Block
+tile.blockmetalplate.nickel.name=Nickel Plated Block
+tile.blockmetalplate.lead.name=Lead Plated Block
+tile.blockmetalplate.steel.name=Steel Plated Block
 
 #Items
 item.punched_card.name=Punched Card
@@ -87,6 +109,15 @@ item.metalingot.nickel.name=Nickel Ingot
 item.metalingot.lead.name=Lead Ingot
 item.metalingot.steel.name=Steel Ingot
 
+item.metalnugget.copper.name=Copper Nugget
+item.metalnugget.bronze.name=Bronze Nugget
+item.metalnugget.brass.name=Brass Nugget
+item.metalnugget.tin.name=Tin Nugget
+item.metalnugget.zinc.name=Zinc Nugget
+item.metalnugget.nickel.name=Nickel Nugget
+item.metalnugget.lead.name=Lead Nugget
+item.metalnugget.steel.name=Steel Nugget
+
 item.solarreflector.name=Solar Reflector
 item.mineralsludge.name=Mineral Sludge
 item.compressedmineralsludge.name=Compressed Mineral Sludge
@@ -97,9 +128,12 @@ item.mixedrawore.name=Mixed Raw Ore
 
 item.drillcoresample.name=Drill Core Sample
 item.redstone_card.name=Redstone Card
-item.gearbox.name=Gear Box
-item.logicbox.name=Logic Box
 item.multiblockbox.name=Multiblock Box
+
+item.steamcapsule.name=Steam Capsule
+item.steamcapsulex4.name=4x Steam Capsule
+item.steamcapsulex6.name=6x Steam Capsule
+item.steamcapsulex12.name=12x Steam Capsule
 
 #Fluids
 fluid.steam=Steam
