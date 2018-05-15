@@ -29,6 +29,7 @@ public class ROSOBJState implements IModelState
         this.whitelist = visibility;
     }
 
+    @Override
     public Optional<TRSRTransformation> apply(Optional<? extends IModelPart> part)
     {
         if (parent != null)

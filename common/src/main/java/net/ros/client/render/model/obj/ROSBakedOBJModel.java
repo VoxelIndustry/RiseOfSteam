@@ -32,12 +32,12 @@ public class ROSBakedOBJModel extends OBJModel.OBJBakedModel
     private final VertexFormat format;
 
     private ImmutableMap<String, TextureAtlasSprite> textures;
-    private TextureAtlasSprite sprite = ModelLoader.White.INSTANCE;
+    private TextureAtlasSprite                       sprite = ModelLoader.White.INSTANCE;
 
     private LoadingCache<ROSOBJState, ImmutableList<BakedQuad>> cachedVariants;
 
-    public ROSBakedOBJModel(final ROSOBJModel model, final IModelState state, final VertexFormat format,
-                            final ImmutableMap<String, TextureAtlasSprite> textures)
+    ROSBakedOBJModel(final ROSOBJModel model, final IModelState state, final VertexFormat format,
+                     final ImmutableMap<String, TextureAtlasSprite> textures)
     {
         model.super(model, state, format, textures);
 
@@ -88,16 +88,14 @@ public class ROSBakedOBJModel extends OBJModel.OBJBakedModel
     private ImmutableList<BakedQuad> buildQuads(IModelState modelState)
     {
         List<BakedQuad> quads = Lists.newArrayList();
-        Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
-        Set<OBJModel.Face> faces = Collections.synchronizedSet(new LinkedHashSet<OBJModel.Face>());
+        Set<OBJModel.Face> faces = Collections.synchronizedSet(new LinkedHashSet<>());
         Optional<TRSRTransformation> transform = Optional.empty();
 
         for (OBJModel.Group g : this.model.getMatLib().getGroups().values())
         {
             if (modelState.apply(Optional.of(Models.getHiddenModelPart(ImmutableList.of(g.getName())))).isPresent())
-            {
                 continue;
-            }
+
             if (modelState instanceof ROSOBJState)
             {
                 ROSOBJState state = (ROSOBJState) modelState;
@@ -139,26 +137,23 @@ public class ROSBakedOBJModel extends OBJModel.OBJBakedModel
             }
             else
                 sprite = this.textures.get(f.getMaterialName());
+
             UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
             builder.setContractUVs(true);
             builder.setQuadOrientation(
                     EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
             builder.setTexture(sprite);
             OBJModel.Normal faceNormal = f.getNormal();
-            putVertexData(builder, f.getVertices()[0], faceNormal, OBJModel.TextureCoordinate.getDefaultUVs()[0],
-                    sprite);
-            putVertexData(builder, f.getVertices()[1], faceNormal, OBJModel.TextureCoordinate.getDefaultUVs()[1],
-                    sprite);
-            putVertexData(builder, f.getVertices()[2], faceNormal, OBJModel.TextureCoordinate.getDefaultUVs()[2],
-                    sprite);
-            putVertexData(builder, f.getVertices()[3], faceNormal, OBJModel.TextureCoordinate.getDefaultUVs()[3],
-                    sprite);
+
+            for (int i = 0; i < 4; i++)
+                putVertexData(builder, f.getVertices()[i], faceNormal,
+                        OBJModel.TextureCoordinate.getDefaultUVs()[i], sprite);
             quads.add(builder.build());
         }
         return ImmutableList.copyOf(quads);
     }
 
-    private final void putVertexData(UnpackedBakedQuad.Builder builder, OBJModel.Vertex v, OBJModel.Normal faceNormal,
+    private void putVertexData(UnpackedBakedQuad.Builder builder, OBJModel.Vertex v, OBJModel.Normal faceNormal,
                                      OBJModel.TextureCoordinate defUV, TextureAtlasSprite sprite)
     {
         for (int e = 0; e < format.getElementCount(); e++)

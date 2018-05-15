@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public class ROSOBJModel extends OBJModel
 {
-    protected final ResourceLocation modelLocation;
+    private final ResourceLocation modelLocation;
 
     public ROSOBJModel(MaterialLibrary matLib, ResourceLocation modelLocation)
     {
@@ -60,21 +60,19 @@ public class ROSOBJModel extends OBJModel
     @Override
     public IModel process(ImmutableMap<String, String> customData)
     {
-        ROSOBJModel ret = new ROSOBJModel(this.getMatLib(), getResourceLocation(), getCustomData());
-        return ret;
+        return new ROSOBJModel(this.getMatLib(), getResourceLocation(), getCustomData());
     }
 
     @Override
     public IModel retexture(ImmutableMap<String, String> textures)
     {
-        ROSOBJModel ret = new ROSOBJModel(this.getMatLib().makeLibWithReplacements(textures), getResourceLocation()
-                , getCustomData());
-        return ret;
+        return new ROSOBJModel(this.getMatLib().makeLibWithReplacements(textures),
+                getResourceLocation(), getCustomData());
     }
 
-    static Field f_modelLocation;
+    private static Field f_modelLocation;
 
-    public ResourceLocation getResourceLocation()
+    private ResourceLocation getResourceLocation()
     {
         try
         {
@@ -92,9 +90,9 @@ public class ROSOBJModel extends OBJModel
         return null;
     }
 
-    static Field f_customData;
+    private static Field f_customData;
 
-    public Object getCustomData()
+    private Object getCustomData()
     {
         try
         {
@@ -112,7 +110,7 @@ public class ROSOBJModel extends OBJModel
         return null;
     }
 
-    public void setCustomData(Object data)
+    private void setCustomData(Object data)
     {
         try
         {

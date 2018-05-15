@@ -47,13 +47,13 @@ public class MutableBakedModel implements IBakedModel
     @Override
     public boolean isAmbientOcclusion()
     {
-        return this.parent != null ? this.parent.isAmbientOcclusion() : true;
+        return this.parent == null || this.parent.isAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d()
     {
-        return this.parent != null ? this.parent.isGui3d() : true;
+        return this.parent == null || this.parent.isGui3d();
     }
 
     @Override

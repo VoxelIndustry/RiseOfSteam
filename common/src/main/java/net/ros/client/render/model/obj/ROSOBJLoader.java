@@ -19,7 +19,6 @@ public enum ROSOBJLoader implements ICustomModelLoader
 {
     INSTANCE;
 
-    private IResourceManager manager;
     private final Set<String>                      enabledDomains = new HashSet<>();
     private final Map<ResourceLocation, IModel>    cache          = new HashMap<>();
     private final Map<ResourceLocation, Exception> errors         = new HashMap<>();
@@ -81,7 +80,6 @@ public enum ROSOBJLoader implements ICustomModelLoader
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager)
     {
-        this.manager = resourceManager;
         cache.clear();
         errors.clear();
     }
