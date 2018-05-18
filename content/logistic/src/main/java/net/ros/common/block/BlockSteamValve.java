@@ -1,9 +1,8 @@
 package net.ros.common.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,24 +11,27 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.init.ROSItems;
 import net.ros.common.tile.TilePipeBase;
 import net.ros.common.tile.TileSteamValve;
 
 import javax.annotation.Nullable;
 
-public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
+public class BlockSteamValve extends BlockPipeBase<TileSteamValve>
 {
-    public static final PropertyEnum<EnumFacing.Axis> AXIS   = PropertyEnum.create("axis", EnumFacing.Axis.class);
-    public static final PropertyDirection             FACING = PropertyDirection.create("facing",
-            facing -> facing.getAxis().isHorizontal());
+    public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
-    public BlockSteamValve()
+    public BlockSteamValve(double width)
     {
-        super("steamvalve", Material.IRON, TileSteamValve.class);
+        super("steamvalve", width, TileSteamValve::new, TileSteamValve.class);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.X)
-                .withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
@@ -39,14 +41,19 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
         if (player.isSneaking())
             return false;
 
-        if (!w.isRemote)
+        if (player.getHeldItemMainhand().getItem() != ROSItems.WRENCH)
         {
-            TileSteamValve valve = (TileSteamValve) w.getTileEntity(pos);
-            if (valve == null)
-                return false;
-            valve.setOpen(!valve.isOpen());
+            if (!w.isRemote)
+            {
+                TileSteamValve valve = (TileSteamValve) w.getTileEntity(pos);
+                if (valve == null)
+                    return false;
+                valve.setOpen(!valve.isOpen());
+            }
+            return true;
         }
-        return true;
+
+        return super.onBlockActivated(w, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
@@ -56,7 +63,8 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
         if (!w.isRemote)
         {
             BlockPos offset = pos.subtract(posNeighbor);
-            EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ());
+            EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ())
+                    .getOpposite();
 
             TileSteamValve pipe = this.getWorldTile(w, pos);
             pipe.scanHandler(facing);
@@ -85,24 +93,35 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
     }
 
     @Override
-    protected BlockStateContainer createBlockState()
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        return new BlockStateContainer(this, FACING, AXIS);
+        if (this.checkWorldTile(world, pos))
+        {
+            return ((IExtendedBlockState) state).withProperty(StateProperties.VISIBILITY_PROPERTY,
+                    this.getWorldTile(world, pos).getVisibilityState());
+        }
+        return state;
+    }
+
+    @Override
+    public BlockStateContainer createBlockState()
+    {
+        return new ExtendedBlockState(this, new IProperty[]{FACING},
+                new IUnlistedProperty[]{StateProperties.VISIBILITY_PROPERTY});
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        EnumFacing facing = EnumFacing.VALUES[(meta % 4) + 2];
-        EnumFacing.Axis axis = EnumFacing.Axis.values()[meta / 4];
+        EnumFacing facing = EnumFacing.VALUES[meta];
 
-        return this.getDefaultState().withProperty(FACING, facing).withProperty(AXIS, axis);
+        return this.getDefaultState().withProperty(FACING, facing);
     }
 
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return (state.getValue(FACING).ordinal() - 2) + state.getValue(AXIS).ordinal() * 3;
+        return state.getValue(FACING).ordinal();
     }
 
     @Override
@@ -110,7 +129,6 @@ public class BlockSteamValve extends BlockMachineBase<TileSteamValve>
                                             float hitZ, int meta, EntityLivingBase placer)
     {
         return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer)
-                .withProperty(AXIS, facing.getAxis())
                 .withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer));
     }
 

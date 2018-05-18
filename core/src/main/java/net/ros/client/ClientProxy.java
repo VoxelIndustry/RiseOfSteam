@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.RiseOfSteam;
 import net.ros.client.render.BlueprintRender;
+import net.ros.client.render.ModelSteamValve;
 import net.ros.client.render.model.obj.ROSOBJLoader;
 import net.ros.client.render.tile.*;
 import net.ros.common.CommonProxy;
@@ -140,10 +141,25 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public void onModelBake(final ModelBakeEvent e)
     {
-        final ModelResourceLocation key = new ModelResourceLocation(ROSItems.BLUEPRINT.getRegistryName(),
+        ModelResourceLocation key = new ModelResourceLocation(ROSItems.BLUEPRINT.getRegistryName(),
                 "inventory");
-        final IBakedModel originalModel = e.getModelRegistry().getObject(key);
+        IBakedModel originalModel = e.getModelRegistry().getObject(key);
         e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
+
+
+        ModelSteamValve valveModel = new ModelSteamValve();
+        e.getModelRegistry().putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=up"), valveModel);
+        e.getModelRegistry().putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=down"), valveModel);
+        e.getModelRegistry().putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=east"), valveModel);
+        e.getModelRegistry().putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=west"), valveModel);
+        e.getModelRegistry().putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=south"), valveModel);
+        e.getModelRegistry().putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=north"), valveModel);
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemextractor"), 1,
                 new ModelResourceLocation(ROSConstants.MODID + ":itemextractor", "facing=down,filter=true"));

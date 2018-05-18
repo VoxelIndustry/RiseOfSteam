@@ -124,11 +124,11 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Override
     public void scanValve(EnumFacing facing)
     {
-        if(this.forbiddenConnections.contains(facing))
+        if (this.forbiddenConnections.contains(facing))
             return;
         TileEntity tile = this.getWorld().getTileEntity(pos.offset(facing));
 
-        if (!(tile instanceof TileSteamValve) || ((TileSteamValve) tile).isOpen())
+        if (!this.keepAsValve(facing, tile))
         {
             this.valveOverrides.remove(facing);
             this.updateState();
@@ -137,6 +137,15 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
 
         valveOverrides.add(facing);
         this.updateState();
+    }
+
+    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
+    {
+        if (tile == null)
+            return false;
+        if (tile instanceof TileSteamValve && !((TileSteamValve) tile).isOpen())
+            return ((TileSteamValve) tile).getFacing().getOpposite() != facing;
+        return tile instanceof TileSteamPipe || tile.hasCapability(this.capability, facing);
     }
 
     @Override

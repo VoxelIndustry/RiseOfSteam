@@ -1,14 +1,8 @@
 package net.ros.client.render;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,13 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.ros.client.render.model.obj.PipeOBJStates;
-import net.ros.client.render.model.obj.ROSOBJState;
-import net.ros.client.render.model.obj.StateProperties;
 import net.ros.common.ROSConstants;
-import net.ros.common.block.property.BeltDirection;
-import net.ros.common.block.property.BeltProperties;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.machine.FluidIOPoint;
 import net.ros.common.machine.InputPoint;
@@ -48,55 +37,12 @@ import org.yggard.brokkgui.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class RenderIOOverlay
 {
-    public static BlockRendererDispatcher blockRender;
-
-    private static LoadingCache<ROSOBJState, List<BakedQuad>> steamPipeCache = CacheBuilder.newBuilder()
-            .weakKeys().expireAfterAccess(5, TimeUnit.MINUTES).build(new CacheLoader<ROSOBJState, List<BakedQuad>>()
-            {
-                @Override
-                public List<BakedQuad> load(ROSOBJState key)
-                {
-                    return blockRender.getModelForState(ROSBlocks.STEAM_PIPE.getDefaultState())
-                            .getQuads(((IExtendedBlockState) ROSBlocks.STEAM_PIPE.getBlockState().getBaseState())
-                                    .withProperty(StateProperties.VISIBILITY_PROPERTY, key), null, 0);
-                }
-            });
-
-    private static LoadingCache<ROSOBJState, List<BakedQuad>> fluidPipeCache = CacheBuilder.newBuilder()
-            .weakKeys().expireAfterAccess(5, TimeUnit.MINUTES).build(new CacheLoader<ROSOBJState, List<BakedQuad>>()
-            {
-                @Override
-                public List<BakedQuad> load(ROSOBJState key)
-                {
-                    return blockRender.getModelForState(ROSBlocks.FLUID_PIPE.getDefaultState())
-                            .getQuads(((IExtendedBlockState) ROSBlocks.FLUID_PIPE.getBlockState().getBaseState())
-                                    .withProperty(StateProperties.VISIBILITY_PROPERTY, key), null, 0);
-                }
-            });
-
-    private static LoadingCache<EnumFacing, List<BakedQuad>> beltCache = CacheBuilder.newBuilder()
-            .weakKeys().expireAfterAccess(5, TimeUnit.MINUTES).build(new CacheLoader<EnumFacing, List<BakedQuad>>()
-            {
-                @Override
-                public List<BakedQuad> load(EnumFacing key)
-                {
-                    IBlockState beltState = ROSBlocks.BELT.getDefaultState().withProperty(BeltProperties.FACING,
-                            BeltDirection.fromFacing(key));
-
-                    return blockRender.getModelForState(beltState).getQuads(beltState, null, 0);
-                }
-            });
-
     public static void renderIO(EntityPlayerSP player, double playerX, double playerY, double playerZ,
                                 float partialTicks) throws ExecutionException
     {
-        if (blockRender == null)
-            blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
-
         if (player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.STEAM_PIPE)
                 && player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.FLUID_PIPE)
                 && player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.BELT))
@@ -144,6 +90,7 @@ public class RenderIOOverlay
                     }
                 });
 
+        GlStateManager.pushAttrib();
         GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
@@ -168,10 +115,7 @@ public class RenderIOOverlay
             renderTile(structure.getBlueprint().getDescriptor(), EnumFacing.VALUES[structure.getMeta()],
                     structure.getPos(), player);
 
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-        GL11.glEnable(GL11.GL_LIGHTING);
-
+        GlStateManager.popAttrib();
         GlStateManager.popMatrix();
     }
 
@@ -271,7 +215,8 @@ public class RenderIOOverlay
                 facings.add(facing);
         }
 
-        RenderUtil.renderQuads(steamPipeCache.get(PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
+        RenderUtil.renderQuads(PipeOBJStates.steamPipeCache.get(
+                PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
 
@@ -306,7 +251,8 @@ public class RenderIOOverlay
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-        RenderUtil.renderQuads(fluidPipeCache.get(PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
+        RenderUtil.renderQuads(PipeOBJStates.fluidPipeCache.get(
+                PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
 
@@ -319,6 +265,6 @@ public class RenderIOOverlay
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-        RenderUtil.renderQuads(beltCache.get(facing), (int) (0.6 * 0xFF) << 24);
+        RenderUtil.renderQuads(PipeOBJStates.beltCache.get(facing), (int) (0.6 * 0xFF) << 24);
     }
 }

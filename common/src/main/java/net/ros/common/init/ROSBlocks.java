@@ -98,7 +98,7 @@ public class ROSBlocks
     @ObjectHolder("blockmetal")
     public static final BlockMetal       METALBLOCK         = null;
     @ObjectHolder("blockmetalplate")
-    public static final BlockMetal       METALPLATEBLOCK         = null;
+    public static final BlockMetal       METALPLATEBLOCK    = null;
     @ObjectHolder("sawmill")
     public static final BlockMachineBase SAWMILL            = null;
     @ObjectHolder("alloycauldron")
@@ -111,6 +111,8 @@ public class ROSBlocks
     public static final BlockMachineBase CRAFT_CARD_LIBRARY = null;
     @ObjectHolder("blueprintprinter")
     public static final BlockMachineBase BLUEPRINT_PRINTER  = null;
+    @ObjectHolder("steamvalve")
+    public static final Block            STEAM_VALVE        = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 

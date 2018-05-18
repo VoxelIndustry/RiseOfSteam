@@ -1,8 +1,9 @@
 package net.ros.common.inventory;
 
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,8 +24,8 @@ public class InventoryHandler extends ItemStackHandler
     @Setter
     private Runnable    onLoad;
 
-    private TIntIntMap                              slotLimits;
-    private TIntObjectHashMap<Predicate<ItemStack>> slotFilters;
+    private Int2IntMap                          slotLimits;
+    private Int2ObjectMap<Predicate<ItemStack>> slotFilters;
 
     @Setter
     private Consumer<EntityPlayer> onOpen;
@@ -45,8 +46,8 @@ public class InventoryHandler extends ItemStackHandler
     {
         super(stacks);
 
-        this.slotLimits = new TIntIntHashMap();
-        this.slotFilters = new TIntObjectHashMap<>();
+        this.slotLimits = new Int2IntOpenHashMap();
+        this.slotFilters = new Int2ObjectOpenHashMap<>();
     }
 
     @Override
