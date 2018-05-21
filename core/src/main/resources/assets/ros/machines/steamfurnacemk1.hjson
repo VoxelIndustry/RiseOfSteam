@@ -39,7 +39,7 @@
                 {
                     pos: [0, 0, -2]
                     facing: SOUTH
-                    slots: [0]
+                    slots: [2]
                     connText: steamfurnace.output
                 }
             ]
