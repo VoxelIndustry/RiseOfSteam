@@ -21,8 +21,13 @@ public class LogisticBlocks
         registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
 
-        registerBlock(new BlockSteamValve());
-        registerBlock(new BlockFluidValve());
+        registerBlock(new BlockPipeValve<>("fluidvalve", 6 / 16D,
+                () -> new TileFluidValve(64), TileFluidValve.class));
+        registerBlock(new BlockPipeValve<>("steamvalve", 5 / 16D,
+                () -> new TileSteamValve(64, 1.5f), TileSteamValve.class));
+
+        registerBlock(new BlockSteamGauge("steamgauge", 5 / 16D,
+                () -> new TileSteamGauge(64, 1.5f)));
 
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
@@ -40,5 +45,6 @@ public class LogisticBlocks
         registerTile(TileSteamValve.class, "steamvalve");
         registerTile(TileFluidValve.class, "fluidvalve");
         registerTile(TileSteamVent.class, "steamvent");
+        registerTile(TileSteamGauge.class, "steamgauge");
     }
 }

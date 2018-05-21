@@ -145,21 +145,13 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public void scanValve(EnumFacing facing)
+    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
     {
-        if(this.forbiddenConnections.contains(facing))
-            return;
-        TileEntity tile = this.getWorld().getTileEntity(pos.offset(facing));
-
-        if (!(tile instanceof TileFluidValve) || ((TileFluidValve) tile).isOpen())
-        {
-            this.valveOverrides.remove(facing);
-            this.updateState();
-            return;
-        }
-
-        valveOverrides.add(facing);
-        this.updateState();
+        if (tile == null)
+            return false;
+        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
+            return ((TileFluidValve) tile).getFacing().getOpposite() != facing;
+        return tile instanceof TileFluidPipe || tile.hasCapability(this.capability, facing);
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.RiseOfSteam;
 import net.ros.client.render.BlueprintRender;
-import net.ros.client.render.ModelSteamValve;
+import net.ros.client.render.ModelPipeCover;
 import net.ros.client.render.model.obj.ROSOBJLoader;
 import net.ros.client.render.tile.*;
 import net.ros.common.CommonProxy;
@@ -146,20 +147,12 @@ public class ClientProxy extends CommonProxy
         IBakedModel originalModel = e.getModelRegistry().getObject(key);
         e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
-
-        ModelSteamValve valveModel = new ModelSteamValve();
-        e.getModelRegistry().putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=up"), valveModel);
-        e.getModelRegistry().putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=down"), valveModel);
-        e.getModelRegistry().putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=east"), valveModel);
-        e.getModelRegistry().putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=west"), valveModel);
-        e.getModelRegistry().putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=south"), valveModel);
-        e.getModelRegistry().putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(ROSBlocks.STEAM_VALVE).getRegistryName(), "facing=north"), valveModel);
+        replacePipeModel(ROSBlocks.STEAM_VALVE, ROSBlocks.STEAM_PIPE,
+                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.obj"), e.getModelRegistry());
+        replacePipeModel(ROSBlocks.FLUID_VALVE, ROSBlocks.FLUID_PIPE,
+                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.obj"), e.getModelRegistry());
+        replacePipeModel(ROSBlocks.STEAM_GAUGE, ROSBlocks.STEAM_PIPE,
+                new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemextractor"), 1,
                 new ModelResourceLocation(ROSConstants.MODID + ":itemextractor", "facing=down,filter=true"));
@@ -190,5 +183,23 @@ public class ClientProxy extends CommonProxy
                 event.setCanceled(true);
             }
         }
+    }
+
+    private void replacePipeModel(Block block, Block pipeBlock, ResourceLocation modelLocation,
+                                  IRegistry<ModelResourceLocation, IBakedModel> registry)
+    {
+        ModelPipeCover model = new ModelPipeCover(modelLocation, pipeBlock);
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "facing=up"), model);
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "facing=down"), model);
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "facing=east"), model);
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "facing=west"), model);
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "facing=south"), model);
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "facing=north"), model);
     }
 }

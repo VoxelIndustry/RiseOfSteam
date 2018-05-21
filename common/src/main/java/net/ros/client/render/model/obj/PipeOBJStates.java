@@ -1,73 +1,15 @@
 package net.ros.client.render.model.obj;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.ros.common.block.property.BeltDirection;
-import net.ros.common.block.property.BeltProperties;
-import net.ros.common.init.ROSBlocks;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class PipeOBJStates
 {
     private static final HashMap<String, ROSOBJState> variants = new HashMap<>();
-
-    private static BlockRendererDispatcher blockRender;
-
-    public static LoadingCache<ROSOBJState, List<BakedQuad>> steamPipeCache = CacheBuilder.newBuilder()
-            .weakKeys().expireAfterAccess(5, TimeUnit.MINUTES).build(new CacheLoader<ROSOBJState, List<BakedQuad>>()
-            {
-                @Override
-                public List<BakedQuad> load(ROSOBJState key)
-                {
-                    return getBlockRender().getModelForState(ROSBlocks.STEAM_PIPE.getDefaultState())
-                            .getQuads(((IExtendedBlockState) ROSBlocks.STEAM_PIPE.getBlockState().getBaseState())
-                                    .withProperty(StateProperties.VISIBILITY_PROPERTY, key), null, 0);
-                }
-            });
-
-    public static LoadingCache<ROSOBJState, List<BakedQuad>> fluidPipeCache = CacheBuilder.newBuilder()
-            .weakKeys().expireAfterAccess(5, TimeUnit.MINUTES).build(new CacheLoader<ROSOBJState, List<BakedQuad>>()
-            {
-                @Override
-                public List<BakedQuad> load(ROSOBJState key)
-                {
-                    return getBlockRender().getModelForState(ROSBlocks.FLUID_PIPE.getDefaultState())
-                            .getQuads(((IExtendedBlockState) ROSBlocks.FLUID_PIPE.getBlockState().getBaseState())
-                                    .withProperty(StateProperties.VISIBILITY_PROPERTY, key), null, 0);
-                }
-            });
-
-    public static LoadingCache<EnumFacing, List<BakedQuad>> beltCache = CacheBuilder.newBuilder()
-            .weakKeys().expireAfterAccess(5, TimeUnit.MINUTES).build(new CacheLoader<EnumFacing, List<BakedQuad>>()
-            {
-                @Override
-                public List<BakedQuad> load(EnumFacing key)
-                {
-                    IBlockState beltState = ROSBlocks.BELT.getDefaultState().withProperty(BeltProperties.FACING,
-                            BeltDirection.fromFacing(key));
-
-                    return getBlockRender().getModelForState(beltState).getQuads(beltState, null, 0);
-                }
-            });
-
-    public static BlockRendererDispatcher getBlockRender()
-    {
-        if (blockRender == null)
-            blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        return blockRender;
-    }
 
     public static ROSOBJState getVisibilityState(EnumFacing... facings)
     {

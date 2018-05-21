@@ -113,6 +113,10 @@ public class ROSBlocks
     public static final BlockMachineBase BLUEPRINT_PRINTER  = null;
     @ObjectHolder("steamvalve")
     public static final Block            STEAM_VALVE        = null;
+    @ObjectHolder("fluidvalve")
+    public static final Block            FLUID_VALVE        = null;
+    @ObjectHolder("steamgauge")
+    public static final Block            STEAM_GAUGE        = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 

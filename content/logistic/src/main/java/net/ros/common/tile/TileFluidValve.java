@@ -1,21 +1,25 @@
 package net.ros.common.tile;
 
 import lombok.Getter;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.ros.common.block.BlockFluidValve;
 import net.ros.common.grid.GridManager;
 import net.ros.common.grid.node.ITileNode;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TileFluidValve extends TileFluidPipe
+public class TileFluidValve extends TileFluidPipe implements IPipeValve
 {
     private static FluidTank EMPTY_TANK = new FluidTank(0);
+
+    @Getter
+    private boolean isOpen;
 
     public TileFluidValve(int transferCapacity)
     {
@@ -26,9 +30,6 @@ public class TileFluidValve extends TileFluidPipe
     {
         this(0);
     }
-
-    @Getter
-    private boolean isOpen;
 
     @Override
     public void readFromNBT(NBTTagCompound tag)
@@ -51,7 +52,6 @@ public class TileFluidValve extends TileFluidPipe
     {
         super.addInfo(lines);
 
-        lines.add("Axis: " + this.getAxis());
         lines.add("Facing: " + this.getFacing());
         lines.add("Open: " + this.isOpen());
     }
@@ -60,14 +60,14 @@ public class TileFluidValve extends TileFluidPipe
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
         if (capability == this.capability)
-            return facing.getAxis() == this.getAxis();
+            return facing != this.getFacing();
         return super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if (capability == this.capability && facing.getAxis() == this.getAxis())
+        if (capability == this.capability && facing != this.getFacing())
         {
             if (this.isOpen())
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getGridObject().getTank());
@@ -77,14 +77,9 @@ public class TileFluidValve extends TileFluidPipe
         return super.getCapability(capability, facing);
     }
 
-    private EnumFacing.Axis getAxis()
+    public EnumFacing getFacing()
     {
-        return this.world.getBlockState(this.pos).getValue(BlockFluidValve.AXIS);
-    }
-
-    private EnumFacing getFacing()
-    {
-        return this.world.getBlockState(this.pos).getValue(BlockFluidValve.FACING);
+        return this.world.getBlockState(this.pos).getValue(BlockDirectional.FACING);
     }
 
     public void setOpen(boolean isOpen)
@@ -116,13 +111,25 @@ public class TileFluidValve extends TileFluidPipe
     @Override
     public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
-        if (this.getAxis() == EnumFacing.Axis.X && to.getBlockPos().getZ() != this.getPos().getZ())
-            return false;
-        if (this.getAxis() == EnumFacing.Axis.Z && to.getBlockPos().getX() != this.getPos().getX())
-            return false;
-        if (this.getAxis() == EnumFacing.Axis.Y && to.getBlockPos().getY() != this.getPos().getY())
+        if (facing == this.getFacing())
             return false;
 
         return this.isOpen && super.canConnect(facing, to);
+    }
+
+    @Override
+    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
+    {
+        if (tile == null || facing == this.getFacing())
+            return false;
+        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
+        {
+            if (((TileFluidValve) tile).getFacing().getOpposite() == facing)
+                return false;
+            return !this.isOpen();
+        }
+        if (tile instanceof TileFluidPipe || tile.hasCapability(this.capability, facing))
+            return !this.isOpen();
+        return false;
     }
 }

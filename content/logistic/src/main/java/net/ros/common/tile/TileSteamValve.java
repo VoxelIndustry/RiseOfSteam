@@ -1,11 +1,11 @@
 package net.ros.common.tile;
 
 import lombok.Getter;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.ros.common.block.BlockSteamValve;
 import net.ros.common.grid.GridManager;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.steam.SteamCapabilities;
@@ -14,8 +14,11 @@ import net.ros.common.steam.SteamUtil;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TileSteamValve extends TileSteamPipe
+public class TileSteamValve extends TileSteamPipe implements IPipeValve
 {
+    @Getter
+    private boolean isOpen;
+
     public TileSteamValve(final int transferCapacity, float maxPressure)
     {
         super(transferCapacity, maxPressure);
@@ -25,9 +28,6 @@ public class TileSteamValve extends TileSteamPipe
     {
         this(0, 0);
     }
-
-    @Getter
-    private boolean isOpen;
 
     @Override
     public void readFromNBT(NBTTagCompound tag)
@@ -77,9 +77,10 @@ public class TileSteamValve extends TileSteamPipe
 
     public EnumFacing getFacing()
     {
-        return this.world.getBlockState(this.pos).getValue(BlockSteamValve.FACING);
+        return this.world.getBlockState(this.pos).getValue(BlockDirectional.FACING);
     }
 
+    @Override
     public void setOpen(boolean isOpen)
     {
         boolean previous = this.isOpen;

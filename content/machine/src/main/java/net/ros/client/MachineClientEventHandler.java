@@ -13,18 +13,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.ros.common.init.ROSBlocks;
-import net.ros.common.machine.Machines;
-import net.ros.common.multiblock.BlockMultiblockBase;
-import net.ros.common.util.ItemUtils;
 import net.ros.client.render.RenderIOOverlay;
 import net.ros.client.render.RenderStructureOverlay;
 import net.ros.client.render.RenderUtil;
+import net.ros.common.init.ROSBlocks;
 import net.ros.common.item.ItemBlueprint;
+import net.ros.common.machine.Machines;
+import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.blueprint.Blueprint;
-
-import java.util.concurrent.ExecutionException;
+import net.ros.common.util.ItemUtils;
 
 public class MachineClientEventHandler
 {
@@ -38,13 +36,7 @@ public class MachineClientEventHandler
         double playerY = player.prevPosY + (player.posY - player.prevPosY) * e.getPartialTicks();
         double playerZ = player.prevPosZ + (player.posZ - player.prevPosZ) * e.getPartialTicks();
 
-        try
-        {
-            RenderIOOverlay.renderIO(player, playerX, playerY, playerZ, e.getPartialTicks());
-        } catch (ExecutionException e1)
-        {
-            e1.printStackTrace();
-        }
+        RenderIOOverlay.renderIO(player, playerX, playerY, playerZ, e.getPartialTicks());
     }
 
     @SubscribeEvent

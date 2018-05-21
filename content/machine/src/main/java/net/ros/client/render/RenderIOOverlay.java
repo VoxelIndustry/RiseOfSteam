@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.ros.client.render.model.ModelCacheManager;
 import net.ros.client.render.model.obj.PipeOBJStates;
 import net.ros.common.ROSConstants;
 import net.ros.common.init.ROSBlocks;
@@ -36,12 +37,11 @@ import org.yggard.brokkgui.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class RenderIOOverlay
 {
     public static void renderIO(EntityPlayerSP player, double playerX, double playerY, double playerZ,
-                                float partialTicks) throws ExecutionException
+                                float partialTicks)
     {
         if (player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.STEAM_PIPE)
                 && player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.FLUID_PIPE)
@@ -120,7 +120,7 @@ public class RenderIOOverlay
     }
 
     private static void renderTile(MachineDescriptor descriptor, EnumFacing tileFacing, BlockPos tilePos,
-                                   EntityPlayer player) throws ExecutionException
+                                   EntityPlayer player)
     {
         if (descriptor.has(IOComponent.class))
         {
@@ -204,7 +204,6 @@ public class RenderIOOverlay
     }
 
     private static void renderSteam(World w, BlockPos pos, MultiblockSide side)
-            throws ExecutionException
     {
         List<EnumFacing> facings = new ArrayList<>(6);
         for (EnumFacing facing : EnumFacing.VALUES)
@@ -215,7 +214,7 @@ public class RenderIOOverlay
                 facings.add(facing);
         }
 
-        RenderUtil.renderQuads(PipeOBJStates.steamPipeCache.get(
+        RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.STEAM_PIPE,
                 PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
@@ -229,7 +228,6 @@ public class RenderIOOverlay
 
 
     private static void renderFluid(World w, BlockPos pos, MultiblockSide side, FluidIOPoint point)
-            throws ExecutionException
     {
         List<EnumFacing> facings = new ArrayList<>(6);
         for (EnumFacing facing : EnumFacing.VALUES)
@@ -251,12 +249,12 @@ public class RenderIOOverlay
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-        RenderUtil.renderQuads(PipeOBJStates.fluidPipeCache.get(
+        RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.FLUID_PIPE,
                 PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
 
-    private static void renderBelt(World w, BlockPos pos, String connText, EnumFacing facing) throws ExecutionException
+    private static void renderBelt(World w, BlockPos pos, String connText, EnumFacing facing)
     {
         if (!StringUtils.isEmpty(connText) && Minecraft.getMinecraft().player.getPosition().distanceSq(pos) < 12)
             RenderUtil.renderTextOnSide(0.5, 1.25, 0.5, 0.012, 0,
@@ -265,6 +263,6 @@ public class RenderIOOverlay
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-        RenderUtil.renderQuads(PipeOBJStates.beltCache.get(facing), (int) (0.6 * 0xFF) << 24);
+        RenderUtil.renderQuads(ModelCacheManager.getBeltQuads(facing), (int) (0.6 * 0xFF) << 24);
     }
 }
