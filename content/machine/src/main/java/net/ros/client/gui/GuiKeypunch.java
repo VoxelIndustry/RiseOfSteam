@@ -49,9 +49,6 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.setxRelativePos(0.5f);
         this.setyRelativePos(0.5f);
 
-        this.addStylesheet("/assets/ros/css/keypunch.css");
-        this.addStylesheet("/assets/ros/css/engineer_workshop.css");
-
         this.keypunch = keypunch;
 
         final GuiAbsolutePane mainPanel = new GuiAbsolutePane();
@@ -138,6 +135,9 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         this.getListeners().attach(this.keypunch.getCraftStacks(), refreshMessage);
         this.getListeners().attach(this.keypunch.getFilterStacks(), refreshMessage);
         this.refreshMessage(this.getContainer().getSlot(36).getStack());
+
+        this.addStylesheet("/assets/ros/css/keypunch.css");
+        this.addStylesheet("/assets/ros/css/engineer_workshop.css");
     }
 
     public void initPanels(final EntityPlayer player)
