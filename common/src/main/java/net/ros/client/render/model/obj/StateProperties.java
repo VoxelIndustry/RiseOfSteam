@@ -26,4 +26,31 @@ public class StateProperties
             return state.toString();
         }
     };
+
+    public static final IUnlistedProperty<ConnState> CONN_PROPERTY = new IUnlistedProperty<ConnState>()
+    {
+        @Override
+        public String getName()
+        {
+            return "ros_conn";
+        }
+
+        @Override
+        public boolean isValid(ConnState value)
+        {
+            return true;
+        }
+
+        @Override
+        public Class<ConnState> getType()
+        {
+            return ConnState.class;
+        }
+
+        @Override
+        public String valueToString(ConnState state)
+        {
+            return state.toString();
+        }
+    };
 }

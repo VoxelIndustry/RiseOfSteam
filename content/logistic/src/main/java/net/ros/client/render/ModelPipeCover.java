@@ -43,7 +43,6 @@ public class ModelPipeCover implements IBakedModel
     public ModelPipeCover(ResourceLocation modelLocation, Block block)
     {
         this.modelLocation = modelLocation;
-
         this.block = block;
     }
 
