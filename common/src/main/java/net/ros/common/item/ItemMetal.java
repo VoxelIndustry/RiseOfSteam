@@ -11,13 +11,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.common.ROSConstants;
 import net.ros.common.recipe.MaterialShape;
 import net.ros.common.recipe.Materials;
+import net.ros.common.recipe.Metal;
 
 import java.util.List;
 
 public class ItemMetal extends ItemBase
 {
     @Getter
-    private List<String>  metals;
+    private List<Metal>   metals;
     private MaterialShape shape;
 
     public ItemMetal(MaterialShape shape)
@@ -30,7 +31,7 @@ public class ItemMetal extends ItemBase
         this.metals = Materials.metals.getAllMetalForShape(shape);
     }
 
-    public int getMetalMeta(String metal)
+    public int getMetalMeta(Metal metal)
     {
         if (Materials.metals.containsShape(metal, shape))
             return Materials.metals.indexOf(metal);
@@ -59,7 +60,7 @@ public class ItemMetal extends ItemBase
     @Override
     public void registerVariants()
     {
-        this.metals.forEach(metal -> this.addVariant(metal, new ModelResourceLocation(ROSConstants.MODID + ":"
+        this.metals.forEach(metal -> this.addVariant(metal.getName(), new ModelResourceLocation(ROSConstants.MODID + ":"
                 + shape.toString() + "_" + metal, "inventory")));
         super.registerVariants();
     }
@@ -69,7 +70,7 @@ public class ItemMetal extends ItemBase
     public void registerModels()
     {
         ModelLoader.setCustomMeshDefinition(this, stack ->
-                this.getVariantModel(Materials.metals.get(stack.getMetadata())));
+                this.getVariantModel(Materials.metals.get(stack.getMetadata()).getName()));
         super.registerModels();
     }
 

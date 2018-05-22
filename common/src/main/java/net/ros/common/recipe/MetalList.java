@@ -3,11 +3,12 @@ package net.ros.common.recipe;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class MetalList
 {
-    private List<String>                 metalNames;
+    private List<Metal>                  metalNames;
     private List<EnumSet<MaterialShape>> metalShapes;
 
     public MetalList()
@@ -16,23 +17,28 @@ public class MetalList
         this.metalShapes = new ArrayList<>();
     }
 
-    public MetalEntry addMetal(String name)
+    public MetalEntry addMetal(Metal name)
     {
         this.metalNames.add(name);
         return new MetalEntry();
     }
 
-    public Stream<String> stream()
+    public Optional<Metal> byName(String metalName)
+    {
+        return this.metalNames.stream().filter(metal -> metal.getName().equals(metalName)).findFirst();
+    }
+
+    public Stream<Metal> stream()
     {
         return this.metalNames.stream();
     }
 
-    public int indexOf(String metal)
+    public int indexOf(Metal metal)
     {
         return this.metalNames.indexOf(metal);
     }
 
-    public boolean contains(String metal)
+    public boolean contains(Metal metal)
     {
         return this.metalNames.contains(metal);
     }
@@ -47,27 +53,27 @@ public class MetalList
         return metalNames.size();
     }
 
-    public String get(int index)
+    public Metal get(int index)
     {
         return metalNames.get(index);
     }
 
-    public boolean containsShape(String metal, MaterialShape shape)
+    public boolean containsShape(Metal metal, MaterialShape shape)
     {
         return this.metalShapes.get(metalNames.indexOf(metal)).contains(shape);
     }
 
-    public EnumSet<MaterialShape> getShapes(String metal)
+    public EnumSet<MaterialShape> getShapes(Metal metal)
     {
         return this.metalShapes.get(metalNames.indexOf(metal));
     }
 
-    public List<String> getAllMetalForShape(MaterialShape shape)
+    public List<Metal> getAllMetalForShape(MaterialShape shape)
     {
-        List<String> metals = new ArrayList<>();
-        for(int i = 0; i < this.metalShapes.size();i++)
+        List<Metal> metals = new ArrayList<>();
+        for (int i = 0; i < this.metalShapes.size(); i++)
         {
-            if(metalShapes.get(i).contains(shape))
+            if (metalShapes.get(i).contains(shape))
                 metals.add(metalNames.get(i));
         }
         return metals;

@@ -1,13 +1,14 @@
 package net.ros.common.grid.node;
 
 import lombok.Data;
+import net.ros.common.recipe.Metal;
 
 @Data
 public class PipeType
 {
     private PipeNature nature;
     private PipeSize   size;
-    private String     material;
+    private Metal      metal;
 
     public enum PipeNature
     {

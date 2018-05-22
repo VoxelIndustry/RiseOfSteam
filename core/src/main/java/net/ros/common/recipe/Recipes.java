@@ -45,26 +45,26 @@ public class Recipes
         RecipeHandler.RECIPES.put(RecipeHandler.ALLOY_UID,
                 new RecipeCategory(RecipeHandler.ALLOY_UID));
 
-        Materials.metals.stream().forEach(metalName ->
+        Materials.metals.stream().forEach(metal ->
         {
-            if (Materials.metals.containsShape(metalName, MaterialShape.PLATE))
+            if (Materials.metals.containsShape(metal, MaterialShape.PLATE))
             {
-                RecipeHelper.addIngotToPlateRecipe(metalName);
-                RecipeHelper.addBlockToPlateRecipe(metalName);
+                RecipeHelper.addIngotToPlateRecipe(metal);
+                RecipeHelper.addBlockToPlateRecipe(metal);
             }
 
-            if (Materials.metals.containsShape(metalName, MaterialShape.BLOCK))
+            if (Materials.metals.containsShape(metal, MaterialShape.BLOCK))
             {
-                RecipeHelper.addBlockToIngotRecipe(metalName);
-                RecipeHelper.addIngotToBlockRecipe(metalName);
+                RecipeHelper.addBlockToIngotRecipe(metal);
+                RecipeHelper.addIngotToBlockRecipe(metal);
             }
-            if (Materials.metals.containsShape(metalName, MaterialShape.NUGGET))
+            if (Materials.metals.containsShape(metal, MaterialShape.NUGGET))
             {
-                RecipeHelper.addNuggetToIngotRecipe(metalName);
-                RecipeHelper.addIngotToNuggetRecipe(metalName);
+                RecipeHelper.addNuggetToIngotRecipe(metal);
+                RecipeHelper.addIngotToNuggetRecipe(metal);
             }
-            if (Materials.metals.containsShape(metalName, MaterialShape.GEAR))
-                RecipeHelper.addIngotToGearRecipe(metalName);
+            if (Materials.metals.containsShape(metal, MaterialShape.GEAR))
+                RecipeHelper.addIngotToGearRecipe(metal);
         });
 
         Ores.MINERALS.stream().filter(mineral -> mineral != Ores.REDSTONE).forEach
@@ -97,19 +97,19 @@ public class Recipes
         RecipeHandler.CRAFTING_RECIPES.add(new CapsuleRecipe().setRegistryName(
                 new ResourceLocation(ROSConstants.MODID, "steamcapsule")));
 
-        RecipeHelper.addMeltingRecipe("iron", 1204, 1204 * 1.25f, 35);
-        RecipeHelper.addMeltingRecipe("gold", 1064, 1064 * 1.25f, 20);
-        RecipeHelper.addMeltingRecipe("copper", 1085, 1085 * 1.25f, 30);
-        RecipeHelper.addMeltingRecipe("bronze", 950, 950 * 1.25f, 25);
-        RecipeHelper.addMeltingRecipe("brass", 927, 927 * 1.25f, 25);
-        RecipeHelper.addMeltingRecipe("tin", 232, 232 * 1.25f, 10);
-        RecipeHelper.addMeltingRecipe("zinc", 419, 419 * 1.25f, 15);
-        RecipeHelper.addMeltingRecipe("nickel", 1455, 1455 * 1.25f, 40);
-        RecipeHelper.addMeltingRecipe("lead", 327, 327 * 1.25f, 15);
-        RecipeHelper.addMeltingRecipe("steel", 1371, 1371 * 1.25f, 35);
+        RecipeHelper.addMeltingRecipe(Materials.IRON, 35);
+        RecipeHelper.addMeltingRecipe(Materials.GOLD, 20);
+        RecipeHelper.addMeltingRecipe(Materials.COPPER, 30);
+        RecipeHelper.addMeltingRecipe(Materials.BRONZE, 25);
+        RecipeHelper.addMeltingRecipe(Materials.BRASS, 25);
+        RecipeHelper.addMeltingRecipe(Materials.TIN, 10);
+        RecipeHelper.addMeltingRecipe(Materials.ZINC, 15);
+        RecipeHelper.addMeltingRecipe(Materials.NICKEL, 40);
+        RecipeHelper.addMeltingRecipe(Materials.LEAD, 15);
+        RecipeHelper.addMeltingRecipe(Materials.STEEL, 35);
 
-        RecipeHelper.addAlloyRecipe("tin", "copper", 3, "bronze");
-        RecipeHelper.addAlloyRecipe("zinc", "copper", 3, "brass");
+        RecipeHelper.addAlloyRecipe(Materials.TIN, Materials.COPPER, 3, Materials.BRONZE);
+        RecipeHelper.addAlloyRecipe(Materials.ZINC, Materials.COPPER, 3, Materials.BRASS);
     }
 
     public void registerOreDict()
@@ -117,31 +117,32 @@ public class Recipes
         ROSItems.METALGEAR.getMetals().forEach(metal ->
         {
             ItemStack gear = new ItemStack(ROSItems.METALGEAR, 1, Materials.metals.indexOf(metal));
-            OreDictionary.registerOre("gear" + StringUtils.capitalize(metal), gear);
+            OreDictionary.registerOre("gear" + StringUtils.capitalize(metal.getName()), gear);
         });
 
         ROSItems.METALPLATE.getMetals().forEach(metal ->
         {
             ItemStack plate = new ItemStack(ROSItems.METALPLATE, 1, Materials.metals.indexOf(metal));
-            OreDictionary.registerOre("plate" + StringUtils.capitalize(metal), plate);
+            OreDictionary.registerOre("plate" + StringUtils.capitalize(metal.getName()), plate);
         });
 
         ROSItems.METALINGOT.getMetals().forEach(metal ->
         {
             ItemStack ingot = new ItemStack(ROSItems.METALINGOT, 1, Materials.metals.indexOf(metal));
-            OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal), ingot);
+            OreDictionary.registerOre("ingot" + StringUtils.capitalize(metal.getName()), ingot);
         });
 
         ROSItems.METALNUGGET.getMetals().forEach(metal ->
         {
             ItemStack nugget = new ItemStack(ROSItems.METALNUGGET, 1, Materials.metals.indexOf(metal));
-            OreDictionary.registerOre("nugget" + StringUtils.capitalize(metal), nugget);
+            OreDictionary.registerOre("nugget" + StringUtils.capitalize(metal.getName()), nugget);
         });
 
 
-        ROSBlocks.METALBLOCK.getVariants().getAllowedValues().forEach(metal ->
-                OreDictionary.registerOre("block" + StringUtils.capitalize(metal),
-                        new ItemStack(ROSBlocks.METALBLOCK, 1, Materials.metals.indexOf(metal))));
+        ROSBlocks.METALBLOCK.getVariants().getAllowedValues().forEach(metalName ->
+                OreDictionary.registerOre("block" + StringUtils.capitalize(metalName),
+                        new ItemStack(ROSBlocks.METALBLOCK, 1,
+                                Materials.metals.indexOf(Materials.metals.byName(metalName).get()))));
     }
 
     @SubscribeEvent
@@ -150,7 +151,6 @@ public class Recipes
         this.registerOreDict();
         this.registerRecipes();
 
-        event.getRegistry().registerAll(RecipeHandler.CRAFTING_RECIPES.toArray(
-                new IRecipe[RecipeHandler.CRAFTING_RECIPES.size()]));
+        event.getRegistry().registerAll(RecipeHandler.CRAFTING_RECIPES.toArray(new IRecipe[0]));
     }
 }

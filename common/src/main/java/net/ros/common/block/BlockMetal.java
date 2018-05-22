@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.ros.common.block.property.PropertyString;
 import net.ros.common.recipe.Materials;
+import net.ros.common.recipe.Metal;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.BiConsumer;
@@ -55,10 +56,14 @@ public class BlockMetal extends BlockBase implements IModelProvider
     {
         return (i, block) ->
         {
-            int index = Materials.metals.indexOf(variants.getByIndex(i));
+            Materials.metals.byName(variants.getByIndex(i)).ifPresent(metal ->
+            {
+                int index = Materials.metals.indexOf(metal);
 
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), index, new ModelResourceLocation(
-                    block.getRegistryName(), this.getItemModelByIndex(index)));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), index,
+                        new ModelResourceLocation(
+                                block.getRegistryName(), this.getItemModelByIndex(index)));
+            });
         };
     }
 
@@ -81,13 +86,13 @@ public class BlockMetal extends BlockBase implements IModelProvider
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(variants, Materials.metals.get(meta));
+        return this.getDefaultState().withProperty(variants, Materials.metals.get(meta).getName());
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return Materials.metals.indexOf(state.getValue(variants));
+        return Materials.metals.indexOf(Materials.metals.byName(state.getValue(variants)).get());
     }
 
     @Override
@@ -121,8 +126,8 @@ public class BlockMetal extends BlockBase implements IModelProvider
         {
             PropertyString variants = new PropertyString("variant",
                     Materials.metals.stream().filter(metal ->
-                            !OreDictionary.doesOreNameExist(type + StringUtils.capitalize(metal)))
-                            .toArray(String[]::new));
+                            !OreDictionary.doesOreNameExist(type + StringUtils.capitalize(metal.getName())))
+                            .map(Metal::getName).toArray(String[]::new));
             FAKE_VARIANTS = variants;
 
             return new BlockMetal(name, variants);

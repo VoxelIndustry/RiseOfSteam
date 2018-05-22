@@ -5,6 +5,7 @@ import net.ros.common.block.item.ItemBlockMetadata;
 import net.ros.common.block.item.ItemBlockVeinOre;
 import net.ros.common.ore.Ores;
 import net.ros.common.recipe.Materials;
+import net.ros.common.recipe.Metal;
 
 import static net.ros.common.init.ROSBlocks.registerBlock;
 
@@ -39,10 +40,10 @@ public class WorldBlocks
                 block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
 
         registerBlock(BlockMetal.build("blockmetal").type("block").create(), block -> new ItemBlockMetadata(block,
-                Materials.metals.toArray(new String[block.getVariants().getAllowedValues().size()]))
+                Materials.metals.stream().map(Metal::getName).toArray(String[]::new))
                 .setFirstVariation(true));
         registerBlock(BlockMetal.build("blockmetalplate").type("blockPlate").create(), block ->
-                new ItemBlockMetadata(block, Materials.metals.toArray(new String[block.getVariants()
-                        .getAllowedValues().size()])).setFirstVariation(true));
+                new ItemBlockMetadata(block, Materials.metals.stream().map(Metal::getName).toArray(String[]::new))
+                        .setFirstVariation(true));
     }
 }

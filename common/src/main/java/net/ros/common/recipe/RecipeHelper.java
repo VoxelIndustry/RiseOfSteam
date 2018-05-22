@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -13,8 +12,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.ros.common.ROSConstants;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
-import net.ros.common.ore.MineralDensity;
 import net.ros.common.ore.Mineral;
+import net.ros.common.ore.MineralDensity;
 import net.ros.common.ore.Ores;
 import net.ros.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.ros.common.recipe.ingredient.ItemStackRecipeIngredient;
@@ -23,76 +22,77 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RecipeHelper
 {
-    public static void addBlockToPlateRecipe(final String metalName)
+    public static void addBlockToPlateRecipe(Metal metal)
     {
-        final ItemStack plate = new ItemStack(ROSItems.METALPLATE, 9, Materials.metals.indexOf(metalName));
+        final ItemStack plate = new ItemStack(ROSItems.METALPLATE, 9, Materials.metals.indexOf(metal));
 
         RecipeHandler.RECIPES.get(RecipeHandler.ROLLINGMILL_UID)
                 .add(new RollingMillRecipe(
-                        new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metalName), 1),
+                        new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metal.getName()), 1),
                         new ItemStackRecipeIngredient(plate)));
     }
 
-    public static void addIngotToPlateRecipe(final String metalName)
+    public static void addIngotToPlateRecipe(Metal metal)
     {
-        final ItemStack plate = new ItemStack(ROSItems.METALPLATE, 1, Materials.metals.indexOf(metalName));
+        final ItemStack plate = new ItemStack(ROSItems.METALPLATE, 1, Materials.metals.indexOf(metal));
 
         RecipeHandler.RECIPES.get(RecipeHandler.ROLLINGMILL_UID)
                 .add(new RollingMillRecipe(
-                        new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
+                        new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metal.getName()), 1),
                         new ItemStackRecipeIngredient(plate)));
     }
 
-    public static void addIngotToGearRecipe(String metalName)
+    public static void addIngotToGearRecipe(Metal metal)
     {
-        ItemStack gearStack = new ItemStack(ROSItems.METALGEAR, 1, Materials.metals.indexOf(metalName));
+        ItemStack gearStack = new ItemStack(ROSItems.METALGEAR, 1, Materials.metals.indexOf(metal));
 
         RecipeHandler.CRAFTING_RECIPES.add(new ShapedOreRecipe(new ResourceLocation(ROSConstants.MODID, "gear" +
-                metalName), gearStack, " X ", "XOX", " X ", 'X',
-                new OreIngredient("ingot" + StringUtils.capitalize(metalName)), 'O', new ItemStack(Items.IRON_INGOT))
-                .setRegistryName(new ResourceLocation(ROSConstants.MODID, "gear" + metalName)));
+                metal), gearStack, " X ", "XOX", " X ", 'X',
+                new OreIngredient("ingot" + StringUtils.capitalize(metal.getName())), 'O',
+                new ItemStack(Items.IRON_INGOT))
+                .setRegistryName(new ResourceLocation(ROSConstants.MODID, "gear" + metal)));
     }
 
-    public static void addBlockToIngotRecipe(String metalName)
+    public static void addBlockToIngotRecipe(Metal metal)
     {
-        ItemStack ingotStack = new ItemStack(ROSItems.METALINGOT, 9, Materials.metals.indexOf(metalName));
+        ItemStack ingotStack = new ItemStack(ROSItems.METALINGOT, 9, Materials.metals.indexOf(metal));
 
         RecipeHandler.CRAFTING_RECIPES
-                .add(new ShapelessOreRecipe(new ResourceLocation(ROSConstants.MODID, "block" + metalName), ingotStack,
-                        new OreIngredient("block" + StringUtils.capitalize(metalName)))
-                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "block" + metalName)));
+                .add(new ShapelessOreRecipe(new ResourceLocation(ROSConstants.MODID, "block" + metal), ingotStack,
+                        new OreIngredient("block" + StringUtils.capitalize(metal.getName())))
+                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "block" + metal)));
     }
 
-    public static void addIngotToBlockRecipe(String metalName)
+    public static void addIngotToBlockRecipe(Metal metal)
     {
-        ItemStack blockStack = new ItemStack(ROSBlocks.METALBLOCK, 1, Materials.metals.indexOf(metalName));
+        ItemStack blockStack = new ItemStack(ROSBlocks.METALBLOCK, 1, Materials.metals.indexOf(metal));
 
         RecipeHandler.CRAFTING_RECIPES
-                .add(new ShapedOreRecipe(new ResourceLocation(ROSConstants.MODID, "block_ingot" + metalName),
+                .add(new ShapedOreRecipe(new ResourceLocation(ROSConstants.MODID, "block_ingot" + metal),
                         blockStack, "XXX", "XXX", "XXX", 'X',
-                        new OreIngredient("ingot" + StringUtils.capitalize(metalName)))
-                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "block_ingot" + metalName)));
+                        new OreIngredient("ingot" + StringUtils.capitalize(metal.getName())))
+                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "block_ingot" + metal)));
     }
 
-    public static void addIngotToNuggetRecipe(String metalName)
+    public static void addIngotToNuggetRecipe(Metal metal)
     {
-        ItemStack ingotStack = new ItemStack(ROSItems.METALINGOT, 1, Materials.metals.indexOf(metalName));
+        ItemStack ingotStack = new ItemStack(ROSItems.METALINGOT, 1, Materials.metals.indexOf(metal));
 
         RecipeHandler.CRAFTING_RECIPES
-                .add(new ShapedOreRecipe(new ResourceLocation(ROSConstants.MODID, "nugget_ingot" + metalName),
+                .add(new ShapedOreRecipe(new ResourceLocation(ROSConstants.MODID, "nugget_ingot" + metal),
                         ingotStack, "XXX", "XXX", "XXX", 'X',
-                        new OreIngredient("nugget" + StringUtils.capitalize(metalName)))
-                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "nugget_ingot" + metalName)));
+                        new OreIngredient("nugget" + StringUtils.capitalize(metal.getName())))
+                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "nugget_ingot" + metal)));
     }
 
-    public static void addNuggetToIngotRecipe(String metalName)
+    public static void addNuggetToIngotRecipe(Metal metal)
     {
-        ItemStack nuggetStack = new ItemStack(ROSItems.METALNUGGET, 9, Materials.metals.indexOf(metalName));
+        ItemStack nuggetStack = new ItemStack(ROSItems.METALNUGGET, 9, Materials.metals.indexOf(metal));
 
         RecipeHandler.CRAFTING_RECIPES
-                .add(new ShapelessOreRecipe(new ResourceLocation(ROSConstants.MODID, "ingot_nugget" + metalName),
-                        nuggetStack, new OreIngredient("ingot" + StringUtils.capitalize(metalName)))
-                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "ingot_nugget" + metalName)));
+                .add(new ShapelessOreRecipe(new ResourceLocation(ROSConstants.MODID, "ingot_nugget" + metal),
+                        nuggetStack, new OreIngredient("ingot" + StringUtils.capitalize(metal.getName())))
+                        .setRegistryName(new ResourceLocation(ROSConstants.MODID, "ingot_nugget" + metal)));
     }
 
     public static void addRawOreFurnaceRecipe(Mineral mineral)
@@ -133,41 +133,40 @@ public class RecipeHelper
                 new SawMillRecipe(new ItemStackRecipeIngredient(input), new ItemStackRecipeIngredient(output)));
     }
 
-    public static void addMeltingRecipe(String metalName, float lowMeltingPoint, float hightMeltingPoint, int
+    public static void addMeltingRecipe(Metal metal, int
             baseMeltingTime)
     {
         RecipeHandler.RECIPES.get(RecipeHandler.MELTING_UID).add(
-                new MeltRecipe(new ItemStackRecipeIngredient("nugget" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 16)),
-                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+                new MeltRecipe(new ItemStackRecipeIngredient("nugget" + StringUtils.capitalize(metal.getName()), 1),
+                        new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(metal, 16)),
+                        metal.getMeltingPoint(), metal.getMeltingPoint() * 1.25f, baseMeltingTime)
         );
 
         RecipeHandler.RECIPES.get(RecipeHandler.MELTING_UID).add(
-                new MeltRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 144)),
-                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+                new MeltRecipe(new ItemStackRecipeIngredient("ingot" + StringUtils.capitalize(metal.getName()), 1),
+                        new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(metal, 144)),
+                        metal.getMeltingPoint(), metal.getMeltingPoint() * 1.25f, baseMeltingTime)
         );
 
         RecipeHandler.RECIPES.get(RecipeHandler.MELTING_UID).add(
-                new MeltRecipe(new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 1296)),
-                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime));
+                new MeltRecipe(new ItemStackRecipeIngredient("block" + StringUtils.capitalize(metal.getName()), 1),
+                        new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(metal, 1296)),
+                        metal.getMeltingPoint(), metal.getMeltingPoint() * 1.25f, baseMeltingTime))
+        ;
 
         RecipeHandler.RECIPES.get(RecipeHandler.MELTING_UID).add(
-                new MeltRecipe(new ItemStackRecipeIngredient("plate" + StringUtils.capitalize(metalName), 1),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + metalName, 144)),
-                        lowMeltingPoint, hightMeltingPoint, baseMeltingTime)
+                new MeltRecipe(new ItemStackRecipeIngredient("plate" + StringUtils.capitalize(metal.getName()), 1),
+                        new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(metal, 144)),
+                        metal.getMeltingPoint(), metal.getMeltingPoint() * 1.25f, baseMeltingTime)
         );
     }
 
-    public static void addAlloyRecipe(String firstMetal, String secondMetal, int secondCount, String resultMetal)
+    public static void addAlloyRecipe(Metal first, Metal second, int secondCount, Metal resultMetal)
     {
         RecipeHandler.RECIPES.get(RecipeHandler.ALLOY_UID).add(
-                new AlloyRecipe(new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + firstMetal, 1)),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + secondMetal,
-                                secondCount)),
-                        new FluidStackRecipeIngredient(FluidRegistry.getFluidStack("molten" + resultMetal, 1 +
-                                secondCount)))
+                new AlloyRecipe(new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(first, 1)),
+                        new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(second, secondCount)),
+                        new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(resultMetal, 1 + secondCount)))
         );
     }
 }

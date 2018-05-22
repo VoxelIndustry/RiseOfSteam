@@ -30,13 +30,14 @@ public class ROSFluids
         Materials.metals.stream().filter(metal -> !FluidRegistry.isFluidRegistered("molten" + metal))
                 .forEach(metal ->
                 {
-                    Fluid moltenMetal = new Fluid("molten" + metal,
-                            new ResourceLocation(ROSConstants.MODID + ":blocks/fluid/" + metal + "_still"),
-                            new ResourceLocation(ROSConstants.MODID + ":blocks/fluid/" + metal + "_flow"));
+                    Fluid moltenMetal = new Fluid("molten" + metal.getName(),
+                            new ResourceLocation(ROSConstants.MODID + ":blocks/fluid/" + metal.getName() + "_still"),
+                            new ResourceLocation(ROSConstants.MODID + ":blocks/fluid/" + metal.getName() + "_flow"));
                     FluidRegistry.registerFluid(moltenMetal);
                     FluidRegistry.addBucketForFluid(moltenMetal);
 
-                    FLUIDS.put(moltenMetal, new BlockFluidBase(moltenMetal, Material.LAVA, "blockmolten" + metal));
+                    FLUIDS.put(moltenMetal, new BlockFluidBase(moltenMetal, Material.LAVA,
+                            "blockmolten" + metal.getName()));
                 });
 
         FLUIDS.values().forEach(ROSBlocks::registerBlock);
