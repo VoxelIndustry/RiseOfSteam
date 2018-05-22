@@ -42,6 +42,9 @@ public class SteamModule extends MachineModule implements ISerializableModule, I
 
     private void refreshSteam()
     {
+        if(this.isClient())
+            return;
+
         if (this.getInternalSteamHandler().getPressure() >= this.getInternalSteamHandler().getSafePressure())
         {
             if (!SteamOverloadManager.getInstance().hasMachine(this.getMachineTile()))
