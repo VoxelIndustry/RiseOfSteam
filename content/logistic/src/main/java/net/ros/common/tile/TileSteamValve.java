@@ -8,6 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.grid.GridManager;
 import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamUtil;
 
@@ -19,14 +20,14 @@ public class TileSteamValve extends TileSteamPipe implements IPipeValve
     @Getter
     private boolean isOpen;
 
-    public TileSteamValve(final int transferCapacity, float maxPressure)
+    public TileSteamValve(PipeType type, int transferCapacity, float maxPressure)
     {
-        super(transferCapacity, maxPressure);
+        super(type, transferCapacity, maxPressure);
     }
 
     public TileSteamValve()
     {
-        this(0, 0);
+        this(null, 0, 0);
     }
 
     @Override

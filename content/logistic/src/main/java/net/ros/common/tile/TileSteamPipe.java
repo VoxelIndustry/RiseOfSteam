@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.grid.impl.SteamGrid;
 import net.ros.common.grid.node.ISteamPipe;
 import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamUtil;
@@ -18,16 +19,16 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
 {
     private float maxPressure;
 
-    public TileSteamPipe(final int transferCapacity, float maxPressure)
+    public TileSteamPipe(PipeType type, int transferCapacity, float maxPressure)
     {
-        super(transferCapacity, SteamCapabilities.STEAM_HANDLER);
+        super(type, transferCapacity, SteamCapabilities.STEAM_HANDLER);
 
         this.maxPressure = maxPressure;
     }
 
     public TileSteamPipe()
     {
-        this(0, 0);
+        this(null, 0, 0);
     }
 
     @Override

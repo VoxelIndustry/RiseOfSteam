@@ -5,7 +5,7 @@ import net.ros.common.steam.ISteamHandler;
 
 import java.util.Collection;
 
-public interface ISteamPipe extends ITileCable<SteamGrid>
+public interface ISteamPipe extends IPipe<SteamGrid>
 {
     Collection<ISteamHandler> getConnectedHandlers();
 }

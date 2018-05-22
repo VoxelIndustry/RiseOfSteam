@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.ros.common.grid.GridManager;
 import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -21,14 +22,14 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
     @Getter
     private boolean isOpen;
 
-    public TileFluidValve(int transferCapacity)
+    public TileFluidValve(PipeType type, int transferCapacity)
     {
-        super(transferCapacity);
+        super(type, transferCapacity);
     }
 
     public TileFluidValve()
     {
-        this(0);
+        this(null, 0);
     }
 
     @Override

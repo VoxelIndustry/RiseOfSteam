@@ -14,15 +14,17 @@ import net.ros.common.event.TickHandler;
 import net.ros.common.grid.GridManager;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
+import net.ros.common.grid.node.IPipe;
 import net.ros.common.grid.node.ITileCable;
 import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 import net.ros.common.network.PipeUpdatePacket;
 
 import java.util.*;
 import java.util.Map.Entry;
 
 public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
-        implements ILoadable, ITileCable<G>
+        implements ILoadable, IPipe<G>
 {
     protected final EnumSet<EnumFacing>                renderConnections;
     protected final EnumSet<EnumFacing>                forbiddenConnections;
@@ -37,8 +39,12 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
 
     protected int transferCapacity;
 
-    public TilePipeBase(final int transferCapacity, final Capability<H> capability)
+    @Getter
+    private PipeType type;
+
+    public TilePipeBase(PipeType type, int transferCapacity, Capability<H> capability)
     {
+        this.type = type;
         this.transferCapacity = transferCapacity;
         this.capability = capability;
 
@@ -164,7 +170,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         super.readFromNBT(tag);
 
         this.transferCapacity = tag.getInteger("transferCapacity");
-
+        this.type = new PipeType(tag.getCompoundTag("type"));
 
         if (this.isClient())
         {
@@ -185,6 +191,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         super.writeToNBT(tag);
 
         tag.setInteger("transferCapacity", this.transferCapacity);
+        tag.setTag("type", this.getType().toNBT(new NBTTagCompound()));
 
         if (this.isServer())
             this.writeRenderConnections(tag);

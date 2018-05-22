@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.grid.impl.PipeGrid;
 import net.ros.common.grid.node.IFluidPipe;
 import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 
 import java.util.List;
 
@@ -18,14 +19,14 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
 {
     private FluidStack coldStorage;
 
-    public TileFluidPipe(final int transferCapacity)
+    public TileFluidPipe(PipeType type, int transferCapacity)
     {
-        super(transferCapacity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        super(type, transferCapacity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
     }
 
     public TileFluidPipe()
     {
-        this(0);
+        this(null, 0);
     }
 
     @SuppressWarnings("unchecked")
@@ -151,7 +152,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
             return false;
         if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
             return ((TileFluidValve) tile).getFacing().getOpposite() != facing;
-        return tile instanceof TileFluidPipe || tile.hasCapability(this.capability, facing);
+        return false;
     }
 
     @Override

@@ -54,7 +54,7 @@ public class ItemMetal extends ItemBase
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        return this.getUnlocalizedName() + "." + Materials.metals.get(stack.getMetadata());
+        return this.getUnlocalizedName() + "." + Materials.metals.get(stack.getMetadata()).getName();
     }
 
     @Override

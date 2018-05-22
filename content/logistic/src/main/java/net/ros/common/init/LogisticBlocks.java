@@ -2,6 +2,10 @@ package net.ros.common.init;
 
 import net.ros.common.block.*;
 import net.ros.common.block.item.ItemBlockMetadata;
+import net.ros.common.grid.node.PipeNature;
+import net.ros.common.grid.node.PipeSize;
+import net.ros.common.grid.node.PipeType;
+import net.ros.common.recipe.Materials;
 import net.ros.common.tile.*;
 import net.ros.common.tile.machine.TileBelt;
 import net.ros.common.tile.machine.TileExtractor;
@@ -15,19 +19,23 @@ public class LogisticBlocks
     public static void init()
     {
         registerBlock(new BlockPipeBase<>("fluidpipe", 6 / 16D,
-                () -> new TileFluidPipe(64), TileFluidPipe.class));
+                () -> new TileFluidPipe(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON), 64),
+                TileFluidPipe.class));
         registerBlock(new BlockPipeBase<>("steampipe", 5 / 16D,
-                () -> new TileSteamPipe(64, 1.5f), TileSteamPipe.class));
+                () -> new TileSteamPipe(new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS), 64, 1.5f),
+                TileSteamPipe.class));
         registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
 
         registerBlock(new BlockPipeValve<>("fluidvalve", 6 / 16D,
-                () -> new TileFluidValve(64), TileFluidValve.class));
+                () -> new TileFluidValve(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON), 64),
+                TileFluidValve.class));
         registerBlock(new BlockPipeValve<>("steamvalve", 5 / 16D,
-                () -> new TileSteamValve(64, 1.5f), TileSteamValve.class));
+                () -> new TileSteamValve(new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS), 64, 1.5f),
+                TileSteamValve.class));
 
         registerBlock(new BlockSteamGauge("steamgauge", 5 / 16D,
-                () -> new TileSteamGauge(64, 1.5f)));
+                () -> new TileSteamGauge(new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS), 64, 1.5f)));
 
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
