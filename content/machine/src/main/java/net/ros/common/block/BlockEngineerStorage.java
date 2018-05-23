@@ -18,7 +18,7 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
 {
     public BlockEngineerStorage()
     {
-        super("engineerstorage", Material.WOOD, true, false, TileEngineerStorage.class);
+        super("engineer_storage", Material.WOOD, true, false, TileEngineerStorage.class);
     }
 
     @Override

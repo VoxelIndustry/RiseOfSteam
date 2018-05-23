@@ -11,7 +11,7 @@ public class BlockEngineerWorkbench extends BlockMultiblockBase<TileEngineerWork
 {
     public BlockEngineerWorkbench()
     {
-        super("engineerworkbench", Material.WOOD, TileEngineerWorkbench.class);
+        super("engineer_workbench", Material.WOOD, TileEngineerWorkbench.class);
     }
 
     @Override
