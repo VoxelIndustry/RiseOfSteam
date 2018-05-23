@@ -103,9 +103,9 @@ public class ROSBlocks
     public static final BlockMachineBase SAWMILL            = null;
     @ObjectHolder("alloycauldron")
     public static final BlockMachineBase ALLOYCAULDRON      = null;
-    @ObjectHolder("engineerworkbench")
+    @ObjectHolder("engineer_workbench")
     public static final BlockMachineBase ENGINEER_WORKBENCH = null;
-    @ObjectHolder("engineerstorage")
+    @ObjectHolder("engineer_storage")
     public static final BlockMachineBase ENGINEER_STORAGE   = null;
     @ObjectHolder("craftcardlibrary")
     public static final BlockMachineBase CRAFT_CARD_LIBRARY = null;

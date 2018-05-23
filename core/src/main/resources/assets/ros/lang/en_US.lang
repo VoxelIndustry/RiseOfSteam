@@ -40,10 +40,10 @@ tile.tinyminingdrill.name=Core Sample Drill
 
 tile.alloycauldron.name=Alloy Cauldron
 tile.sawmill.name=Saw Mill
-tile.engineerworkbench.name=Engineer Workbench
+tile.engineer_workbench.name=Engineer Workbench
 tile.craftcardlibrary.name=Craft Card Library
 tile.blueprintprinter.name=Blueprint Printer
-tile.engineerstorage.name=Engineer Storage
+tile.engineer_storage.name=Engineer Storage
 
 tile.steamtank_small.name=Small Steam Tank
 tile.steamtank_medium.name=Medium Steam Tank
