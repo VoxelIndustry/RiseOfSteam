@@ -314,6 +314,7 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
                         if (stack.getCount() >= toConsume)
                         {
                             stack.shrink(toConsume);
+                            toConsume = 0;
                             break;
                         }
                         else
@@ -322,6 +323,9 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
                             stack.setCount(0);
                         }
                     }
+
+                    if(toConsume > 0)
+                        return;
                 }
                 this.refreshWorkbenchCrafts();
 
