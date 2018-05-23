@@ -148,15 +148,24 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
             return false;
         box = box.offset(new BlockPos(-pos.getX(), -pos.getY(), -pos.getZ()));
 
-        if (!boxes.containsValue(box))
+        if (!boxes.containsValue(box) && !BOX_NONE.equals(box))
             return false;
 
         if (!world.isRemote)
         {
-            EnumFacing target = boxes.inverse().get(box);
-
             TilePipeBase pipe = this.getWorldTile(world, pos);
-            pipe.forbidConnection(target, !pipe.isConnectionForbidden(target));
+
+            if (box == BOX_NONE)
+            {
+                // The forbidden flag does not matter here, the tile keep its own
+                pipe.forbidConnection(null, true);
+            }
+            else
+            {
+                EnumFacing target = boxes.inverse().get(box);
+
+                pipe.forbidConnection(target, !pipe.isConnectionForbidden(target));
+            }
         }
 
         return true;

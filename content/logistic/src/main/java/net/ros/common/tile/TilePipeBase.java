@@ -28,6 +28,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
 {
     protected final EnumSet<EnumFacing>                renderConnections;
     protected final EnumSet<EnumFacing>                forbiddenConnections;
+    protected       boolean                            forbiddenSwitch;
     protected final EnumSet<EnumFacing>                valveOverrides;
     @Getter
     protected final EnumMap<EnumFacing, ITileCable<G>> connectionsMap;
@@ -183,6 +184,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
             if (tag.getBoolean("forbid" + facing.ordinal()))
                 this.forbiddenConnections.add(facing);
         }
+        this.forbiddenSwitch = tag.getBoolean("forbiddenSwitch");
     }
 
     @Override
@@ -198,6 +200,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
 
         for (EnumFacing facing : EnumFacing.VALUES)
             tag.setBoolean("forbid" + facing.ordinal(), this.forbiddenConnections.contains(facing));
+        tag.setBoolean("forbiddenSwitch", this.forbiddenSwitch);
+
         return tag;
     }
 
@@ -253,6 +257,19 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
 
     public void forbidConnection(EnumFacing facing, boolean forbidden)
     {
+        if (facing == null)
+        {
+            for (EnumFacing side : EnumFacing.VALUES)
+            {
+                if (this.forbiddenSwitch && this.isConnectionForbidden(side))
+                    this.forbidConnection(side, false);
+                else if (!this.forbiddenSwitch && this.isConnected(side))
+                    this.forbidConnection(side, true);
+            }
+            this.forbiddenSwitch = !this.forbiddenSwitch;
+            return;
+        }
+
         if (forbidden)
         {
             this.forbiddenConnections.add(facing);
@@ -262,8 +279,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
                 this.getConnected(facing).disconnect(facing.getOpposite());
                 this.disconnect(facing);
 
-                CableGrid newGrid = GridManager.getInstance().addGrid(this.getGridObject().copy(GridManager
-                        .getInstance().getNextID()));
+                CableGrid newGrid = GridManager.getInstance().addGrid(this.getGridObject().copy(
+                        GridManager.getInstance().getNextID()));
 
                 if (this.getConnections().length == 0)
                 {
