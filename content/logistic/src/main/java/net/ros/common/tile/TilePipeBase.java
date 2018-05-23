@@ -302,8 +302,14 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
             }
             if (this.adjacentHandler.containsKey(facing))
                 this.disconnectHandler(facing, this.world.getTileEntity(this.getAdjacentPos(facing)));
-            if (this.valveOverrides.remove(facing))
+            if (this.scanValve(facing))
+            {
                 this.updateState();
+
+                TileEntity tile = this.getWorld().getTileEntity(pos.offset(facing));
+                if(tile instanceof TilePipeBase)
+                    ((TilePipeBase) tile).scanValve(facing.getOpposite());
+            }
         }
         else
         {
@@ -342,21 +348,31 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         return this.forbiddenConnections.contains(facing);
     }
 
-    public void scanValve(EnumFacing facing)
+    /**
+     * @param facing to find the valve candidate
+     * @return if a change has been made to the valveOverrides list
+     */
+    public boolean scanValve(EnumFacing facing)
     {
         if (this.forbiddenConnections.contains(facing))
-            return;
+            return this.valveOverrides.remove(facing);
         TileEntity tile = this.getWorld().getTileEntity(pos.offset(facing));
 
         if (!this.keepAsValve(facing, tile))
         {
-            this.valveOverrides.remove(facing);
+            boolean removed = this.valveOverrides.remove(facing);
             this.updateState();
-            return;
+            return removed;
         }
 
+        if (valveOverrides.contains(facing))
+            return false;
         valveOverrides.add(facing);
         this.updateState();
+
+        if(tile instanceof TilePipeBase)
+            ((TilePipeBase) tile).scanValve(facing.getOpposite());
+        return true;
     }
 
     protected abstract boolean keepAsValve(EnumFacing facing, TileEntity tile);

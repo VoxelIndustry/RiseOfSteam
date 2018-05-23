@@ -128,7 +128,13 @@ public class TileSteamValve extends TileSteamPipe implements IPipeValve
                 return false;
             return !this.isOpen();
         }
-        if (tile instanceof TileSteamPipe || tile.hasCapability(this.capability, facing))
+        if(tile instanceof TileSteamPipe)
+        {
+            if(((TileSteamPipe) tile).canConnect(facing.getOpposite(), this))
+                return !this.isOpen();
+            return false;
+        }
+        if (tile.hasCapability(this.capability, facing))
             return !this.isOpen();
         return false;
     }
