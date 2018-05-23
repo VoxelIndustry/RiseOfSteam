@@ -7,9 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.ros.common.util.ItemUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CraftCard implements IPunchedCard
 {
@@ -102,5 +100,38 @@ public class CraftCard implements IPunchedCard
     public int getID()
     {
         return this.ID;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CraftCard craftCard = (CraftCard) o;
+        return ID == craftCard.ID && recipeEquals(craftCard.recipe) &&
+                ItemUtils.deepEquals(result, craftCard.result);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result1 = Objects.hash(ID, result);
+        result1 = 31 * result1 + Arrays.hashCode(recipe);
+        return result1;
+    }
+
+    private boolean recipeEquals(ItemStack[] recipe)
+    {
+        if (recipe.length != this.recipe.length)
+            return false;
+
+        int i = 0;
+        for (ItemStack stack : recipe)
+        {
+            if (!ItemUtils.deepEquals(stack, this.recipe[i]))
+                return false;
+            i++;
+        }
+        return true;
     }
 }

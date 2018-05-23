@@ -15,7 +15,7 @@ import org.yggard.brokkgui.wrapper.container.ItemStackView;
 
 public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
 {
-    private static final int xSize = 176, ySize = 246;
+    private static final int xSize = 176, ySize = 210;
 
     private static final Texture BACKGROUND = new Texture(ROSConstants.MODID + ":textures/gui/craftcardlibrary.png",
             0, 0,
@@ -58,7 +58,7 @@ public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
         {
             this.views[x] = new ItemStackView[8];
             this.cards[x] = new CraftCard[8];
-            for (int y = 0; y < 8; y++)
+            for (int y = 0; y < 6; y++)
             {
                 this.setupView(body, x, y);
                 int finalX = x;

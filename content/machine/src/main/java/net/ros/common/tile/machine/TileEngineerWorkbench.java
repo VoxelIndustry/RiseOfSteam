@@ -16,25 +16,26 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.ROSConstants;
 import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CraftCard;
+import net.ros.common.container.BuiltContainer;
+import net.ros.common.container.ContainerBuilder;
+import net.ros.common.container.IContainerProvider;
 import net.ros.common.event.TickHandler;
 import net.ros.common.grid.WorkshopMachine;
 import net.ros.common.grid.node.ITileWorkshop;
+import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.multiblock.ITileMultiblockCore;
-import net.ros.common.tile.ILoadable;
-import net.ros.common.tile.TileBase;
-import net.ros.common.util.ItemUtils;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
-import net.ros.common.gui.MachineGui;
 import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.ClientActionBuilder;
 import net.ros.common.network.action.IActionReceiver;
+import net.ros.common.tile.ILoadable;
+import net.ros.common.tile.TileBase;
+import net.ros.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,12 +77,16 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
         }
 
         this.craftables.clear();
-        this.recipes =
-                ((TileModularMachine) this.getGridObject().getMachines().get(WorkshopMachine.CARDLIBRARY))
-                        .getModule(InventoryModule.class).getInventory("basic")
-                        .getStacks().stream().filter(card -> !card.isEmpty())
-                        .map(card -> CardDataStorage.instance().read(card.getTagCompound(), CraftCard.class))
-                        .collect(Collectors.toList());
+        this.recipes = new ArrayList<>();
+        ((TileModularMachine) this.getGridObject().getMachines().get(WorkshopMachine.CARDLIBRARY))
+                .getModule(InventoryModule.class).getInventory("basic")
+                .getStacks().stream().filter(card -> !card.isEmpty())
+                .map(card -> CardDataStorage.instance().read(card.getTagCompound(), CraftCard.class))
+                .forEach(card ->
+                {
+                    if (!recipes.contains(card))
+                        recipes.add(card);
+                });
 
         this.craftables.addAll(recipes.stream().map(card ->
         {
@@ -324,7 +329,7 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
                         }
                     }
 
-                    if(toConsume > 0)
+                    if (toConsume > 0)
                         return;
                 }
                 this.refreshWorkbenchCrafts();

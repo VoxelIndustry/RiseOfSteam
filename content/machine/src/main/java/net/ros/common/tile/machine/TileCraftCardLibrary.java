@@ -53,7 +53,7 @@ public class TileCraftCardLibrary extends TileModularMachine implements IContain
     {
         super.reloadModules();
 
-        this.addModule(new InventoryModule(this, 72));
+        this.addModule(new InventoryModule(this, 54));
         this.getModule(InventoryModule.class).getInventory("basic")
                 .addSlotFilters(CARD_FILTER, IntStream.rangeClosed(0, 71).toArray());
 
@@ -92,16 +92,14 @@ public class TileCraftCardLibrary extends TileModularMachine implements IContain
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("craftcardlibrary", player).player(player)
-                .inventory(19, 123).hotbar(19, 181).addInventory()
+                .inventory(19, 105).hotbar(19, 163).addInventory()
                 .tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlotLine(0, 19, -25, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(9, 19, -7, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(18, 19, 11, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(27, 19, 29, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(36, 19, 47, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(45, 19, 65, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(54, 19, 83, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(63, 19, 101, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(0, 19, -7, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(9, 19, 11, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(18, 19, 29, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(27, 19, 47, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(36, 19, 65, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(45, 19, 83, 9, EnumFacing.Axis.X, CARD_FILTER)
                 .addInventory().create();
     }
 
