@@ -127,7 +127,8 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     {
         if (tile == null)
             return false;
-        if (tile instanceof TileSteamValve && !((TileSteamValve) tile).isOpen())
+        if (tile instanceof TileSteamValve && !((TileSteamValve) tile).isOpen() &&
+                !((TileSteamValve) tile).isConnectionForbidden(facing.getOpposite()))
             return ((TileSteamValve) tile).getFacing().getOpposite() != facing;
         return false;
     }

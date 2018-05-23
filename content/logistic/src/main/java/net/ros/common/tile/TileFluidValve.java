@@ -125,7 +125,8 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
             return false;
         if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
         {
-            if (((TileFluidValve) tile).getFacing().getOpposite() == facing)
+            if (((TileFluidValve) tile).getFacing().getOpposite() == facing &&
+                    ((TileFluidValve) tile).isConnectionForbidden(facing.getOpposite()))
                 return false;
             return !this.isOpen();
         }

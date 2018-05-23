@@ -150,7 +150,8 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     {
         if (tile == null)
             return false;
-        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
+        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen() &&
+                !((TileFluidValve) tile).isConnectionForbidden(facing.getOpposite()))
             return ((TileFluidValve) tile).getFacing().getOpposite() != facing;
         return false;
     }
