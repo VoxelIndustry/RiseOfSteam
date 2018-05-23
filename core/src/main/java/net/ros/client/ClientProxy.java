@@ -188,7 +188,7 @@ public class ClientProxy extends CommonProxy
     private void replacePipeModel(Block block, Block pipeBlock, ResourceLocation modelLocation,
                                   IRegistry<ModelResourceLocation, IBakedModel> registry)
     {
-        ModelPipeCover model = new ModelPipeCover(modelLocation, pipeBlock);
+        ModelPipeCover model = new ModelPipeCover(modelLocation, block,pipeBlock);
         registry.putObject(new ModelResourceLocation(
                 Item.getItemFromBlock(block).getRegistryName(), "facing=up"), model);
         registry.putObject(new ModelResourceLocation(
@@ -201,5 +201,8 @@ public class ClientProxy extends CommonProxy
                 Item.getItemFromBlock(block).getRegistryName(), "facing=south"), model);
         registry.putObject(new ModelResourceLocation(
                 Item.getItemFromBlock(block).getRegistryName(), "facing=north"), model);
+
+        registry.putObject(new ModelResourceLocation(
+                Item.getItemFromBlock(block).getRegistryName(), "inventory"), model);
     }
 }

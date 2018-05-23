@@ -38,12 +38,14 @@ public class ModelPipeCover implements IBakedModel
     private final Table<ROSOBJState, EnumFacing, CompositeBakedModel> CACHE = HashBasedTable.create();
 
     private final ResourceLocation modelLocation;
-    private final Block            block;
+    private final Block            pipeBlock;
+    private final Block            coverBlock;
 
-    public ModelPipeCover(ResourceLocation modelLocation, Block block)
+    public ModelPipeCover(ResourceLocation modelLocation, Block coverBlock, Block pipeBlock)
     {
         this.modelLocation = modelLocation;
-        this.block = block;
+        this.pipeBlock = pipeBlock;
+        this.coverBlock = coverBlock;
     }
 
     @Nonnull
@@ -70,7 +72,7 @@ public class ModelPipeCover implements IBakedModel
             {
                 coverModel = ModelLoaderRegistry.getModel(modelLocation)
                         .process(ImmutableMap.of("flip-v", "true"))
-                        .bake(TRSRTransformation.from(coverState.getValue(BlockDirectional.FACING).getOpposite()),
+                        .bake(TRSRTransformation.from(coverFacing.getOpposite()),
                                 DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 
             } catch (Exception e)
@@ -78,8 +80,15 @@ public class ModelPipeCover implements IBakedModel
                 coverModel = modelManager.getMissingModel();
             }
 
+            String pipeVariantKey = PipeOBJStates.getVariantKey(pipeState);
+
+            if (!pipeVariantKey.startsWith("c"))
+                pipeState = PipeOBJStates.getVisibilityState("c" + pipeVariantKey);
+
             CompositeBakedModel model = new CompositeBakedModel(coverState,
-                    ModelCacheManager.getPipeQuads(block, pipeState), coverModel);
+                    ModelCacheManager.getPipeQuads(pipeBlock, pipeState), coverModel,
+                    Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(pipeBlock.getDefaultState
+                            ()));
             CACHE.put(pipeState, coverFacing, model);
             return model;
         }
@@ -126,13 +135,14 @@ public class ModelPipeCover implements IBakedModel
 
     private static class CompositeBakedModel implements IBakedModel
     {
-        private       IBakedModel                      coverModel;
+        private       IBakedModel                      pipeModel;
         private final List<BakedQuad>                  genQuads;
         private final Map<EnumFacing, List<BakedQuad>> faceQuads = new EnumMap<>(EnumFacing.class);
 
-        CompositeBakedModel(IBlockState coverState, List<BakedQuad> pipeQuads, IBakedModel coverModel)
+        CompositeBakedModel(IBlockState coverState, List<BakedQuad> pipeQuads, IBakedModel coverModel,
+                            IBakedModel pipeModel)
         {
-            this.coverModel = coverModel;
+            this.pipeModel = pipeModel;
 
             ImmutableList.Builder<BakedQuad> genBuilder = ImmutableList.builder();
 
@@ -158,26 +168,26 @@ public class ModelPipeCover implements IBakedModel
         @Override
         public boolean isAmbientOcclusion()
         {
-            return coverModel.isAmbientOcclusion();
+            return pipeModel.isAmbientOcclusion();
         }
 
         @Override
         public boolean isGui3d()
         {
-            return coverModel.isGui3d();
+            return pipeModel.isGui3d();
         }
 
         @Override
         public boolean isBuiltInRenderer()
         {
-            return coverModel.isBuiltInRenderer();
+            return pipeModel.isBuiltInRenderer();
         }
 
         @Nonnull
         @Override
         public TextureAtlasSprite getParticleTexture()
         {
-            return coverModel.getParticleTexture();
+            return pipeModel.getParticleTexture();
         }
 
         @Nonnull
@@ -191,8 +201,7 @@ public class ModelPipeCover implements IBakedModel
         public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType
                                                                                cameraTransformType)
         {
-            return Pair.of(this, TRSRTransformation.from(coverModel.getItemCameraTransforms()
-                    .getTransform(cameraTransformType)).getMatrix());
+            return Pair.of(this, pipeModel.handlePerspective(cameraTransformType).getRight());
         }
     }
 
@@ -203,8 +212,8 @@ public class ModelPipeCover implements IBakedModel
         public IBakedModel handleItemState(@Nonnull IBakedModel model, ItemStack stack, World world, EntityLivingBase
                 entity)
         {
-            return ModelPipeCover.this.getModel(block.getDefaultState(),
-                    PipeOBJStates.getVisibilityState(EnumFacing.UP, EnumFacing.DOWN), EnumFacing.NORTH);
+            return ModelPipeCover.this.getModel(coverBlock.getDefaultState(),
+                    PipeOBJStates.getVisibilityState(true, EnumFacing.WEST, EnumFacing.EAST), EnumFacing.NORTH);
         }
     };
 }

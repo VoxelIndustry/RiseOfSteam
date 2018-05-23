@@ -1,15 +1,16 @@
 package net.ros.client.render.model.obj;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class PipeOBJStates
 {
-    private static final HashMap<String, ROSOBJState> variants = new HashMap<>();
+    private static final BiMap<String, ROSOBJState> variants = HashBiMap.create();
 
     public static ROSOBJState getVisibilityState(EnumFacing... facings)
     {
@@ -23,6 +24,36 @@ public class PipeOBJStates
         if (!variants.containsKey(key))
             variants.put(key, buildVisibilityState(forceCenter, facings));
         return variants.get(key);
+    }
+
+    public static ROSOBJState getVisibilityState(String variantKey)
+    {
+        if (!variants.containsKey(variantKey))
+        {
+            List<EnumFacing> facings = new ArrayList<>();
+
+            if (variantKey.contains("x+"))
+                facings.add(EnumFacing.EAST);
+            if (variantKey.contains("x-"))
+                facings.add(EnumFacing.WEST);
+            if (variantKey.contains("y+"))
+                facings.add(EnumFacing.UP);
+            if (variantKey.contains("y-"))
+                facings.add(EnumFacing.DOWN);
+            if (variantKey.contains("z+"))
+                facings.add(EnumFacing.SOUTH);
+            if (variantKey.contains("z-"))
+                facings.add(EnumFacing.NORTH);
+
+            variants.put(variantKey, buildVisibilityState(variantKey.startsWith("c"),
+                    facings.toArray(new EnumFacing[0])));
+        }
+        return variants.get(variantKey);
+    }
+
+    public static String getVariantKey(ROSOBJState state)
+    {
+        return variants.inverse().get(state);
     }
 
     public static String getVariantKey(boolean forceCenter, EnumFacing... facings)
