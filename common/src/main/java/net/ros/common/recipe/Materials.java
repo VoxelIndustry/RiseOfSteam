@@ -47,7 +47,7 @@ public class Materials
     public static Optional<Metal> getMetalFromFluid(FluidStack moltenMetal)
     {
         return metals.stream()
-                .filter(metal -> metal.equals(moltenMetal.getFluid().getName().replace("molten", "")))
+                .filter(metal -> metal.getName().equals(moltenMetal.getFluid().getName().replace("molten", "")))
                 .findAny();
     }
 

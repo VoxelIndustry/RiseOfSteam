@@ -133,8 +133,7 @@ public class RecipeHelper
                 new SawMillRecipe(new ItemStackRecipeIngredient(input), new ItemStackRecipeIngredient(output)));
     }
 
-    public static void addMeltingRecipe(Metal metal, int
-            baseMeltingTime)
+    public static void addMeltingRecipe(Metal metal, int baseMeltingTime)
     {
         RecipeHandler.RECIPES.get(RecipeHandler.MELTING_UID).add(
                 new MeltRecipe(new ItemStackRecipeIngredient("nugget" + StringUtils.capitalize(metal.getName()), 1),
