@@ -78,7 +78,7 @@ public class BlockMetal extends BlockBase implements IModelProvider
     {
         for (int i = 0; i < Materials.metals.size(); i++)
         {
-            if (variants.getAllowedValues().contains(Materials.metals.get(i)))
+            if (variants.getAllowedValues().contains(Materials.metals.get(i).getName()))
                 items.add(new ItemStack(this, 1, i));
         }
     }

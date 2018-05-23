@@ -61,7 +61,7 @@ public class ItemMetal extends ItemBase
     public void registerVariants()
     {
         this.metals.forEach(metal -> this.addVariant(metal.getName(), new ModelResourceLocation(ROSConstants.MODID + ":"
-                + shape.toString() + "_" + metal, "inventory")));
+                + shape.toString() + "_" + metal.getName(), "inventory")));
         super.registerVariants();
     }
 
