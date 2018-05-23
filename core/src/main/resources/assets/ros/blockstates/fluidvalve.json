@@ -7,7 +7,7 @@
     "custom": {
       "flip-v": true
     },
-    "model": "ros:steamvalve.mwm"
+    "model": "ros:_fluidvalve.mwm"
   },
   "variants": {
     "facing": {
@@ -31,7 +31,7 @@
       }
     },
     "inventory": {
-      "model": "ros:steamvalve.mwm"
+      "model": "ros:_fluidvalve.mwm"
     }
   }
 }

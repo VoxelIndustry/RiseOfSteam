@@ -73,6 +73,10 @@ public class ClientProxy extends CommonProxy
                 new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
                 new String[]{"ros:blocks/belt_slope_down_anim"});
 
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/steamvalve.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/fluidvalve"});
+
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
         ROSItems.ITEMS.stream().filter(item -> item instanceof IItemModelProvider)
@@ -148,9 +152,9 @@ public class ClientProxy extends CommonProxy
         e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
         replacePipeModel(ROSBlocks.STEAM_VALVE, ROSBlocks.STEAM_PIPE,
-                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.obj"), e.getModelRegistry());
+                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.mwm"), e.getModelRegistry());
         replacePipeModel(ROSBlocks.FLUID_VALVE, ROSBlocks.FLUID_PIPE,
-                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.obj"), e.getModelRegistry());
+                new ResourceLocation(ROSConstants.MODID, "block/_fluidvalve.mwm"), e.getModelRegistry());
         replacePipeModel(ROSBlocks.STEAM_GAUGE, ROSBlocks.STEAM_PIPE,
                 new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
 
