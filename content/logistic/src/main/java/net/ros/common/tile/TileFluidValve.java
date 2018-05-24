@@ -106,6 +106,7 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
                 this.setGrid(-1);
                 GridManager.getInstance().connectCable(this);
             }
+            this.sync();
         }
     }
 

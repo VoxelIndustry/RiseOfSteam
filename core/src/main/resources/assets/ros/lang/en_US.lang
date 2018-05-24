@@ -264,3 +264,7 @@ conn.sortingmachine.input.name=Mixed Raw Ore Input
 
 conn.steamfurnace.output.name=Smelted Output
 conn.steamfurnace.input.name=Input
+
+#Overlay
+valve.status.open=Open
+valve.status.close=Closed
