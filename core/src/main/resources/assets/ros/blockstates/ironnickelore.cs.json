@@ -4,9 +4,9 @@
     "model": "cube_all"
   },
   "variants": {
-    "inventory": {
-      "texture#all": "ros:blocks/pentlandite"
-    },
+    "inventory": [
+      {}
+    ],
     "matcher": {
       "ores": ["pentlandite", "laterite", "garnierite"],
       "richness": ["poor", "normal", "rich"],

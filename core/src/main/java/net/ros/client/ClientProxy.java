@@ -163,6 +163,11 @@ public class ClientProxy extends CommonProxy
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemsplitter"), 1,
                 new ModelResourceLocation(ROSConstants.MODID + ":itemsplitter", "facing=up,filter=true"));
 
+        ModelLoader.setCustomModelResourceLocation(ROSItems.VALVE, 0, new ModelResourceLocation(
+                ROSConstants.MODID + ":itemvalve", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(ROSItems.GAUGE, 0, new ModelResourceLocation(
+                ROSConstants.MODID + ":itemgauge", "inventory"));
+
         ROSBlocks.BLOCKS.keySet().stream().filter(IModelProvider.class::isInstance).forEach(block ->
         {
             IModelProvider modelProvider = (IModelProvider) block;
@@ -192,7 +197,7 @@ public class ClientProxy extends CommonProxy
     private void replacePipeModel(Block block, Block pipeBlock, ResourceLocation modelLocation,
                                   IRegistry<ModelResourceLocation, IBakedModel> registry)
     {
-        ModelPipeCover model = new ModelPipeCover(modelLocation, block,pipeBlock);
+        ModelPipeCover model = new ModelPipeCover(modelLocation, block, pipeBlock);
         registry.putObject(new ModelResourceLocation(
                 Item.getItemFromBlock(block).getRegistryName(), "facing=up"), model);
         registry.putObject(new ModelResourceLocation(

@@ -1,7 +1,6 @@
 package net.ros.common.init;
 
-import net.ros.common.item.ItemPunchedCard;
-import net.ros.common.item.ItemSteamCapsule;
+import net.ros.common.item.*;
 
 public class LogisticItems
 {
@@ -12,5 +11,8 @@ public class LogisticItems
         ROSItems.registerItem(new ItemSteamCapsule("steamcapsulex4", 1000, 1.5f));
         ROSItems.registerItem(new ItemSteamCapsule("steamcapsulex6", 1500, 1.5f));
         ROSItems.registerItem(new ItemSteamCapsule("steamcapsulex12", 3000, 1.5f));
+
+        ROSItems.registerItem(new ItemValve());
+        ROSItems.registerItem(new ItemGauge());
     }
 }

@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "ros:itemvalve",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "PIP"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    }
+  }
+}

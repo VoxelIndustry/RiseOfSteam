@@ -59,6 +59,11 @@ public class ROSItems
     @ObjectHolder("steamcapsulex12")
     public static final ItemBase STEAMCAPSULE_X12 = null;
 
+    @ObjectHolder("itemvalve")
+    public static final ItemBase VALVE = null;
+    @ObjectHolder("itemgauge")
+    public static final ItemBase GAUGE = null;
+
     public static List<Item> ITEMS;
 
     public static void init()

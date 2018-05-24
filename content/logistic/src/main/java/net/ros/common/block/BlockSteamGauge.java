@@ -4,13 +4,16 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.init.ROSItems;
 import net.ros.common.tile.TileSteamGauge;
 
 import java.util.function.Supplier;
@@ -22,6 +25,19 @@ public class BlockSteamGauge extends BlockPipeBase<TileSteamGauge>
     public BlockSteamGauge(String name, double width, Supplier<TileSteamGauge> tileSupplier)
     {
         super(name, width, tileSupplier, TileSteamGauge.class);
+    }
+
+    @Override
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+                                    EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (player.isSneaking())
+            return false;
+
+        if (player.getHeldItemMainhand().getItem() != ROSItems.WRENCH)
+            return false;
+
+        return super.onBlockActivated(w, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override

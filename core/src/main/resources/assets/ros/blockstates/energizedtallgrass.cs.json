@@ -9,7 +9,7 @@
       "texture#cross": "ros:blocks/ores/energized_tallgrass"
     },
     "matcher": {
-      "type": ["tall_grass", "fern"],
+      "type": ["tall_grass", "fern", "dead_bush"],
       "values": {
         "texture#cross": "ros:blocks/ores/energized_#type"
       }

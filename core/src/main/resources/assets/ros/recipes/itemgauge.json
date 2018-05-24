@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "ros:itemgauge",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "GIP"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    }
+  }
+}

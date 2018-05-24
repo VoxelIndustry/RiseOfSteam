@@ -2,6 +2,7 @@ package net.ros.common.block;
 
 import com.google.common.collect.EnumHashBiMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -19,6 +20,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.AABBRaytracer;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
 import net.ros.common.tile.TilePipeBase;
 
@@ -139,9 +141,42 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if (player.isSneaking() || player.getHeldItemMainhand().getItem() != ROSItems.WRENCH)
+        if (player.isSneaking())
             return false;
 
+        if (player.getHeldItemMainhand().getItem() == ROSItems.VALVE)
+        {
+            if (world.isRemote)
+                return true;
+
+            if (this == ROSBlocks.STEAM_PIPE)
+                world.setBlockState(pos, ROSBlocks.STEAM_VALVE.getDefaultState().withProperty(BlockDirectional
+                        .FACING, facing));
+            else if (this == ROSBlocks.FLUID_PIPE)
+                world.setBlockState(pos, ROSBlocks.FLUID_VALVE.getDefaultState().withProperty(BlockDirectional
+                        .FACING, facing));
+
+            if (!player.isCreative())
+                player.getHeldItemMainhand().shrink(1);
+            return true;
+        }
+
+        if (player.getHeldItemMainhand().getItem() == ROSItems.GAUGE && this == ROSBlocks.STEAM_PIPE)
+        {
+            if (world.isRemote)
+                return true;
+
+            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE.getDefaultState().withProperty(BlockDirectional.FACING,
+                    facing));
+
+            if (!player.isCreative())
+                player.getHeldItemMainhand().shrink(1);
+            return true;
+        }
+
+
+        if (player.getHeldItemMainhand().getItem() != ROSItems.WRENCH)
+            return false;
         AxisAlignedBB box = this.getSelectedBox(player, pos, 0);
 
         if (box == null)
