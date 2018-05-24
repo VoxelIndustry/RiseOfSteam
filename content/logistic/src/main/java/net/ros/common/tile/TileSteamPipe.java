@@ -1,5 +1,6 @@
 package net.ros.common.tile;
 
+import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implements ISteamPipe
 {
+    @Getter
     private float maxPressure;
 
     public TileSteamPipe(PipeType type, int transferCapacity, float maxPressure)
