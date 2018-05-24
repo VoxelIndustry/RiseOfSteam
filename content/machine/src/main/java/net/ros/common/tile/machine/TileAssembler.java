@@ -17,23 +17,23 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CardDataStorage.ECardType;
 import net.ros.common.card.CraftCard;
 import net.ros.common.card.IPunchedCard;
-import net.ros.common.init.ROSItems;
-import net.ros.common.inventory.InventoryHandler;
-import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.machine.module.impl.IOModule;
-import net.ros.common.machine.module.impl.SteamModule;
-import net.ros.common.steam.ISteamHandler;
-import net.ros.common.steam.SteamUtil;
-import net.ros.common.util.ItemUtils;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.ContainerBuilder;
 import net.ros.common.container.EmptyContainer;
 import net.ros.common.container.IContainerProvider;
 import net.ros.common.gui.MachineGui;
+import net.ros.common.init.ROSItems;
+import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.component.CraftingComponent;
 import net.ros.common.machine.component.SteamComponent;
+import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.AutomationModule;
+import net.ros.common.machine.module.impl.IOModule;
+import net.ros.common.machine.module.impl.SteamModule;
+import net.ros.common.steam.ISteamHandler;
+import net.ros.common.steam.SteamUtil;
+import net.ros.common.util.ItemUtils;
 
 public class TileAssembler extends TileTickingModularMachine implements IContainerProvider
 {
@@ -221,16 +221,16 @@ public class TileAssembler extends TileTickingModularMachine implements IContain
     {
         SteamModule steamEngine = this.getModule(SteamModule.class);
 
-        return new ContainerBuilder("assembler", player).player(player).inventory(8, 95).hotbar(8, 153)
+        return new ContainerBuilder("assembler", player).player(player).inventory(8, 106).hotbar(8, 164)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlot(0, 80, 71, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
-                .slot(1, 8, -1).slot(2, 26, -1).slot(3, 8, 17).slot(4, 26, 17).slot(5, 8, 35).slot(6, 26, 35)
-                .slot(7, 8, 53).slot(8, 26, 53).slot(9, 8, 71).slot(10, 26, 71).outputSlot(11, 134, -1)
-                .outputSlot(12, 152, -1).outputSlot(13, 134, 17).outputSlot(14, 152, 17).outputSlot(15, 134, 35)
-                .outputSlot(16, 152, 35).outputSlot(17, 134, 53).outputSlot(18, 152, 53).outputSlot(19, 134, 71)
-                .outputSlot(20, 152, 71).outputSlot(21, 62, -1).outputSlot(22, 80, -1).outputSlot(23, 98, -1)
-                .outputSlot(24, 62, 17).outputSlot(25, 80, 17).outputSlot(26, 98, 17).outputSlot(27, 62, 35)
-                .outputSlot(28, 80, 35).outputSlot(29, 98, 35).displaySlot(30, -1000, 0).displaySlot(31, -1000, 0)
+                .filterSlot(0, 80, 82, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
+                .slot(1, 8, 10).slot(2, 26, 10).slot(3, 8, 28).slot(4, 26, 28).slot(5, 8, 46).slot(6, 26, 46)
+                .slot(7, 8, 64).slot(8, 26, 64).slot(9, 8, 82).slot(10, 26, 82).outputSlot(11, 134, 10)
+                .outputSlot(12, 152, 10).outputSlot(13, 134, 28).outputSlot(14, 152, 28).outputSlot(15, 134, 46)
+                .outputSlot(16, 152, 46).outputSlot(17, 134, 64).outputSlot(18, 152, 64).outputSlot(19, 134, 82)
+                .outputSlot(20, 152, 82).outputSlot(21, 62, 10).outputSlot(22, 80, 10).outputSlot(23, 98, 10)
+                .outputSlot(24, 62, 28).outputSlot(25, 80, 28).outputSlot(26, 98, 28).outputSlot(27, 62, 46)
+                .outputSlot(28, 80, 46).outputSlot(29, 98, 46).displaySlot(30, -1000, 0).displaySlot(31, -1000, 0)
                 .displaySlot(32, -1000, 0).displaySlot(33, -1000, 0).displaySlot(34, -1000, 0).displaySlot(35, -1000, 0)
                 .displaySlot(36, -1000, 0).displaySlot(37, -1000, 0).displaySlot(38, -1000, 0)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,

@@ -12,8 +12,8 @@ import net.ros.common.init.ROSItems;
 import net.ros.common.machine.EMachineType;
 import net.ros.common.machine.MachineDescriptor;
 import net.ros.common.machine.Machines;
-import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.multiblock.blueprint.Blueprint;
+import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.machine.TileBlueprintPrinter;
 import org.yggard.brokkgui.control.GuiToggleButton;
 import org.yggard.brokkgui.control.GuiToggleGroup;
@@ -24,7 +24,7 @@ import org.yggard.brokkgui.panel.ScrollPane;
 import org.yggard.brokkgui.policy.EScrollbarPolicy;
 import org.yggard.brokkgui.shape.Rectangle;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 
 import java.util.Comparator;
 import java.util.List;
@@ -78,7 +78,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         ScrollPane scrollPane = new ScrollPane(blueprintPane);
         scrollPane.setWidth(120);
         scrollPane.setHeight(120);
-        scrollPane.setFocused(true);
+        scrollPane.setFocused();
         scrollPane.setScrollYPolicy(EScrollbarPolicy.NEVER);
 
         body.addChild(scrollPane, 48, 14);
@@ -159,7 +159,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
                         new ItemStack(Item.getByNameOrId(ROSConstants.MODID + ":" + machineDescriptor.getName())));
                 itemStack.setWidth(24);
                 itemStack.setHeight(24);
-                itemStack.setTooltip(true);
+                itemStack.setItemTooltip(true);
                 itemStack.setAlternateString("");
                 itemStack.setBackgroundColor(machineDescriptor.getType().getColor().addAlpha(-0.4f));
 

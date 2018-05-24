@@ -186,7 +186,7 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("engineerworkbench", player)
-                .player(player).inventory(19, 102).hotbar(19, 160)
+                .player(player).inventory(31, 121).hotbar(31, 179)
                 .addInventory().create();
     }
 

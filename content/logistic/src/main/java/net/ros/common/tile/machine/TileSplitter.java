@@ -251,11 +251,11 @@ public class TileSplitter extends TileModularMachine implements IContainerProvid
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("itemsplitter", player).player(player).inventory(8, 99).hotbar(8, 157)
+        return new ContainerBuilder("itemsplitter", player).player(player).inventory(10, 115).hotbar(10, 173)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlot(0, 23, 76, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
-                .filterSlot(1, 80, 76, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
-                .filterSlot(2, 137, 76, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
+                .filterSlot(0, 25, 92, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
+                .filterSlot(1, 82, 92, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
+                .filterSlot(2, 139, 92, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(0),
                         bool -> this.getWhitelistProperty().set(0, bool))
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(1),

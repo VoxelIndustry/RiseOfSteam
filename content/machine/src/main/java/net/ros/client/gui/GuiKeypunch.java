@@ -13,17 +13,17 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CraftCard;
 import net.ros.common.card.FilterCard;
 import net.ros.common.container.BuiltContainer;
+import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.init.ROSItems;
 import net.ros.common.network.action.ServerActionBuilder;
-import net.ros.common.util.ItemUtils;
-import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.tile.machine.TileKeypunch;
+import net.ros.common.util.ItemUtils;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.panel.GuiRelativePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {
@@ -161,7 +161,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             final ItemStackView view = new ItemStackView(this.keypunch.getCraftStacks().get(index));
             view.setWidth(18);
             view.setHeight(18);
-            view.setTooltip(true);
+            view.setItemTooltip(true);
             view.setBackgroundTexture(GuiKeypunch.SLOT);
             view.setOnClickEvent(click ->
             {
@@ -194,7 +194,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
         final ItemStackView resultView = new ItemStackView(recipe != null ? recipe.getRecipeOutput() : ItemStack.EMPTY);
         resultView.setWidth(22);
         resultView.setHeight(22);
-        resultView.setTooltip(true);
+        resultView.setItemTooltip(true);
         resultView.setBackgroundTexture(GuiKeypunch.SLOT);
         this.craftPane.addChild(resultView, 25 + (18 * 4), 3 + 18);
 
@@ -225,7 +225,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
             final ItemStackView view = new ItemStackView(this.keypunch.getFilterStacks().get(index));
             view.setWidth(18);
             view.setHeight(18);
-            view.setTooltip(true);
+            view.setItemTooltip(true);
             view.setBackgroundTexture(GuiKeypunch.SLOT);
             view.setOnClickEvent(click ->
             {

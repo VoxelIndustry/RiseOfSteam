@@ -148,10 +148,10 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("keypunch", player).player(player).inventory(19, 93).hotbar(19, 151)
+        return new ContainerBuilder("keypunch", player).player(player).inventory(31, 102).hotbar(31, 160)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlot(0, 37, 70, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
-                .outputSlot(1, 145, 70)
+                .filterSlot(0, 49, 79, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
+                .outputSlot(1, 157, 79)
                 .syncBooleanValue(this.isCraftTabProperty::getValue, this.isCraftTabProperty::setValue)
                 .syncBooleanValue(this.getCanPrintProperty()::getValue, this.getCanPrintProperty()::setValue)
                 .syncItemValue(() -> this.getCraftStacks().get(0), stack -> this.getCraftStacks().set(0, stack))

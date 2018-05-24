@@ -7,14 +7,14 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CraftCard;
 import net.ros.common.card.IPunchedCard;
 import net.ros.common.container.BuiltContainer;
-import net.ros.common.tile.machine.TileAssembler;
 import net.ros.common.container.slot.ListenerSlot;
+import net.ros.common.tile.machine.TileAssembler;
 import org.yggard.brokkgui.paint.Color;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.shape.Rectangle;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
 {
@@ -27,7 +27,7 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
 
     private final GuiAbsolutePane craftPane;
     private final ItemStackView[] ingredients = new ItemStackView[9];
-    private final ItemStackView result;
+    private final ItemStackView   result;
 
     public GuiAssembler(final EntityPlayer player, final TileAssembler assembler)
     {
@@ -68,7 +68,7 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
             ItemStackView ingredient = new ItemStackView();
             ingredient.setWidth(18);
             ingredient.setHeight(18);
-            ingredient.setTooltip(true);
+            ingredient.setItemTooltip(true);
             ingredient.setColor(new Color(1, 1, 1, 0.5f));
             this.craftPane.addChild(ingredient, 18 * (i % 3), 18 * (i / 3));
             this.ingredients[i] = ingredient;
@@ -80,7 +80,7 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
         ItemStackView result = new ItemStackView();
         result.setWidth(18);
         result.setHeight(18);
-        result.setTooltip(true);
+        result.setItemTooltip(true);
         result.setColor(new Color(1, 1, 1, 0.5f));
         this.craftPane.addChild(result, 72, 0);
         this.result = result;

@@ -73,9 +73,9 @@ public class TileBlueprintPrinter extends TileTickingModularMachine
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("blueprintprinter", player).player(player)
-                .inventory(19, 112).hotbar(19, 170).addInventory()
+                .inventory(31, 140).hotbar(31, 198).addInventory()
                 .tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlot(0, 19, 90, stack -> stack.getItem() == Items.PAPER)
+                .filterSlot(0, 31, 118, stack -> stack.getItem() == Items.PAPER)
                 .addInventory().create();
     }
 

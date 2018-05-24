@@ -4,13 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.ros.common.grid.WorkshopMachine;
+import net.ros.common.gui.MachineGui;
 import net.ros.common.network.OpenGuiPacket;
 import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.TileBase;
-import net.ros.common.gui.MachineGui;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 
 class EngineerTabPane extends GuiAbsolutePane
 {
@@ -51,7 +51,7 @@ class EngineerTabPane extends GuiAbsolutePane
         ItemStackView view = new ItemStackView(new ItemStack(type.getBlock()));
         view.setWidth(18);
         view.setHeight(18);
-        view.setTooltip(true);
+        view.setItemTooltip(true);
 
         this.addChild(button, 0, 5 + (index * 24));
         this.addChild(view, 5, 7 + (index * 24));

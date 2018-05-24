@@ -103,7 +103,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok:1.16.18'
+        compileOnly 'org.projectlombok:lombok:1.16.20'
 
         testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
         testCompile 'junit:junit:4.12'
@@ -113,17 +113,17 @@ allprojects {
 
 project('common') {
     dependencies {
-        deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.19-11'
-        deobfCompile 'mezz.jei:jei_1.12.2:4.8.0.111'
+        deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.22-13'
+        deobfCompile 'mezz.jei:jei_1.12.2:4.9.1.191'
 
-        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-13-SNAPSHOT'
-        compile 'fr.ourten:teabeans:0.6.0'
-        compile 'org.hjson:hjson:1.0.0'
+        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-20-SNAPSHOT'
+        compile 'fr.ourten:teabeans:0.7.0'
+        compile 'org.hjson:hjson:3.0.0'
 
-        compile 'com.elytradev:concrete:0.3.1:common'
-        compile 'com.elytradev:concrete:0.3.1:reflect'
-        compile 'com.elytradev:concrete:0.3.1:network'
-    
+        compile 'com.elytradev.concrete:concrete-common:0.4.34'
+        compile 'com.elytradev.concrete:concrete-reflect:0.4.34'
+        compile 'com.elytradev.concrete:concrete-network:0.4.34'
+
         compile project(':debug')
     }
 }
@@ -177,12 +177,12 @@ project('debug') {
 }
 
 dependencies {
-    shadow('org.yggard:brokkgui-binding-mc1.12:1.0.0-13-SNAPSHOT') { changing = true }
-    shadow 'fr.ourten:teabeans:0.6.0'
-    shadow 'org.hjson:hjson:1.0.0'
-    shadow 'com.elytradev:concrete:0.3.1:network'
-    shadow 'com.elytradev:concrete:0.3.1:common'
-    shadow 'com.elytradev:concrete:0.3.1:reflect'
+    shadow('org.yggard:brokkgui-binding-mc1.12:1.0.0-20-SNAPSHOT') { changing = true }
+    shadow 'fr.ourten:teabeans:0.7.0'
+    shadow 'org.hjson:hjson:3.0.0'
+    shadow 'com.elytradev.concrete:concrete-common:0.4.34'
+    shadow 'com.elytradev.concrete:concrete-reflect:0.4.34'
+    shadow 'com.elytradev.concrete:concrete-network:0.4.34'
 }
 
 subprojects.each { subproject -> evaluationDependsOn(subproject.path) }

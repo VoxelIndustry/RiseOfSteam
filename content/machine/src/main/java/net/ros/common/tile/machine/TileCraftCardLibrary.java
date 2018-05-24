@@ -92,14 +92,14 @@ public class TileCraftCardLibrary extends TileModularMachine implements IContain
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("craftcardlibrary", player).player(player)
-                .inventory(19, 105).hotbar(19, 163).addInventory()
+                .inventory(31, 127).hotbar(31, 185).addInventory()
                 .tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlotLine(0, 19, -7, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(9, 19, 11, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(18, 19, 29, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(27, 19, 47, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(36, 19, 65, 9, EnumFacing.Axis.X, CARD_FILTER)
-                .filterSlotLine(45, 19, 83, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(0, 31, 15, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(9, 31, 33, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(18, 31, 51, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(27, 31, 69, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(36, 31, 87, 9, EnumFacing.Axis.X, CARD_FILTER)
+                .filterSlotLine(45, 31, 105, 9, EnumFacing.Axis.X, CARD_FILTER)
                 .addInventory().create();
     }
 

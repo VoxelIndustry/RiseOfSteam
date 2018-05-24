@@ -82,12 +82,12 @@ public class TileEngineerStorage extends TileModularMachine
     public BuiltContainer createContainer(EntityPlayer player)
     {
         return new ContainerBuilder("engineerstorage", player)
-                .player(player).inventory(19, 84).hotbar(19, 142)
+                .player(player).inventory(31, 84).hotbar(31, 142)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .slotLine(0, 27, 8, 8, EnumFacing.Axis.X)
-                .slotLine(8, 27, 26, 8, EnumFacing.Axis.X)
-                .slotLine(16, 27, 44, 8, EnumFacing.Axis.X)
-                .slotLine(24, 27, 62, 8, EnumFacing.Axis.X)
+                .slotLine(0, 39, 8, 8, EnumFacing.Axis.X)
+                .slotLine(8, 39, 26, 8, EnumFacing.Axis.X)
+                .slotLine(16, 39, 44, 8, EnumFacing.Axis.X)
+                .slotLine(24, 39, 62, 8, EnumFacing.Axis.X)
                 .addInventory().create();
     }
 

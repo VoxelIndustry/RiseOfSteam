@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
 import org.yggard.brokkgui.paint.Texture;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
 import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiEngineerWorkbench extends BrokkGuiContainer<BuiltContainer>
 {
@@ -77,7 +77,7 @@ public class GuiEngineerWorkbench extends BrokkGuiContainer<BuiltContainer>
                     String.valueOf(engineerWorkbench.getCraftablesCount()[index]));
             view.setWidth(18);
             view.setHeight(18);
-            view.setTooltip(true);
+            view.setItemTooltip(true);
 
             int finalIndex = index;
             view.setOnClickEvent(e ->

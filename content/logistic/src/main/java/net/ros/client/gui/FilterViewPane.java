@@ -4,7 +4,7 @@ import net.ros.common.card.FilterCard;
 import org.yggard.brokkgui.element.GuiButton;
 import org.yggard.brokkgui.event.ActionEvent;
 import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.wrapper.container.ItemStackView;
+import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 import org.yggard.hermod.EventHandler;
 
 public class FilterViewPane extends GuiAbsolutePane
@@ -49,7 +49,7 @@ public class FilterViewPane extends GuiAbsolutePane
                 ItemStackView view = new ItemStackView(card.stacks[i]);
                 view.setWidth(18);
                 view.setHeight(18);
-                view.setTooltip(true);
+                view.setItemTooltip(true);
                 this.views[i] = view;
                 this.addChild(view, 1 + 18 * (i % 3), 1 + 18 * (i / 3));
             }

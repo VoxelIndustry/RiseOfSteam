@@ -200,9 +200,9 @@ public class TileExtractor extends TileModularMachine implements IContainerProvi
     @Override
     public BuiltContainer createContainer(final EntityPlayer player)
     {
-        return new ContainerBuilder("itemextractor", player).player(player).inventory(8, 95).hotbar(8, 153)
+        return new ContainerBuilder("itemextractor", player).player(player).inventory(8, 107).hotbar(8, 165)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .filterSlot(0, 80, 73, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
+                .filterSlot(0, 80, 85, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
                 .syncBooleanValue(this.getWhitelistProperty()::getValue, this.getWhitelistProperty()::setValue)
                 .addInventory().create();
     }
