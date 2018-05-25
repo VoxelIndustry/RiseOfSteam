@@ -163,7 +163,7 @@ public class TileBlueprintPrinter extends TileTickingModularMachine
             TickHandler.loadables.add(this);
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

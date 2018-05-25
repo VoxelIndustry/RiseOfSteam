@@ -148,7 +148,7 @@ public class TileCraftCardLibrary extends TileModularMachine implements IContain
             TickHandler.loadables.add(this);
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

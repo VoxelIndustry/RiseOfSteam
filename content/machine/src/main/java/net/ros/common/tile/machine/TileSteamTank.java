@@ -130,6 +130,6 @@ public class TileSteamTank extends TileModularMachine implements IContainerProvi
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 }

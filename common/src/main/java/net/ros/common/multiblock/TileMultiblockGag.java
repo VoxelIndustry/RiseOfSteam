@@ -52,7 +52,7 @@ public class TileMultiblockGag extends TileBase implements ITileMultiblock, ITil
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 
     @Override

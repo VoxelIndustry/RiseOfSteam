@@ -262,7 +262,7 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
             TickHandler.loadables.add(this);
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

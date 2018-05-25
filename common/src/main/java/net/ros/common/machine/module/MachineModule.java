@@ -34,6 +34,6 @@ public abstract class MachineModule
 
     public void forceSync()
     {
-        this.getMachineTile().forceSync();
+        this.getMachineTile().askServerSync();
     }
 }

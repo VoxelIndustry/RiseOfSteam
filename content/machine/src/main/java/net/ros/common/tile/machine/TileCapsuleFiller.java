@@ -64,7 +64,7 @@ public class TileCapsuleFiller extends TileTickingModularMachine implements ICon
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 
     @Override

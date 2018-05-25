@@ -208,7 +208,7 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
     {
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

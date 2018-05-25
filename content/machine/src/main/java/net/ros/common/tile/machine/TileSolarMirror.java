@@ -47,7 +47,7 @@ public class TileSolarMirror extends TileBase implements ITileMultiblockCore
     {
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

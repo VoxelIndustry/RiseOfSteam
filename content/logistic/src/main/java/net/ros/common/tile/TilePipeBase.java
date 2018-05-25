@@ -101,9 +101,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     public void disconnect(final EnumFacing facing)
     {
         this.connectionsMap.remove(facing);
+        this.scanValve(facing, false);
         this.updateState();
-
-        this.scanValve(facing);
     }
 
     public void connectHandler(final EnumFacing facing, final H to, final TileEntity tile)
@@ -150,7 +149,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
             TickHandler.loadables.add(this);
         else if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
         }
     }
 
@@ -259,6 +258,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     {
         if (facing == null)
         {
+            this.syncLock();
+
             for (EnumFacing side : EnumFacing.VALUES)
             {
                 if (this.forbiddenSwitch && this.isConnectionForbidden(side))
@@ -267,6 +268,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
                     this.forbidConnection(side, true);
             }
             this.forbiddenSwitch = !this.forbiddenSwitch;
+
+            this.releaseSyncLock(true);
             return;
         }
 
@@ -307,7 +310,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
                 this.updateState();
 
                 TileEntity tile = this.getWorld().getTileEntity(pos.offset(facing));
-                if(tile instanceof TilePipeBase)
+                if (tile instanceof TilePipeBase)
                     ((TilePipeBase) tile).scanValve(facing.getOpposite());
             }
         }
@@ -348,11 +351,16 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         return this.forbiddenConnections.contains(facing);
     }
 
+    public boolean scanValve(EnumFacing facing)
+    {
+        return this.scanValve(facing, true);
+    }
+
     /**
      * @param facing to find the valve candidate
      * @return if a change has been made to the valveOverrides list
      */
-    public boolean scanValve(EnumFacing facing)
+    public boolean scanValve(EnumFacing facing, boolean stateUpdate)
     {
         if (this.forbiddenConnections.contains(facing))
             return this.valveOverrides.remove(facing);
@@ -361,16 +369,18 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         if (!this.keepAsValve(facing, tile))
         {
             boolean removed = this.valveOverrides.remove(facing);
-            this.updateState();
+            if (stateUpdate)
+                this.updateState();
             return removed;
         }
 
         if (valveOverrides.contains(facing))
             return false;
         valveOverrides.add(facing);
-        this.updateState();
+        if (stateUpdate)
+            this.updateState();
 
-        if(tile instanceof TilePipeBase)
+        if (tile instanceof TilePipeBase)
             ((TilePipeBase) tile).scanValve(facing.getOpposite());
         return true;
     }

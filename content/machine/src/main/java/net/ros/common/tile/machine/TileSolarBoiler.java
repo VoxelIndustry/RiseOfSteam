@@ -130,7 +130,7 @@ public class TileSolarBoiler extends TileTickingModularMachine implements ILoada
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
         else
             TickHandler.loadables.add(this);
     }

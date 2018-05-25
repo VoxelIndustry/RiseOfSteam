@@ -125,7 +125,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
                 if (this.adjacentHandler.isEmpty())
                     this.getGridObject().removeOutput(this);
             }
-            else if (tile != null && tile.hasCapability(this.capability, facing) && !tile
+            else if (tile.hasCapability(this.capability, facing) && !tile
                     .getCapability(this.capability, facing).equals(this.adjacentHandler.get(facing.getOpposite())))
             {
                 this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);

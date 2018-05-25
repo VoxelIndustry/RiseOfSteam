@@ -154,6 +154,6 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 }

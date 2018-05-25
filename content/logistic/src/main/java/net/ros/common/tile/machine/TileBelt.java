@@ -274,7 +274,7 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             TickHandler.loadables.add(this);
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

@@ -289,6 +289,6 @@ public class TileAssembler extends TileTickingModularMachine implements IContain
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 }

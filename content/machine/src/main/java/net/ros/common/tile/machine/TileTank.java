@@ -101,7 +101,7 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
     {
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

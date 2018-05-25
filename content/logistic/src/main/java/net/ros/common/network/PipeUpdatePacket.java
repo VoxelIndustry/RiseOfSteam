@@ -19,16 +19,16 @@ import java.util.List;
 public class PipeUpdatePacket extends Message
 {
     @MarshalledAs("nbt")
-    NBTTagCompound       sourceTag;
+    NBTTagCompound sourceTag;
 
     @MarshalledAs("nbt-list")
     List<NBTTagCompound> adjacentsTag;
 
     @MarshalledAs("blockpos")
-    BlockPos             sourcePos;
+    BlockPos sourcePos;
 
     @MarshalledAs("blockpos-list")
-    List<BlockPos>       adjacentsPos;
+    List<BlockPos> adjacentsPos;
 
     public PipeUpdatePacket(final NetworkContext ctx)
     {

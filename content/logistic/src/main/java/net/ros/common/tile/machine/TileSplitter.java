@@ -269,7 +269,7 @@ public class TileSplitter extends TileModularMachine implements IContainerProvid
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 
     public BaseListProperty<Boolean> getWhitelistProperty()

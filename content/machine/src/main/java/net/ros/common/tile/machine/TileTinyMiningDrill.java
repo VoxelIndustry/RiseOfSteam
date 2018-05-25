@@ -178,7 +178,7 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 
     private int getSteam()

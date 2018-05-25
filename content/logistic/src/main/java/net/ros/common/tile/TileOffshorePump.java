@@ -156,6 +156,6 @@ public class TileOffshorePump extends TileBase implements ITickable
         super.onLoad();
 
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 }

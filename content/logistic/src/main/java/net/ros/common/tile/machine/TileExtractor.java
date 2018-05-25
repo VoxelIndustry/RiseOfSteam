@@ -211,7 +211,7 @@ public class TileExtractor extends TileModularMachine implements IContainerProvi
     public void onLoad()
     {
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 
     public boolean isWhitelist(final EnumFacing facing)

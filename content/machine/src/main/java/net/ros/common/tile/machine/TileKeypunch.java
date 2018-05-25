@@ -339,7 +339,7 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
             TickHandler.loadables.add(this);
         if (this.isClient())
         {
-            this.forceSync();
+            this.askServerSync();
             this.updateState();
         }
     }

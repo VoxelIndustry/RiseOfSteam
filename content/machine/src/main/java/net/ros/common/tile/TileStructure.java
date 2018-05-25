@@ -207,7 +207,7 @@ public class TileStructure extends TileBase implements ITileMultiblockCore
         super.onLoad();
 
         if (this.isClient())
-            this.forceSync();
+            this.askServerSync();
     }
 
     @Override
