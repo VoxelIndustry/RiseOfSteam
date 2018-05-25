@@ -11,9 +11,4 @@ public class MarkerData
     private BlockPos pos;
     private long startTime;
     private long duration;
-
-    public float getTiming()
-    {
-        return duration / (System.currentTimeMillis() - startTime);
-    }
 }
