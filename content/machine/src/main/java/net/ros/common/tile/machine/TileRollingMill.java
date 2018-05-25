@@ -42,11 +42,11 @@ public class TileRollingMill extends TileTickingModularMachine implements IConta
     {
         super.reloadModules();
 
-        CraftingModule crafter = new CraftingModule(this);
-        crafter.setOnRecipeChange(this::onRecipeChange);
-
         this.addModule(new SteamModule(this, SteamUtil::createTank));
         this.addModule(new InventoryModule(this));
+
+        CraftingModule crafter = new CraftingModule(this);
+        crafter.setOnRecipeChange(this::onRecipeChange);
         this.addModule(crafter);
         this.addModule(new AutomationModule(this));
         this.addModule(new IOModule(this));
@@ -93,7 +93,7 @@ public class TileRollingMill extends TileTickingModularMachine implements IConta
                 .addInventory().tile(inventory)
                 .recipeSlot(0, RecipeHandler.ROLLINGMILL_UID, 0, 47, 36,
                         slot -> crafter.isBufferEmpty() && crafter.isOutputEmpty())
-                .outputSlot(1, 116, 35).displaySlot(2, -1000, 0)
+                .outputSlot(2, 116, 35).displaySlot(1, -1000, 0)
                 .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
                 .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,

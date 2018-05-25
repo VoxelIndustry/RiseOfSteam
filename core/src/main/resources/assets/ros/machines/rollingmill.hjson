@@ -42,7 +42,7 @@
                 {
                     pos: [0, 0, -1]
                     facing: SOUTH
-                    slots: [1]
+                    slots: [2]
                     connText: rollingmill.output
                 }
             ]

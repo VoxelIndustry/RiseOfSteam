@@ -26,7 +26,11 @@ public class TileTickingModularMachine extends TileModularMachine implements ITi
     public void update()
     {
         if (this.getDescriptor() != null)
+        {
+            this.syncLock();
             this.getTickings().forEach(ITickableModule::tick);
+            this.releaseSyncLock(true);
+        }
     }
 
     @Override

@@ -42,7 +42,7 @@
                 {
                     pos: [0, 0, 2]
                     facing: NORTH
-                    slots: [1, 2, 3, 4]
+                    slots: [2, 3, 4, 5]
                     order: balanced
                     connText: sortingmachine.output
                 }

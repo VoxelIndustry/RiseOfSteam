@@ -54,7 +54,7 @@ public class TileOreWasher extends TileTickingModularMachine implements IContain
                 .addInventory().tile(inventory)
                 .recipeSlot(0, RecipeHandler.ORE_WASHER_UID, 0, 47, 36,
                         slot -> crafter.isBufferEmpty() && crafter.isOutputEmpty())
-                .outputSlot(1, 107, 35).outputSlot(2, 125, 35).displaySlot(3, -1000, 0)
+                .outputSlot(2, 107, 35).outputSlot(3, 125, 35).displaySlot(1, -1000, 0)
                 .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
                 .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("washer"))::getFluid,

@@ -60,8 +60,8 @@ public class TileSortingMachine extends TileTickingModularMachine implements ICo
                 .addInventory().tile(inventory)
                 .recipeSlot(0, RecipeHandler.SORTING_MACHINE_UID, 0, 47, 36,
                         slot -> crafter.isBufferEmpty() && crafter.isOutputEmpty())
-                .outputSlot(1, 107, 26).outputSlot(2, 125, 26).outputSlot(3, 107, 44).outputSlot(4, 125, 44)
-                .displaySlot(2, -1000, 0)
+                .outputSlot(2, 107, 26).outputSlot(3, 125, 26).outputSlot(4, 107, 44).outputSlot(5, 125, 44)
+                .displaySlot(1, -1000, 0)
                 .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
                 .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
