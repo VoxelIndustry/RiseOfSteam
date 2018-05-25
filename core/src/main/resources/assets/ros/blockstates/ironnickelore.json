@@ -5,11 +5,9 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "inventory": {
-      "textures": {
-        "all": "ros:blocks/pentlandite"
-      }
-    },
+    "inventory": [
+      {}
+    ],
     "ores=pentlandite,richness=poor": {
       "model": "cube_all",
       "textures": {

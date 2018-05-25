@@ -1,0 +1,37 @@
+{
+  "defaults": {
+    "model": "cube_all",
+    "textures": {},
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "variant=iron": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/scaffold_iron"
+      }
+    },
+    "variant=steel": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/scaffold_steel"
+      }
+    },
+    "variant=bronze": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/scaffold_bronze"
+      }
+    },
+    "variant=brass": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/scaffold_brass"
+      }
+    }
+  },
+  "forge_marker": 1
+}

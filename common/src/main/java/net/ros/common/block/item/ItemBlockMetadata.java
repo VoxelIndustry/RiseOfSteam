@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 public class ItemBlockMetadata extends ItemBlock
 {
     private final String[] variants;
-    private boolean        firstVariation;
+    private       boolean  firstVariation;
 
     public ItemBlockMetadata(final Block block, final String... variants)
     {
@@ -32,8 +32,10 @@ public class ItemBlockMetadata extends ItemBlock
     @Override
     public String getUnlocalizedName(final ItemStack stack)
     {
-        if ((firstVariation || stack.getMetadata() != 0) && stack.getMetadata() <= this.variants.length)
-            return this.getUnlocalizedName() + "." + this.variants[stack.getMetadata() - (firstVariation ? 0 : 1)];
+        int offset = firstVariation ? 0 : 1;
+
+        if ((firstVariation || stack.getMetadata() != 0) && stack.getMetadata() - offset < this.variants.length)
+            return this.getUnlocalizedName() + "." + this.variants[stack.getMetadata() - offset];
         return this.getUnlocalizedName();
     }
 }

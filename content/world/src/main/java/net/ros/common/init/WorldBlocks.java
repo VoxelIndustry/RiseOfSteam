@@ -4,8 +4,7 @@ import net.ros.common.block.*;
 import net.ros.common.block.item.ItemBlockMetadata;
 import net.ros.common.block.item.ItemBlockVeinOre;
 import net.ros.common.ore.Ores;
-import net.ros.common.recipe.Materials;
-import net.ros.common.recipe.Metal;
+import net.ros.common.recipe.MaterialShape;
 
 import static net.ros.common.init.ROSBlocks.registerBlock;
 
@@ -39,11 +38,14 @@ public class WorldBlocks
         registerBlock(new BlockEnergizedTallGrass("energizedtallgrass"),
                 block -> new ItemBlockMetadata(block, "dead_bush", "tall_grass", "fern").setFirstVariation(true));
 
-        registerBlock(BlockMetal.build("blockmetal").type("block").create(), block -> new ItemBlockMetadata(block,
-                Materials.metals.stream().map(Metal::getName).toArray(String[]::new))
-                .setFirstVariation(true));
-        registerBlock(BlockMetal.build("blockmetalplate").type("blockPlate").create(), block ->
-                new ItemBlockMetadata(block, Materials.metals.stream().map(Metal::getName).toArray(String[]::new))
+        registerBlock(BlockMetal.build("blockmetal").type(MaterialShape.BLOCK).create(),
+                block -> new ItemBlockMetadata(block, block.variants.getAllowedValues().toArray(new String[0]))
+                        .setFirstVariation(true));
+        registerBlock(BlockMetal.build("blockmetalplate").type(MaterialShape.BLOCK_PLATE).create(),
+                block -> new ItemBlockMetadata(block, block.variants.getAllowedValues().toArray(new String[0]))
+                        .setFirstVariation(true));
+        registerBlock(BlockScaffold.build("blockscaffold").type(MaterialShape.SCAFFOLD).create(),
+                block -> new ItemBlockMetadata(block, block.variants.getAllowedValues().toArray(new String[0]))
                         .setFirstVariation(true));
     }
 }

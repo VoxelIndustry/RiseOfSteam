@@ -22,6 +22,12 @@
       "textures": {
         "cross": "ros:blocks/ores/energized_fern"
       }
+    },
+    "type=dead_bush": {
+      "model": "tall_grass",
+      "textures": {
+        "cross": "ros:blocks/ores/energized_dead_bush"
+      }
     }
   },
   "forge_marker": 1

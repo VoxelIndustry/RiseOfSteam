@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.ros.common.block.property.PropertyString;
+import net.ros.common.recipe.MaterialShape;
 import net.ros.common.recipe.Materials;
 import net.ros.common.recipe.Metal;
 import org.apache.commons.lang3.StringUtils;
@@ -23,12 +24,12 @@ import java.util.function.BiConsumer;
 
 public class BlockMetal extends BlockBase implements IModelProvider
 {
-    private static PropertyString FAKE_VARIANTS;
+    public static PropertyString FAKE_VARIANTS;
 
     @Getter
     public final PropertyString variants;
 
-    private BlockMetal(String name, PropertyString variants)
+    protected BlockMetal(String name, PropertyString variants)
     {
         super(name, Material.IRON);
 
@@ -108,15 +109,15 @@ public class BlockMetal extends BlockBase implements IModelProvider
 
     public static class Builder
     {
-        private String name;
-        private String type;
+        protected String        name;
+        protected MaterialShape type;
 
         public Builder(String name)
         {
             this.name = name;
         }
 
-        public Builder type(String type)
+        public Builder type(MaterialShape type)
         {
             this.type = type;
             return this;
@@ -126,7 +127,9 @@ public class BlockMetal extends BlockBase implements IModelProvider
         {
             PropertyString variants = new PropertyString("variant",
                     Materials.metals.stream().filter(metal ->
-                            !OreDictionary.doesOreNameExist(type + StringUtils.capitalize(metal.getName())))
+                            Materials.metals.containsShape(metal, type) &&
+                                    !OreDictionary.doesOreNameExist(type.getOreDict() +
+                                            StringUtils.capitalize(metal.getName())))
                             .map(Metal::getName).toArray(String[]::new));
             FAKE_VARIANTS = variants;
 

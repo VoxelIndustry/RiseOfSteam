@@ -32,16 +32,16 @@ public class Materials
 
     public static void initMaterials()
     {
-        metals.addMetal(IRON).shapes(PLATE, GEAR);
-        metals.addMetal(GOLD).shapes(PLATE);
-        metals.addMetal(COPPER).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK);
-        metals.addMetal(BRONZE).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK);
-        metals.addMetal(BRASS).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK);
-        metals.addMetal(TIN).shapes(NUGGET, PLATE, INGOT, BLOCK);
-        metals.addMetal(ZINC).shapes(NUGGET, PLATE, INGOT, BLOCK);
-        metals.addMetal(NICKEL).shapes(NUGGET, PLATE, INGOT, BLOCK);
-        metals.addMetal(LEAD).shapes(NUGGET, PLATE, INGOT, BLOCK);
-        metals.addMetal(STEEL).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK);
+        metals.addMetal(IRON).shapes(PLATE, GEAR, BLOCK_PLATE, SCAFFOLD);
+        metals.addMetal(GOLD).shapes(PLATE, BLOCK_PLATE);
+        metals.addMetal(COPPER).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK, BLOCK_PLATE);
+        metals.addMetal(BRONZE).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK, BLOCK_PLATE, SCAFFOLD);
+        metals.addMetal(BRASS).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK, BLOCK_PLATE, SCAFFOLD);
+        metals.addMetal(TIN).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
+        metals.addMetal(ZINC).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
+        metals.addMetal(NICKEL).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
+        metals.addMetal(LEAD).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
+        metals.addMetal(STEEL).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK, BLOCK_PLATE, SCAFFOLD);
     }
 
     public static Optional<Metal> getMetalFromFluid(FluidStack moltenMetal)
