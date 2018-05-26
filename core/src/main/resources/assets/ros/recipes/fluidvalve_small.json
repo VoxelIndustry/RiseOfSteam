@@ -1,16 +1,16 @@
 {
   "result": {
-    "item": "ros:steamgauge",
+    "item": "ros:fluidvalve_small",
     "data": 0,
     "count": 1
   },
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "ros:itemgauge"
+      "item": "ros:itemvalve"
     },
     {
-      "item": "ros:steampipe"
+      "item": "ros:fluidpipe_small"
     }
   ]
 }

@@ -36,7 +36,7 @@ public class MachineClientEventHandler
         double playerY = player.prevPosY + (player.posY - player.prevPosY) * e.getPartialTicks();
         double playerZ = player.prevPosZ + (player.posZ - player.prevPosZ) * e.getPartialTicks();
 
-        RenderIOOverlay.renderIO(player, playerX, playerY, playerZ, e.getPartialTicks());
+        RenderIOOverlay.renderIO(player, playerX, playerY, playerZ);
     }
 
     @SubscribeEvent

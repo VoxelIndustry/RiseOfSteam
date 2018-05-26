@@ -1,6 +1,7 @@
 package net.ros.common.block;
 
 import com.google.common.collect.EnumHashBiMap;
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -20,6 +21,8 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.AABBRaytracer;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.grid.node.IBlockPipe;
+import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
 import net.ros.common.tile.TilePipeBase;
@@ -28,20 +31,24 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
-public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> implements IComplexSelectBox
+public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> implements IComplexSelectBox, IBlockPipe
 {
     private final EnumHashBiMap<EnumFacing, AxisAlignedBB> boxes;
     private final AxisAlignedBB                            BOX_NONE;
-    private final Supplier<T>                              tileSupplier;
+    private final Function<PipeType, T>                    tileSupplier;
+    @Getter
+    private final PipeType                                 pipeType;
 
-    public BlockPipeBase(String name, double width, Supplier<T> tileSupplier, Class<T> tileClass)
+    public BlockPipeBase(String name, double width, PipeType type, Function<PipeType, T> tileSupplier,
+                         Class<T> tileClass)
     {
         super(name, Material.IRON, tileClass);
 
         this.tileSupplier = tileSupplier;
         this.boxes = EnumHashBiMap.create(EnumFacing.class);
+        this.pipeType = type;
 
         BOX_NONE = new AxisAlignedBB(0.5 - width / 2, 0.5 - width / 2, 0.5 - width / 2,
                 0.5 + width / 2, 0.5 + width / 2, 0.5 + width / 2);
@@ -149,11 +156,11 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
             if (world.isRemote)
                 return true;
 
-            if (this == ROSBlocks.STEAM_PIPE)
-                world.setBlockState(pos, ROSBlocks.STEAM_VALVE.getDefaultState().withProperty(BlockDirectional
+            if (this == ROSBlocks.STEAM_PIPE_SMALL)
+                world.setBlockState(pos, ROSBlocks.STEAM_VALVE_SMALL.getDefaultState().withProperty(BlockDirectional
                         .FACING, facing));
-            else if (this == ROSBlocks.FLUID_PIPE)
-                world.setBlockState(pos, ROSBlocks.FLUID_VALVE.getDefaultState().withProperty(BlockDirectional
+            else if (this == ROSBlocks.FLUID_PIPE_SMALL)
+                world.setBlockState(pos, ROSBlocks.FLUID_VALVE_SMALL.getDefaultState().withProperty(BlockDirectional
                         .FACING, facing));
 
             if (!player.isCreative())
@@ -161,12 +168,12 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
             return true;
         }
 
-        if (player.getHeldItemMainhand().getItem() == ROSItems.GAUGE && this == ROSBlocks.STEAM_PIPE)
+        if (player.getHeldItemMainhand().getItem() == ROSItems.GAUGE && this == ROSBlocks.STEAM_PIPE_SMALL)
         {
             if (world.isRemote)
                 return true;
 
-            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE.getDefaultState().withProperty(BlockDirectional.FACING,
+            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE_SMALL.getDefaultState().withProperty(BlockDirectional.FACING,
                     facing));
 
             if (!player.isCreative())
@@ -210,7 +217,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return tileSupplier.get();
+        return tileSupplier.apply(this.getPipeType());
     }
 
     @Override

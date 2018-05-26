@@ -152,11 +152,20 @@ public class ClientProxy extends CommonProxy
         IBakedModel originalModel = e.getModelRegistry().getObject(key);
         e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
-        replacePipeModel(ROSBlocks.STEAM_VALVE, ROSBlocks.STEAM_PIPE,
+        replacePipeModel(ROSBlocks.STEAM_VALVE_SMALL, ROSBlocks.STEAM_PIPE_SMALL,
                 new ResourceLocation(ROSConstants.MODID, "block/steamvalve.mwm"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.FLUID_VALVE, ROSBlocks.FLUID_PIPE,
+        replacePipeModel(ROSBlocks.FLUID_VALVE_SMALL, ROSBlocks.FLUID_PIPE_SMALL,
                 new ResourceLocation(ROSConstants.MODID, "block/_fluidvalve.mwm"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.STEAM_GAUGE, ROSBlocks.STEAM_PIPE,
+        replacePipeModel(ROSBlocks.STEAM_VALVE_MEDIUM, ROSBlocks.STEAM_PIPE_MEDIUM,
+                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.mwm"), e.getModelRegistry());
+        replacePipeModel(ROSBlocks.FLUID_VALVE_MEDIUM, ROSBlocks.FLUID_PIPE_MEDIUM,
+                new ResourceLocation(ROSConstants.MODID, "block/_fluidvalve.mwm"), e.getModelRegistry());
+
+        replacePipeModel(ROSBlocks.STEAM_GAUGE_SMALL, ROSBlocks.STEAM_PIPE_SMALL,
+                new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
+        replacePipeModel(ROSBlocks.STEAM_GAUGE_MEDIUM, ROSBlocks.STEAM_PIPE_MEDIUM,
+                new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
+        replacePipeModel(ROSBlocks.STEAM_GAUGE_LARGE, ROSBlocks.STEAM_PIPE_LARGE,
                 new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemextractor"), 1,

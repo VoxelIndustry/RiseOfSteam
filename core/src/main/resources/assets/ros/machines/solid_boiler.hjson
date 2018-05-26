@@ -20,8 +20,8 @@
             {
                 time: 15
                 items: [
-                    4xros:steampipe
-                    2xros:fluidpipe
+                    4xros:steampipe_small
+                    2xros:fluidpipe_small
                 ]
             }
         ]

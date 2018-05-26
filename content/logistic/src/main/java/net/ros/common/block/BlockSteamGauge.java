@@ -13,18 +13,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSItems;
 import net.ros.common.tile.TileSteamGauge;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static net.minecraft.block.BlockDirectional.FACING;
 
 public class BlockSteamGauge extends BlockPipeBase<TileSteamGauge>
 {
-    public BlockSteamGauge(String name, double width, Supplier<TileSteamGauge> tileSupplier)
+    public BlockSteamGauge(String name, double width, PipeType type, Function<PipeType, TileSteamGauge> tileSupplier)
     {
-        super(name, width, tileSupplier, TileSteamGauge.class);
+        super(name, width, type, tileSupplier, TileSteamGauge.class);
     }
 
     @Override

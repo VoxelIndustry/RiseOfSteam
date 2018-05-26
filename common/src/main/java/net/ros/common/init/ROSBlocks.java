@@ -21,21 +21,29 @@ import java.util.function.Function;
 public class ROSBlocks
 {
     @ObjectHolder("keypunch")
-    public static final BlockMachineBase PUNCHING_MACHINE = null;
+    public static final BlockMachineBase PUNCHING_MACHINE  = null;
     @ObjectHolder("fluidtank")
-    public static final BlockMachineBase FLUID_TANK       = null;
+    public static final BlockMachineBase FLUID_TANK        = null;
     @ObjectHolder("solid_boiler")
-    public static final BlockMachineBase SOLID_BOILER     = null;
-    @ObjectHolder("fluidpipe")
-    public static final BlockMachineBase FLUID_PIPE       = null;
-    @ObjectHolder("steampipe")
-    public static final BlockMachineBase STEAM_PIPE       = null;
+    public static final BlockMachineBase SOLID_BOILER      = null;
+    @ObjectHolder("fluidpipe_small")
+    public static final BlockMachineBase FLUID_PIPE_SMALL  = null;
+    @ObjectHolder("steampipe_small")
+    public static final BlockMachineBase STEAM_PIPE_SMALL  = null;
+    @ObjectHolder("fluidpipe_medium")
+    public static final BlockMachineBase FLUID_PIPE_MEDIUM = null;
+    @ObjectHolder("steampipe_medium")
+    public static final BlockMachineBase STEAM_PIPE_MEDIUM = null;
+    @ObjectHolder("fluidpipe_large")
+    public static final BlockMachineBase FLUID_PIPE_LARGE  = null;
+    @ObjectHolder("steampipe_large")
+    public static final BlockMachineBase STEAM_PIPE_LARGE  = null;
     @ObjectHolder("fluidpump")
-    public static final BlockMachineBase FLUID_PUMP       = null;
+    public static final BlockMachineBase FLUID_PUMP        = null;
     @ObjectHolder("offshore_pump")
-    public static final BlockMachineBase OFFSHORE_PUMP    = null;
+    public static final BlockMachineBase OFFSHORE_PUMP     = null;
     @ObjectHolder("assembler")
-    public static final BlockMachineBase ASSEMBLER        = null;
+    public static final BlockMachineBase ASSEMBLER         = null;
 
     // Creative
     @ObjectHolder("creative_steam_generator")
@@ -111,12 +119,20 @@ public class ROSBlocks
     public static final BlockMachineBase CRAFT_CARD_LIBRARY = null;
     @ObjectHolder("blueprintprinter")
     public static final BlockMachineBase BLUEPRINT_PRINTER  = null;
-    @ObjectHolder("steamvalve")
-    public static final Block            STEAM_VALVE        = null;
-    @ObjectHolder("fluidvalve")
-    public static final Block            FLUID_VALVE        = null;
-    @ObjectHolder("steamgauge")
-    public static final Block            STEAM_GAUGE        = null;
+    @ObjectHolder("steamvalve_small")
+    public static final Block            STEAM_VALVE_SMALL  = null;
+    @ObjectHolder("fluidvalve_small")
+    public static final Block            FLUID_VALVE_SMALL  = null;
+    @ObjectHolder("steamvalve_medium")
+    public static final Block            STEAM_VALVE_MEDIUM = null;
+    @ObjectHolder("fluidvalve_medium")
+    public static final Block            FLUID_VALVE_MEDIUM = null;
+    @ObjectHolder("steamgauge_small")
+    public static final Block            STEAM_GAUGE_SMALL  = null;
+    @ObjectHolder("steamgauge_medium")
+    public static final Block            STEAM_GAUGE_MEDIUM = null;
+    @ObjectHolder("steamgauge_large")
+    public static final Block            STEAM_GAUGE_LARGE  = null;
 
     public static Map<Block, ItemBlock> BLOCKS;
 

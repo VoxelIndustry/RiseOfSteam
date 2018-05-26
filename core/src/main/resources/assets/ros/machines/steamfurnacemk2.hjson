@@ -30,7 +30,7 @@
             {
                 time: 15
                 items: [
-                    4xros:steampipe
+                    4xros:steampipe_small
                     3xros:belt
                 ]
             }

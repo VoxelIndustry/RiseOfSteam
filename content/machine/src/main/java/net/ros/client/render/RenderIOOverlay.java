@@ -1,5 +1,6 @@
 package net.ros.client.render;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,6 +19,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.ros.client.render.model.ModelCacheManager;
 import net.ros.client.render.model.obj.PipeOBJStates;
 import net.ros.common.ROSConstants;
+import net.ros.common.grid.node.IBlockPipe;
+import net.ros.common.grid.node.PipeNature;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.machine.FluidIOPoint;
 import net.ros.common.machine.InputPoint;
@@ -41,8 +44,7 @@ import java.util.List;
 
 public class RenderIOOverlay
 {
-    public static void renderIO(EntityPlayerSP player, double playerX, double playerY, double playerZ,
-                                float partialTicks)
+    public static void renderIO(EntityPlayerSP player, double playerX, double playerY, double playerZ)
     {
         if (!isSteamPipe(player.getHeldItemMainhand())
                 && !isFluidPipe(player.getHeldItemMainhand())
@@ -211,11 +213,11 @@ public class RenderIOOverlay
         {
             if (facing == side.getFacing().getOpposite())
                 facings.add(facing);
-            if (w.getBlockState(pos.offset(facing)).getBlock() == ROSBlocks.STEAM_PIPE)
+            if (w.getBlockState(pos.offset(facing)).getBlock() == ROSBlocks.STEAM_PIPE_SMALL)
                 facings.add(facing);
         }
 
-        RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.STEAM_PIPE,
+        RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.STEAM_PIPE_SMALL,
                 PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
@@ -235,7 +237,7 @@ public class RenderIOOverlay
         {
             if (facing == side.getFacing().getOpposite())
                 facings.add(facing);
-            if (w.getBlockState(pos.offset(facing)).getBlock() == ROSBlocks.FLUID_PIPE)
+            if (w.getBlockState(pos.offset(facing)).getBlock() == ROSBlocks.FLUID_PIPE_SMALL)
                 facings.add(facing);
         }
 
@@ -250,7 +252,7 @@ public class RenderIOOverlay
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-        RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.FLUID_PIPE,
+        RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.FLUID_PIPE_SMALL,
                 PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
@@ -275,16 +277,26 @@ public class RenderIOOverlay
     private static boolean isFluidPipe(ItemStack stack)
     {
         Item item = stack.getItem();
-        return item == Item.getItemFromBlock(ROSBlocks.FLUID_VALVE) ||
-                item == Item.getItemFromBlock(ROSBlocks.FLUID_PIPE) ||
-                item == Item.getItemFromBlock(ROSBlocks.FLUID_PUMP);
+        if (item == Item.getItemFromBlock(ROSBlocks.FLUID_VALVE_SMALL) ||
+                item == Item.getItemFromBlock(ROSBlocks.FLUID_PUMP))
+            return true;
+
+        Block pipeBlock = Block.getBlockFromItem(item);
+
+        return pipeBlock instanceof IBlockPipe &&
+                ((IBlockPipe) pipeBlock).getPipeType().getNature() == PipeNature.FLUID;
     }
 
     private static boolean isSteamPipe(ItemStack stack)
     {
         Item item = stack.getItem();
-        return item == Item.getItemFromBlock(ROSBlocks.STEAM_VALVE) ||
-                item == Item.getItemFromBlock(ROSBlocks.STEAM_PIPE) ||
-                item == Item.getItemFromBlock(ROSBlocks.STEAM_GAUGE);
+        if (item == Item.getItemFromBlock(ROSBlocks.STEAM_VALVE_SMALL) ||
+                item == Item.getItemFromBlock(ROSBlocks.STEAM_GAUGE_SMALL))
+            return true;
+
+        Block pipeBlock = Block.getBlockFromItem(item);
+
+        return pipeBlock instanceof IBlockPipe &&
+                ((IBlockPipe) pipeBlock).getPipeType().getNature() == PipeNature.STEAM;
     }
 }

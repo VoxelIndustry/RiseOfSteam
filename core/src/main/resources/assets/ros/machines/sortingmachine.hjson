@@ -26,7 +26,7 @@
             {
                 time: 10
                 items: [
-                    3xros:steampipe
+                    3xros:steampipe_small
                     ros:logicbox
                 ]
             }

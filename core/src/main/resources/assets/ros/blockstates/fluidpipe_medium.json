@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "transform": "forge:default-block",
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": {
+      "model": "ros:fluidpipe_medium.mwm"
+    },
+    "inventory": {
+      "model": "ros:fluidpipe_medium_inventory.obj"
+    }
+  }
+}

@@ -24,6 +24,8 @@ import net.ros.client.render.model.ModelCacheManager;
 import net.ros.client.render.model.obj.PipeOBJStates;
 import net.ros.client.render.model.obj.ROSOBJState;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.grid.node.IBlockPipe;
+import net.ros.common.grid.node.PipeSize;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -82,13 +84,14 @@ public class ModelPipeCover implements IBakedModel
 
             String pipeVariantKey = PipeOBJStates.getVariantKey(pipeState);
 
-            if (!pipeVariantKey.startsWith("c"))
+            if (pipeBlock instanceof IBlockPipe && ((IBlockPipe) pipeBlock).getPipeType().getSize() == PipeSize.SMALL &&
+                    !pipeVariantKey.startsWith("c"))
                 pipeState = PipeOBJStates.getVisibilityState("c" + pipeVariantKey);
 
             CompositeBakedModel model = new CompositeBakedModel(coverState,
                     ModelCacheManager.getPipeQuads(pipeBlock, pipeState), coverModel,
-                    Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(pipeBlock.getDefaultState
-                            ()));
+                    Minecraft.getMinecraft().getBlockRendererDispatcher()
+                            .getModelForState(pipeBlock.getDefaultState()));
             CACHE.put(pipeState, coverFacing, model);
             return model;
         }
@@ -213,7 +216,9 @@ public class ModelPipeCover implements IBakedModel
                 entity)
         {
             return ModelPipeCover.this.getModel(coverBlock.getDefaultState(),
-                    PipeOBJStates.getVisibilityState(true, EnumFacing.WEST, EnumFacing.EAST), EnumFacing.NORTH);
+                    PipeOBJStates.getVisibilityState(pipeBlock instanceof IBlockPipe &&
+                                    ((IBlockPipe) pipeBlock).getPipeType().getSize() == PipeSize.SMALL,
+                            EnumFacing.WEST, EnumFacing.EAST), EnumFacing.NORTH);
         }
     };
 }
