@@ -62,7 +62,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
             this.coldStorage = null;
         }
         if (this.getGridObject() != null && !this.adjacentHandler.isEmpty())
-            this.getGridObject().addOutput(this);
+            this.getGridObject().addConnectedPipe(this);
     }
 
     @Override
@@ -123,13 +123,13 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
             {
                 this.disconnectHandler(facing.getOpposite(), tile);
                 if (this.adjacentHandler.isEmpty())
-                    this.getGridObject().removeOutput(this);
+                    this.getGridObject().removeConnectedPipe(this);
             }
             else if (tile.hasCapability(this.capability, facing) && !tile
                     .getCapability(this.capability, facing).equals(this.adjacentHandler.get(facing.getOpposite())))
             {
                 this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
-                this.getGridObject().addOutput(this);
+                this.getGridObject().addConnectedPipe(this);
             }
         }
         else
@@ -139,7 +139,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
                 if (tile.hasCapability(this.capability, facing) && !(tile instanceof TileFluidPipe))
                 {
                     this.connectHandler(facing.getOpposite(), tile.getCapability(this.capability, facing), tile);
-                    this.getGridObject().addOutput(this);
+                    this.getGridObject().addConnectedPipe(this);
                 }
             }
         }
@@ -159,7 +159,7 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     @Override
     public void fillNeighbors()
     {
-        for (final IFluidHandler fluidHandler : this.adjacentHandler.values())
+        for (IFluidHandler fluidHandler : this.adjacentHandler.values())
         {
             if (this.getGridObject().getTank().getFluidAmount() != 0 && fluidHandler != null)
             {
@@ -169,6 +169,18 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
                     fluidHandler.fill(this.getGridObject().getTank().drain(simulated, true), true);
             }
         }
+    }
+
+    @Override
+    public boolean isInput()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOutput()
+    {
+        return true;
     }
 
     public void toColdStorage()

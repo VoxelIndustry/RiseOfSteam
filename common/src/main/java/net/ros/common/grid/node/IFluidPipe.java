@@ -4,5 +4,17 @@ import net.ros.common.grid.impl.PipeGrid;
 
 public interface IFluidPipe extends IPipe<PipeGrid>
 {
-    void fillNeighbors();
+    default void fillNeighbors()
+    {
+
+    }
+
+    default void drainNeighbors()
+    {
+
+    }
+
+    boolean isInput();
+
+    boolean isOutput();
 }

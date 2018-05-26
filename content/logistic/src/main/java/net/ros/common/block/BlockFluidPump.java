@@ -11,7 +11,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.ros.common.grid.node.PipeNature;
+import net.ros.common.grid.node.PipeSize;
+import net.ros.common.grid.node.PipeType;
+import net.ros.common.recipe.Materials;
 import net.ros.common.tile.TileFluidPump;
+import net.ros.common.tile.TilePipeBase;
 
 public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
 {
@@ -39,46 +44,33 @@ public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
     }
 
     @Override
-    public void onBlockPlacedBy(final World w, final BlockPos pos, final IBlockState state,
-                                final EntityLivingBase placer, final ItemStack stack)
+    public void neighborChanged(IBlockState state, World w, BlockPos pos, Block block,
+                                BlockPos posNeighbor)
     {
-        super.onBlockPlacedBy(w, pos, state, placer, stack);
         if (!w.isRemote)
         {
-            ((TileFluidPump) w.getTileEntity(pos)).setFacing(this.getFacing(state));
-            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandlers();
+            BlockPos offset = pos.subtract(posNeighbor);
+            EnumFacing facing = EnumFacing.getFacingFromVector(offset.getX(), offset.getY(), offset.getZ())
+                    .getOpposite();
+
+            TileFluidPump pipe = this.getWorldTile(w, pos);
+            pipe.scanHandler(facing);
+            pipe.scanValve(facing);
         }
     }
 
     @Override
-    public boolean rotateBlock(final World world, final BlockPos pos, final EnumFacing facing)
+    public void breakBlock(World w, BlockPos pos, IBlockState state)
     {
-        super.rotateBlock(world, pos, facing);
+        ((TilePipeBase<?, ?>) w.getTileEntity(pos)).disconnectItself();
 
-        if (!world.isRemote)
-        {
-            ((TileFluidPump) world.getTileEntity(pos)).setFacing(facing);
-            ((TileFluidPump) world.getTileEntity(pos)).scanFluidHandlers();
-        }
-        return true;
-    }
-
-    @Override
-    public void neighborChanged(final IBlockState state, final World w, final BlockPos pos, final Block block,
-                                final BlockPos posNeighbor)
-    {
-        if (!w.isRemote)
-        {
-            final BlockPos substract = posNeighbor.subtract(pos);
-            ((TileFluidPump) w.getTileEntity(pos)).scanFluidHandler(posNeighbor,
-                    EnumFacing.getFacingFromVector(substract.getX(), substract.getY(), substract.getZ()));
-        }
+        super.breakBlock(w, pos, state);
     }
 
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileFluidPump(64);
+        return new TileFluidPump(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON), 64);
     }
 
     @Override
@@ -100,5 +92,17 @@ public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
             default:
                 return FULL_BLOCK_AABB;
         }
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
+                                            float hitZ, int meta, EntityLivingBase placer)
+    {
+        return this.getDefaultState().withProperty(FACING, facing);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World w, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
     }
 }

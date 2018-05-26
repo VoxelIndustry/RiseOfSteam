@@ -9,7 +9,7 @@ public class RestrictedTank implements IFluidHandler
     private final IFluidHandler internalTank;
     private final boolean       canOutput, canInput;
 
-    public RestrictedTank(IFluidHandler internalTank, boolean canOutput, boolean canInput)
+    public RestrictedTank(IFluidHandler internalTank, boolean canInput, boolean canOutput)
     {
         this.internalTank = internalTank;
         this.canOutput = canOutput;

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -43,9 +44,9 @@ public class RenderIOOverlay
     public static void renderIO(EntityPlayerSP player, double playerX, double playerY, double playerZ,
                                 float partialTicks)
     {
-        if (player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.STEAM_PIPE)
-                && player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.FLUID_PIPE)
-                && player.getHeldItemMainhand().getItem() != Item.getItemFromBlock(ROSBlocks.BELT))
+        if (!isSteamPipe(player.getHeldItemMainhand())
+                && !isFluidPipe(player.getHeldItemMainhand())
+                && !isBelt(player.getHeldItemMainhand()))
             return;
 
         List<TileModularMachine> tiles = new ArrayList<>();
@@ -126,7 +127,7 @@ public class RenderIOOverlay
         {
             IOComponent io = descriptor.get(IOComponent.class);
 
-            if (player.getHeldItemMainhand().getItem() == Item.getItemFromBlock(ROSBlocks.STEAM_PIPE))
+            if (isSteamPipe(player.getHeldItemMainhand()))
             {
                 for (MultiblockSide point : io.getSteamIO())
                 {
@@ -144,7 +145,7 @@ public class RenderIOOverlay
                     GlStateManager.popMatrix();
                 }
             }
-            else if (player.getHeldItemMainhand().getItem() == Item.getItemFromBlock(ROSBlocks.FLUID_PIPE))
+            else if (isFluidPipe(player.getHeldItemMainhand()))
             {
                 for (FluidIOPoint point : io.getFluidIO())
                 {
@@ -222,9 +223,9 @@ public class RenderIOOverlay
     private static final ResourceLocation TEX_IO = new ResourceLocation(ROSConstants.MODID,
             "textures/effects/overlay_input_output.png");
     private static final ResourceLocation TEX_O  = new ResourceLocation(ROSConstants.MODID,
-            "textures/effects/overlay_input.png");
-    private static final ResourceLocation TEX_I  = new ResourceLocation(ROSConstants.MODID,
             "textures/effects/overlay_output.png");
+    private static final ResourceLocation TEX_I  = new ResourceLocation(ROSConstants.MODID,
+            "textures/effects/overlay_input.png");
 
 
     private static void renderFluid(World w, BlockPos pos, MultiblockSide side, FluidIOPoint point)
@@ -264,5 +265,26 @@ public class RenderIOOverlay
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         RenderUtil.renderQuads(ModelCacheManager.getBeltQuads(facing), (int) (0.6 * 0xFF) << 24);
+    }
+
+    private static boolean isBelt(ItemStack stack)
+    {
+        return stack.getItem() == Item.getItemFromBlock(ROSBlocks.BELT);
+    }
+
+    private static boolean isFluidPipe(ItemStack stack)
+    {
+        Item item = stack.getItem();
+        return item == Item.getItemFromBlock(ROSBlocks.FLUID_VALVE) ||
+                item == Item.getItemFromBlock(ROSBlocks.FLUID_PIPE) ||
+                item == Item.getItemFromBlock(ROSBlocks.FLUID_PUMP);
+    }
+
+    private static boolean isSteamPipe(ItemStack stack)
+    {
+        Item item = stack.getItem();
+        return item == Item.getItemFromBlock(ROSBlocks.STEAM_VALVE) ||
+                item == Item.getItemFromBlock(ROSBlocks.STEAM_PIPE) ||
+                item == Item.getItemFromBlock(ROSBlocks.STEAM_GAUGE);
     }
 }

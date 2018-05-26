@@ -1,46 +1,31 @@
 package net.ros.common.tile;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.ros.common.fluid.LimitedTank;
+import net.ros.common.block.BlockOrientableMachine;
+import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 
 import java.util.List;
 
-public class TileFluidPump extends TileBase implements ITickable
+public class TileFluidPump extends TileFluidPipe
 {
-    private int           transferCapacity;
-    private IFluidHandler top;
-    private IFluidHandler bottom;
-
-    private EnumFacing facing;
-
-    private final LimitedTank tank;
-
-    public TileFluidPump(final int transferCapacity)
+    public TileFluidPump(PipeType type, int transferCapacity)
     {
-        this.transferCapacity = transferCapacity;
-        this.tank = new LimitedTank(0, 0);
-        this.tank.setCanDrain(false);
-        this.tank.setCanFill(false);
-        this.facing = EnumFacing.UP;
+        super(type, transferCapacity);
     }
 
     public TileFluidPump()
     {
-        this(16);
+        this(null, 0);
     }
 
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing)
     {
-        if ((this.facing.equals(facing) || this.facing.getOpposite().equals(facing))
+        if ((this.getFacing().equals(facing) || this.getFacing().getOpposite().equals(facing))
                 && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return true;
         return super.hasCapability(capability, facing);
@@ -50,101 +35,58 @@ public class TileFluidPump extends TileBase implements ITickable
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
-        if ((this.facing.equals(facing) || this.facing.getOpposite().equals(facing))
+        if ((this.getFacing().equals(facing) || this.getFacing().getOpposite().equals(facing))
                 && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return (T) this.tank;
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getGridObject().getTank());
         return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
-    {
-        tag.setInteger("facing", this.facing.ordinal());
-        tag.setInteger("transferCapacity", this.transferCapacity);
-
-        return super.writeToNBT(tag);
-    }
-
-    @Override
-    public void readFromNBT(final NBTTagCompound tag)
-    {
-        this.facing = EnumFacing.VALUES[tag.getInteger("facing")];
-        this.transferCapacity = tag.getInteger("transferCapacity");
-
-        super.readFromNBT(tag);
-    }
-
-    @Override
-    public void update()
-    {
-        if (!this.world.isRemote)
-        {
-            if (this.world.getTotalWorldTime() % 40 == 0)
-                this.scanFluidHandlers();
-            if (this.top != null && this.bottom != null)
-                this.transferFluids();
-        }
     }
 
     @Override
     public void addInfo(final List<String> lines)
     {
-        lines.add("Connect: " + (this.top != null ? "top " : "") + (this.bottom != null ? "bottom" : ""));
+        super.addInfo(lines);
         lines.add("Transfer Rate: " + this.transferCapacity + " mB / tick");
         lines.add("Orientation: " + this.getFacing());
     }
 
-    public void transferFluids()
+    @Override
+    public void drainNeighbors()
     {
-        final FluidStack transfered = this.bottom.drain(this.transferCapacity, false);
-        int qty = 0;
-
-        if (transfered != null && transfered.amount > 0)
+        for (IFluidHandler fluidHandler : this.adjacentHandler.values())
         {
-            qty = this.top.fill(transfered, false);
-            if (qty > 0)
-                this.top.fill(this.bottom.drain(this.transferCapacity, true), true);
-        }
-    }
-
-    public void scanFluidHandlers()
-    {
-        for (final EnumFacing facing : EnumFacing.VALUES)
-            this.scanFluidHandler(this.getPos().offset(facing), facing);
-    }
-
-    public void scanFluidHandler(final BlockPos posNeighbor, final EnumFacing facing)
-    {
-        if (facing == this.getFacing() || facing == this.getFacing().getOpposite())
-        {
-            final TileEntity tile = this.world.getTileEntity(posNeighbor);
-
-            if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
+            if (fluidHandler != null)
             {
-                if (facing == this.getFacing())
-                    this.top = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
-                else
-                    this.bottom = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
-            }
-            else if (facing == this.getFacing() && this.top != null)
-                this.top = null;
-            else if (facing == this.getFacing().getOpposite() && this.bottom != null)
-                this.bottom = null;
-        }
-    }
+                int simulated = this.getGridObject().getTank().fill(
+                        fluidHandler.drain(this.transferCapacity, false), false);
 
-    public int getTransferCapacity()
-    {
-        return this.transferCapacity;
+                if (simulated > 0)
+                    this.getGridObject().getTank().fill(fluidHandler.drain(simulated, true), true);
+            }
+        }
     }
 
     public EnumFacing getFacing()
     {
-        return this.facing;
+        return this.world.getBlockState(pos).getValue(BlockOrientableMachine.FACING);
     }
 
-    public void setFacing(final EnumFacing facing)
+    @Override
+    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
-        this.facing = facing;
+        if (facing == this.getFacing() || facing == this.getFacing().getOpposite())
+            return super.canConnect(facing, to);
+        return false;
+    }
+
+    @Override
+    public boolean isInput()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isOutput()
+    {
+        return false;
     }
 }

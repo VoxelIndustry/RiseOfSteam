@@ -25,6 +25,9 @@ public class PipeGridTest
         PipeGrid grid = new PipeGrid(0, 64);
         IFluidPipe pipe = mock(IFluidPipe.class);
 
+        when(pipe.isInput()).thenReturn(true);
+        when(pipe.isOutput()).thenReturn(true);
+
         grid.addCable(pipe);
 
         assertThat(grid.getTank().getCapacity()).isEqualTo(4 * grid.getTransferCapacity());
@@ -41,9 +44,10 @@ public class PipeGridTest
         assertThat(grid.getTank().getCapacity()).isEqualTo(4 * grid.getTransferCapacity());
 
         grid.addCable(pipe);
-        grid.addOutput(pipe);
+        grid.addConnectedPipe(pipe);
         grid.tick();
 
         verify(pipe, times(1)).fillNeighbors();
+        verify(pipe, times(1)).drainNeighbors();
     }
 }

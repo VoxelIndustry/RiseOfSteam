@@ -7,7 +7,8 @@ import net.ros.common.grid.node.IFluidPipe;
 import net.ros.common.grid.node.ITileNode;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
@@ -16,7 +17,8 @@ public class PipeGrid extends CableGrid
     private final LimitedTank tank;
     private final int         transferCapacity;
 
-    private final HashSet<IFluidPipe> outputs;
+    private final List<IFluidPipe> outputs;
+    private final List<IFluidPipe> inputs;
 
     public PipeGrid(final int identifier, final int transferCapacity)
     {
@@ -25,7 +27,8 @@ public class PipeGrid extends CableGrid
         this.transferCapacity = transferCapacity;
         this.tank = new LimitedTank(transferCapacity * 4, transferCapacity);
 
-        this.outputs = new HashSet<>();
+        this.outputs = new ArrayList<>();
+        this.inputs = new ArrayList<>();
     }
 
     @Override
@@ -45,6 +48,7 @@ public class PipeGrid extends CableGrid
             if (this.getTank().getFluidAmount() > 0)
                 this.getTank().drainInternal(this.getTank().getFluidAmount() / (this.getCables().size() + 1), true);
             this.outputs.remove(cable);
+            this.inputs.remove(cable);
             return true;
         }
         return false;
@@ -53,6 +57,8 @@ public class PipeGrid extends CableGrid
     @Override
     public void tick()
     {
+        if (!this.getInputs().isEmpty())
+            this.getInputs().forEach(IFluidPipe::drainNeighbors);
         if (!this.getOutputs().isEmpty())
             this.getOutputs().forEach(IFluidPipe::fillNeighbors);
     }
@@ -80,6 +86,7 @@ public class PipeGrid extends CableGrid
     {
         this.getTank().setCapacity(this.getCapacity());
         this.getOutputs().addAll(((PipeGrid) grid).getOutputs());
+        this.getInputs().addAll(((PipeGrid) grid).getInputs());
         if (((PipeGrid) grid).getTank().getFluid() != null)
             this.getTank().fillInternal(((PipeGrid) grid).getTank().getFluid(), true);
     }
@@ -88,7 +95,10 @@ public class PipeGrid extends CableGrid
     public void onSplit(final CableGrid grid)
     {
         this.getOutputs().addAll(
-                ((PipeGrid) grid).getOutputs().stream().filter(this.getCables()::contains).collect(Collectors.toSet()));
+                ((PipeGrid) grid).getOutputs().stream().filter(this.getCables()::contains)
+                        .collect(Collectors.toList()));
+        this.getInputs().addAll(
+                ((PipeGrid) grid).getInputs().stream().filter(this.getCables()::contains).collect(Collectors.toList()));
         this.getTank().fillInternal(((PipeGrid) grid).getTank().drainInternal(
                 ((PipeGrid) grid).getTank().getFluidAmount() / grid.getCables().size() * this.getCables().size(),
                 false), true);
@@ -111,13 +121,19 @@ public class PipeGrid extends CableGrid
         return this.getFluid() == null || this.getTank().getFluidAmount() == 0;
     }
 
-    public void addOutput(final IFluidPipe output)
+    public void addConnectedPipe(IFluidPipe pipe)
     {
-        this.outputs.add(output);
+        if (pipe.isInput())
+            this.inputs.add(pipe);
+        if (pipe.isOutput())
+            this.outputs.add(pipe);
     }
 
-    public void removeOutput(final IFluidPipe output)
+    public void removeConnectedPipe(IFluidPipe pipe)
     {
-        this.outputs.remove(output);
+        if (pipe.isInput())
+            this.inputs.remove(pipe);
+        if (pipe.isOutput())
+            this.outputs.remove(pipe);
     }
 }
