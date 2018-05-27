@@ -3,26 +3,29 @@ package net.ros.common.tile.machine;
 import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.ros.common.ROSConstants;
-import net.ros.common.grid.IConnectionAware;
-import net.ros.common.grid.impl.CableGrid;
-import net.ros.common.init.ROSItems;
-import net.ros.common.machine.Machines;
-import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.machine.module.impl.IOModule;
-import net.ros.common.util.FluidUtils;
+import net.ros.client.render.model.obj.ConnState;
 import net.ros.client.render.tile.VisibilityModelState;
+import net.ros.common.ROSConstants;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.ContainerBuilder;
 import net.ros.common.container.IContainerProvider;
+import net.ros.common.grid.IConnectionAware;
+import net.ros.common.grid.impl.CableGrid;
+import net.ros.common.grid.node.ITileCable;
 import net.ros.common.gui.MachineGui;
+import net.ros.common.init.ROSItems;
+import net.ros.common.machine.Machines;
+import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.FluidStorageModule;
+import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.MultiblockSide;
+import net.ros.common.util.FluidUtils;
 
 import java.util.ArrayList;
 
@@ -141,29 +144,13 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
 
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
-        if (tier == 0)
-            this.connections.add(Machines.SMALL_FLUID_TANK.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
-        else if (tier == 1)
-            this.connections.add(Machines.MEDIUM_FLUID_TANK.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
-        else
-            this.connections.add(Machines.BIG_FLUID_TANK.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        this.connections.add(new MultiblockSide(from, facing));
         this.updateState();
     }
 
     public void disconnectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)
     {
-        if (tier == 0)
-            this.connections.remove(Machines.SMALL_FLUID_TANK.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
-        else if (tier == 1)
-            this.connections.remove(Machines.MEDIUM_FLUID_TANK.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
-        else
-            this.connections.remove(Machines.BIG_FLUID_TANK.get(MultiblockComponent.class)
-                    .worldSideToMultiblockSide(new MultiblockSide(from, facing), this.getFacing()));
+        this.connections.remove(new MultiblockSide(from, facing));
         this.updateState();
     }
 
@@ -183,7 +170,8 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
     // RENDER //
     ////////////
 
-    public final VisibilityModelState state = new VisibilityModelState();
+    public final VisibilityModelState state     = new VisibilityModelState();
+    public final ConnState            connState = new ConnState();
 
     private void updateState()
     {
@@ -192,6 +180,26 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
             this.sync();
             return;
         }
+
+        connState.getPipeMap().clear();
+
+        MultiblockComponent multiblock = (tier == 0 ? Machines.SMALL_FLUID_TANK.get(MultiblockComponent.class) :
+                tier == 1 ? Machines.MEDIUM_FLUID_TANK.get(MultiblockComponent.class) :
+                        Machines.BIG_FLUID_TANK.get(MultiblockComponent.class));
+        EnumFacing facing = this.getFacing();
+
+        this.connections.forEach(side ->
+        {
+            MultiblockSide multiblockSide = multiblock.worldSideToMultiblockSide(side, facing);
+
+            TileEntity tile = this.world.getTileEntity(this.getPos().add(side.getPos()).offset(side.getFacing()));
+
+            if(!(tile instanceof ITileCable))
+                return;
+
+
+        });
+
         this.state.parts.clear();
 
         if (this.getTier() == 1)
