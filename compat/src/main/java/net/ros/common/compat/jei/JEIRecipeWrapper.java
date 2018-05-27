@@ -20,28 +20,28 @@ public class JEIRecipeWrapper implements IRecipeWrapper
 
     private final RecipeBase recipe;
 
-    JEIRecipeWrapper(final RecipeBase recipe, IGuiHelper guiHelper, ResourceLocation background, int u, int v, int width, int height)
+    JEIRecipeWrapper(RecipeBase recipe, IGuiHelper guiHelper, ResourceLocation arrow, int u, int v,
+                     int width, int height)
     {
         this.recipe = recipe;
 
-        final IDrawableStatic arrowStatic = guiHelper.createDrawable(background, u, v, width, height);
+        final IDrawableStatic arrowStatic = guiHelper.createDrawable(arrow, u, v, width, height);
         this.arrow = guiHelper.createAnimatedDrawable(arrowStatic, 20, IDrawableAnimated.StartDirection.LEFT, false);
     }
 
-    public static Builder builder(IGuiHelper guiHelper)
+    static Builder builder(IGuiHelper guiHelper)
     {
         return new Builder(guiHelper);
     }
 
     @Override
-    public void drawInfo(final Minecraft minecraft, final int recipeWidth, final int recipeHeight, final int mouseX,
-                         final int mouseY)
+    public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
     {
         this.arrow.draw(minecraft, 33, 19);
     }
 
     @Override
-    public void getIngredients(final IIngredients ingredients)
+    public void getIngredients(IIngredients ingredients)
     {
         ingredients.setInputs(ItemStack.class, this.recipe.getRecipeInputs(ItemStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
@@ -51,7 +51,7 @@ public class JEIRecipeWrapper implements IRecipeWrapper
 
     public static class Builder
     {
-        private ResourceLocation background;
+        private ResourceLocation arrow;
         private int              u, v, width, height;
         private final IGuiHelper guiHelper;
 
@@ -60,9 +60,9 @@ public class JEIRecipeWrapper implements IRecipeWrapper
             this.guiHelper = guiHelper;
         }
 
-        public Builder background(ResourceLocation background)
+        public Builder arrow(ResourceLocation arrow)
         {
-            this.background = background;
+            this.arrow = arrow;
             return this;
         }
 
@@ -93,7 +93,7 @@ public class JEIRecipeWrapper implements IRecipeWrapper
         @Nonnull
         public JEIRecipeWrapper create(RecipeBase recipe)
         {
-            return new JEIRecipeWrapper(recipe, guiHelper, background, u, v, width, height);
+            return new JEIRecipeWrapper(recipe, guiHelper, arrow, u, v, width, height);
         }
     }
 }

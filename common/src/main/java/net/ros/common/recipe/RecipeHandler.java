@@ -17,6 +17,8 @@ public class RecipeHandler
     public static final String MELTING_UID         = ROSConstants.MODID + ".melting";
     public static final String ALLOY_UID           = ROSConstants.MODID + ".alloying";
 
+    public static final String BLUEPRINT_UID = ROSConstants.MODID + ".blueprint";
+
     public static final HashMap<String, RecipeCategory> RECIPES = new HashMap<>();
 
     public static final ArrayList<IRecipe> CRAFTING_RECIPES = new ArrayList<>();
@@ -86,7 +88,7 @@ public class RecipeHandler
 
     public static List<RecipeBase> getRecipesLike(String recipeID, Object... inputs)
     {
-        if(RecipeHandler.RECIPES.containsKey(recipeID))
+        if (RecipeHandler.RECIPES.containsKey(recipeID))
             return RecipeHandler.RECIPES.get(recipeID).getRecipesLike(inputs);
         return Collections.emptyList();
     }

@@ -175,6 +175,7 @@ gui.itemsplitter.name=Item Splitter
 gui.itemextractor.name=Item Extractor
 gui.blueprintprinter.name=Blueprint Printer
 gui.steamtank.name=Steam Tank
+gui.blueprint.name=Blueprint Building
 
 #Ores
 ore.iron=Iron

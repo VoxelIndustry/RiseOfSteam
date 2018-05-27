@@ -14,9 +14,11 @@ import java.util.ArrayList;
 @Getter
 public class Blueprint implements IMachineComponent
 {
+    private static final MultiblockStep COMPLETE = MultiblockStep.getCompleteStep();
+
     @Getter
     @Setter
-    private       MachineDescriptor descriptor;
+    private MachineDescriptor descriptor;
     private int               rodAmount;
     private ItemStack         rodStack;
 
@@ -42,7 +44,8 @@ public class Blueprint implements IMachineComponent
     public void setMultiblockSteps(final ArrayList<MultiblockStep> multiblockSteps)
     {
         this.multiblockSteps = multiblockSteps;
-        this.multiblockSteps.forEach(step -> step.reloadStates());
+        this.multiblockSteps.forEach(MultiblockStep::reloadStates);
+        this.multiblockSteps.add(COMPLETE);
     }
 
     @Override

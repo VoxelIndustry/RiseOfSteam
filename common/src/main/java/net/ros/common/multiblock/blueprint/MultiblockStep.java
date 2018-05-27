@@ -31,4 +31,17 @@ public class MultiblockStep
             this.alphaState.parts.add(part);
         }
     }
+
+    static MultiblockStep getCompleteStep()
+    {
+        MultiblockStep step = new MultiblockStep();
+
+        step.opaqueState = new VisibilityModelState();
+        step.opaqueState.blacklist = true;
+
+        step.alphaState = new VisibilityModelState();
+        step.alphaState.blacklist = false;
+
+        return step;
+    }
 }

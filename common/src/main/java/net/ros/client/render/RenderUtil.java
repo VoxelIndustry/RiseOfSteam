@@ -16,9 +16,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.client.render.model.FlattenedModelCache;
 import net.ros.client.render.tile.VisibilityModelState;
+import net.ros.common.multiblock.BlockMultiblockBase;
 import org.lwjgl.opengl.GL11;
 import org.yggard.brokkgui.paint.Color;
 
@@ -106,7 +106,7 @@ public class RenderUtil
         final Minecraft minecraft = Minecraft.getMinecraft();
 
         minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
+        ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);

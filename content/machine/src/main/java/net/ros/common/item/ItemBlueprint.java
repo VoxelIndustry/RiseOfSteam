@@ -5,7 +5,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -35,7 +34,7 @@ public class ItemBlueprint extends ItemBase
 
     @Override
     public EnumActionResult onItemUse(final EntityPlayer player, final World world, BlockPos pos, final EnumHand hand,
-            final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
+                                      final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
     {
         final IBlockState iblockstate = world.getBlockState(pos);
         final Block block = iblockstate.getBlock();
@@ -55,7 +54,7 @@ public class ItemBlueprint extends ItemBase
             if ((player.capabilities.isCreativeMode
                     || ItemUtils.hasPlayerEnough(player.inventory, blueprint.getRodStack(), false))
                     && player.canPlayerEdit(pos, facing, stack)
-                    && world.mayPlace(base, pos, false, facing, (Entity) null)
+                    && world.mayPlace(base, pos, false, facing, null)
                     && base.canPlaceBlockAt(world, pos, player.getHorizontalFacing().getOpposite()))
             {
                 final int i = this.getMetadata(stack.getMetadata());
@@ -79,7 +78,7 @@ public class ItemBlueprint extends ItemBase
     }
 
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
-            final IBlockState newState, final MultiblockComponent descriptor)
+                                final IBlockState newState, final MultiblockComponent descriptor)
     {
         if (!world.setBlockState(pos, ROSBlocks.STRUCTURE.getDefaultState(), 11))
             return false;
