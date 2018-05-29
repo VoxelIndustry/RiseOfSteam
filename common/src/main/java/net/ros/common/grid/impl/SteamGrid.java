@@ -107,8 +107,6 @@ public class SteamGrid extends CableGrid
             }
         }
 
-     /*   this.mesh.tick();
-
         if (this.mesh.getHandlers().isEmpty())
             return;
 
@@ -132,7 +130,7 @@ public class SteamGrid extends CableGrid
             }
             if (handler.getPressure() > this.maxPressure * 1.5f)
                 blewPipes(handler, (int) Math.ceil((handler.getPressure() - this.maxPressure * 1.5f) / 0.05f));
-        });*/
+        });
     }
 
     private int balanceTanks(ISteamHandler first, ISteamHandler second, int transferCapacity, boolean onlyFill)

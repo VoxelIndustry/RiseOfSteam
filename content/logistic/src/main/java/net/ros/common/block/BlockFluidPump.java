@@ -55,7 +55,6 @@ public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
 
             TileFluidPump pipe = this.getWorldTile(w, pos);
             pipe.scanHandler(facing);
-            pipe.scanValve(facing);
         }
     }
 

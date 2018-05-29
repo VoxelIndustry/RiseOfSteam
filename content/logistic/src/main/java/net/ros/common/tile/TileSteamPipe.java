@@ -139,17 +139,6 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     }
 
     @Override
-    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
-    {
-        if (tile == null)
-            return false;
-        if (tile instanceof TileSteamValve && !((TileSteamValve) tile).isOpen() &&
-                !((TileSteamValve) tile).isConnectionForbidden(facing.getOpposite()))
-            return ((TileSteamValve) tile).getFacing().getOpposite() != facing;
-        return false;
-    }
-
-    @Override
     public SteamGrid createGrid(final int id)
     {
         return new SteamGrid(id, this.getTransferCapacity(), this.maxPressure);

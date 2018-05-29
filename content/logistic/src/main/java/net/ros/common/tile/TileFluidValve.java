@@ -119,27 +119,4 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
 
         return this.isOpen && super.canConnect(facing, to);
     }
-
-    @Override
-    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
-    {
-        if (tile == null || facing == this.getFacing())
-            return false;
-        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
-        {
-            if (((TileFluidValve) tile).getFacing().getOpposite() == facing &&
-                    ((TileFluidValve) tile).isConnectionForbidden(facing.getOpposite()))
-                return false;
-            return !this.isOpen();
-        }
-        if (tile instanceof TileFluidPipe)
-        {
-            if (((TileFluidPipe) tile).canConnect(facing.getOpposite(), this))
-                return !this.isOpen();
-            return false;
-        }
-        if (tile.hasCapability(this.capability, facing))
-            return !this.isOpen();
-        return false;
-    }
 }

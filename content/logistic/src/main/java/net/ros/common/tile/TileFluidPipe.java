@@ -146,17 +146,6 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
-    {
-        if (tile == null)
-            return false;
-        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen() &&
-                !((TileFluidValve) tile).isConnectionForbidden(facing.getOpposite()))
-            return ((TileFluidValve) tile).getFacing().getOpposite() != facing;
-        return false;
-    }
-
-    @Override
     public void fillNeighbors()
     {
         for (IFluidHandler fluidHandler : this.adjacentHandler.values())

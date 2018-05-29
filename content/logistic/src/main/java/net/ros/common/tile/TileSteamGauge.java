@@ -82,7 +82,7 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability && facing != this.getFacing())
-            return SteamCapabilities.STEAM_HANDLER.cast(this.getGridObject().getTank());
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getBufferTank());
         return super.getCapability(capability, facing);
     }
 

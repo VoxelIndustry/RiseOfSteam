@@ -132,7 +132,6 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
 
             T pipe = this.getWorldTile(w, pos);
             pipe.scanHandler(facing);
-            pipe.scanValve(facing);
         }
     }
 
