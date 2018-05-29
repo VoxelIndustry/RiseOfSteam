@@ -45,7 +45,7 @@ public class TileFluidPump extends TileFluidPipe
     public void addInfo(final List<String> lines)
     {
         super.addInfo(lines);
-        lines.add("Transfer Rate: " + this.transferCapacity + " mB / tick");
+        lines.add("Transfer Rate: " + this.getTransferCapacity() + " mB / tick");
         lines.add("Orientation: " + this.getFacing());
     }
 
@@ -57,7 +57,7 @@ public class TileFluidPump extends TileFluidPipe
             if (fluidHandler != null)
             {
                 int simulated = this.getGridObject().getTank().fill(
-                        fluidHandler.drain(this.transferCapacity, false), false);
+                        fluidHandler.drain(this.getTransferCapacity(), false), false);
 
                 if (simulated > 0)
                     this.getGridObject().getTank().fill(fluidHandler.drain(simulated, true), true);

@@ -23,7 +23,7 @@ public class BeltGrid extends CableGrid
     private final SteamTank tank;
 
     @Getter
-    private final float beltSpeed;
+    private final float   beltSpeed;
     private final float   BELT_MIDDLE      = 10 / 32F;
     private       int     movedCount       = 0;
     private       boolean lastWorkingState = false;
@@ -35,7 +35,7 @@ public class BeltGrid extends CableGrid
         super(identifier);
 
         this.beltSpeed = beltSpeed;
-        this.tank = new SteamTank(0, 64 * 4, 1.5f);
+        this.tank = new SteamTank(64 * 4, 1.5f);
     }
 
     @Override

@@ -195,6 +195,6 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     @Override
     public PipeGrid createGrid(final int id)
     {
-        return new PipeGrid(id, this.transferCapacity);
+        return new PipeGrid(id, this.getTransferCapacity());
     }
 }

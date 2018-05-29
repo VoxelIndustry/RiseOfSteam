@@ -7,9 +7,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.grid.GridManager;
+import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.SteamCapabilities;
+import net.ros.common.steam.SteamTank;
 import net.ros.common.steam.SteamUtil;
 
 import javax.annotation.Nullable;
@@ -28,6 +30,35 @@ public class TileSteamValve extends TileSteamPipe implements IPipeValve
     public TileSteamValve()
     {
         this(null, 0, 0);
+    }
+
+    @Override
+    protected SteamTank createSteamTank(int capacity, float maxPressure)
+    {
+        return new SteamTank(capacity, maxPressure)
+        {
+            private TileSteamValve valve;
+
+            {
+                this.valve = TileSteamValve.this;
+            }
+
+            @Override
+            public int drainSteam(int amount, boolean doDrain)
+            {
+                if (valve.isOpen())
+                    return super.drainSteam(amount, doDrain);
+                return 0;
+            }
+
+            @Override
+            public int fillSteam(int amount, boolean doFill)
+            {
+                if (valve.isOpen())
+                    return super.fillSteam(amount, doFill);
+                return 0;
+            }
+        };
     }
 
     @Override

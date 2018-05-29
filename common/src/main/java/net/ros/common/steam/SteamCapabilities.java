@@ -28,10 +28,10 @@ public class SteamCapabilities
     public static void register()
     {
         CapabilityManager.INSTANCE.register(ISteamHandler.class, new DefaultSteamHandlerStorage<>(),
-                () -> new SteamTank(0, 10000, SteamUtil.BASE_PRESSURE * 2));
+                () -> new SteamTank(10000, SteamUtil.BASE_PRESSURE * 2));
 
         CapabilityManager.INSTANCE.register(ISteamHandlerItem.class, new DefaultSteamHandlerStorage<>(),
-                () -> new ItemSteamTank(ItemStack.EMPTY, 0, 10000, SteamUtil.BASE_PRESSURE * 2));
+                () -> new ItemSteamTank(ItemStack.EMPTY, 10000, SteamUtil.BASE_PRESSURE * 2));
 
         CapabilityManager.INSTANCE.register(ISteamMachine.class, new DefaultSteamMachineStorage<>(),
                 () -> new SteamMachine(BlockPos.ORIGIN, null));

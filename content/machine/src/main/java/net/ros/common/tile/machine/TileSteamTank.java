@@ -74,7 +74,7 @@ public class TileSteamTank extends TileModularMachine implements IContainerProvi
 
     private ISteamTank createTank(SteamComponent steamComponent)
     {
-        return new LinkedSteamTank(0, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity(),
+        return new LinkedSteamTank(steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity(),
                 (IFluidTank) this.getModule(FluidStorageModule.class).getFluidHandler("water"));
     }
 

@@ -37,8 +37,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     @Getter
     @Setter
     protected       int                                grid;
-
-    protected int transferCapacity;
+    @Getter
+    private       int                                transferCapacity;
 
     @Getter
     private PipeType type;

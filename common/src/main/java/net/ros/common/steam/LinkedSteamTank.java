@@ -8,9 +8,9 @@ public class LinkedSteamTank extends SteamTank
 {
     private IFluidTank fluidTank;
 
-    public LinkedSteamTank(int steamAmount, int capacity, float maxPressure, IFluidTank fluidTank)
+    public LinkedSteamTank(int capacity, float maxPressure, IFluidTank fluidTank)
     {
-        super(steamAmount, capacity, maxPressure);
+        super(capacity, maxPressure);
 
         this.fluidTank = fluidTank;
     }

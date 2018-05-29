@@ -14,21 +14,18 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.render.model.obj.StateProperties;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSItems;
-import net.ros.common.grid.node.IPipeValve;
-import net.ros.common.tile.TilePipeBase;
+import net.ros.common.tile.TilePressureValve;
 
 import java.util.function.Function;
 
 import static net.minecraft.block.BlockDirectional.FACING;
 
-public class BlockPipeValve<T extends TilePipeBase & IPipeValve> extends BlockPipeBase<T>
+public class BlockPressureValve extends BlockPipeBase<TilePressureValve>
 {
-    public BlockPipeValve(String name, double width, PipeType type, Function<PipeType, T> tileSupplier,
-                          Class<T> tileClass)
+    public BlockPressureValve(String name, double width, PipeType type, Function<PipeType, TilePressureValve>
+            tileSupplier)
     {
-        super(name, width, type, tileSupplier, tileClass);
-
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        super(name, width, type, tileSupplier, TilePressureValve.class);
     }
 
     @Override
@@ -39,16 +36,7 @@ public class BlockPipeValve<T extends TilePipeBase & IPipeValve> extends BlockPi
             return false;
 
         if (player.getHeldItemMainhand().getItem() != ROSItems.WRENCH)
-        {
-            if (!w.isRemote)
-            {
-                T valve = this.getWorldTile(w, pos);
-                if (valve == null)
-                    return false;
-                valve.setOpen(!valve.isOpen());
-            }
-            return true;
-        }
+            return false;
 
         return super.onBlockActivated(w, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }

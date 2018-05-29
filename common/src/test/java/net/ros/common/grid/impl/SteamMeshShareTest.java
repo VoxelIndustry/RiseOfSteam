@@ -1,5 +1,6 @@
 package net.ros.common.grid.impl;
 
+import net.ros.common.steam.ISteamTank;
 import net.ros.common.steam.LimitedSteamTank;
 import net.ros.common.steam.SteamTank;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static net.ros.common.steam.SteamUtil.createTank;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
@@ -31,8 +33,8 @@ public class SteamMeshShareTest
     @Test
     public void testOneEmptyOneFull()
     {
-        SteamTank fullTank = new SteamTank(1000, 1000, 1);
-        SteamTank emptyTank = new SteamTank(0, 1000, 1);
+        ISteamTank fullTank = createTank(1000, 1000, 1);
+        ISteamTank emptyTank = createTank(0, 1000, 1);
 
         SteamMesh mesh = new SteamMesh(this.throttle);
         mesh.addHandler(fullTank);
@@ -52,8 +54,8 @@ public class SteamMeshShareTest
     @Test
     public void testOneEmptyOneFullUneven()
     {
-        SteamTank fullTank = new SteamTank(1000, 1000, 1);
-        SteamTank emptyTank = new SteamTank(0, 500, 1);
+        ISteamTank fullTank = createTank(1000, 1000, 1);
+        ISteamTank emptyTank = createTank(0, 500, 1);
 
         SteamMesh mesh = new SteamMesh(this.throttle);
         mesh.addHandler(fullTank);
@@ -75,9 +77,9 @@ public class SteamMeshShareTest
     @Test
     public void testTwoEmptyOneFull()
     {
-        SteamTank fullTank = new SteamTank(1000, 1000, 1);
-        SteamTank emptyTank1 = new SteamTank(0, 500, 1);
-        SteamTank emptyTank2 = new SteamTank(0, 500, 1);
+        ISteamTank fullTank = createTank(1000, 1000, 1);
+        ISteamTank emptyTank1 = createTank(0, 500, 1);
+        ISteamTank emptyTank2 = createTank(0, 500, 1);
 
         SteamMesh mesh = new SteamMesh(this.throttle);
         mesh.addHandler(fullTank);
@@ -102,8 +104,8 @@ public class SteamMeshShareTest
     @Test
     public void testTwoFullUneven()
     {
-        SteamTank fullTankBig = new SteamTank(2000, 1000, 2);
-        SteamTank fullTankSmall = new SteamTank(1000, 1000, 1);
+        ISteamTank fullTankBig = createTank(2000, 1000, 2);
+        ISteamTank fullTankSmall = createTank(1000, 1000, 1);
 
         SteamMesh mesh = new SteamMesh(this.throttle);
         mesh.addHandler(fullTankBig);
@@ -121,8 +123,9 @@ public class SteamMeshShareTest
     @Test
     public void testOneEmptyOneFullThrottle()
     {
-        SteamTank fullTank = new LimitedSteamTank(1000, 1000, 1, 64);
-        SteamTank emptyTank = new LimitedSteamTank(0, 1000, 1, 48);
+        SteamTank fullTank = new LimitedSteamTank(1000, 1, 64);
+        fullTank.setSteam(1000);
+        SteamTank emptyTank = new LimitedSteamTank(1000, 1, 48);
 
         SteamMesh mesh = new SteamMesh(this.throttle);
         mesh.addHandler(fullTank);
@@ -141,8 +144,9 @@ public class SteamMeshShareTest
 
         // Reverse throttle
 
-        fullTank = new LimitedSteamTank(1000, 1000, 1, 48);
-        emptyTank = new LimitedSteamTank(0, 1000, 1, 64);
+        fullTank = new LimitedSteamTank(1000, 1, 48);
+        fullTank.setSteam(1000);
+        emptyTank = new LimitedSteamTank(1000, 1, 64);
 
         mesh = new SteamMesh(this.throttle);
         mesh.addHandler(fullTank);

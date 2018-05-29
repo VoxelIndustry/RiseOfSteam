@@ -36,7 +36,7 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
 
         if (this.world.getTotalWorldTime() % 10 == 0)
         {
-            float newPressure = this.getGridObject().getMesh().getPressure();
+            float newPressure = this.getBufferTank().getPressure();
 
             if (newPressure != currentPressure)
             {

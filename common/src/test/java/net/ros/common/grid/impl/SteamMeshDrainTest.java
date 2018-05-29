@@ -1,10 +1,12 @@
 package net.ros.common.grid.impl;
 
+import net.ros.common.steam.ISteamTank;
 import net.ros.common.steam.SteamTank;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static net.ros.common.steam.SteamUtil.createTank;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -13,8 +15,8 @@ public class SteamMeshDrainTest
     @Test
     public void testSimpleDrain()
     {
-        SteamTank tank1 = new SteamTank(1000, 2000, 2);
-        SteamTank tank2 = new SteamTank(1000, 2000, 2);
+        ISteamTank tank1 = createTank(1000, 2000, 2);
+        ISteamTank tank2 = createTank(1000, 2000, 2);
 
         SteamMesh mesh = new SteamMesh();
         mesh.addHandler(tank1);
@@ -33,8 +35,8 @@ public class SteamMeshDrainTest
     @Test
     public void testUnequalDrain()
     {
-        SteamTank tank1 = new SteamTank(1000, 2000, 2);
-        SteamTank tank2 = new SteamTank(500, 1000, 2);
+        ISteamTank tank1 = createTank(1000, 2000, 2);
+        ISteamTank tank2 = createTank(500, 1000, 2);
 
         SteamMesh mesh = new SteamMesh();
         mesh.addHandler(tank1);
@@ -53,8 +55,8 @@ public class SteamMeshDrainTest
     @Test
     public void testEmptyTankSingleDrain()
     {
-        SteamTank tank1 = new SteamTank(1000, 2000, 2);
-        SteamTank tank2 = new SteamTank(0, 1000, 2);
+        ISteamTank tank1 = createTank(1000, 2000, 2);
+        ISteamTank tank2 = createTank(0, 1000, 2);
 
         SteamMesh mesh = new SteamMesh();
         mesh.addHandler(tank1);
@@ -73,10 +75,10 @@ public class SteamMeshDrainTest
     @Test
     public void testFourSameDrain()
     {
-        SteamTank tank1 = new SteamTank(1000, 2000, 2);
-        SteamTank tank2 = new SteamTank(1000, 2000, 2);
-        SteamTank tank3 = new SteamTank(1000, 2000, 2);
-        SteamTank tank4 = new SteamTank(1000, 2000, 2);
+        ISteamTank tank1 = createTank(1000, 2000, 2);
+        ISteamTank tank2 = createTank(1000, 2000, 2);
+        ISteamTank tank3 = createTank(1000, 2000, 2);
+        ISteamTank tank4 = createTank(1000, 2000, 2);
 
         SteamMesh mesh = new SteamMesh();
         mesh.addHandler(tank1);
@@ -99,10 +101,10 @@ public class SteamMeshDrainTest
     @Test
     public void testFourUnequalDrain()
     {
-        SteamTank tank1 = new SteamTank(1000, 2000, 2);
-        SteamTank tank2 = new SteamTank(500, 1000, 2);
-        SteamTank tank3 = new SteamTank(50, 100, 2);
-        SteamTank tank4 = new SteamTank(250, 500, 2);
+        ISteamTank tank1 = createTank(1000, 2000, 2);
+        ISteamTank tank2 = createTank(500, 1000, 2);
+        ISteamTank tank3 = createTank(50, 100, 2);
+        ISteamTank tank4 = createTank(250, 500, 2);
 
         SteamMesh mesh = new SteamMesh();
         mesh.addHandler(tank1);
@@ -125,7 +127,7 @@ public class SteamMeshDrainTest
     @Test
     public void testLimitedDrain()
     {
-        SteamTank tank = new SteamTank(1000, 2000, 2);
+        ISteamTank tank = createTank(1000, 2000, 2);
 
         SteamMesh mesh = new SteamMesh(64);
         mesh.addHandler(tank);

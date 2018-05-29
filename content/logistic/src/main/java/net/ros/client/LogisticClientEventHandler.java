@@ -12,7 +12,7 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.steam.SteamUtil;
-import net.ros.common.tile.IPipeValve;
+import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.tile.TileSteamGauge;
 import org.yggard.brokkgui.paint.Color;
 

@@ -9,6 +9,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.ros.common.grid.GridManager;
+import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 

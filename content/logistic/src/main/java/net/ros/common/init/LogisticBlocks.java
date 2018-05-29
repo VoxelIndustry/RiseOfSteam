@@ -64,6 +64,10 @@ public class LogisticBlocks
                 new PipeType(PipeNature.STEAM, PipeSize.LARGE, Materials.BRASS),
                 (type) -> new TileSteamGauge(type, 1024, 2.5f)));
 
+        registerBlock(new BlockPressureValve("pressurevalve_small", 5 / 16D,
+                new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS),
+                (type) -> new TilePressureValve(type, 64, 1.5f)));
+
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
@@ -81,5 +85,6 @@ public class LogisticBlocks
         registerTile(TileFluidValve.class, "fluidvalve");
         registerTile(TileSteamVent.class, "steamvent");
         registerTile(TileSteamGauge.class, "steamgauge");
+        registerTile(TilePressureValve.class, "pressurevalve");
     }
 }
