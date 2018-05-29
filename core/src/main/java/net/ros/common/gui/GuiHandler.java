@@ -19,10 +19,13 @@ public class GuiHandler implements IGuiHandler
                                       final int y, final int z)
     {
         IGuiReference gui;
+
         if (ID < 100)
             gui = LogisticGui.values()[ID];
-        else
+        else if (ID < 200)
             gui = MachineGui.values()[ID - 100];
+        else
+            gui = ResearchGui.values()[ID - 200];
 
         final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
@@ -58,59 +61,68 @@ public class GuiHandler implements IGuiHandler
             }
         }
 
-        final MachineGui gui = MachineGui.values()[ID - 100];
-        switch (gui)
+        if(ID < 200) {
+            final MachineGui gui = MachineGui.values()[ID - 100];
+            switch (gui) {
+                case BOILER:
+                    return new GuiSolidBoiler(player, (TileSolidBoiler) tile);
+                case KEYPUNCH:
+                    return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
+                            new GuiKeypunch(player, (TileKeypunch) tile));
+                case ROLLINGMILL:
+                    return new GuiRollingMill(player, (TileRollingMill) tile);
+                case FLUIDTANK:
+                    return new GuiFluidTank(player, (TileTank) tile);
+                case STEAMFURNACE:
+                    return new GuiSteamFurnace(player, (TileSteamFurnace) tile);
+                case ASSEMBLER:
+                    return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
+                            new GuiAssembler(player, (TileAssembler) tile));
+                case LIQUIDBOILER:
+                    return new GuiLiquidBoiler(player, (TileLiquidBoiler) tile);
+                case SOLARBOILER:
+                    return new GuiSolarBoiler(player, (TileSolarBoiler) tile);
+                case STEAMFURNACEMK2:
+                    return new GuiSteamFurnaceMK2(player, (TileSteamFurnaceMK2) tile);
+                case OREWASHER:
+                    return new GuiOreWasher(player, (TileOreWasher) tile);
+                case SORTINGMACHINE:
+                    return new GuiSortingMachine(player, (TileSortingMachine) tile);
+                case TINYMININGDRILL:
+                    return new GuiTinyMiningDrill(player, (TileTinyMiningDrill) tile);
+                case SMALLMININGDRILL:
+                    return new GuiSmallMiningDrill(player, (TileSmallMiningDrill) tile);
+                case SAWMILL:
+                    return new GuiSawMill(player, (TileSawMill) tile);
+                case ENGINEERSTORAGE:
+                    return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
+                            new GuiEngineerStorage(player, (TileEngineerStorage) tile));
+                case BLUEPRINTPRINTER:
+                    return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
+                            new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
+                case CRAFTCARDLIBRARY:
+                    return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
+                            new GuiCraftCardLibrary(player, (TileCraftCardLibrary) tile));
+                case ALLOYCAULDRON:
+                    return new GuiAlloyCauldron(player, (TileAlloyCauldron) tile);
+                case ENGINEERWORKBENCH:
+                    return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
+                            new GuiEngineerWorkbench(player, (TileEngineerWorkbench) tile));
+                case CAPSULE_FILLER:
+                    return new GuiCapsuleFiller(player, (TileCapsuleFiller) tile);
+                case STEAMTANK:
+                    return new GuiSteamTank(player, (TileSteamTank) tile);
+                default:
+                    return null;
+            }
+        }
+
+        ResearchGui gui = ResearchGui.values()[ID - 200];
+
+        switch(gui)
         {
-            case BOILER:
-                return new GuiSolidBoiler(player, (TileSolidBoiler) tile);
-            case KEYPUNCH:
-                return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
-                        new GuiKeypunch(player, (TileKeypunch) tile));
-            case ROLLINGMILL:
-                return new GuiRollingMill(player, (TileRollingMill) tile);
-            case FLUIDTANK:
-                return new GuiFluidTank(player, (TileTank) tile);
-            case STEAMFURNACE:
-                return new GuiSteamFurnace(player, (TileSteamFurnace) tile);
-            case ASSEMBLER:
-                return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
-                        new GuiAssembler(player, (TileAssembler) tile));
-            case LIQUIDBOILER:
-                return new GuiLiquidBoiler(player, (TileLiquidBoiler) tile);
-            case SOLARBOILER:
-                return new GuiSolarBoiler(player, (TileSolarBoiler) tile);
-            case STEAMFURNACEMK2:
-                return new GuiSteamFurnaceMK2(player, (TileSteamFurnaceMK2) tile);
-            case OREWASHER:
-                return new GuiOreWasher(player, (TileOreWasher) tile);
-            case SORTINGMACHINE:
-                return new GuiSortingMachine(player, (TileSortingMachine) tile);
-            case TINYMININGDRILL:
-                return new GuiTinyMiningDrill(player, (TileTinyMiningDrill) tile);
-            case SMALLMININGDRILL:
-                return new GuiSmallMiningDrill(player, (TileSmallMiningDrill) tile);
-            case SAWMILL:
-                return new GuiSawMill(player, (TileSawMill) tile);
-            case ENGINEERSTORAGE:
-                return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
-                        new GuiEngineerStorage(player, (TileEngineerStorage) tile));
-            case BLUEPRINTPRINTER:
-                return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
-                        new GuiBlueprintPrinter(player, (TileBlueprintPrinter) tile));
-            case CRAFTCARDLIBRARY:
-                return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
-                        new GuiCraftCardLibrary(player, (TileCraftCardLibrary) tile));
-            case ALLOYCAULDRON:
-                return new GuiAlloyCauldron(player, (TileAlloyCauldron) tile);
-            case ENGINEERWORKBENCH:
-                return BrokkGuiManager.getBrokkGuiContainer(ROSConstants.MODID,
-                        new GuiEngineerWorkbench(player, (TileEngineerWorkbench) tile));
-            case CAPSULE_FILLER:
-                return new GuiCapsuleFiller(player, (TileCapsuleFiller) tile);
-            case STEAMTANK:
-                return new GuiSteamTank(player, (TileSteamTank) tile);
-            default:
-                break;
+            case RESEARCH_BOOK:
+                return BrokkGuiManager.getBrokkGuiScreen(new GuiBook());
         }
         return null;
     }

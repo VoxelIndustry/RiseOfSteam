@@ -154,6 +154,12 @@ project('content:world') {
     }
 }
 
+project('content:research') {
+    dependencies {
+        compile project(':common')
+    }
+}
+
 project('core') {
     apply plugin: 'net.opmcorp.craftystates'
 
@@ -168,6 +174,7 @@ project('core') {
         compile project(':content:logistic')
         compile project(':content:machine')
         compile project(':content:world')
+        compile project(':content:research')
     }
 }
 

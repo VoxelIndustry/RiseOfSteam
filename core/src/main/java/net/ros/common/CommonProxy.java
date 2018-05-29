@@ -49,6 +49,7 @@ public class CommonProxy
         LogisticItems.init();
         WorldItems.init();
         MachineItems.init();
+        ResearchItems.init();
 
         MinecraftForge.EVENT_BUS.register(new ROSBlocks());
         MinecraftForge.EVENT_BUS.register(new ROSItems());
