@@ -64,12 +64,11 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
         return tag;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability)
-            return (T) this.getGridObject().getTank();
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getBufferTank());
         return super.getCapability(capability, facing);
     }
 
@@ -141,6 +140,6 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Override
     public SteamGrid createGrid(final int id)
     {
-        return new SteamGrid(id, this.getTransferCapacity(), this.maxPressure);
+        return new SteamGrid(id, this.getTransferRate(), this.maxPressure);
     }
 }

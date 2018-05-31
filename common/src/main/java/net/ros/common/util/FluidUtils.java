@@ -3,10 +3,7 @@ package net.ros.common.util;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
@@ -18,7 +15,7 @@ public class FluidUtils
 {
     public static final Predicate<FluidStack> WATER_FILTER = stack ->
             stack != null && stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER);
-    
+
     public static final boolean drainPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
     {
         final ItemStack input = player.getHeldItemMainhand();
@@ -200,7 +197,7 @@ public class FluidUtils
     }
 
     @Nullable
-    public static final IFluidHandlerItem getFluidHandler(final ItemStack container)
+    public static IFluidHandlerItem getFluidHandler(final ItemStack container)
     {
         final ItemStack copy = container.copy();
         copy.setCount(1);
@@ -215,5 +212,15 @@ public class FluidUtils
         final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(empty);
         fluidHandler.fill(new FluidStack(fluid, fluidHandler.getTankProperties()[0].getCapacity()), true);
         return empty;
+    }
+
+    public static float getTankPressure(IFluidTank tank)
+    {
+        return (float) tank.getFluidAmount() / tank.getCapacity();
+    }
+
+    public static int getFluidDifference(IFluidTank tank, float fromPressure)
+    {
+        return (int) Math.ceil((getTankPressure(tank) - fromPressure) * tank.getCapacity());
     }
 }

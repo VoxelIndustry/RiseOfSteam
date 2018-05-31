@@ -1,13 +1,15 @@
 package net.ros.common.tile;
 
+import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.ros.common.fluid.LimitedTank;
 import net.ros.common.grid.impl.PipeGrid;
 import net.ros.common.grid.node.IFluidPipe;
 import net.ros.common.grid.node.ITileNode;
@@ -17,11 +19,14 @@ import java.util.List;
 
 public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> implements IFluidPipe
 {
-    private FluidStack coldStorage;
+    @Getter
+    private FluidTank bufferTank;
 
     public TileFluidPipe(PipeType type, int transferCapacity)
     {
         super(type, transferCapacity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+
+        this.bufferTank = this.createFluidTank(transferCapacity * 4, this.getTransferRate());
     }
 
     public TileFluidPipe()
@@ -29,38 +34,34 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
         this(null, 0);
     }
 
+    protected FluidTank createFluidTank(int capacity, int transferRate)
+    {
+        return new LimitedTank(capacity, transferRate);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability)
-            return (T) this.getGridObject().getTank();
+            return (T) this.getBufferTank();
         return super.getCapability(capability, facing);
     }
 
     @Override
     public void addSpecificInfo(final List<String> lines)
     {
-        lines.add("Contains: " + (this.getGridObject().getTank().getFluidType() == null ? "none"
-                : this.getGridObject().getTank().getFluidType().getName()));
-        lines.add("Buffer: " + this.getGridObject().getTank().getFluidAmount() + " / "
-                + this.getGridObject().getTank().getCapacity() + " mb");
+        lines.add("Contains: " + (this.getBufferTank().getFluid() == null ? "none"
+                : this.getBufferTank().getFluid().getFluid().getName()));
+        lines.add("Buffer: " + this.getBufferTank().getFluidAmount() + " / "
+                + this.getBufferTank().getCapacity() + " mb");
     }
 
     @Override
     public void setGrid(final int gridIdentifier)
     {
-        final int previous = this.grid;
         this.grid = gridIdentifier;
 
-        if (gridIdentifier == -1)
-            this.coldStorage = null;
-        else if (this.coldStorage != null && previous == -1 && (this.getGridObject().isEmpty()
-                || this.getGridObject().getFluid().equals(this.coldStorage.getFluid())))
-        {
-            this.getGridObject().getTank().fillInternal(this.coldStorage, true);
-            this.coldStorage = null;
-        }
         if (this.getGridObject() != null && !this.adjacentHandler.isEmpty())
             this.getGridObject().addConnectedPipe(this);
     }
@@ -70,41 +71,25 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     {
         super.readFromNBT(tag);
 
-        if (tag.hasKey("coldStorage"))
-            this.coldStorage = FluidStack.loadFluidStackFromNBT(tag.getCompoundTag("coldStorage"));
+        if (tag.hasKey("bufferTank"))
+            this.bufferTank.readFromNBT(tag.getCompoundTag("bufferTank"));
     }
 
     @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound)
+    public NBTTagCompound writeToNBT(final NBTTagCompound tag)
     {
-        super.writeToNBT(tagCompound);
+        super.writeToNBT(tag);
 
-        this.toColdStorage();
-        if (this.coldStorage != null)
-        {
-            final NBTTagCompound tag = new NBTTagCompound();
-            this.coldStorage.writeToNBT(tag);
-            tagCompound.setTag("coldStorage", tag);
-        }
-        return tagCompound;
+        tag.setTag("bufferTank", this.bufferTank.writeToNBT(new NBTTagCompound()));
+
+        return tag;
     }
 
     @Override
     public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
         if (to instanceof TileFluidPipe)
-        {
-            final PipeGrid grid = ((TileFluidPipe) to).getGridObject();
-            if (grid != null)
-            {
-                if (this.coldStorage != null)
-                {
-                    return (grid.getFluid() == null || grid.getFluid().equals(this.coldStorage.getFluid())) &&
-                            super.canConnect(facing, to);
-                }
-            }
             return super.canConnect(facing, to);
-        }
         return false;
     }
 
@@ -150,12 +135,12 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     {
         for (IFluidHandler fluidHandler : this.adjacentHandler.values())
         {
-            if (this.getGridObject().getTank().getFluidAmount() != 0 && fluidHandler != null)
+            if (this.getBufferTank().getFluidAmount() != 0 && fluidHandler != null)
             {
-                final int simulated = fluidHandler
-                        .fill(this.getGridObject().getTank().drain(this.getGridObject().getCapacity(), false), false);
+                int simulated = fluidHandler.fill(this.getBufferTank().drain(this.getTransferRate(), false), false);
+
                 if (simulated > 0)
-                    fluidHandler.fill(this.getGridObject().getTank().drain(simulated, true), true);
+                    fluidHandler.fill(this.getBufferTank().drain(simulated, true), true);
             }
         }
     }
@@ -172,18 +157,9 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
         return true;
     }
 
-    public void toColdStorage()
-    {
-        if (this.getGridObject() != null && this.getGridObject().getTank().getFluid() != null)
-        {
-            this.coldStorage = this.getGridObject().getTank().getFluid().copy();
-            this.coldStorage.amount = this.coldStorage.amount / this.getGridObject().getCables().size();
-        }
-    }
-
     @Override
     public PipeGrid createGrid(final int id)
     {
-        return new PipeGrid(id, this.getTransferCapacity());
+        return new PipeGrid(id);
     }
 }

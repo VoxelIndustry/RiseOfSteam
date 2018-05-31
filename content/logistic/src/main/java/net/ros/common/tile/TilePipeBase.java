@@ -37,15 +37,15 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     @Setter
     protected       int                                grid;
     @Getter
-    private         int                                transferCapacity;
+    private         int                                transferRate;
 
     @Getter
     private PipeType type;
 
-    public TilePipeBase(PipeType type, int transferCapacity, Capability<H> capability)
+    public TilePipeBase(PipeType type, int transferRate, Capability<H> capability)
     {
         this.type = type;
-        this.transferCapacity = transferCapacity;
+        this.transferRate = transferRate;
         this.capability = capability;
 
         this.connectionsMap = new EnumMap<>(EnumFacing.class);
@@ -160,7 +160,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     {
         super.readFromNBT(tag);
 
-        this.transferCapacity = tag.getInteger("transferCapacity");
+        this.transferRate = tag.getInteger("transferRate");
         this.type = new PipeType(tag.getCompoundTag("type"));
 
         if (this.isClient())
@@ -182,7 +182,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     {
         super.writeToNBT(tag);
 
-        tag.setInteger("transferCapacity", this.transferCapacity);
+        tag.setInteger("transferRate", this.transferRate);
         tag.setTag("type", this.getType().toNBT(new NBTTagCompound()));
 
         if (this.isServer())
@@ -225,8 +225,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
         return !this.forbiddenConnections.contains(facing) &&
-                to instanceof IPipe && this.getType().getNature() == ((IPipe<?>) to).getType().getNature() &&
-                this.getType().getSize() == ((IPipe<?>) to).getType().getSize();
+                to instanceof IPipe && this.getType().getNature() == ((IPipe<?>) to).getType().getNature();
     }
 
     @Override

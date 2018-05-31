@@ -12,5 +12,5 @@ public interface ISteamPipe extends IPipe<SteamGrid>
 
     SteamTank getBufferTank();
 
-    int getTransferCapacity();
+    int getTransferRate();
 }
