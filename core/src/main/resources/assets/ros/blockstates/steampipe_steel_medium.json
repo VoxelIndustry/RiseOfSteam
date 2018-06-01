@@ -10,10 +10,10 @@
   },
   "variants": {
     "normal": {
-      "model": "ros:steampipe_large.mwm"
+      "model": "ros:_steampipe_steel_medium.mwm"
     },
     "inventory": {
-      "model": "ros:steampipe_large_inventory.obj"
+      "model": "ros:steampipe_medium_inventory.obj"
     }
   }
 }

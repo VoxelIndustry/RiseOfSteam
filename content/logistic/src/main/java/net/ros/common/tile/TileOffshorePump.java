@@ -42,7 +42,7 @@ public class TileOffshorePump extends TileBase implements ITickable
         this.tank.setCanFill(false);
 
         this.steamComponent = Machines.OFFSHORE_PUMP.get(SteamComponent.class);
-        this.steamTank = new SteamTank(0, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity());
+        this.steamTank = new SteamTank(steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity());
 
         this.facing = EnumFacing.NORTH;
     }

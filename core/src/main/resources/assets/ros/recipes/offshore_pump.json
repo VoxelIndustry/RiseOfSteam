@@ -11,7 +11,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "item": "ros:fluidpipe_small",
+      "item": "ros:fluidpipe_iron_small",
       "data": 0
     },
     "G": {
@@ -19,7 +19,7 @@
       "data": 0
     },
     "S": {
-      "item": "ros:steampipe_small",
+      "item": "ros:steampipe_brass_small",
       "data":0
     }
   }

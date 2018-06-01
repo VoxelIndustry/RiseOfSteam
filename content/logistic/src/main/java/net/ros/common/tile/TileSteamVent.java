@@ -35,7 +35,7 @@ public class TileSteamVent extends TileModularMachine
 
     private ISteamTank createTank(SteamComponent steamComponent)
     {
-        return new SteamVentTank(this, 0, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity());
+        return new SteamVentTank(this, steamComponent.getSteamCapacity(), steamComponent.getMaxPressureCapacity());
     }
 
     @Override
@@ -58,9 +58,9 @@ public class TileSteamVent extends TileModularMachine
     {
         private TileSteamVent vent;
 
-        SteamVentTank(TileSteamVent vent, int steamAmount, int capacity, float maxPressure)
+        SteamVentTank(TileSteamVent vent, int capacity, float maxPressure)
         {
-            super(steamAmount, capacity, maxPressure);
+            super(capacity, maxPressure);
 
             this.vent = vent;
         }

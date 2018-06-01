@@ -1,31 +1,32 @@
 package net.ros.common.grid.impl;
 
 import lombok.Getter;
-import net.minecraftforge.fluids.Fluid;
-import net.ros.common.fluid.LimitedTank;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import net.ros.common.grid.node.IFluidPipe;
+import net.ros.common.grid.node.IPipeValve;
+import net.ros.common.grid.node.ITileCable;
 import net.ros.common.grid.node.ITileNode;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static net.ros.common.util.FluidUtils.getFluidDifference;
+import static net.ros.common.util.FluidUtils.getTankPressure;
 
 @Getter
 public class PipeGrid extends CableGrid
 {
-    private final LimitedTank tank;
-    private final int         transferCapacity;
-
     private final List<IFluidPipe> outputs;
     private final List<IFluidPipe> inputs;
 
-    public PipeGrid(final int identifier, final int transferCapacity)
+    public PipeGrid(final int identifier)
     {
         super(identifier);
-
-        this.transferCapacity = transferCapacity;
-        this.tank = new LimitedTank(transferCapacity * 4, transferCapacity);
 
         this.outputs = new ArrayList<>();
         this.inputs = new ArrayList<>();
@@ -35,23 +36,12 @@ public class PipeGrid extends CableGrid
     public void addCable(@Nonnull final ITileNode cable)
     {
         super.addCable(cable);
-        this.getTank().setCapacity(this.getCapacity());
     }
 
     @Override
     public boolean removeCable(final ITileNode cable)
     {
-        if (super.removeCable(cable))
-        {
-            this.getTank().setCapacity(this.getCapacity());
-
-            if (this.getTank().getFluidAmount() > 0)
-                this.getTank().drainInternal(this.getTank().getFluidAmount() / (this.getCables().size() + 1), true);
-            this.outputs.remove(cable);
-            this.inputs.remove(cable);
-            return true;
-        }
-        return false;
+        return super.removeCable(cable);
     }
 
     @Override
@@ -59,36 +49,74 @@ public class PipeGrid extends CableGrid
     {
         if (!this.getInputs().isEmpty())
             this.getInputs().forEach(IFluidPipe::drainNeighbors);
+
+        for (ITileNode<?> node : this.getCables())
+        {
+            IFluidPipe pipe = (IFluidPipe) node;
+
+            if ((pipe instanceof IPipeValve && !((IPipeValve) pipe).isOpen()) ||
+                    (pipe.getBufferTank().getFluidAmount() == 0))
+                continue;
+
+            IFluidTank tank = pipe.getBufferTank();
+            int transferred = 0;
+
+            for (Map.Entry<EnumFacing, ITileCable<PipeGrid>> entry : pipe.getConnectionsMap().entrySet())
+            {
+                FluidStack pipeFluid = pipe.getBufferTank().getFluid();
+                FluidStack otherFluid = ((IFluidPipe) entry.getValue()).getBufferTank().getFluid();
+
+                if (pipeFluid != null && otherFluid != null && !pipeFluid.equals(otherFluid))
+                    continue;
+
+                transferred += balanceTanks(tank, ((IFluidPipe) entry.getValue()).getBufferTank(),
+                        pipe.getTransferRate() - transferred);
+
+                if (transferred >= pipe.getTransferRate())
+                    break;
+            }
+        }
+
         if (!this.getOutputs().isEmpty())
             this.getOutputs().forEach(IFluidPipe::fillNeighbors);
+    }
+
+    private int balanceTanks(IFluidTank first, IFluidTank second, int transferRate)
+    {
+        float average = (getTankPressure(second) + getTankPressure(first)) / 2;
+
+        if (getTankPressure(second) < average)
+        {
+            FluidStack drained = first.drain(Math.min(transferRate, getFluidDifference(first, average)), false);
+            int filled = second.fill(drained, false);
+
+            if (filled < 1)
+                return 0;
+
+            return second.fill(first.drain(filled, true), true);
+        }
+        return 0;
     }
 
     @Override
     public CableGrid copy(final int identifier)
     {
-        return new PipeGrid(identifier, this.transferCapacity);
+        return new PipeGrid(identifier);
     }
 
     @Override
     public boolean canMerge(final CableGrid grid)
     {
         if (grid instanceof PipeGrid)
-        {
-            if (((PipeGrid) grid).getFluid() == null || this.getFluid() == null
-                    || ((PipeGrid) grid).getFluid().equals(this.getFluid()))
-                return super.canMerge(grid);
-        }
+            return super.canMerge(grid);
         return false;
     }
 
     @Override
     public void onMerge(final CableGrid grid)
     {
-        this.getTank().setCapacity(this.getCapacity());
         this.getOutputs().addAll(((PipeGrid) grid).getOutputs());
         this.getInputs().addAll(((PipeGrid) grid).getInputs());
-        if (((PipeGrid) grid).getTank().getFluid() != null)
-            this.getTank().fillInternal(((PipeGrid) grid).getTank().getFluid(), true);
     }
 
     @Override
@@ -99,26 +127,6 @@ public class PipeGrid extends CableGrid
                         .collect(Collectors.toList()));
         this.getInputs().addAll(
                 ((PipeGrid) grid).getInputs().stream().filter(this.getCables()::contains).collect(Collectors.toList()));
-        this.getTank().fillInternal(((PipeGrid) grid).getTank().drainInternal(
-                ((PipeGrid) grid).getTank().getFluidAmount() / grid.getCables().size() * this.getCables().size(),
-                false), true);
-    }
-
-    public Fluid getFluid()
-    {
-        return this.getTank().getFluidType();
-    }
-
-    public int getCapacity()
-    {
-        if (this.getCables().size() < 4)
-            return 4 * this.getTransferCapacity();
-        return this.getCables().size() * this.getTransferCapacity();
-    }
-
-    public boolean isEmpty()
-    {
-        return this.getFluid() == null || this.getTank().getFluidAmount() == 0;
     }
 
     public void addConnectedPipe(IFluidPipe pipe)

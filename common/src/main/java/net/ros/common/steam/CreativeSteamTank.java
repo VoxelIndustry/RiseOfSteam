@@ -2,10 +2,10 @@ package net.ros.common.steam;
 
 public class CreativeSteamTank extends SteamTank
 {
-
     public CreativeSteamTank()
     {
-        super(100_000, 100_000, 1);
+        super(100_000, 1);
+        this.setSteam(100_000);
     }
 
     @Override

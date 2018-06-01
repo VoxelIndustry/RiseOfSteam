@@ -10,7 +10,7 @@
   },
   "variants": {
     "normal": {
-      "model": "ros:steampipe.mwm"
+      "model": "ros:steampipe_brass_small.mwm"
     },
     "inventory": {
       "model": "ros:steampipe_inventory.obj"

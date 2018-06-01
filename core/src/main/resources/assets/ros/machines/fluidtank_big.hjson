@@ -23,7 +23,7 @@
             {
                 time: 30
                 items: [
-                    16xros:fluidpipe_small
+                    16xros:fluidpipe_iron_small
                     minecraft:glass_pane
                 ]
             }

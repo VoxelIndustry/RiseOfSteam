@@ -8,7 +8,7 @@ public class SteamUtil
 {
     public static final int BASE_PRESSURE = 1;
 
-    public static final SteamTank EMPTY_TANK = new SteamTank(0, 0, 0);
+    public static final SteamTank EMPTY_TANK = new SteamTank(0, 0);
 
     public static final NumberFormat pressureFormat;
 
@@ -23,7 +23,14 @@ public class SteamUtil
     {
         if (component == null)
             return null;
-        return new SteamTank(0, component.getSteamCapacity(), component.getMaxPressureCapacity(),
+        return new SteamTank(component.getSteamCapacity(), component.getMaxPressureCapacity(),
                 component.getSafePressureCapacity());
+    }
+
+    public static ISteamTank createTank(int steam, int capacity, float pressure)
+    {
+        ISteamTank tank = new SteamTank(capacity, pressure);
+        tank.setSteam(steam);
+        return tank;
     }
 }

@@ -10,10 +10,10 @@
   },
   "variants": {
     "normal": {
-      "model": "ros:fluidpipe.mwm"
+      "model": "ros:_fluidpipe_cast_iron_large.mwm"
     },
     "inventory": {
-      "model": "ros:fluidpipe_inventory.obj"
+      "model": "ros:fluidpipe_cast_iron_large_inventory.obj"
     }
   }
 }

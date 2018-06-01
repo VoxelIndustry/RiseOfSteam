@@ -9,17 +9,18 @@ import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 
 import java.util.List;
+import java.util.Map;
 
 public class TileFluidPump extends TileFluidPipe
 {
-    public TileFluidPump(PipeType type, int transferCapacity)
+    public TileFluidPump(PipeType type)
     {
-        super(type, transferCapacity);
+        super(type);
     }
 
     public TileFluidPump()
     {
-        this(null, 0);
+        this(null);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class TileFluidPump extends TileFluidPipe
     {
         if ((this.getFacing().equals(facing) || this.getFacing().getOpposite().equals(facing))
                 && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getGridObject().getTank());
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getBufferTank());
         return super.getCapability(capability, facing);
     }
 
@@ -45,22 +46,48 @@ public class TileFluidPump extends TileFluidPipe
     public void addInfo(final List<String> lines)
     {
         super.addInfo(lines);
-        lines.add("Transfer Rate: " + this.transferCapacity + " mB / tick");
+        lines.add("Transfer Rate: " + this.getTransferRate() + " mB / tick");
         lines.add("Orientation: " + this.getFacing());
+    }
+
+    @Override
+    public void fillNeighbors()
+    {
+        if (this.tileEntityInvalid)
+            return;
+
+        for (Map.Entry<EnumFacing, IFluidHandler> entry : this.adjacentHandler.entrySet())
+        {
+            if (entry.getKey() == this.getFacing().getOpposite())
+                continue;
+
+            if (this.getBufferTank().getFluidAmount() != 0 && entry.getValue() != null)
+            {
+                int simulated = entry.getValue().fill(this.getBufferTank().drain(this.getTransferRate(), false), false);
+
+                if (simulated > 0)
+                    entry.getValue().fill(this.getBufferTank().drain(simulated, true), true);
+            }
+        }
     }
 
     @Override
     public void drainNeighbors()
     {
-        for (IFluidHandler fluidHandler : this.adjacentHandler.values())
+        if (this.tileEntityInvalid)
+            return;
+
+        for (Map.Entry<EnumFacing, IFluidHandler> entry : this.adjacentHandler.entrySet())
         {
-            if (fluidHandler != null)
+            if (entry.getKey() != this.getFacing().getOpposite())
+                continue;
+
+            if (entry.getValue() != null)
             {
-                int simulated = this.getGridObject().getTank().fill(
-                        fluidHandler.drain(this.transferCapacity, false), false);
+                int simulated = this.getBufferTank().fill(entry.getValue().drain(this.getTransferRate(), false), false);
 
                 if (simulated > 0)
-                    this.getGridObject().getTank().fill(fluidHandler.drain(simulated, true), true);
+                    this.getBufferTank().fill(entry.getValue().drain(simulated, true), true);
             }
         }
     }
@@ -87,6 +114,6 @@ public class TileFluidPump extends TileFluidPipe
     @Override
     public boolean isOutput()
     {
-        return false;
+        return true;
     }
 }

@@ -27,16 +27,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.RiseOfSteam;
 import net.ros.client.render.BlueprintRender;
 import net.ros.client.render.ModelPipeCover;
+import net.ros.client.render.ModelPipeInventory;
 import net.ros.client.render.model.obj.ROSOBJLoader;
 import net.ros.client.render.tile.*;
 import net.ros.common.CommonProxy;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.IModelProvider;
+import net.ros.common.grid.node.PipeNature;
+import net.ros.common.grid.node.PipeSize;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSFluids;
 import net.ros.common.init.ROSItems;
 import net.ros.common.item.IItemModelProvider;
 import net.ros.common.network.MultiblockBoxPacket;
+import net.ros.common.recipe.Materials;
+import net.ros.common.recipe.Metal;
 import net.ros.common.tile.TileStructure;
 import net.ros.common.tile.machine.TileBelt;
 import net.ros.common.tile.machine.TileRollingMill;
@@ -73,9 +78,32 @@ public class ClientProxy extends CommonProxy
                 new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
                 new String[]{"ros:blocks/belt_slope_down_anim"});
 
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/steamvalve.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/fluidvalve"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_small.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/steamvalve_small.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/fluidvalve_small"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_medium.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/steamvalve_medium.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/fluidvalve_medium"});
+
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_small.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_small.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/fluidpipe_cast_iron_small"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_medium.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_medium.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/fluidpipe_cast_iron_medium"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_large.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_large.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/fluidpipe_cast_iron_large"});
+
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_small.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_small.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/steampipe_steel_small"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_medium.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_medium.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/steampipe_steel_medium"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_large.mwm",
+                new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_large.mwm"), new String[]{"None"},
+                new String[]{"ros:blocks/steampipe_steel_large"});
 
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
@@ -152,21 +180,25 @@ public class ClientProxy extends CommonProxy
         IBakedModel originalModel = e.getModelRegistry().getObject(key);
         e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
-        replacePipeModel(ROSBlocks.STEAM_VALVE_SMALL, ROSBlocks.STEAM_PIPE_SMALL,
-                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.mwm"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.FLUID_VALVE_SMALL, ROSBlocks.FLUID_PIPE_SMALL,
-                new ResourceLocation(ROSConstants.MODID, "block/_fluidvalve.mwm"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.STEAM_VALVE_MEDIUM, ROSBlocks.STEAM_PIPE_MEDIUM,
-                new ResourceLocation(ROSConstants.MODID, "block/steamvalve.mwm"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.FLUID_VALVE_MEDIUM, ROSBlocks.FLUID_PIPE_MEDIUM,
-                new ResourceLocation(ROSConstants.MODID, "block/_fluidvalve.mwm"), e.getModelRegistry());
+        replacePipeInventoryModel(e.getModelRegistry(), Materials.IRON, Materials.CAST_IRON, Materials.BRASS,
+                Materials.STEEL);
 
-        replacePipeModel(ROSBlocks.STEAM_GAUGE_SMALL, ROSBlocks.STEAM_PIPE_SMALL,
-                new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.STEAM_GAUGE_MEDIUM, ROSBlocks.STEAM_PIPE_MEDIUM,
-                new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
-        replacePipeModel(ROSBlocks.STEAM_GAUGE_LARGE, ROSBlocks.STEAM_PIPE_LARGE,
-                new ResourceLocation(ROSConstants.MODID, "block/steamgauge.obj"), e.getModelRegistry());
+        // Valves
+        replacePipesModel(PipeNature.FLUID, "valve", new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM},
+                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/_fluidvalve_small.mwm", e.getModelRegistry());
+        replacePipesModel(PipeNature.STEAM, "valve", new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM},
+                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamvalve_small.mwm", e.getModelRegistry());
+
+        replacePipesModel(PipeNature.FLUID, "valve", new PipeSize[]{PipeSize.LARGE},
+                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/_fluidvalve_medium.mwm", e.getModelRegistry());
+        replacePipesModel(PipeNature.STEAM, "valve", new PipeSize[]{PipeSize.LARGE},
+                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamvalve_medium.mwm", e.getModelRegistry());
+
+        // Gauges
+        replacePipesModel(PipeNature.STEAM, "gauge", new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM},
+                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamgauge_small.mwm", e.getModelRegistry());
+        replacePipesModel(PipeNature.STEAM, "gauge", new PipeSize[]{PipeSize.LARGE},
+                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamgauge_medium.mwm", e.getModelRegistry());
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemextractor"), 1,
                 new ModelResourceLocation(ROSConstants.MODID + ":itemextractor", "facing=down,filter=true"));
@@ -204,6 +236,21 @@ public class ClientProxy extends CommonProxy
         }
     }
 
+    private void replacePipesModel(PipeNature nature, String pipeName, PipeSize[] sizes, Metal[] metals,
+                                   String modelPath, IRegistry<ModelResourceLocation, IBakedModel> registry)
+    {
+        for (Metal metal : metals)
+        {
+            for (PipeSize size : sizes)
+            {
+                replacePipeModel(Block.getBlockFromName(nature.toString() + pipeName + "_" + metal.getName() + "_" +
+                                size.toString()),
+                        Block.getBlockFromName(nature.toString() + "pipe_" + metal.getName() + "_" + size.toString()),
+                        new ResourceLocation(ROSConstants.MODID, modelPath), registry);
+            }
+        }
+    }
+
     private void replacePipeModel(Block block, Block pipeBlock, ResourceLocation modelLocation,
                                   IRegistry<ModelResourceLocation, IBakedModel> registry)
     {
@@ -223,5 +270,22 @@ public class ClientProxy extends CommonProxy
 
         registry.putObject(new ModelResourceLocation(
                 Item.getItemFromBlock(block).getRegistryName(), "inventory"), model);
+    }
+
+    private void replacePipeInventoryModel(IRegistry<ModelResourceLocation, IBakedModel> registry, Metal... metals)
+    {
+        for (PipeNature nature : PipeNature.values())
+        {
+            for (PipeSize size : PipeSize.values())
+            {
+                for (Metal metal : metals)
+                {
+                    Block block = Block.getBlockFromName(ROSConstants.MODID + ":" +
+                            nature.toString() + "pipe_" + metal.getName() + "_" + size.toString());
+                    registry.putObject(new ModelResourceLocation(Item.getItemFromBlock(block).getRegistryName(),
+                            "inventory"), new ModelPipeInventory(block));
+                }
+            }
+        }
     }
 }

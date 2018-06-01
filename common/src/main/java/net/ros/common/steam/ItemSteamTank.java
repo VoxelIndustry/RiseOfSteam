@@ -14,17 +14,14 @@ public class ItemSteamTank extends SteamTank implements ISteamHandlerItem, ICapa
     @Getter
     private ItemStack container;
 
-    public ItemSteamTank(ItemStack container, int steamAmount, int capacity, float maxPressure)
-    {
-        super(steamAmount, capacity, maxPressure);
-
-        this.container = container;
-    }
-
     public ItemSteamTank(ItemStack container, int capacity, float maxPressure)
     {
-        this(container, container.getTagCompound().getInteger("steam"), capacity, maxPressure);
+        super(capacity, maxPressure);
+
+        this.container = container;
+        this.setSteam(container.getTagCompound().getInteger("steam"));
     }
+
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)

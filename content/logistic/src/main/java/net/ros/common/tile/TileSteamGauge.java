@@ -18,14 +18,14 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
     @Getter
     private float currentPressure;
 
-    public TileSteamGauge(PipeType type, int transferCapacity, float maxPressure)
+    public TileSteamGauge(PipeType type)
     {
-        super(type, transferCapacity, maxPressure);
+        super(type);
     }
 
     public TileSteamGauge()
     {
-        this(null, 0, 0);
+        this(null);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
 
         if (this.world.getTotalWorldTime() % 10 == 0)
         {
-            float newPressure = this.getGridObject().getMesh().getPressure();
+            float newPressure = this.getBufferTank().getPressure();
 
             if (newPressure != currentPressure)
             {
@@ -82,7 +82,7 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability && facing != this.getFacing())
-            return SteamCapabilities.STEAM_HANDLER.cast(this.getGridObject().getTank());
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getBufferTank());
         return super.getCapability(capability, facing);
     }
 

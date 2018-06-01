@@ -12,6 +12,7 @@ import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamCapabilities;
+import net.ros.common.steam.SteamTank;
 import net.ros.common.steam.SteamUtil;
 
 import java.util.List;
@@ -21,16 +22,25 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Getter
     private float maxPressure;
 
-    public TileSteamPipe(PipeType type, int transferCapacity, float maxPressure)
-    {
-        super(type, transferCapacity, SteamCapabilities.STEAM_HANDLER);
+    @Getter
+    private SteamTank bufferTank;
 
-        this.maxPressure = maxPressure;
+    public TileSteamPipe(PipeType type)
+    {
+        super(type, PipeType.getTransferRate(type), SteamCapabilities.STEAM_HANDLER);
+
+        this.maxPressure = PipeType.getPressure(type);
+        this.bufferTank = this.createSteamTank(this.getTransferRate() * 4, this.maxPressure);
     }
 
     public TileSteamPipe()
     {
-        this(null, 0, 0);
+        this(null);
+    }
+
+    protected SteamTank createSteamTank(int capacity, float maxPressure)
+    {
+        return new SteamTank(capacity, maxPressure);
     }
 
     @Override
@@ -39,6 +49,8 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
         super.readFromNBT(tag);
 
         this.maxPressure = tag.getFloat("maxPressure");
+
+        this.bufferTank.readFromNBT(tag.getCompoundTag("steamTank"));
     }
 
     @Override
@@ -47,24 +59,25 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
         super.writeToNBT(tag);
 
         tag.setFloat("maxPressure", this.maxPressure);
+        tag.setTag("steamTank", this.bufferTank.writeToNBT(new NBTTagCompound()));
 
         return tag;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability)
-            return (T) this.getGridObject().getTank();
+            return SteamCapabilities.STEAM_HANDLER.cast(this.getBufferTank());
         return super.getCapability(capability, facing);
     }
 
     @Override
     public void addSpecificInfo(final List<String> lines)
     {
-        lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure()) + " / "
-                + SteamUtil.pressureFormat.format(maxPressure));
+        lines.add("Steam: " + bufferTank.getSteam());
+        lines.add("Pressure: " + SteamUtil.pressureFormat.format(bufferTank.getPressure()) + " / "
+                + SteamUtil.pressureFormat.format(bufferTank.getMaxPressure()));
     }
 
     @Override
@@ -125,19 +138,8 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     }
 
     @Override
-    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
-    {
-        if (tile == null)
-            return false;
-        if (tile instanceof TileSteamValve && !((TileSteamValve) tile).isOpen() &&
-                !((TileSteamValve) tile).isConnectionForbidden(facing.getOpposite()))
-            return ((TileSteamValve) tile).getFacing().getOpposite() != facing;
-        return false;
-    }
-
-    @Override
     public SteamGrid createGrid(final int id)
     {
-        return new SteamGrid(id, this.transferCapacity, this.maxPressure);
+        return new SteamGrid(id, this.getTransferRate(), this.maxPressure);
     }
 }

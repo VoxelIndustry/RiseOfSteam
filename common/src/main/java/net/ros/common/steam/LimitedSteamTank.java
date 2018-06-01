@@ -10,9 +10,9 @@ public class LimitedSteamTank extends SteamTank
     @Setter
     private int throttle;
 
-    public LimitedSteamTank(int steamAmount, int capacity, float maxPressure, int throttle)
+    public LimitedSteamTank(int capacity, float maxPressure, int throttle)
     {
-        super(steamAmount, capacity, maxPressure);
+        super(capacity, maxPressure);
 
         this.throttle = throttle;
     }

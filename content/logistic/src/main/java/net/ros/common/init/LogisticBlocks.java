@@ -1,68 +1,72 @@
 package net.ros.common.init;
 
+import fr.ourten.teabeans.function.PetaFunction;
 import net.ros.common.block.*;
 import net.ros.common.block.item.ItemBlockMetadata;
 import net.ros.common.grid.node.PipeNature;
 import net.ros.common.grid.node.PipeSize;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.recipe.Materials;
+import net.ros.common.recipe.Metal;
 import net.ros.common.tile.*;
 import net.ros.common.tile.machine.TileBelt;
 import net.ros.common.tile.machine.TileExtractor;
 import net.ros.common.tile.machine.TileSplitter;
+
+import java.util.function.Function;
 
 import static net.ros.common.init.ROSBlocks.registerBlock;
 import static net.ros.common.init.ROSBlocks.registerTile;
 
 public class LogisticBlocks
 {
+    private static <B extends BlockPipeBase<T>, T extends TilePipeBase> void addPipe(
+            PetaFunction<String, Double, PipeType, Function<PipeType, T>, Class<T>, B> blockSupplier,
+            PipeNature nature, Metal material, float radiusOffset, Function<PipeType, T> tileSupplier, Class<T>
+                    tileClass)
+    {
+        for (PipeSize size : PipeSize.values())
+        {
+            registerBlock(blockSupplier.apply(nature.toString() + "pipe_" + material.getName() + "_" + size.toString(),
+                    (double) (size.getRadius() + radiusOffset), new PipeType(nature, size, material),
+                    tileSupplier, tileClass));
+        }
+    }
+
     public static void init()
     {
-        registerBlock(new BlockPipeBase<>("fluidpipe_small", 6 / 16D,
-                new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON),
-                (type) -> new TileFluidPipe(type, 64), TileFluidPipe.class));
-        registerBlock(new BlockPipeBase<>("fluidpipe_medium", 11 / 16D,
-                new PipeType(PipeNature.FLUID, PipeSize.MEDIUM, Materials.IRON),
-                (type) -> new TileFluidPipe(type, 256), TileFluidPipe.class));
-        registerBlock(new BlockPipeBase<>("fluidpipe_large", 1,
-                new PipeType(PipeNature.FLUID, PipeSize.LARGE, Materials.IRON),
-                (type) -> new TileFluidPipe(type, 1024), TileFluidPipe.class));
+        addPipe(BlockPipeBase::new, PipeNature.FLUID, Materials.IRON, 0,
+                TileFluidPipe::new, TileFluidPipe.class);
+        addPipe(BlockPipeBase::new, PipeNature.FLUID, Materials.CAST_IRON, 0,
+                TileFluidPipe::new, TileFluidPipe.class);
 
-        registerBlock(new BlockPipeBase<>("steampipe_small", 5 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS),
-                (type) -> new TileSteamPipe(type, 64, 1.5f), TileSteamPipe.class));
-        registerBlock(new BlockPipeBase<>("steampipe_medium", 10 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.MEDIUM, Materials.BRASS),
-                (type) -> new TileSteamPipe(type, 256, 2f), TileSteamPipe.class));
-        registerBlock(new BlockPipeBase<>("steampipe_large", 15 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.LARGE, Materials.BRASS),
-                (type) -> new TileSteamPipe(type, 1024, 2.5f), TileSteamPipe.class));
+        addPipe(BlockPipeValve::new, PipeNature.FLUID, Materials.IRON, 0,
+                TileFluidValve::new, TileFluidValve.class);
+        addPipe(BlockPipeValve::new, PipeNature.FLUID, Materials.CAST_IRON, 0,
+                TileFluidValve::new, TileFluidValve.class);
+
+        addPipe(BlockPipeBase::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
+                TileSteamPipe::new, TileSteamPipe.class);
+        addPipe(BlockPipeBase::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
+                TileSteamPipe::new, TileSteamPipe.class);
+
+        addPipe(BlockPipeValve::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
+                TileSteamValve::new, TileSteamValve.class);
+        addPipe(BlockPipeValve::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
+                TileSteamValve::new, TileSteamValve.class);
+
+        addPipe(BlockSteamGauge::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
+                TileSteamGauge::new, TileSteamGauge.class);
+        addPipe(BlockSteamGauge::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
+                TileSteamGauge::new, TileSteamGauge.class);
+
+        addPipe(BlockPressureValve::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
+                TilePressureValve::new, TilePressureValve.class);
+        addPipe(BlockPressureValve::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
+                TilePressureValve::new, TilePressureValve.class);
+
         registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
-
-        registerBlock(new BlockPipeValve<>("fluidvalve_small", 6 / 16D,
-                new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON),
-                (type) -> new TileFluidValve(type, 64), TileFluidValve.class));
-        registerBlock(new BlockPipeValve<>("fluidvalve_medium", 11 / 16D,
-                new PipeType(PipeNature.FLUID, PipeSize.MEDIUM, Materials.IRON),
-                (type) -> new TileFluidValve(type, 256), TileFluidValve.class));
-
-        registerBlock(new BlockPipeValve<>("steamvalve_small", 5 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS),
-                (type) -> new TileSteamValve(type, 64, 1.5f), TileSteamValve.class));
-        registerBlock(new BlockPipeValve<>("steamvalve_medium", 10 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.MEDIUM, Materials.BRASS),
-                (type) -> new TileSteamValve(type, 256, 2f), TileSteamValve.class));
-
-        registerBlock(new BlockSteamGauge("steamgauge_small", 5 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.SMALL, Materials.BRASS),
-                (type) -> new TileSteamGauge(type, 64, 1.5f)));
-        registerBlock(new BlockSteamGauge("steamgauge_medium", 10 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.MEDIUM, Materials.BRASS),
-                (type) -> new TileSteamGauge(type, 256, 2f)));
-        registerBlock(new BlockSteamGauge("steamgauge_large", 15 / 16D,
-                new PipeType(PipeNature.STEAM, PipeSize.LARGE, Materials.BRASS),
-                (type) -> new TileSteamGauge(type, 1024, 2.5f)));
 
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
@@ -81,5 +85,6 @@ public class LogisticBlocks
         registerTile(TileFluidValve.class, "fluidvalve");
         registerTile(TileSteamVent.class, "steamvent");
         registerTile(TileSteamGauge.class, "steamgauge");
+        registerTile(TilePressureValve.class, "pressurevalve");
     }
 }

@@ -9,11 +9,13 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.ISteamPipe;
 import net.ros.common.grid.node.ITileCable;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.network.SteamEffectPacket;
 import net.ros.common.steam.ISteamHandler;
+import net.ros.common.steam.SteamTank;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,8 +28,6 @@ public class SteamGrid extends CableGrid
 
     private final ListMultimap<ISteamHandler, ISteamPipe> handlersConnections;
 
-    private SteamMesh mesh;
-
     public SteamGrid(final int identifier, final int transferCapacity, float maxPressure)
     {
         super(identifier);
@@ -35,7 +35,6 @@ public class SteamGrid extends CableGrid
         this.maxPressure = maxPressure;
 
         this.handlersConnections = MultimapBuilder.hashKeys().arrayListValues().build();
-        this.mesh = new SteamMesh(transferCapacity);
     }
 
     @Override
@@ -73,12 +72,41 @@ public class SteamGrid extends CableGrid
     {
         super.tick();
 
-        this.mesh.tick();
+        for (ITileNode<?> node : this.getCables())
+        {
+            ISteamPipe pipe = (ISteamPipe) node;
 
-        if (this.mesh.getHandlers().isEmpty())
+            if ((pipe instanceof IPipeValve && !((IPipeValve) pipe).isOpen()) ||
+                    (pipe.getBufferTank().getSteam() == 0 && pipe.getConnectedHandlers().isEmpty()))
+                continue;
+
+            SteamTank tank = pipe.getBufferTank();
+            int transferred = 0;
+            for (ISteamHandler handler : pipe.getConnectedHandlers())
+            {
+                transferred += balanceTanks(tank, handler, pipe.getTransferRate() - transferred, false);
+
+                if (transferred >= pipe.getTransferRate())
+                    break;
+            }
+
+            if (transferred >= pipe.getTransferRate())
+                continue;
+
+            for (Map.Entry<EnumFacing, ITileCable<SteamGrid>> entry : pipe.getConnectionsMap().entrySet())
+            {
+                transferred += balanceTanks(tank, ((ISteamPipe) entry.getValue()).getBufferTank(),
+                        pipe.getTransferRate() - transferred, true);
+
+                if (transferred >= pipe.getTransferRate())
+                    break;
+            }
+        }
+
+        if (this.handlersConnections.isEmpty())
             return;
 
-        List<ISteamHandler> overPressure = this.mesh.getHandlers().stream()
+        List<ISteamHandler> overPressure = this.handlersConnections.keySet().stream()
                 .filter(handler -> handler.getPressure() > this.maxPressure * 0.9f).collect(Collectors.toList());
 
         if (overPressure.isEmpty())
@@ -99,6 +127,33 @@ public class SteamGrid extends CableGrid
             if (handler.getPressure() > this.maxPressure * 1.5f)
                 blewPipes(handler, (int) Math.ceil((handler.getPressure() - this.maxPressure * 1.5f) / 0.05f));
         });
+    }
+
+    private int balanceTanks(ISteamHandler first, ISteamHandler second, int transferRate, boolean onlyFill)
+    {
+        float average = (second.getPressure() + first.getPressure()) / 2;
+
+        if (second.getPressure() < average && first.getSteamDifference(average) > 1)
+        {
+            int drained = first.drainSteam(Math.min(transferRate, first.getSteamDifference(average)), false);
+            int filled = second.fillSteam(drained, false);
+
+            if (filled < 1)
+                return 0;
+
+            return second.fillSteam(first.drainSteam(filled, true), true);
+        }
+        else if (!onlyFill && second.getPressure() > average && second.getSteamDifference(average) > 1)
+        {
+            int drained = second.drainSteam(Math.min(transferRate, second.getSteamDifference(average)), false);
+            int filled = first.fillSteam(drained, false);
+
+            if (filled < 1)
+                return 0;
+
+            return first.fillSteam(second.drainSteam(filled, true), true);
+        }
+        return 0;
     }
 
     private void steamJet(ISteamHandler handler, int range, int weight, boolean damage)
@@ -182,8 +237,6 @@ public class SteamGrid extends CableGrid
 
     public void addConnectedPipe(final ISteamPipe pipe, final ISteamHandler handler)
     {
-        if (!this.handlersConnections.containsKey(handler))
-            this.mesh.addHandler(handler);
         if (!this.handlersConnections.containsEntry(handler, pipe))
             this.handlersConnections.put(handler, pipe);
     }
@@ -196,9 +249,6 @@ public class SteamGrid extends CableGrid
     public void removeConnectedPipe(final ISteamPipe pipe, final ISteamHandler handler)
     {
         this.handlersConnections.remove(handler, pipe);
-
-        if (!this.handlersConnections.containsKey(handler))
-            this.mesh.removeHandler(handler);
     }
 
     @Override
@@ -210,10 +260,5 @@ public class SteamGrid extends CableGrid
             return true;
         }
         return false;
-    }
-
-    public ISteamHandler getTank()
-    {
-        return this.mesh;
     }
 }

@@ -1,4 +1,4 @@
-mtllib models/block/fluidpipe.mtl
+mtllib models/block/fluidpipe_iron_small.mtl
 usemtl None
 
 o center

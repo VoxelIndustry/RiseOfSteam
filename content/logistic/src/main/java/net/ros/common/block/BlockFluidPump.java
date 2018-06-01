@@ -55,7 +55,6 @@ public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
 
             TileFluidPump pipe = this.getWorldTile(w, pos);
             pipe.scanHandler(facing);
-            pipe.scanValve(facing);
         }
     }
 
@@ -70,7 +69,7 @@ public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileFluidPump(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON), 64);
+        return new TileFluidPump(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON));
     }
 
     @Override

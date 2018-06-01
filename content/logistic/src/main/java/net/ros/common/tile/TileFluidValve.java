@@ -3,13 +3,13 @@ package net.ros.common.tile;
 import lombok.Getter;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.ros.common.grid.GridManager;
-import net.ros.common.grid.node.ITileNode;
+import net.ros.common.fluid.LimitedTank;
+import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.PipeType;
 
 import javax.annotation.Nullable;
@@ -17,19 +17,46 @@ import java.util.List;
 
 public class TileFluidValve extends TileFluidPipe implements IPipeValve
 {
-    private static FluidTank EMPTY_TANK = new FluidTank(0);
-
     @Getter
     private boolean isOpen;
 
-    public TileFluidValve(PipeType type, int transferCapacity)
+    public TileFluidValve(PipeType type)
     {
-        super(type, transferCapacity);
+        super(type);
     }
 
     public TileFluidValve()
     {
-        this(null, 0);
+        this(null);
+    }
+
+    @Override
+    protected FluidTank createFluidTank(int capacity, int transferRate)
+    {
+        return new LimitedTank(capacity, transferRate)
+        {
+            private TileFluidValve valve;
+
+            {
+                this.valve = TileFluidValve.this;
+            }
+
+            @Override
+            public int fill(FluidStack resource, boolean doFill)
+            {
+                if (valve.isOpen())
+                    return super.fill(resource, doFill);
+                return 0;
+            }
+
+            @Override
+            public FluidStack drain(int maxDrain, boolean doDrain)
+            {
+                if (valve.isOpen())
+                    return super.drain(maxDrain, doDrain);
+                return null;
+            }
+        };
     }
 
     @Override
@@ -69,12 +96,7 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
     public <T> T getCapability(final Capability<T> capability, final EnumFacing facing)
     {
         if (capability == this.capability && facing != this.getFacing())
-        {
-            if (this.isOpen())
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getGridObject().getTank());
-            else
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(EMPTY_TANK);
-        }
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.getBufferTank());
         return super.getCapability(capability, facing);
     }
 
@@ -85,60 +107,7 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
 
     public void setOpen(boolean isOpen)
     {
-        boolean previous = this.isOpen;
         this.isOpen = isOpen;
-
-        if (previous != isOpen)
-        {
-            if (isOpen)
-                GridManager.getInstance().connectCable(this);
-            else
-            {
-                this.disconnectItself();
-
-                for (EnumFacing facing : EnumFacing.VALUES)
-                {
-                    if (!this.isConnected(facing))
-                        continue;
-
-                    this.disconnect(facing);
-                }
-                this.setGrid(-1);
-                GridManager.getInstance().connectCable(this);
-            }
-            this.sync();
-        }
-    }
-
-    @Override
-    public boolean canConnect(EnumFacing facing, ITileNode<?> to)
-    {
-        if (facing == this.getFacing())
-            return false;
-
-        return this.isOpen && super.canConnect(facing, to);
-    }
-
-    @Override
-    protected boolean keepAsValve(EnumFacing facing, TileEntity tile)
-    {
-        if (tile == null || facing == this.getFacing())
-            return false;
-        if (tile instanceof TileFluidValve && !((TileFluidValve) tile).isOpen())
-        {
-            if (((TileFluidValve) tile).getFacing().getOpposite() == facing &&
-                    ((TileFluidValve) tile).isConnectionForbidden(facing.getOpposite()))
-                return false;
-            return !this.isOpen();
-        }
-        if (tile instanceof TileFluidPipe)
-        {
-            if (((TileFluidPipe) tile).canConnect(facing.getOpposite(), this))
-                return !this.isOpen();
-            return false;
-        }
-        if (tile.hasCapability(this.capability, facing))
-            return !this.isOpen();
-        return false;
+        this.sync();
     }
 }

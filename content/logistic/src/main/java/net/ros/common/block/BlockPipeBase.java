@@ -132,7 +132,6 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
 
             T pipe = this.getWorldTile(w, pos);
             pipe.scanHandler(facing);
-            pipe.scanValve(facing);
         }
     }
 
@@ -157,10 +156,10 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
                 return true;
 
             if (this == ROSBlocks.STEAM_PIPE_SMALL)
-                world.setBlockState(pos, ROSBlocks.STEAM_VALVE_SMALL.getDefaultState().withProperty(BlockDirectional
+                world.setBlockState(pos, ROSBlocks.STEAM_VALVE_BRASS_SMALL.getDefaultState().withProperty(BlockDirectional
                         .FACING, facing));
             else if (this == ROSBlocks.FLUID_PIPE_SMALL)
-                world.setBlockState(pos, ROSBlocks.FLUID_VALVE_SMALL.getDefaultState().withProperty(BlockDirectional
+                world.setBlockState(pos, ROSBlocks.FLUID_VALVE_IRON_SMALL.getDefaultState().withProperty(BlockDirectional
                         .FACING, facing));
 
             if (!player.isCreative())
@@ -173,7 +172,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
             if (world.isRemote)
                 return true;
 
-            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE_SMALL.getDefaultState().withProperty(BlockDirectional.FACING,
+            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE_BRASS_SMALL.getDefaultState().withProperty(BlockDirectional.FACING,
                     facing));
 
             if (!player.isCreative())
