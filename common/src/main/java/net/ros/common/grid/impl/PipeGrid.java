@@ -1,13 +1,11 @@
 package net.ros.common.grid.impl;
 
 import lombok.Getter;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.ros.common.grid.node.IFluidPipe;
-import net.ros.common.grid.node.IPipeValve;
-import net.ros.common.grid.node.ITileCable;
-import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.*;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -50,6 +48,8 @@ public class PipeGrid extends CableGrid
         if (!this.getInputs().isEmpty())
             this.getInputs().forEach(IFluidPipe::drainNeighbors);
 
+        List<ITileNode> toDestroy = new ArrayList<>();
+
         for (ITileNode<?> node : this.getCables())
         {
             IFluidPipe pipe = (IFluidPipe) node;
@@ -60,6 +60,9 @@ public class PipeGrid extends CableGrid
 
             IFluidTank tank = pipe.getBufferTank();
             int transferred = 0;
+
+            if (tank.getFluid().getFluid().getTemperature() > PipeType.getHeat(pipe.getType()))
+                toDestroy.add(node);
 
             for (Map.Entry<EnumFacing, ITileCable<PipeGrid>> entry : pipe.getConnectionsMap().entrySet())
             {
@@ -76,6 +79,9 @@ public class PipeGrid extends CableGrid
                     break;
             }
         }
+
+        toDestroy.forEach(node -> node.getBlockWorld().setBlockState(node.getBlockPos(),
+                Blocks.FIRE.getDefaultState()));
 
         if (!this.getOutputs().isEmpty())
             this.getOutputs().forEach(IFluidPipe::fillNeighbors);
