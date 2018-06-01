@@ -47,27 +47,49 @@ tile.capsulefiller.name=Capsule Filler
 
 #Pipes
 
-tile.fluidpipe_small.name=Small Fluid Pipe
-tile.fluidpipe_medium.name=Medium Fluid Pipe
-tile.fluidpipe_large.name=Large Fluid Pipe
-tile.steampipe_small.name=Small Steam Pipe
-tile.steampipe_medium.name=Medium Steam Pipe
-tile.steampipe_large.name=Large Steam Pipe
+tile.fluidpipe_iron_small.name=Small Iron Fluid Pipe
+tile.fluidpipe_iron_medium.name=Medium Iron Fluid Pipe
+tile.fluidpipe_iron_large.name=Large Iron Fluid Pipe
+tile.steampipe_brass_small.name=Small Brass Steam Pipe
+tile.steampipe_brass_medium.name=Medium Brass Steam Pipe
+tile.steampipe_brass_large.name=Large Brass Steam Pipe
 
-tile.fluidvalve_small.name=Small Fluid Pipe Valve
-tile.fluidvalve_medium.name=Medium Fluid Pipe Valve
-tile.fluidvalve_large.name=Large Fluid Pipe Valve
-tile.steamvalve_small.name=Small Steam Pipe Valve
-tile.steamvalve_medium.name=Medium Steam Pipe Valve
-tile.steamvalve_large.name=Large Steam Pipe Valve
+tile.fluidpipe_cast_iron_small.name=Small Cast Iron Fluid Pipe
+tile.fluidpipe_cast_iron_medium.name=Medium Cast Iron Fluid Pipe
+tile.fluidpipe_cast_iron_large.name=Large Cast Iron Fluid Pipe
+tile.steampipe_steel_small.name=Small Steel Steam Pipe
+tile.steampipe_steel_medium.name=Medium Steel Steam Pipe
+tile.steampipe_steel_large.name=Large Steel Steam Pipe
 
-tile.steamgauge_small.name=Small Steam Pipe Gauge
-tile.steamgauge_medium.name=Medium Steam Pipe Gauge
-tile.steamgauge_large.name=Large Steam Pipe Gauge
+tile.fluidvalve_iron_small.name=Small Iron Fluid Pipe Valve
+tile.fluidvalve_iron_medium.name=Medium Iron Fluid Pipe Valve
+tile.fluidvalve_iron_large.name=Large Iron Fluid Pipe Valve
+tile.steamvalve_brass_small.name=Small Brass Steam Pipe Valve
+tile.steamvalve_brass_medium.name=Medium Brass Steam Pipe Valve
+tile.steamvalve_brass_large.name=Large Brass Steam Pipe Valve
 
-tile.pressurevalve_small.name=Small Pressure Valve
-tile.pressurevalve_medium.name=Medium Pressure Valve
-tile.pressurevalve_large.name=Large Pressure Valve
+tile.fluidvalve_cast_iron_small.name=Small Cast Iron Fluid Pipe Valve
+tile.fluidvalve_cast_iron_medium.name=Medium Cast Iron Fluid Pipe Valve
+tile.fluidvalve_cast_iron_large.name=Large Cast Iron Fluid Pipe Valve
+tile.steamvalve_steel_small.name=Small Steel Steam Pipe Valve
+tile.steamvalve_steel_medium.name=Medium Steel Steam Pipe Valve
+tile.steamvalve_steel_large.name=Large Steel Steam Pipe Valve
+
+tile.steamgauge_brass_small.name=Small Brass Steam Pipe Gauge
+tile.steamgauge_brass_medium.name=Medium Brass Steam Pipe Gauge
+tile.steamgauge_brass_large.name=Large Brass Steam Pipe Gauge
+
+tile.steamgauge_steel_small.name=Small Steel Steam Pipe Gauge
+tile.steamgauge_steel_medium.name=Medium Steel Steam Pipe Gauge
+tile.steamgauge_steel_large.name=Large Steel Steam Pipe Gauge
+
+tile.pressurevalve_brass_small.name=Small Brass Pressure Valve
+tile.pressurevalve_brass_medium.name=Medium Brass Pressure Valve
+tile.pressurevalve_brass_large.name=Large Brass Pressure Valve
+
+tile.pressurevalve_steel_small.name=Small Steel Pressure Valve
+tile.pressurevalve_steel_medium.name=Medium Steel Pressure Valve
+tile.pressurevalve_steel_large.name=Large Steel Pressure Valve
 
 tile.steamvent.name=Steam Vent
 
