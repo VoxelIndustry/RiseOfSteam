@@ -29,8 +29,8 @@
                 time: 30
                 items: [
                     4xros:gearbox
-                    10xros:steampipe_small
-                    10xros:fluidpipe_small
+                    10xros:steampipe_brass_small
+                    10xros:fluidpipe_iron_small
                     ros:belt
                 ]
             }

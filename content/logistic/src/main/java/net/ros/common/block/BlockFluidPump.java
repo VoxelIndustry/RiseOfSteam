@@ -69,7 +69,7 @@ public class BlockFluidPump extends BlockOrientableMachine<TileFluidPump>
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileFluidPump(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON), 64);
+        return new TileFluidPump(new PipeType(PipeNature.FLUID, PipeSize.SMALL, Materials.IRON));
     }
 
     @Override

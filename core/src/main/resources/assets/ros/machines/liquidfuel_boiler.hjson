@@ -23,8 +23,8 @@
             {
                 time: 15
                 items: [
-                    4xros:steampipe_small
-                    4xros:fluidpipe_small
+                    4xros:steampipe_brass_small
+                    4xros:fluidpipe_iron_small
                 ]
             }
         ]

@@ -12,9 +12,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSItems;
-import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.tile.TilePipeBase;
 
 import java.util.function.Function;
@@ -26,7 +26,7 @@ public class BlockPipeValve<T extends TilePipeBase & IPipeValve> extends BlockPi
     public BlockPipeValve(String name, double width, PipeType type, Function<PipeType, T> tileSupplier,
                           Class<T> tileClass)
     {
-        super(name, width, type, tileSupplier, tileClass);
+        super(name.replace("pipe", "valve"), width, type, tileSupplier, tileClass);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }

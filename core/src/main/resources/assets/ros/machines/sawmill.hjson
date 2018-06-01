@@ -28,7 +28,7 @@
                 time: 10
                 items: [
                     ros:gearbox
-                    ros:steampipe_small
+                    ros:steampipe_brass_small
                     3xros:belt
                 ]
             }

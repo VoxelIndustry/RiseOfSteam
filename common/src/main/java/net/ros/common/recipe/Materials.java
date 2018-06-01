@@ -15,16 +15,17 @@ import static net.ros.common.recipe.MaterialShape.*;
 
 public class Materials
 {
-    public static final Metal IRON   = Metal.builder().name("iron").meltingPoint(1204).build();
-    public static final Metal GOLD   = Metal.builder().name("gold").meltingPoint(1064).build();
-    public static final Metal COPPER = Metal.builder().name("copper").meltingPoint(1085).build();
-    public static final Metal BRONZE = Metal.builder().name("bronze").meltingPoint(950).isAlloy(true).build();
-    public static final Metal BRASS  = Metal.builder().name("brass").meltingPoint(927).isAlloy(true).build();
-    public static final Metal TIN    = Metal.builder().name("tin").meltingPoint(232).build();
-    public static final Metal ZINC   = Metal.builder().name("zinc").meltingPoint(419).build();
-    public static final Metal NICKEL = Metal.builder().name("nickel").meltingPoint(1455).build();
-    public static final Metal LEAD   = Metal.builder().name("lead").meltingPoint(327).build();
-    public static final Metal STEEL  = Metal.builder().name("steel").meltingPoint(1371).build();
+    public static final Metal IRON      = Metal.builder().name("iron").meltingPoint(1204).build();
+    public static final Metal CAST_IRON = Metal.builder().name("cast_iron").meltingPoint(904).build();
+    public static final Metal GOLD      = Metal.builder().name("gold").meltingPoint(1064).build();
+    public static final Metal COPPER    = Metal.builder().name("copper").meltingPoint(1085).build();
+    public static final Metal BRONZE    = Metal.builder().name("bronze").meltingPoint(950).isAlloy(true).build();
+    public static final Metal BRASS     = Metal.builder().name("brass").meltingPoint(927).isAlloy(true).build();
+    public static final Metal TIN       = Metal.builder().name("tin").meltingPoint(232).build();
+    public static final Metal ZINC      = Metal.builder().name("zinc").meltingPoint(419).build();
+    public static final Metal NICKEL    = Metal.builder().name("nickel").meltingPoint(1455).build();
+    public static final Metal LEAD      = Metal.builder().name("lead").meltingPoint(327).build();
+    public static final Metal STEEL     = Metal.builder().name("steel").meltingPoint(1371).build();
 
     public static MetalList metals = new MetalList();
 
@@ -42,6 +43,7 @@ public class Materials
         metals.addMetal(NICKEL).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
         metals.addMetal(LEAD).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
         metals.addMetal(STEEL).shapes(NUGGET, PLATE, GEAR, INGOT, BLOCK, BLOCK_PLATE, SCAFFOLD);
+        metals.addMetal(CAST_IRON).shapes(NUGGET, PLATE, INGOT, BLOCK, BLOCK_PLATE);
     }
 
     public static Optional<Metal> getMetalFromFluid(FluidStack moltenMetal)

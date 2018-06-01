@@ -29,9 +29,9 @@ public class LogisticClientEventHandler
             return;
 
         Block target = e.getPlayer().world.getBlockState(e.getTarget().getBlockPos()).getBlock();
-        if (target == ROSBlocks.STEAM_GAUGE_SMALL)
+        if (target == ROSBlocks.STEAM_GAUGE_BRASS_SMALL)
             renderGaugeOverlay(e.getPlayer(), e.getTarget().getBlockPos(), e.getPartialTicks());
-        else if (target == ROSBlocks.FLUID_VALVE_SMALL || target == ROSBlocks.STEAM_VALVE_SMALL)
+        else if (target == ROSBlocks.FLUID_VALVE_IRON_SMALL || target == ROSBlocks.STEAM_VALVE_BRASS_SMALL)
             renderValveOverlay(e.getPlayer(), e.getTarget().getBlockPos(), e.getPartialTicks());
     }
 

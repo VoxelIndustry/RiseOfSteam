@@ -160,8 +160,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     {
         super.readFromNBT(tag);
 
-        this.transferRate = tag.getInteger("transferRate");
         this.type = new PipeType(tag.getCompoundTag("type"));
+        this.transferRate = tag.getInteger("transferRate");
 
         if (this.isClient())
         {
@@ -225,7 +225,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     public boolean canConnect(EnumFacing facing, ITileNode<?> to)
     {
         return !this.forbiddenConnections.contains(facing) &&
-                to instanceof IPipe && this.getType().getNature() == ((IPipe<?>) to).getType().getNature();
+                to instanceof IPipe && this.getType().getNature() == ((IPipe<?>) to).getType().getNature() &&
+                this.getType().getSize() == ((IPipe<?>) to).getType().getSize();
     }
 
     @Override

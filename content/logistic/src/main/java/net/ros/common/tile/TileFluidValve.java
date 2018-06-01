@@ -20,14 +20,14 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
     @Getter
     private boolean isOpen;
 
-    public TileFluidValve(PipeType type, int transferCapacity)
+    public TileFluidValve(PipeType type)
     {
-        super(type, transferCapacity);
+        super(type);
     }
 
     public TileFluidValve()
     {
-        this(null, 0);
+        this(null);
     }
 
     @Override

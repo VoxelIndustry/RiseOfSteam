@@ -25,17 +25,17 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     @Getter
     private SteamTank bufferTank;
 
-    public TileSteamPipe(PipeType type, int transferCapacity, float maxPressure)
+    public TileSteamPipe(PipeType type)
     {
-        super(type, transferCapacity, SteamCapabilities.STEAM_HANDLER);
+        super(type, PipeType.getTransferRate(type), SteamCapabilities.STEAM_HANDLER);
 
-        this.maxPressure = maxPressure;
-        this.bufferTank = this.createSteamTank(transferCapacity * 4, maxPressure);
+        this.maxPressure = PipeType.getPressure(type);
+        this.bufferTank = this.createSteamTank(this.getTransferRate() * 4, this.maxPressure);
     }
 
     public TileSteamPipe()
     {
-        this(null, 0, 0);
+        this(null);
     }
 
     protected SteamTank createSteamTank(int capacity, float maxPressure)

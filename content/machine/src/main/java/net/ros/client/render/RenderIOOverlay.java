@@ -277,7 +277,7 @@ public class RenderIOOverlay
     private static boolean isFluidPipe(ItemStack stack)
     {
         Item item = stack.getItem();
-        if (item == Item.getItemFromBlock(ROSBlocks.FLUID_VALVE_SMALL) ||
+        if (item == Item.getItemFromBlock(ROSBlocks.FLUID_VALVE_IRON_SMALL) ||
                 item == Item.getItemFromBlock(ROSBlocks.FLUID_PUMP))
             return true;
 
@@ -290,8 +290,8 @@ public class RenderIOOverlay
     private static boolean isSteamPipe(ItemStack stack)
     {
         Item item = stack.getItem();
-        if (item == Item.getItemFromBlock(ROSBlocks.STEAM_VALVE_SMALL) ||
-                item == Item.getItemFromBlock(ROSBlocks.STEAM_GAUGE_SMALL))
+        if (item == Item.getItemFromBlock(ROSBlocks.STEAM_VALVE_BRASS_SMALL) ||
+                item == Item.getItemFromBlock(ROSBlocks.STEAM_GAUGE_BRASS_SMALL))
             return true;
 
         Block pipeBlock = Block.getBlockFromItem(item);

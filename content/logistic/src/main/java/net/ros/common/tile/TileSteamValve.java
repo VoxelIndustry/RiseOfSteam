@@ -1,19 +1,15 @@
 package net.ros.common.tile;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.ros.common.grid.GridManager;
 import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
-import net.ros.common.steam.SteamUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -23,14 +19,14 @@ public class TileSteamValve extends TileSteamPipe implements IPipeValve
     @Getter
     private boolean isOpen;
 
-    public TileSteamValve(PipeType type, int transferCapacity, float maxPressure)
+    public TileSteamValve(PipeType type)
     {
-        super(type, transferCapacity, maxPressure);
+        super(type);
     }
 
     public TileSteamValve()
     {
-        this(null, 0, 0);
+        this(null);
     }
 
     @Override

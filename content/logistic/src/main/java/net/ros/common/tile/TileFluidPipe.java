@@ -22,16 +22,16 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     @Getter
     private FluidTank bufferTank;
 
-    public TileFluidPipe(PipeType type, int transferCapacity)
+    public TileFluidPipe(PipeType type)
     {
-        super(type, transferCapacity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        super(type, PipeType.getTransferRate(type), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 
-        this.bufferTank = this.createFluidTank(transferCapacity * 4, this.getTransferRate());
+        this.bufferTank = this.createFluidTank(this.getTransferRate() * 4, this.getTransferRate());
     }
 
     public TileFluidPipe()
     {
-        this(null, 0);
+        this(null);
     }
 
     protected FluidTank createFluidTank(int capacity, int transferRate)

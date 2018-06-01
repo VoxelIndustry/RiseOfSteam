@@ -18,14 +18,14 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
     @Getter
     private float currentPressure;
 
-    public TileSteamGauge(PipeType type, int transferCapacity, float maxPressure)
+    public TileSteamGauge(PipeType type)
     {
-        super(type, transferCapacity, maxPressure);
+        super(type);
     }
 
     public TileSteamGauge()
     {
-        this(null, 0, 0);
+        this(null);
     }
 
     @Override

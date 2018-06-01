@@ -15,9 +15,9 @@ public class TilePressureValve extends TileSteamPipe
     @Setter
     private float drainPressureLimit;
 
-    public TilePressureValve(PipeType type, int transferCapacity, float maxPressure)
+    public TilePressureValve(PipeType type)
     {
-        super(type, transferCapacity, maxPressure);
+        super(type);
 
         this.fillPressureLimit = -1;
         this.drainPressureLimit = -1;
@@ -25,7 +25,7 @@ public class TilePressureValve extends TileSteamPipe
 
     public TilePressureValve()
     {
-        this(null, 0, 0);
+        this(null);
     }
 
     @Override

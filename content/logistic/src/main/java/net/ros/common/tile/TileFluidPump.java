@@ -13,14 +13,14 @@ import java.util.Map;
 
 public class TileFluidPump extends TileFluidPipe
 {
-    public TileFluidPump(PipeType type, int transferCapacity)
+    public TileFluidPump(PipeType type)
     {
-        super(type, transferCapacity);
+        super(type);
     }
 
     public TileFluidPump()
     {
-        this(null, 0);
+        this(null);
     }
 
     @Override

@@ -22,10 +22,10 @@ import static net.minecraft.block.BlockDirectional.FACING;
 
 public class BlockPressureValve extends BlockPipeBase<TilePressureValve>
 {
-    public BlockPressureValve(String name, double width, PipeType type, Function<PipeType, TilePressureValve>
-            tileSupplier)
+    public BlockPressureValve(String name, double width, PipeType type,
+                              Function<PipeType, TilePressureValve> tileSupplier, Class<TilePressureValve> tileClass)
     {
-        super(name, width, type, tileSupplier, TilePressureValve.class);
+        super(name.replace("pipe", "pressurevalve"), width, type, tileSupplier, tileClass);
     }
 
     @Override

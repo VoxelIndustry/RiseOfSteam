@@ -10,10 +10,10 @@
   },
   "variants": {
     "normal": {
-      "model": "ros:fluidpipe_medium.mwm"
+      "model": "ros:steampipe_brass_medium.mwm"
     },
     "inventory": {
-      "model": "ros:fluidpipe_medium_inventory.obj"
+      "model": "ros:steampipe_medium_inventory.obj"
     }
   }
 }

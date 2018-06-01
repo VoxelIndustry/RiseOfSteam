@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "ros:steamvalve_small",
+    "item": "ros:steamvalve_brass_small",
     "data": 0,
     "count": 1
   },
@@ -10,7 +10,7 @@
       "item": "ros:itemvalve"
     },
     {
-      "item": "ros:steampipe_small"
+      "item": "ros:steampipe_brass_small"
     }
   ]
 }

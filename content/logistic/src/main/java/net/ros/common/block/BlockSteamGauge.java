@@ -23,9 +23,10 @@ import static net.minecraft.block.BlockDirectional.FACING;
 
 public class BlockSteamGauge extends BlockPipeBase<TileSteamGauge>
 {
-    public BlockSteamGauge(String name, double width, PipeType type, Function<PipeType, TileSteamGauge> tileSupplier)
+    public BlockSteamGauge(String name, double width, PipeType type, Function<PipeType, TileSteamGauge> tileSupplier,
+                           Class<TileSteamGauge> tileClass)
     {
-        super(name, width, type, tileSupplier, TileSteamGauge.class);
+        super(name.replace("pipe", "gauge"), width, type, tileSupplier, tileClass);
     }
 
     @Override
