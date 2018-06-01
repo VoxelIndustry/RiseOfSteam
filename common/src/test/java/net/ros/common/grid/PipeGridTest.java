@@ -1,5 +1,6 @@
 package net.ros.common.grid;
 
+import net.minecraftforge.fluids.FluidTank;
 import net.ros.common.grid.impl.PipeGrid;
 import net.ros.common.grid.node.IFluidPipe;
 import org.junit.Before;
@@ -26,6 +27,7 @@ public class PipeGridTest
 
         when(pipe.isInput()).thenReturn(true);
         when(pipe.isOutput()).thenReturn(true);
+        when(pipe.getBufferTank()).thenReturn(new FluidTank(0));
 
         grid.addCable(pipe);
         grid.addConnectedPipe(pipe);
