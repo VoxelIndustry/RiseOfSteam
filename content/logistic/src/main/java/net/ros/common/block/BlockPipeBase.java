@@ -8,12 +8,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -22,6 +25,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.AABBRaytracer;
 import net.ros.client.render.model.obj.StateProperties;
 import net.ros.common.grid.node.IBlockPipe;
+import net.ros.common.grid.node.PipeNature;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
@@ -66,6 +70,19 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
                 0.5 + width / 2, 1, 0.5 + width / 2));
         this.boxes.put(EnumFacing.DOWN, new AxisAlignedBB(0.5 - width / 2, 0, 0.5 - width / 2,
                 0.5 + width / 2, length, 0.5 + width / 2));
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
+    {
+        super.addInformation(stack, player, tooltip, advanced);
+
+        tooltip.add("Rate: " + TextFormatting.AQUA + PipeType.getTransferRate(pipeType) + " mB/T");
+
+        if (pipeType.getNature() == PipeNature.STEAM)
+            tooltip.add("Max Pressure: " + TextFormatting.GOLD + PipeType.getPressure(pipeType));
+        else if (pipeType.getNature() == PipeNature.FLUID)
+            tooltip.add("Max Heat: " + TextFormatting.RED + PipeType.getHeat(pipeType) + " K");
     }
 
     @Override
@@ -156,11 +173,11 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
                 return true;
 
             if (this == ROSBlocks.STEAM_PIPE_SMALL)
-                world.setBlockState(pos, ROSBlocks.STEAM_VALVE_BRASS_SMALL.getDefaultState().withProperty(BlockDirectional
-                        .FACING, facing));
+                world.setBlockState(pos, ROSBlocks.STEAM_VALVE_BRASS_SMALL.getDefaultState()
+                        .withProperty(BlockDirectional.FACING, facing));
             else if (this == ROSBlocks.FLUID_PIPE_SMALL)
-                world.setBlockState(pos, ROSBlocks.FLUID_VALVE_IRON_SMALL.getDefaultState().withProperty(BlockDirectional
-                        .FACING, facing));
+                world.setBlockState(pos, ROSBlocks.FLUID_VALVE_IRON_SMALL.getDefaultState()
+                        .withProperty(BlockDirectional.FACING, facing));
 
             if (!player.isCreative())
                 player.getHeldItemMainhand().shrink(1);
@@ -172,8 +189,8 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
             if (world.isRemote)
                 return true;
 
-            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE_BRASS_SMALL.getDefaultState().withProperty(BlockDirectional.FACING,
-                    facing));
+            world.setBlockState(pos, ROSBlocks.STEAM_GAUGE_BRASS_SMALL.getDefaultState()
+                    .withProperty(BlockDirectional.FACING, facing));
 
             if (!player.isCreative())
                 player.getHeldItemMainhand().shrink(1);

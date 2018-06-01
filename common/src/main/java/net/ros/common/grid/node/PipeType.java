@@ -8,6 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.ros.common.recipe.Materials;
 import net.ros.common.recipe.Metal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 public class PipeType
@@ -50,11 +53,13 @@ public class PipeType
 
     private static Table<PipeSize, Metal, Integer> pipeTransferRates;
     private static Table<PipeSize, Metal, Float>   pipePressures;
+    private static Map<Metal, Integer>             pipeTemperature;
 
     static
     {
         pipeTransferRates = HashBasedTable.create();
         pipePressures = HashBasedTable.create();
+        pipeTemperature = new HashMap<>();
 
         // Fluid pipes
         pipeTransferRates.put(PipeSize.SMALL, Materials.IRON, 64);
@@ -68,6 +73,9 @@ public class PipeType
         pipeTransferRates.put(PipeSize.LARGE, Materials.CAST_IRON, 2048);
         pipeTransferRates.put(PipeSize.HUGE, Materials.CAST_IRON, 8192);
         pipeTransferRates.put(PipeSize.EXTRA_HUGE, Materials.CAST_IRON, 32768);
+
+        pipeTemperature.put(Materials.IRON, 700);
+        pipeTemperature.put(Materials.CAST_IRON, 1300);
 
         // Steam pipes
         pipeTransferRates.put(PipeSize.SMALL, Materials.BRASS, 64);
@@ -107,5 +115,12 @@ public class PipeType
         if (type == null)
             return 0;
         return pipePressures.get(type.getSize(), type.getMetal());
+    }
+
+    public static int getHeat(PipeType type)
+    {
+        if (type == null)
+            return 0;
+        return pipeTemperature.get(type.getMetal());
     }
 }
