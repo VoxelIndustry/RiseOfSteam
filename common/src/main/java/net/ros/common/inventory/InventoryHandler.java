@@ -68,6 +68,12 @@ public class InventoryHandler extends ItemStackHandler
             this.onSlotChange.accept(slot);
     }
 
+    public void notifySlotChange()
+    {
+        if (this.onSlotChange != null)
+            this.onSlotChange.accept(-1);
+    }
+
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack)
     {

@@ -9,9 +9,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemStackHandler;
+import net.ros.common.container.sync.SyncableProperty;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.network.ContainerUpdatePacket;
-import net.ros.common.container.sync.SyncableProperty;
+import net.ros.common.util.ItemUtils;
 import org.apache.commons.lang3.Range;
 
 import java.util.ArrayList;
@@ -130,15 +131,17 @@ public class BuiltContainer extends Container
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int index)
+    public ItemStack transferStackInSlot(final EntityPlayer player, final int index)
     {
+
         ItemStack originalStack = ItemStack.EMPTY;
 
-        final Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
         {
-            final ItemStack stackInSlot = slot.getStack();
+
+            ItemStack stackInSlot = slot.getStack();
             originalStack = stackInSlot.copy();
 
             boolean shifted = false;
@@ -146,13 +149,14 @@ public class BuiltContainer extends Container
             for (final Range<Integer> range : this.playerSlotRanges)
                 if (range.contains(index))
                 {
+
                     if (this.shiftToTile(stackInSlot))
                         shifted = true;
                     break;
                 }
 
             if (!shifted)
-                for (final Range<Integer> range : this.tileSlotRanges)
+                for (Range<Integer> range : this.tileSlotRanges)
                     if (range.contains(index))
                     {
                         if (this.shiftToPlayer(stackInSlot))
@@ -161,8 +165,9 @@ public class BuiltContainer extends Container
                     }
 
             slot.onSlotChange(stackInSlot, originalStack);
-            if (!stackInSlot.isEmpty())
-                slot.onSlotChanged();
+            if (stackInSlot.getCount() <= 0)
+                slot.putStack(ItemStack.EMPTY);
+            slot.onSlotChanged();
             if (stackInSlot.getCount() == originalStack.getCount())
                 return ItemStack.EMPTY;
             slot.onTake(player, stackInSlot);
@@ -170,23 +175,20 @@ public class BuiltContainer extends Container
         return originalStack;
     }
 
-    protected boolean shiftItemStack(ItemStack stackToShift, int start, int end)
+    protected boolean shiftItemStack(final ItemStack stackToShift, final int start, final int end)
     {
         boolean changed = false;
         if (stackToShift.isStackable())
         {
             for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++)
             {
-                final Slot slot = this.inventorySlots.get(slotIndex);
-                final ItemStack stackInSlot = slot.getStack();
-                if (!stackInSlot.isEmpty() && ItemStack.areItemStacksEqual(stackInSlot, stackToShift)
-                        && slot.isItemValid(stackToShift)
-                        && slot.getItemStackLimit(stackToShift) > stackInSlot.getCount())
+                Slot slot = this.inventorySlots.get(slotIndex);
+                ItemStack stackInSlot = slot.getStack();
+                if (!stackInSlot.isEmpty() && ItemUtils.deepEquals(stackInSlot, stackToShift)
+                        && slot.isItemValid(stackToShift))
                 {
-                    final int resultingStackSize = Math.min(slot.getItemStackLimit(stackToShift),
-                            stackInSlot.getCount() + stackToShift.getCount());
-                    final int max = Math.min(stackToShift.getMaxStackSize(), slot.getItemStackLimit(stackToShift));
-
+                    int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
+                    int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
                     if (resultingStackSize <= max)
                     {
                         stackToShift.setCount(0);
@@ -208,12 +210,11 @@ public class BuiltContainer extends Container
         {
             for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++)
             {
-                final Slot slot = this.inventorySlots.get(slotIndex);
+                Slot slot = this.inventorySlots.get(slotIndex);
                 ItemStack stackInSlot = slot.getStack();
                 if (stackInSlot.isEmpty() && slot.isItemValid(stackToShift))
                 {
-                    final int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
-
+                    int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
                     stackInSlot = stackToShift.copy();
                     stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
                     stackToShift.shrink(stackInSlot.getCount());
@@ -226,17 +227,17 @@ public class BuiltContainer extends Container
         return changed;
     }
 
-    private boolean shiftToTile(ItemStack stackToShift)
+    private boolean shiftToTile(final ItemStack stackToShift)
     {
-        for (final Range<Integer> range : this.tileSlotRanges)
+        for (Range<Integer> range : this.tileSlotRanges)
             if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
                 return true;
         return false;
     }
 
-    private boolean shiftToPlayer(ItemStack stackToShift)
+    private boolean shiftToPlayer(final ItemStack stackToShift)
     {
-        for (final Range<Integer> range : this.playerSlotRanges)
+        for (Range<Integer> range : this.playerSlotRanges)
             if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
                 return true;
         return false;

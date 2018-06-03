@@ -59,7 +59,7 @@ public class InventoryModule extends MachineModule implements ISerializableModul
         {
             this.getMachineTile().markDirty();
 
-            if (this.onSlotChangeEvents.containsKey(name))
+            if (this.onSlotChangeEvents.containsKey(name) && slot != -1)
                 this.onSlotChangeEvents.get(name).accept(slot);
         });
 
