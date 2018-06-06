@@ -10,9 +10,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.ros.common.init.ROSBlocks;
-import net.ros.common.steam.SteamUtil;
+import net.ros.common.block.BlockPipeValve;
+import net.ros.common.block.BlockSteamGauge;
 import net.ros.common.grid.node.IPipeValve;
+import net.ros.common.steam.SteamUtil;
 import net.ros.common.tile.TileSteamGauge;
 import org.yggard.brokkgui.paint.Color;
 
@@ -29,9 +30,9 @@ public class LogisticClientEventHandler
             return;
 
         Block target = e.getPlayer().world.getBlockState(e.getTarget().getBlockPos()).getBlock();
-        if (target == ROSBlocks.STEAM_GAUGE_BRASS_SMALL)
+        if (target instanceof BlockSteamGauge)
             renderGaugeOverlay(e.getPlayer(), e.getTarget().getBlockPos(), e.getPartialTicks());
-        else if (target == ROSBlocks.FLUID_VALVE_IRON_SMALL || target == ROSBlocks.STEAM_VALVE_BRASS_SMALL)
+        else if (target instanceof BlockPipeValve)
             renderValveOverlay(e.getPlayer(), e.getTarget().getBlockPos(), e.getPartialTicks());
     }
 

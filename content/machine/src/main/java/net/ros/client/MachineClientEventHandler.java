@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.ros.client.render.RenderIOOverlay;
 import net.ros.client.render.RenderStructureOverlay;
 import net.ros.client.render.RenderUtil;
+import net.ros.common.ROSConstants;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.item.ItemBlueprint;
 import net.ros.common.machine.Machines;
@@ -52,7 +53,8 @@ public class MachineClientEventHandler
                     final String name = e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint");
                     final Blueprint blueprint = Machines.getComponent(Blueprint.class,
                             e.getPlayer().getHeldItemMainhand().getTagCompound().getString("blueprint"));
-                    final BlockMultiblockBase base = (BlockMultiblockBase) Block.getBlockFromName("ros:" + name);
+                    BlockMultiblockBase base = (BlockMultiblockBase)
+                            Block.getBlockFromName(ROSConstants.MODID + ":" + name);
                     final World w = Minecraft.getMinecraft().world;
                     if (base != null)
                     {

@@ -18,16 +18,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.ros.client.render.tile.RenderStructure;
+import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.ROSConstants;
 import net.ros.common.machine.Machines;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ITileMultiblockCore;
-import net.ros.common.util.ItemUtils;
-import net.ros.client.render.tile.RenderStructure;
-import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.blueprint.Blueprint;
 import net.ros.common.multiblock.blueprint.BlueprintState;
+import net.ros.common.util.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +94,7 @@ public class TileStructure extends TileBase implements ITileMultiblockCore
                 else
                 {
                     final BlockMultiblockBase block = (BlockMultiblockBase) Block
-                            .getBlockFromName("ros:" + this.blueprint.getDescriptor().getName());
+                            .getBlockFromName(ROSConstants.MODID + ":" + this.blueprint.getDescriptor().getName());
                     final IBlockState state = block.getStateFromMeta(this.meta);
                     final IBlockState previous = this.world.getBlockState(this.getPos());
 
@@ -236,7 +236,7 @@ public class TileStructure extends TileBase implements ITileMultiblockCore
         return super.getRenderBoundingBox();
     }
 
-    private int previousStep = -1;
+    private int             previousStep = -1;
     private List<BakedQuad> quadsCache;
 
     @SideOnly(Side.CLIENT)

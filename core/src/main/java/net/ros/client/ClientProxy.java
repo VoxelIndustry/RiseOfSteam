@@ -243,9 +243,10 @@ public class ClientProxy extends CommonProxy
         {
             for (PipeSize size : sizes)
             {
-                replacePipeModel(Block.getBlockFromName(nature.toString() + pipeName + "_" + metal.getName() + "_" +
-                                size.toString()),
-                        Block.getBlockFromName(nature.toString() + "pipe_" + metal.getName() + "_" + size.toString()),
+                replacePipeModel(Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + pipeName + "_"
+                                + metal.getName() + "_" + size.toString()),
+                        Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + "pipe_" +
+                                metal.getName() + "_" + size.toString()),
                         new ResourceLocation(ROSConstants.MODID, modelPath), registry);
             }
         }

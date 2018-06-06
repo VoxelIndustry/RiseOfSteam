@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockStructure;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.machine.Machines;
@@ -49,7 +50,7 @@ public class ItemBlueprint extends ItemBase
             final String name = stack.getTagCompound().getString("blueprint");
             final Blueprint blueprint = Machines.getComponent(Blueprint.class,
                     stack.getTagCompound().getString("blueprint"));
-            final BlockMultiblockBase base = (BlockMultiblockBase) Block.getBlockFromName("ros:" + name);
+            BlockMultiblockBase base = (BlockMultiblockBase) Block.getBlockFromName(ROSConstants.MODID + ":" + name);
 
             if ((player.capabilities.isCreativeMode
                     || ItemUtils.hasPlayerEnough(player.inventory, blueprint.getRodStack(), false))

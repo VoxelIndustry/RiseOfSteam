@@ -8,16 +8,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
+import net.ros.common.ROSConstants;
 import net.ros.common.multiblock.TileMultiblockGag;
-import net.ros.common.tile.TileStructure;
 import net.ros.common.multiblock.blueprint.BlueprintState;
+import net.ros.common.tile.TileStructure;
 
 import java.util.List;
 
 public class RenderStructureOverlay
 {
     public static void renderStructureOverlay(final EntityPlayer player, final BlockPos pos,
-            final float partialTicks)
+                                              final float partialTicks)
     {
         final TileEntity tile = player.getEntityWorld().getTileEntity(pos);
 
@@ -46,8 +47,8 @@ public class RenderStructureOverlay
                 GlStateManager.disableBlend();
 
                 final String name = I18n.translateToLocal(
-                        Block.getBlockFromName("ros:" + structure.getBlueprint().getDescriptor().getName()).getUnlocalizedName()
-                                + ".name");
+                        Block.getBlockFromName(ROSConstants.MODID + ":" +
+                                structure.getBlueprint().getDescriptor().getName()).getUnlocalizedName() + ".name");
                 Minecraft.getMinecraft().fontRenderer.drawString(name,
                         -Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2, 0, 16777215);
 
@@ -173,7 +174,8 @@ public class RenderStructureOverlay
 
             if (step == state.getCurrentStep() && state.getCurrentStacks().size() > stack)
             {
-                count = state.getCurrentStacks().get(stack).getCount() - 1 + "/" + state.getStepStacks().get(stack).getCount();
+                count = state.getCurrentStacks().get(stack).getCount() - 1 + "/" + state.getStepStacks().get(stack)
+                        .getCount();
             }
             else if (step < state.getCurrentStep())
                 count = stackList.get(stack).getCount() + "/" + stackList.get(stack).getCount();

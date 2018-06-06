@@ -21,6 +21,7 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.client.model.pipeline.VertexTransformer;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.ros.common.ROSConstants;
 import net.ros.common.machine.Machines;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.blueprint.Blueprint;
@@ -48,7 +49,7 @@ public class BlueprintRender implements IBakedModel
         @Nonnull
         @Override
         public IBakedModel handleItemState(final IBakedModel model, final ItemStack stack, final World world,
-                final EntityLivingBase entity)
+                                           final EntityLivingBase entity)
         {
             final IBakedModel multiblock = BlueprintRender.this.getModel(stack);
             if (Machines.contains(Blueprint.class, stack.getTagCompound().getString("blueprint")))
@@ -65,10 +66,12 @@ public class BlueprintRender implements IBakedModel
     private IBakedModel getModel(final ItemStack stack)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("blueprint")
-                && Block.getBlockFromName("ros:" + stack.getTagCompound().getString("blueprint")) != null)
+                && Block.getBlockFromName(ROSConstants.MODID + ":"
+                + stack.getTagCompound().getString("blueprint")) != null)
         {
             return Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(
-                    Block.getBlockFromName("ros:" + stack.getTagCompound().getString("blueprint")).getDefaultState());
+                    Block.getBlockFromName(ROSConstants.MODID + ":"
+                            + stack.getTagCompound().getString("blueprint")).getDefaultState());
         }
         return null;
     }
@@ -172,7 +175,7 @@ public class BlueprintRender implements IBakedModel
         private final Map<EnumFacing, List<BakedQuad>> faceQuads = new EnumMap<>(EnumFacing.class);
 
         CompositeBakedModel(final IBakedModel multiblock, final IBakedModel blueprint,
-                final MultiblockComponent descriptor)
+                            final MultiblockComponent descriptor)
         {
             this.blueprint = blueprint;
 

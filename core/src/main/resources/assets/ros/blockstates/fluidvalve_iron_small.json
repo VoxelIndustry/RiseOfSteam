@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "transform": "forge:default-block",
+    "custom": {
+      "flip-v": true
+    },
+    "model": "ros:_fluidvalve_small.mwm"
+  },
+  "variants": {
+    "facing": {
+      "north": {
+        "y": 180
+      },
+      "south": {
+        "y": 0
+      },
+      "east": {
+        "y": 270
+      },
+      "west": {
+        "y": 90
+      },
+      "up": {
+        "x": 270
+      },
+      "down": {
+        "x": 90
+      }
+    },
+    "inventory": {
+      "model": "ros:_fluidvalve_small.mwm"
+    }
+  }
+}

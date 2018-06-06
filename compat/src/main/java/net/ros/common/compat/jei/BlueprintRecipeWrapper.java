@@ -51,9 +51,11 @@ public class BlueprintRecipeWrapper implements IRecipeWrapper
         this.wrenchTimer = guiHelper.createTickTimer(20, 5, false);
 
         int steps = blueprint.getMultiblockSteps().size() - 1;
-        this.stepTimer = guiHelper.createTickTimer(20 * steps, steps - 1, true);
+        if (steps > 0)
+            this.stepTimer = guiHelper.createTickTimer(20 * steps, steps - 1, true);
 
-        this.machine = new ItemStack(Block.getBlockFromName("ros:" + this.blueprint.getDescriptor().getName()));
+        this.machine = new ItemStack(
+                Block.getBlockFromName(ROSConstants.MODID + ":" + this.blueprint.getDescriptor().getName()));
 
         this.blockWidth = this.blueprint.getDescriptor().get(MultiblockComponent.class).getLength();
         this.blockHeight = this.blueprint.getDescriptor().get(MultiblockComponent.class).getHeight();
