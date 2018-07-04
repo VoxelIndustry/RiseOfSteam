@@ -55,6 +55,12 @@
       "textures": {
         "all": "ros:blocks/block_lead"
       }
+    },
+    "variant=cast_iron": {
+      "model": "cube_all",
+      "textures": {
+        "all": "ros:blocks/block_cast_iron"
+      }
     }
   },
   "forge_marker": 1

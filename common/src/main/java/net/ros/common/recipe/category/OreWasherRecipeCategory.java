@@ -4,16 +4,18 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.init.ROSItems;
-import net.ros.common.ore.MineralDensity;
 import net.ros.common.ore.Mineral;
+import net.ros.common.ore.MineralDensity;
+import net.ros.common.ore.Ore;
 import net.ros.common.ore.Ores;
-import net.ros.common.ore.SludgeData;
 import net.ros.common.recipe.RecipeBase;
 import net.ros.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.ros.common.recipe.ingredient.ItemStackRecipeIngredient;
+import net.ros.common.recipe.ingredient.RecipeIngredient;
 
 import java.util.Map;
 import java.util.Optional;
@@ -28,123 +30,109 @@ public class OreWasherRecipeCategory extends RecipeCategory
         super(name);
     }
 
+    @Override
     public <T> boolean inputMatchWithoutCount(final int recipeSlot, final T ingredient)
     {
-        if (recipeSlot == 0 && ingredient instanceof ItemStack
-                && (((ItemStack) ingredient).getItem() == ROSItems.MINERAL_SLUDGE
-                || ((ItemStack) ingredient).getItem() == ROSItems.COMPRESSED_MINERAL_SLUDGE))
-            return true;
         if (recipeSlot == 0 && ingredient instanceof FluidStack
+                && Ores.isSludge(((FluidStack) ingredient).getFluid()))
+            return true;
+        if (recipeSlot == 1 && ingredient instanceof FluidStack
                 && ((FluidStack) ingredient).getFluid() == FluidRegistry.WATER)
             return true;
         return false;
     }
 
+    @Override
     public <T> boolean inputMatchWithCount(final int recipeSlot, final T ingredient)
     {
-        if (recipeSlot == 0 && ingredient instanceof ItemStack
-                && (((ItemStack) ingredient).getItem() == ROSItems.MINERAL_SLUDGE
-                || ((ItemStack) ingredient).getItem() == ROSItems.COMPRESSED_MINERAL_SLUDGE))
-            return true;
         if (recipeSlot == 0 && ingredient instanceof FluidStack
+                && Ores.isSludge(((FluidStack) ingredient).getFluid()) &&
+                ((FluidStack) ingredient).amount >= Fluid.BUCKET_VOLUME)
+            return true;
+        if (recipeSlot == 1 && ingredient instanceof FluidStack
                 && ((FluidStack) ingredient).getFluid() == FluidRegistry.WATER
-                && ((FluidStack) ingredient).amount >= 100)
+                && ((FluidStack) ingredient).amount >= Fluid.BUCKET_VOLUME)
             return true;
         return false;
     }
 
     public Optional<RecipeBase> getRecipe(Object... inputs)
     {
-        if (inputs.length >= 2 && inputs[0] instanceof ItemStack && inputs[1] instanceof FluidStack)
+        if (inputs.length < 2)
+            return Optional.empty();
+        if (!this.inputMatchWithCount(0, inputs[0]) || !this.inputMatchWithCount(0, inputs[1]))
+            return Optional.empty();
+
+        FluidStack sludge = (FluidStack) inputs[0];
+        FluidStack washingFluid = (FluidStack) inputs[1];
+
+        Optional<Ore> ore = Ores.fromSludge(sludge.getFluid());
+
+        if (!ore.isPresent())
+            return Optional.empty();
+
+        ItemStack rawOre = ItemStack.EMPTY;
+        ItemStack leftOver = ItemStack.EMPTY;
+        Integer yield = washingFluid.getFluid() == FluidRegistry.WATER ? 0 : 10;
+        float leftOverChance = 1;
+
+        if (ore.get().getMinerals().size() == 1)
         {
-            ItemStack sludge = (ItemStack) inputs[0];
-
-            if (((FluidStack) inputs[1]).amount >= 900 || (((FluidStack) inputs[1]).amount >= 100
-                    && sludge.getItem() != ROSItems.COMPRESSED_MINERAL_SLUDGE))
+            for (Map.Entry<Mineral, Float> mineral: ore.get().getMinerals().entrySet())
             {
-                SludgeData data = SludgeData.fromNBT(sludge.getTagCompound().getCompoundTag("sludgeData"));
-
-                ItemStack rawOre = ItemStack.EMPTY;
-                ItemStack leftOver = ItemStack.EMPTY;
-                Integer yield = ((FluidStack) inputs[1]).getFluid() == FluidRegistry.WATER ? 0 : 10;
-                float leftOverChance = 1;
-
-                if (data.getOres().size() == 1)
+                if (mineral.getValue() + yield >= 0.25f)
                 {
-                    for (Map.Entry<Mineral, Float> ore : data.getOres().entrySet())
-                    {
-                        if (ore.getValue() + yield >= 0.25f)
-                        {
-                            rawOre = Ores.getRawMineral(ore.getKey(),
-                                    MineralDensity.fromValue(ore.getValue() + yield));
+                    rawOre = Ores.getRawMineral(mineral.getKey(),
+                            MineralDensity.fromValue(mineral.getValue() + yield));
 
-                            leftOverChance -= ore.getValue();
-                        }
-                    }
+                    leftOverChance -= mineral.getValue();
                 }
-                else
-                {
-                    rawOre = new ItemStack(ROSItems.MIXED_RAW_ORE);
-                    rawOre.setTagCompound(new NBTTagCompound());
-
-                    int i = 0;
-                    for (Map.Entry<Mineral, Float> ore : data.getOres().entrySet())
-                    {
-                        if (ore.getValue() + yield >= 0.25f)
-                        {
-                            rawOre.getTagCompound().setString("ore" + i, ore.getKey().getName());
-                            rawOre.getTagCompound().setString("density" + i, ore.getValue() + yield >= 0.75f ? "rich"
-                                    : (ore.getValue() + yield >= 0.50f ? "normal" : "poor"));
-                            leftOverChance -= ore.getValue();
-                            i++;
-                        }
-                    }
-                    if (i != 0)
-                        rawOre.getTagCompound().setInteger("oreCount", i);
-                    else
-                        rawOre = ItemStack.EMPTY;
-                }
-
-                if (leftOverChance > 0)
-                {
-                    if (leftOverChance >= this.rand.nextFloat())
-                        leftOver = new ItemStack(this.rand.nextBoolean() ? Blocks.DIRT : Blocks.GRAVEL);
-
-                    if (sludge.getItem() == ROSItems.COMPRESSED_MINERAL_SLUDGE)
-                    {
-                        for (int i = 0; i < 8; i++)
-                        {
-                            if (leftOverChance >= this.rand.nextFloat())
-                            {
-                                if (!leftOver.isEmpty())
-                                    leftOver.grow(1);
-                                else
-                                    leftOver = new ItemStack(this.rand.nextBoolean() ? Blocks.DIRT : Blocks.GRAVEL);
-                            }
-                        }
-                    }
-                }
-
-                if (sludge.getItem() == ROSItems.COMPRESSED_MINERAL_SLUDGE)
-                    rawOre.grow(8);
-                return Optional.of(new OreWasherRecipe(sludge.copy(), rawOre, leftOver,
-                        sludge.getItem() == ROSItems.COMPRESSED_MINERAL_SLUDGE));
             }
         }
-        return Optional.empty();
+        else
+        {
+            rawOre = new ItemStack(ROSItems.MIXED_RAW_ORE);
+            rawOre.setTagCompound(new NBTTagCompound());
+
+            int i = 0;
+            for (Map.Entry<Mineral, Float> mineral: ore.get().getMinerals().entrySet())
+            {
+                if (mineral.getValue() + yield >= 0.25f)
+                {
+                    rawOre.getTagCompound().setString("ore" + i, mineral.getKey().getName());
+                    rawOre.getTagCompound().setString("density" + i, mineral.getValue() + yield >= 0.75f ?
+                            "rich" : (mineral.getValue() + yield >= 0.50f ? "normal" : "poor"));
+                    leftOverChance -= mineral.getValue();
+                    i++;
+                }
+            }
+            if (i != 0)
+                rawOre.getTagCompound().setInteger("oreCount", i);
+            else
+                rawOre = ItemStack.EMPTY;
+        }
+
+        if (leftOverChance > 0)
+        {
+            if (leftOverChance >= this.rand.nextFloat())
+                leftOver = new ItemStack(this.rand.nextBoolean() ? Blocks.DIRT : Blocks.GRAVEL);
+        }
+
+        FluidStack sludgeCopy = sludge.copy();
+        sludgeCopy.amount = Fluid.BUCKET_VOLUME;
+
+        return Optional.of(new OreWasherRecipe(sludgeCopy, rawOre, leftOver));
     }
 
     private static final class OreWasherRecipe extends RecipeBase
     {
-        private boolean compressedSludge;
-
-        public OreWasherRecipe(ItemStack inputSludge, ItemStack rawOre, ItemStack leftOver, boolean compressedSludge)
+        public OreWasherRecipe(FluidStack inputSludge, ItemStack rawOre, ItemStack leftOver)
         {
-            this.compressedSludge = compressedSludge;
+            NonNullList<RecipeIngredient<?>> ingredients = NonNullList.create();
+            ingredients.add(new FluidStackRecipeIngredient(inputSludge));
+            ingredients.add(new FluidStackRecipeIngredient(new FluidStack(FluidRegistry.WATER, 100)));
 
-            this.inputs.put(ItemStack.class, NonNullList.withSize(1, new ItemStackRecipeIngredient(inputSludge)));
-            this.inputs.put(FluidStack.class, NonNullList.withSize(1,
-                    new FluidStackRecipeIngredient(new FluidStack(FluidRegistry.WATER, compressedSludge ? 900 : 100))));
+            this.inputs.put(FluidStack.class, ingredients);
 
             this.outputs.put(ItemStack.class, NonNullList.create());
             if (!rawOre.isEmpty())
@@ -156,7 +144,7 @@ public class OreWasherRecipeCategory extends RecipeCategory
         @Override
         public int getTime()
         {
-            return compressedSludge ? 90 : 10;
+            return 10;
         }
     }
 }

@@ -76,4 +76,9 @@ public class InventoryModule extends MachineModule implements ISerializableModul
     {
         return this.inventories.get(name);
     }
+
+    public boolean hasInventory(String name)
+    {
+        return this.inventories.containsKey(name);
+    }
 }

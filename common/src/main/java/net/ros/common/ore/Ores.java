@@ -3,6 +3,8 @@ package net.ros.common.ore;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.ros.common.block.BlockVeinOre;
 import net.ros.common.init.ROSItems;
 
@@ -120,5 +122,20 @@ public class Ores
         ItemStack rawOre = new ItemStack(ROSItems.RAW_ORE);
         rawOre.setItemDamage((MINERALS.indexOf(mineral) * MineralDensity.VALUES.length) + density.ordinal());
         return rawOre;
+    }
+
+    public static Fluid toSludge(Ore ore)
+    {
+        return FluidRegistry.getFluid("sludge" + ore.getName());
+    }
+
+    public static Optional<Ore> fromSludge(Fluid fluid)
+    {
+        return ORES.stream().filter(ore -> fluid.getName().equalsIgnoreCase("sludge" + ore.getName())).findFirst();
+    }
+
+    public static boolean isSludge(Fluid fluid)
+    {
+        return ORES.stream().anyMatch(ore -> fluid.getName().equalsIgnoreCase("sludge" + ore.getName()));
     }
 }

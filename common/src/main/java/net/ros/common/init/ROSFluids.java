@@ -1,17 +1,23 @@
 package net.ros.common.init;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.ros.common.ROSConstants;
 import net.ros.common.fluid.BlockFluidBase;
+import net.ros.common.ore.Ores;
 import net.ros.common.recipe.Materials;
 
+import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 
 public class ROSFluids
 {
+    private static NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+
     public static Fluid fluidSteam;
 
     public static LinkedHashMap<Fluid, BlockFluidBase> FLUIDS = new LinkedHashMap<>();
@@ -39,6 +45,24 @@ public class ROSFluids
                     FLUIDS.put(moltenMetal, new BlockFluidBase(moltenMetal, Material.LAVA,
                             "blockmolten" + metal.getName()));
                 });
+
+        Ores.ORES.stream().filter(ore -> !FluidRegistry.isFluidRegistered("sludge" + ore.getName())).forEach(ore ->
+        {
+            Fluid sludge = new Fluid("sludge" + ore.getName(),
+                    new ResourceLocation(ROSConstants.MODID + ":blocks/fluid/" + ore.getName() + "_still"),
+                    new ResourceLocation(ROSConstants.MODID + ":blocks/fluid/" + ore.getName() + "_flow"));
+
+            FluidRegistry.registerFluid(sludge);
+            FluidRegistry.addBucketForFluid(sludge);
+
+            BlockFluidBase blockFluid = new BlockFluidBase(sludge, Material.LAVA,
+                    "blocksludge" + sludge.getName());
+
+            if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+                ore.getMinerals().forEach((mineral, value) -> blockFluid.addInformation(I18n.format(mineral.getName()) + " : " + percentFormatter.format(value)));
+
+            FLUIDS.put(sludge, blockFluid);
+        });
 
         FLUIDS.values().forEach(ROSBlocks::registerBlock);
     }

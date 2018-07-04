@@ -25,6 +25,9 @@ public class GuiSmallMiningDrill extends GuiMachineBase<TileSmallMiningDrill>
 
         this.addFluidTank((IFluidTank) miningdrill.getModule(FluidStorageModule.class).getFluidHandler("water"),
                 128, 7, 18, 73);
+        this.addFluidTank((IFluidTank) miningdrill.getModule(FluidStorageModule.class).getFluidHandler("sludge"),
+                SludgeTooltipSupplier::get, 108, 7, 18, 73);
+
         this.addSteamTank(miningdrill.getModule(SteamModule.class).getInternalSteamHandler(),
                 151, 7, 18, 73);
 

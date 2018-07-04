@@ -3,6 +3,7 @@ package net.ros.common.ore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import net.minecraftforge.fluids.Fluid;
 
 import java.util.Map;
 
@@ -18,8 +19,8 @@ public class Ore
     private float hardness;
     private float resistance;
 
-    public SludgeData toSludge()
+    public Fluid toSludge()
     {
-        return new SludgeData().addOres(minerals);
+        return Ores.toSludge(this);
     }
 }

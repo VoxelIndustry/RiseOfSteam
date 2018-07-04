@@ -21,8 +21,10 @@ public class GuiOreWasher extends GuiMachineBase<TileOreWasher>
     {
         super(player, orewasher, BACKGROUND);
 
+        this.addFluidTank((IFluidTank) orewasher.getModule(FluidStorageModule.class).getFluidHandler("sludge"),
+                SludgeTooltipSupplier::get, 7, 7, 18, 73);
         this.addFluidTank((IFluidTank) orewasher.getModule(FluidStorageModule.class).getFluidHandler("washer"),
-                7, 7, 18, 73);
+                27, 7, 18, 73);
 
         this.addSteamTank(orewasher.getModule(SteamModule.class)
                 .getInternalSteamHandler(), 151, 7, 18, 73);

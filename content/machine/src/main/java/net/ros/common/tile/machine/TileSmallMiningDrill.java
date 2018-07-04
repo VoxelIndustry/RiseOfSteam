@@ -11,28 +11,28 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockVeinOre;
-import net.ros.common.grid.node.IBelt;
-import net.ros.common.init.ROSItems;
-import net.ros.common.machine.Machines;
-import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.machine.module.impl.IOModule;
-import net.ros.common.machine.module.impl.SteamModule;
-import net.ros.common.ore.SludgeData;
-import net.ros.common.steam.ISteamTank;
-import net.ros.common.steam.SteamUtil;
-import net.ros.common.util.FluidUtils;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.ContainerBuilder;
 import net.ros.common.container.IContainerProvider;
+import net.ros.common.grid.node.IBelt;
 import net.ros.common.gui.MachineGui;
+import net.ros.common.init.ROSItems;
+import net.ros.common.machine.Machines;
 import net.ros.common.machine.component.SteamComponent;
+import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.FluidStorageModule;
+import net.ros.common.machine.module.impl.IOModule;
+import net.ros.common.machine.module.impl.SteamModule;
+import net.ros.common.steam.ISteamTank;
+import net.ros.common.steam.SteamUtil;
+import net.ros.common.util.FluidUtils;
 
 import java.util.Iterator;
 
@@ -50,8 +50,8 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
     private final float heatPerOperationTick = 30;
     private       int   tickBeforeHarvest;
 
+    private       FluidStack             tempSludge;
     private final NonNullList<ItemStack> tempVarious;
-    private       ItemStack              tempSludge;
 
     public TileSmallMiningDrill()
     {
@@ -62,7 +62,6 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
         this.lastPos = this.getPos();
 
         this.tempVarious = NonNullList.create();
-        this.tempSludge = ItemStack.EMPTY;
     }
 
     @Override
@@ -90,7 +89,15 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
         ISteamTank steamTank = this.getModule(SteamModule.class).getInternalSteamHandler();
         SteamComponent steamComponent = this.getDescriptor().get(SteamComponent.class);
 
-        if (!this.isCompleted() && this.tempVarious.isEmpty() && this.heat < this.maxHeat
+        FluidTank sludgeTank = (FluidTank) this.getModule(FluidStorageModule.class).getFluidHandler("sludge");
+
+        if (tempSludge != null && sludgeTank.fill(tempSludge, false) == tempSludge.amount)
+        {
+            sludgeTank.fill(tempSludge, true);
+            tempSludge = null;
+        }
+
+        if (!this.isCompleted() && tempSludge == null && this.tempVarious.isEmpty() && this.heat < this.maxHeat
                 && steamTank.getSteam() >= steamComponent.getSteamConsumption())
         {
             BlockPos toCheck = this.lastPos;
@@ -126,12 +133,10 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
                 {
                     if (state.getBlock() instanceof BlockVeinOre)
                     {
-                        SludgeData sludge = ((BlockVeinOre) state.getBlock()).getOreFromState(state).toSludge();
+                        BlockVeinOre veinOre = (BlockVeinOre) state.getBlock();
 
-                        ItemStack sludgeStack = new ItemStack(ROSItems.MINERAL_SLUDGE);
-                        sludgeStack.setTagCompound(new NBTTagCompound());
-                        sludgeStack.getTagCompound().setTag("sludgeData", sludge.writeToNBT(new NBTTagCompound()));
-                        tempSludge = sludgeStack;
+                        tempSludge = new FluidStack(veinOre.getOreFromState(state).toSludge(),
+                                veinOre.getRichnessFromState(state).getFluidAmount());
                         this.world.destroyBlock(toCheck, false);
                     }
                     else if (Math.abs(toCheck.getX() - this.getPos().getX()) < 2
@@ -180,11 +185,6 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
             if (this.tryInsertTrash(this.getFacing()))
                 isDirty = true;
         }
-        if (!this.tempSludge.isEmpty())
-        {
-            if (this.tryInsertSludge(this.getFacing()))
-                isDirty = true;
-        }
 
         if (this.world.getTotalWorldTime() % 5 == 0)
         {
@@ -207,24 +207,6 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
     private int getMinimumTemp()
     {
         return (int) (this.world.getBiome(this.getPos()).getTemperature(this.pos) * 200);
-    }
-
-    private boolean tryInsertSludge(final EnumFacing facing)
-    {
-        TileEntity slugdeTile = this.world.getTileEntity(this.pos.offset(facing, 2));
-        if (slugdeTile instanceof IBelt)
-        {
-            final IBelt sludgeBelt = (IBelt) slugdeTile;
-
-            ItemStack next = this.tempSludge;
-            if (sludgeBelt.insert(next, false))
-            {
-                sludgeBelt.insert(next, true);
-                this.tempSludge = ItemStack.EMPTY;
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean tryInsertTrash(final EnumFacing facing)
@@ -263,7 +245,9 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
         tag.setInteger("tickBeforeHarvest", this.tickBeforeHarvest);
 
         tag.setTag("tempVarious", ItemStackHelper.saveAllItems(new NBTTagCompound(), this.tempVarious));
-        tag.setTag("tempSludge", this.tempSludge.writeToNBT(new NBTTagCompound()));
+
+        if (this.tempSludge != null)
+            tag.setTag("tempSludge", this.tempSludge.writeToNBT(new NBTTagCompound()));
         return tag;
     }
 
@@ -280,7 +264,9 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
         this.tickBeforeHarvest = tag.getInteger("tickBeforeHarvest");
 
         ItemStackHelper.loadAllItems(tag.getCompoundTag("tempVarious"), this.tempVarious);
-        this.tempSludge = new ItemStack(tag.getCompoundTag("tempSludge"));
+
+        if (tag.hasKey("tempSludge"))
+            this.tempSludge = FluidStack.loadFluidStackFromNBT(tag.getCompoundTag("tempSludge"));
     }
 
     @Override
@@ -295,6 +281,8 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
                         steamEngine.getInternalSteamHandler()::setSteam)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
+                .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("sludge"))::getFluid,
+                        ((FluidTank) fluidStorage.getFluidHandler("sludge"))::setFluid)
                 .addInventory().create();
     }
 

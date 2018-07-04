@@ -19,6 +19,7 @@ import net.ros.common.fluid.MultiFluidTank;
 import net.ros.common.steam.ISteamTank;
 import net.ros.common.tile.TileBase;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.yggard.brokkgui.BrokkGuiPlatform;
 import org.yggard.brokkgui.data.Vector2i;
 import org.yggard.brokkgui.paint.Color;
@@ -45,9 +46,9 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
 
     private T machine;
 
-    private final ResourceLocation                 background;
-    private final List<Pair<IFluidTank, GuiSpace>> fluidtanks;
-    private final List<Pair<ISteamTank, GuiSpace>> steamtanks;
+    private final ResourceLocation                                         background;
+    private final List<Triple<IFluidTank, ITankTooltipSupplier, GuiSpace>> fluidtanks;
+    private final List<Pair<ISteamTank, GuiSpace>>                         steamtanks;
 
     private final List<Pair<MultiFluidTank, GuiSpace>> multiFluidTanks;
 
@@ -80,7 +81,13 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
 
     protected void addFluidTank(IFluidTank fluidTank, int x, int y, int width, int height)
     {
-        this.fluidtanks.add(Pair.of(fluidTank, new GuiSpace(x, y, width, height)));
+        this.addFluidTank(fluidTank, null, x, y, width, height);
+    }
+
+    protected void addFluidTank(IFluidTank fluidTank, ITankTooltipSupplier tooltipSupplier, int x, int y, int width,
+                                int height)
+    {
+        this.fluidtanks.add(Triple.of(fluidTank, tooltipSupplier, new GuiSpace(x, y, width, height)));
     }
 
     protected void addSteamTank(ISteamTank steamTank, int x, int y, int width, int height)
@@ -161,23 +168,27 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
         final int y = (this.height - this.ySize) / 2;
         GlStateManager.translate(-this.guiLeft, -this.guiTop, 0.0F);
 
-        for (Pair<IFluidTank, GuiSpace> fluidTank : fluidtanks)
+        for (Triple<IFluidTank, ITankTooltipSupplier, GuiSpace> fluidTank: fluidtanks)
         {
-            if (fluidTank.getValue().isMouseInside(mouseX - x, mouseY - y))
+            if (fluidTank.getRight().isMouseInside(mouseX - x, mouseY - y))
             {
                 final List<String> lines = new ArrayList<>();
-                if (fluidTank.getKey().getFluid() == null || fluidTank.getKey().getFluidAmount() == 0)
+                if (fluidTank.getLeft().getFluid() == null || fluidTank.getLeft().getFluidAmount() == 0)
                     lines.add("Empty");
                 else
                 {
-                    lines.add(TextFormatting.GOLD + fluidTank.getKey().getFluid().getLocalizedName());
-                    lines.add(TextFormatting.GOLD + "" + fluidTank.getKey().getFluidAmount() + " / "
-                            + fluidTank.getKey().getCapacity() + " mB");
+                    lines.add(TextFormatting.GOLD + fluidTank.getLeft().getFluid().getLocalizedName());
+
+                    if (fluidTank.getMiddle() != null)
+                        lines.addAll(fluidTank.getMiddle().get(fluidTank.getLeft()));
+
+                    lines.add(TextFormatting.GOLD + "" + fluidTank.getLeft().getFluidAmount() + " / "
+                            + fluidTank.getLeft().getCapacity() + " mB");
                 }
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
-        for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
+        for (Pair<ISteamTank, GuiSpace> steamTank: steamtanks)
         {
             if (steamTank.getValue().isMouseInside(mouseX - x, mouseY - y))
             {
@@ -200,7 +211,7 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
-        for (Pair<MultiFluidTank, GuiSpace> multiFluidTank : multiFluidTanks)
+        for (Pair<MultiFluidTank, GuiSpace> multiFluidTank: multiFluidTanks)
         {
             if (multiFluidTank.getValue().isMouseInside(mouseX - x, mouseY - y))
             {
@@ -209,7 +220,7 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
                     lines.add("Empty");
                 else
                 {
-                    for (FluidStack fluidStack : multiFluidTank.getKey().getFluids())
+                    for (FluidStack fluidStack: multiFluidTank.getKey().getFluids())
                     {
                         lines.add(TextFormatting.GOLD + fluidStack.getLocalizedName());
                         lines.add(TextFormatting.GOLD + "" + fluidStack.amount + " mB");
@@ -219,7 +230,7 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, this.width, this.height, -1, this.mc.fontRenderer);
             }
         }
-        for (Pair<GuiSpace, Supplier<List<String>>> tooltip : this.tooltips)
+        for (Pair<GuiSpace, Supplier<List<String>>> tooltip: this.tooltips)
         {
             if (mouseX > x + tooltip.getKey().getX() && mouseX < x + tooltip.getKey().getEndX() &&
                     mouseY > y + tooltip.getKey().getY() && mouseY < y + tooltip.getKey().getEndY())
@@ -230,11 +241,11 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
         }
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
 
-        for (Pair<Vector2i, String> label : this.labels)
+        for (Pair<Vector2i, String> label: this.labels)
         {
             this.fontRenderer.drawString(label.getValue(), label.getKey().getX(), label.getKey().getY(), 4210752);
         }
-        for (Pair<GuiSpace, ItemStack> itemStack : this.itemStacks)
+        for (Pair<GuiSpace, ItemStack> itemStack: this.itemStacks)
         {
             ((GuiHelper) BrokkGuiPlatform.getInstance().getGuiHelper()).drawItemStack(this.renderer,
                     itemStack.getKey().getX() + itemStack.getKey().getWidth() / 2,
@@ -252,7 +263,7 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
         this.mc.renderEngine.bindTexture(background);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
 
-        for (Pair<Function<Integer, Integer>, GuiProgress> animatedSprites : animatedSprites)
+        for (Pair<Function<Integer, Integer>, GuiProgress> animatedSprites: animatedSprites)
         {
             GuiProgress progress = animatedSprites.getValue();
 
@@ -302,15 +313,15 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
             this.drawTexturedModalRect(xStart, yStart, u, v, width, height);
         }
 
-        for (Pair<IFluidTank, GuiSpace> fluidTank : fluidtanks)
+        for (Triple<IFluidTank, ITankTooltipSupplier, GuiSpace> fluidTank: fluidtanks)
         {
-            if (fluidTank.getKey().getFluid() != null)
-                this.drawFluid(fluidTank.getKey().getFluid(), x + fluidTank.getValue().getX(),
-                        y + fluidTank.getValue().getY(), fluidTank.getValue().getWidth(),
-                        fluidTank.getValue().getHeight(), fluidTank.getKey().getCapacity());
+            if (fluidTank.getLeft().getFluid() != null)
+                this.drawFluid(fluidTank.getLeft().getFluid(), x + fluidTank.getRight().getX(),
+                        y + fluidTank.getRight().getY(), fluidTank.getRight().getWidth(),
+                        fluidTank.getRight().getHeight(), fluidTank.getLeft().getCapacity());
         }
 
-        for (Pair<ISteamTank, GuiSpace> steamTank : steamtanks)
+        for (Pair<ISteamTank, GuiSpace> steamTank: steamtanks)
         {
             if (steamTank.getKey().getSteam() != 0 && steamTank.getKey().getCapacity() != 0)
                 this.drawFluid(steamTank.getKey().toFluidStack(), x + steamTank.getValue().getX(),
@@ -318,12 +329,12 @@ public abstract class GuiMachineBase<T extends TileBase & IContainerProvider> ex
                         steamTank.getValue().getHeight(), steamTank.getKey().getActualCapacity());
         }
 
-        for (Pair<MultiFluidTank, GuiSpace> multiFluidTank : multiFluidTanks)
+        for (Pair<MultiFluidTank, GuiSpace> multiFluidTank: multiFluidTanks)
         {
             if (!multiFluidTank.getKey().getFluids().isEmpty())
             {
                 int pixels = 0;
-                for (FluidStack fluidStack : multiFluidTank.getKey().getFluids())
+                for (FluidStack fluidStack: multiFluidTank.getKey().getFluids())
                 {
                     int fluidHeight = (int) ((float) fluidStack.amount / multiFluidTank.getKey().getCapacity() *
                             multiFluidTank.getValue().getHeight());

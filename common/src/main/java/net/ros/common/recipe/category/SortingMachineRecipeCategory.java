@@ -20,7 +20,7 @@ public class SortingMachineRecipeCategory extends RecipeCategory
 
     public <T> boolean inputMatchWithoutCount(final int recipeSlot, final T ingredient)
     {
-        if (recipeSlot == 0 && ingredient instanceof ItemStack
+        if (recipeSlot == 0 && ingredient instanceof ItemStack && ((ItemStack) ingredient).hasTagCompound()
                 && ((ItemStack) ingredient).getItem() == ROSItems.MIXED_RAW_ORE)
             return true;
         return false;
@@ -28,7 +28,7 @@ public class SortingMachineRecipeCategory extends RecipeCategory
 
     public <T> boolean inputMatchWithCount(final int recipeSlot, final T ingredient)
     {
-        if (recipeSlot == 0 && ingredient instanceof ItemStack
+        if (recipeSlot == 0 && ingredient instanceof ItemStack && ((ItemStack) ingredient).hasTagCompound()
                 && ((ItemStack) ingredient).getItem() == ROSItems.MIXED_RAW_ORE)
             return true;
         return false;
@@ -36,27 +36,25 @@ public class SortingMachineRecipeCategory extends RecipeCategory
 
     public Optional<RecipeBase> getRecipe(Object... inputs)
     {
-        if (inputs.length >= 1 && inputs[0] instanceof ItemStack)
+        if (inputs.length < 1)
+            return Optional.empty();
+        if (!this.inputMatchWithCount(0, inputs[0]))
+            return Optional.empty();
+
+        ItemStack mixedOre = (ItemStack) inputs[0];
+
+        SortingMachineRecipe recipe = new SortingMachineRecipe(mixedOre.copy());
+
+        NBTTagCompound tag = mixedOre.getTagCompound();
+        for (int i = 0; i < tag.getInteger("oreCount"); i++)
         {
-            ItemStack mixedOre = (ItemStack) inputs[0];
+            ItemStack ore = Ores.getRawMineral(
+                    Ores.getMineralFromName(tag.getString("ore" + i)).get(),
+                    MineralDensity.valueOf(tag.getString("density" + i).toUpperCase()));
 
-            SortingMachineRecipe recipe = new SortingMachineRecipe(mixedOre.copy());
-
-            if (mixedOre.hasTagCompound())
-            {
-                NBTTagCompound tag = mixedOre.getTagCompound();
-                for (int i = 0; i < tag.getInteger("oreCount"); i++)
-                {
-                    ItemStack ore = Ores.getRawMineral(
-                            Ores.getMineralFromName(tag.getString("ore" + i)).get(),
-                            MineralDensity.valueOf(tag.getString("density" + i).toUpperCase()));
-
-                    recipe.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(ore));
-                }
-                return Optional.of(recipe);
-            }
+            recipe.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(ore));
         }
-        return Optional.empty();
+        return Optional.of(recipe);
     }
 
     public static final class SortingMachineRecipe extends RecipeBase
@@ -66,7 +64,7 @@ public class SortingMachineRecipeCategory extends RecipeCategory
             this.inputs.put(ItemStack.class, NonNullList.withSize(1, new ItemStackRecipeIngredient(inputMixedOre)));
 
             this.outputs.put(ItemStack.class, NonNullList.create());
-            for (ItemStack stack : products)
+            for (ItemStack stack: products)
                 this.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(stack));
         }
 

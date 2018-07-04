@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.MathHelper;
 import net.ros.common.block.BlockVeinOre;
+import net.ros.common.ore.MineralDensity;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -115,14 +116,14 @@ public class OreVeinDescriptor
     public OreVeinDescriptor createBlockSupplier()
     {
         this.veinBlockSupplier = (rand, veinSize, centerOffset) -> {
-            BlockVeinOre.Richness richness = BlockVeinOre.Richness.NORMAL;
+            MineralDensity richness = MineralDensity.NORMAL;
 
             if (rand.nextDouble() <= MathHelper.clampedLerp(this.richChance.getMinimum(), this.richChance.getMaximum(),
                     centerOffset / veinSize))
-                richness = BlockVeinOre.Richness.RICH;
+                richness = MineralDensity.RICH;
             else if (rand.nextDouble() <= MathHelper.clampedLerp(this.poorChance.getMinimum(), this.poorChance.getMaximum(),
                     1 - (centerOffset / veinSize)))
-                richness = BlockVeinOre.Richness.POOR;
+                richness = MineralDensity.POOR;
 
             return FeatureGenerator.randomState(rand, this.contents).withProperty(BlockVeinOre.RICHNESS, richness);
         };

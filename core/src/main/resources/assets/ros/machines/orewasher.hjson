@@ -37,37 +37,33 @@
         crafter: {
             category: ros.orewasher
             speed: 1.0
-            itemInput: 1
+            itemInput: 0
             itemOutput: 2
-            tankInput: [ "washer" ]
+            tankInput: [ "sludge" , "washer" ]
         }
         automation: {
             outputs: [
                 {
                     pos: [0, 0, 2]
                     facing: NORTH
-                    slots: [2]
+                    slots: [0]
                     connText: washer.oresoutput
                 }
                 {
                     pos: [-2, 0, 1]
                     facing: EAST
-                    slots: [3]
+                    slots: [1]
                     connText: washer.junkoutput
-                }
-            ]
-            inputs: [
-                {
-                    pos: [0, 1, -1]
-                    facing: NORTH
-                    slots: [0]
-                    connText: washer.oresinput
                 }
             ]
         }
         fluid: [
             {
                 name: washer
+                capacity: 8000
+            }
+            {
+                name: sludge
                 capacity: 8000
             }
         ]
@@ -83,6 +79,11 @@
                     pos: [1, 0, -1]
                     facing: EAST
                     tank: washer
+                }
+                {
+                    pos: [0, 1, -1]
+                    facing: NORTH
+                    tank: sludge
                 }
             ]
         }

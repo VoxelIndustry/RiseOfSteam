@@ -1,6 +1,8 @@
 package net.ros.common.ore;
 
-public enum MineralDensity
+import net.minecraft.util.IStringSerializable;
+
+public enum MineralDensity implements IStringSerializable
 {
     POOR, NORMAL, RICH;
 
@@ -19,5 +21,25 @@ public enum MineralDensity
         if (density >= 0.5f)
             return NORMAL;
         return POOR;
+    }
+
+    @Override
+    public String getName()
+    {
+        return this.name().toLowerCase();
+    }
+
+    public int getFluidAmount()
+    {
+        switch (this)
+        {
+            case POOR:
+                return 125;
+            case NORMAL:
+                return 250;
+            case RICH:
+                return 500;
+        }
+        return 0;
     }
 }

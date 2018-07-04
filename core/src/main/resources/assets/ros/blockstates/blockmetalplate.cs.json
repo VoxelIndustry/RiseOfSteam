@@ -8,7 +8,7 @@
       {}
     ],
     "matcher": {
-      "variant": ["iron", "gold", "copper", "tin", "zinc", "nickel", "steel", "bronze", "brass", "lead"],
+      "variant": ["iron", "gold", "copper", "tin", "zinc", "nickel", "steel", "bronze", "brass", "lead", "cast_iron"],
       "values": {
         "texture#all": "ros:blocks/blockplate_#variant"
       }

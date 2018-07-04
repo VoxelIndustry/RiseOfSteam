@@ -105,6 +105,7 @@ tile.blockmetal.zinc.name=Zinc Block
 tile.blockmetal.nickel.name=Nickel Block
 tile.blockmetal.steel.name=Steel Block
 tile.blockmetal.lead.name=Lead Block
+tile.blockmetal.cast_iron.name=Cast Iron Block
 
 tile.blockmetalplate.iron.name=Iron Plated Block
 tile.blockmetalplate.gold.name=Gold Plated Block
@@ -116,6 +117,12 @@ tile.blockmetalplate.zinc.name=Zinc Plated Block
 tile.blockmetalplate.nickel.name=Nickel Plated Block
 tile.blockmetalplate.lead.name=Lead Plated Block
 tile.blockmetalplate.steel.name=Steel Plated Block
+tile.blockmetalplate.cast_iron.name=Cast Iron Plated Block
+
+tile.blockscaffold.iron.name=Iron Scaffold
+tile.blockscaffold.bronze.name=Bronze Scaffold
+tile.blockscaffold.brass.name=Brass Scaffold
+tile.blockscaffold.steel.name=Steel Scaffold
 
 #Items
 item.punched_card.name=Punched Card
@@ -133,6 +140,7 @@ item.metalplate.zinc.name=Zinc Plate
 item.metalplate.nickel.name=Nickel Plate
 item.metalplate.steel.name=Steel Plate
 item.metalplate.lead.name=Lead Plate
+item.metalplate.cast_iron.name=Cast Iron Plate
 
 item.metalgear.iron.name=Iron Gear
 item.metalgear.copper.name=Copper Gear
@@ -148,6 +156,7 @@ item.metalingot.zinc.name=Zinc Ingot
 item.metalingot.nickel.name=Nickel Ingot
 item.metalingot.lead.name=Lead Ingot
 item.metalingot.steel.name=Steel Ingot
+item.metalingot.cast_iron.name=Cast Iron Ingot
 
 item.metalnugget.copper.name=Copper Nugget
 item.metalnugget.bronze.name=Bronze Nugget
@@ -157,6 +166,7 @@ item.metalnugget.zinc.name=Zinc Nugget
 item.metalnugget.nickel.name=Nickel Nugget
 item.metalnugget.lead.name=Lead Nugget
 item.metalnugget.steel.name=Steel Nugget
+item.metalnugget.cast_iron.name=Cast Iron Nugget
 
 item.solarreflector.name=Solar Reflector
 item.mineralsludge.name=Mineral Sludge
@@ -190,6 +200,18 @@ fluid.moltenzinc=Molten Zinc
 fluid.moltennickel=Molten Nickel
 fluid.moltenlead=Molten Lead
 fluid.moltensteel=Molten Steel
+fluid.moltencast_iron=Molten Cast Iron
+fluid.sludgesphalerite=Sphalerite Sludge
+fluid.sludgechalcopyrite=Chalcopyrite Sludge
+fluid.sludgemalachite=Malachite Sludge
+fluid.sludgetetrahedrite=Tetrahedrite Sludge
+fluid.sludgecassiterite=Cassiterite Sludge
+fluid.sludgeteallite=Teallite Sludge
+fluid.sludgepentlandite=Pentlandite Sludge
+fluid.sludgegarnierite=Garnierite Sludge
+fluid.sludgelaterite=Laterite Sludge
+fluid.sludgegold=Gold Sludge
+fluid.sludgeredstone=Redstone Sludge
 tile.blockfluidsteam.name=Steam Source
 tile.blockmolteniron.name=Molten Iron Source
 tile.blockmoltengold.name=Molten Gold Source
@@ -201,6 +223,17 @@ tile.blockmoltenzinc.name=Molten Zinc Source
 tile.blockmoltennickel.name=Molten Nickel Source
 tile.blockmoltenlead.name=Molten Lead Source
 tile.blockmoltensteel.name=Molten Steel Source
+tile.blocksludgesphalerite=Sphalerite Sludge Source
+tile.blocksludgechalcopyrite=Chalcopyrite Sludge Source
+tile.blocksludgemalachite=Malachite Sludge Source
+tile.blocksludgetetrahedrite=Tetrahedrite Sludge Source
+tile.blocksludgecassiterite=Cassiterite Sludge Source
+tile.blocksludgeteallite=Teallite Sludge Source
+tile.blocksludgepentlandite=Pentlandite Sludge Source
+tile.blocksludgegarnierite=Garnierite Sludge Source
+tile.blocksludgelaterite=Laterite Sludge Source
+tile.blocksludgegold=Gold Sludge Source
+tile.blocksludgeredstone=Redstone Sludge Source
 
 #Gui
 gui.rollingmill.name=Rolling Mill
@@ -287,6 +320,7 @@ conn.water.name=Water
 conn.fuel.name=Fuel
 conn.washer.name=Washing Fluid
 conn.fluid.name=Fluid
+conn.sludge.name=Ore Sludge
 
 conn.washer.oresinput.name=Sludge
 conn.washer.oresoutput.name=Raw Ores

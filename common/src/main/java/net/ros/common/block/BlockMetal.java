@@ -59,11 +59,8 @@ public class BlockMetal extends BlockBase implements IModelProvider
         {
             Materials.metals.byName(variants.getByIndex(i)).ifPresent(metal ->
             {
-                int index = Materials.metals.indexOf(metal);
-
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), index,
-                        new ModelResourceLocation(
-                                block.getRegistryName(), this.getItemModelByIndex(index)));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i,
+                        new ModelResourceLocation(block.getRegistryName(), this.getItemModelByIndex(i)));
             });
         };
     }
@@ -77,23 +74,20 @@ public class BlockMetal extends BlockBase implements IModelProvider
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        for (int i = 0; i < Materials.metals.size(); i++)
-        {
-            if (variants.getAllowedValues().contains(Materials.metals.get(i).getName()))
-                items.add(new ItemStack(this, 1, i));
-        }
+        for (int meta = 0; meta < variants.getAllowedValues().size(); meta++)
+            items.add(new ItemStack(this, 1, meta));
     }
 
     @Override
     public IBlockState getStateFromMeta(final int meta)
     {
-        return this.getDefaultState().withProperty(variants, Materials.metals.get(meta).getName());
+        return this.getDefaultState().withProperty(variants, variants.getByIndex(meta));
     }
 
     @Override
     public int getMetaFromState(final IBlockState state)
     {
-        return Materials.metals.indexOf(Materials.metals.byName(state.getValue(variants)).get());
+        return variants.indexOf(state.getValue(variants));
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.ros.common.ore.Ores;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,9 @@ public class FluidUtils
 {
     public static final Predicate<FluidStack> WATER_FILTER = stack ->
             stack != null && stack.getFluid() != null && stack.getFluid().equals(FluidRegistry.WATER);
+
+    public static final Predicate<FluidStack> SLUDGE_FILTER = stack ->
+            stack != null && stack.getFluid() != null && Ores.isSludge(stack.getFluid());
 
     public static final boolean drainPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
     {

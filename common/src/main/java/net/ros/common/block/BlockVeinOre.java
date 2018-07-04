@@ -8,28 +8,32 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.ros.common.block.property.PropertyString;
+import net.ros.common.ore.Mineral;
+import net.ros.common.ore.MineralDensity;
 import net.ros.common.ore.Ore;
 import net.ros.common.ore.Ores;
-import net.ros.common.block.property.PropertyString;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class BlockVeinOre extends BlockBase implements IModelProvider
 {
-    public static final PropertyEnum<Richness> RICHNESS = PropertyEnum.create("richness", Richness.class);
-    private static      PropertyString         FAKE_VARIANTS;
+    public static final PropertyEnum<MineralDensity> RICHNESS = PropertyEnum.create("richness", MineralDensity.class);
+    private static      PropertyString               FAKE_VARIANTS;
 
     @Getter
-    private final PropertyString               VARIANTS;
+    private final PropertyString VARIANTS;
 
     public BlockVeinOre(String name, String defaultValue, PropertyString variants)
     {
@@ -38,7 +42,19 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
         this.VARIANTS = variants;
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, defaultValue).withProperty(RICHNESS,
-                Richness.NORMAL));
+                MineralDensity.NORMAL));
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        Ore ore = this.getOreFromState(state);
+
+        Optional<Map.Entry<Mineral, Float>> mineral =
+                ore.getMinerals().entrySet().stream().max((ore1, ore2) -> Float.compare(ore1.getValue(),
+                        ore2.getValue()));
+
+        mineral.ifPresent(entry -> drops.add(Ores.getRawMineral(entry.getKey(), this.getRichnessFromState(state))));
     }
 
     @Override
@@ -74,13 +90,18 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     @Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        for (int i = 0; i < VARIANTS.getAllowedValues().size() * Richness.values().length; i++)
+        for (int i = 0; i < VARIANTS.getAllowedValues().size() * MineralDensity.values().length; i++)
             items.add(new ItemStack(this, 1, i));
     }
 
     public Ore getOreFromState(IBlockState state)
     {
         return Ores.getOreFromName(state.getValue(VARIANTS)).get();
+    }
+
+    public MineralDensity getRichnessFromState(IBlockState state)
+    {
+        return state.getValue(RICHNESS);
     }
 
     public IBlockState getStateFromOreName(String oreName)
@@ -98,7 +119,7 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     {
         return this.getDefaultState()
                 .withProperty(VARIANTS, VARIANTS.getByIndex(meta % VARIANTS.getAllowedValues().size()))
-                .withProperty(RICHNESS, Richness.values()[meta / VARIANTS.getAllowedValues().size()]);
+                .withProperty(RICHNESS, MineralDensity.values()[meta / VARIANTS.getAllowedValues().size()]);
     }
 
     @Override
@@ -118,7 +139,7 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
     @SideOnly(Side.CLIENT)
     public int getItemModelCount()
     {
-        return this.getVARIANTS().getAllowedValues().size() * Richness.values().length;
+        return this.getVARIANTS().getAllowedValues().size() * MineralDensity.values().length;
     }
 
     @Override
@@ -155,17 +176,6 @@ public class BlockVeinOre extends BlockBase implements IModelProvider
             FAKE_VARIANTS = variants;
 
             return new BlockVeinOre(name, defaultValue, variants);
-        }
-    }
-
-    public enum Richness implements IStringSerializable
-    {
-        POOR, NORMAL, RICH;
-
-        @Override
-        public String getName()
-        {
-            return this.name().toLowerCase();
         }
     }
 }

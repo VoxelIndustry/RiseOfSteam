@@ -40,6 +40,10 @@
                 name: water
                 capacity: 32000
             }
+            {
+                name: sludge
+                capacity: 4000
+            }
         ]
         io: {
             steam: [
@@ -53,6 +57,12 @@
                      pos: [-1, 0, -1]
                      facing: WEST
                      tank: water
+                }
+                {
+                    pos: [0, 0, 1]
+                    facing: SOUTH
+                    tank: sludge
+                    restriction: output-only
                 }
             ]
         }
