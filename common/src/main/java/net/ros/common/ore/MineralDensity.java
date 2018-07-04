@@ -34,11 +34,11 @@ public enum MineralDensity implements IStringSerializable
         switch (this)
         {
             case POOR:
-                return 125;
-            case NORMAL:
                 return 250;
-            case RICH:
+            case NORMAL:
                 return 500;
+            case RICH:
+                return 1000;
         }
         return 0;
     }

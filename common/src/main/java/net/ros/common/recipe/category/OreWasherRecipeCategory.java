@@ -47,7 +47,7 @@ public class OreWasherRecipeCategory extends RecipeCategory
     {
         if (recipeSlot == 0 && ingredient instanceof FluidStack
                 && Ores.isSludge(((FluidStack) ingredient).getFluid()) &&
-                ((FluidStack) ingredient).amount >= Fluid.BUCKET_VOLUME)
+                ((FluidStack) ingredient).amount >= Fluid.BUCKET_VOLUME / 2)
             return true;
         if (recipeSlot == 1 && ingredient instanceof FluidStack
                 && ((FluidStack) ingredient).getFluid() == FluidRegistry.WATER
@@ -60,7 +60,7 @@ public class OreWasherRecipeCategory extends RecipeCategory
     {
         if (inputs.length < 2)
             return Optional.empty();
-        if (!this.inputMatchWithCount(0, inputs[0]) || !this.inputMatchWithCount(0, inputs[1]))
+        if (!this.inputMatchWithCount(0, inputs[0]) || !this.inputMatchWithCount(1, inputs[1]))
             return Optional.empty();
 
         FluidStack sludge = (FluidStack) inputs[0];

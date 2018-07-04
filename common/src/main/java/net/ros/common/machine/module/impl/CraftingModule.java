@@ -157,8 +157,9 @@ public class CraftingModule extends MachineModule implements ITickableModule, IS
                     for (int i = 0; i < this.crafter.getInputTanks().length; i++)
                         ingredients[this.crafter.getInputs() + i] = this.getInputFluidStack(i);
 
-                    final Optional<RecipeBase> recipe = RecipeHandler.getRecipe(this.crafter.getRecipeCategory(),
+                    Optional<RecipeBase> recipe = RecipeHandler.getRecipe(this.crafter.getRecipeCategory(),
                             ingredients);
+
                     if (recipe.isPresent() && this.setCurrentRecipe(recipe.get()))
                     {
                         this.setMaxProgress((int) (this.currentRecipe.getTime() / this.getCraftingSpeed()));

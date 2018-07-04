@@ -56,7 +56,7 @@ public class ROSFluids
             FluidRegistry.addBucketForFluid(sludge);
 
             BlockFluidBase blockFluid = new BlockFluidBase(sludge, Material.LAVA,
-                    "blocksludge" + sludge.getName());
+                    "block" + sludge.getName());
 
             if (FMLCommonHandler.instance().getEffectiveSide().isClient())
                 ore.getMinerals().forEach((mineral, value) -> blockFluid.addInformation(I18n.format(mineral.getName()) + " : " + percentFormatter.format(value)));
