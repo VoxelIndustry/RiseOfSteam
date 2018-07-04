@@ -5,12 +5,15 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.ros.common.grid.node.*;
+import net.ros.common.grid.node.IFluidPipe;
+import net.ros.common.grid.node.IPipeValve;
+import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static net.ros.common.util.FluidUtils.getFluidDifference;
@@ -50,7 +53,7 @@ public class PipeGrid extends CableGrid
 
         List<ITileNode> toDestroy = new ArrayList<>();
 
-        for (ITileNode<?> node : this.getCables())
+        for (ITileNode<?> node: this.getCables())
         {
             IFluidPipe pipe = (IFluidPipe) node;
 
@@ -64,16 +67,19 @@ public class PipeGrid extends CableGrid
             if (tank.getFluid().getFluid().getTemperature() > PipeType.getHeat(pipe.getType()))
                 toDestroy.add(node);
 
-            for (Map.Entry<EnumFacing, ITileCable<PipeGrid>> entry : pipe.getConnectionsMap().entrySet())
+            List<EnumFacing> randConnections = new ArrayList<>(pipe.getConnectionsMap().keySet());
+            Collections.shuffle(randConnections, node.getBlockWorld().rand);
+
+            for (EnumFacing facing: randConnections)
             {
+                IFluidPipe otherPipe = (IFluidPipe) pipe.getConnected(facing);
                 FluidStack pipeFluid = pipe.getBufferTank().getFluid();
-                FluidStack otherFluid = ((IFluidPipe) entry.getValue()).getBufferTank().getFluid();
+                FluidStack otherFluid = otherPipe.getBufferTank().getFluid();
 
                 if (pipeFluid != null && otherFluid != null && !pipeFluid.equals(otherFluid))
                     continue;
 
-                transferred += balanceTanks(tank, ((IFluidPipe) entry.getValue()).getBufferTank(),
-                        pipe.getTransferRate() - transferred);
+                transferred += balanceTanks(tank, otherPipe.getBufferTank(), pipe.getTransferRate() - transferred);
 
                 if (transferred >= pipe.getTransferRate())
                     break;
