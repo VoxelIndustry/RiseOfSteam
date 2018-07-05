@@ -18,8 +18,6 @@ import net.ros.common.machine.component.SteamComponent;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
 
-import java.util.List;
-
 public class TileOffshorePump extends TileBase implements ITickable
 {
     private SteamComponent steamComponent;
@@ -110,11 +108,11 @@ public class TileOffshorePump extends TileBase implements ITickable
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Orientation: " + this.getFacing());
-        lines.add("Water : " + this.water);
-        lines.add("Top : " + (this.top != null));
+        list.addText("Orientation: " + this.getFacing());
+        list.addText("Water : " + this.water);
+        list.addText("Top : " + (this.top != null));
     }
 
     @Override

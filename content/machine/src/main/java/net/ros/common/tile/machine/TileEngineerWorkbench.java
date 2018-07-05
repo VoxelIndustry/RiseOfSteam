@@ -31,6 +31,7 @@ import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.ClientActionBuilder;
 import net.ros.common.network.action.IActionReceiver;
 import net.ros.common.tile.ILoadable;
+import net.ros.common.tile.ITileInfoList;
 import net.ros.common.tile.TileBase;
 import net.ros.common.util.ItemUtils;
 
@@ -170,16 +171,14 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Grid: " + this.getGrid());
+        list.addText("Grid: " + this.getGrid());
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
-        {
-            lines.add("Contains: " + this.getGridObject().getCables().size());
-        }
+            list.addText("Contains: " + this.getGridObject().getCables().size());
         else
-            lines.add("Errored grid!");
+            list.addText("Errored grid!");
     }
 
     @Override

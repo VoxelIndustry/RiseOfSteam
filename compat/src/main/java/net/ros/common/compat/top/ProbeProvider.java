@@ -11,9 +11,6 @@ import net.minecraft.world.World;
 import net.ros.common.ROSConstants;
 import net.ros.common.tile.ITileInfoProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ProbeProvider implements IProbeInfoProvider
 {
     @Override
@@ -23,15 +20,14 @@ public class ProbeProvider implements IProbeInfoProvider
     }
 
     @Override
-    public void addProbeInfo(final ProbeMode mode, final IProbeInfo probeInfo, final EntityPlayer player,
-                             final World world, final IBlockState blockState, final IProbeHitData data)
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world,
+                             IBlockState blockState, IProbeHitData data)
     {
-        final TileEntity tile = world.getTileEntity(data.getPos());
+        TileEntity tile = world.getTileEntity(data.getPos());
         if (tile instanceof ITileInfoProvider)
         {
-            final List<String> lines = new ArrayList<>();
-            ((ITileInfoProvider) tile).addInfo(lines);
-            lines.forEach(probeInfo::text);
+            TileInfoListImpl list = new TileInfoListImpl(probeInfo);
+            ((ITileInfoProvider) tile).addInfo(list);
         }
     }
 }

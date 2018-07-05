@@ -8,6 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.ros.client.render.model.obj.ROSOBJState;
 import net.ros.common.block.property.BeltSlope;
 import net.ros.common.event.TickHandler;
 import net.ros.common.grid.GridManager;
@@ -18,13 +19,13 @@ import net.ros.common.grid.impl.CableGrid;
 import net.ros.common.grid.node.IBelt;
 import net.ros.common.grid.node.ITileCable;
 import net.ros.common.grid.node.ITileNode;
-import net.ros.common.steam.SteamUtil;
-import net.ros.common.tile.ILoadable;
-import net.ros.common.tile.TileBase;
-import net.ros.common.util.ItemUtils;
-import net.ros.client.render.model.obj.ROSOBJState;
 import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamCapabilities;
+import net.ros.common.steam.SteamUtil;
+import net.ros.common.tile.ILoadable;
+import net.ros.common.tile.ITileInfoList;
+import net.ros.common.tile.TileBase;
+import net.ros.common.util.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -196,27 +197,27 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Slope: " + this.slopeState);
-        lines.add("Orientation: " + this.getFacing());
-        lines.add("Grid: " + this.getGrid());
+        list.addText("Slope: " + this.slopeState);
+        list.addText("Orientation: " + this.getFacing());
+        list.addText("Grid: " + this.getGrid());
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
         {
-            lines.add("Contains: " + this.getGridObject().getTank().getSteam() + " / "
+            list.addText("Contains: " + this.getGridObject().getTank().getSteam() + " / "
                     + this.getGridObject().getTank().getCapacity());
-            lines.add("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure())
+            list.addText("Pressure " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getPressure())
                     + " / " + SteamUtil.pressureFormat.format(this.getGridObject().getTank().getMaxPressure()));
         }
         else
-            lines.add("Errored grid!");
+            list.addText("Errored grid!");
 
         for (int i = 0; i < this.items.length; i++)
         {
             if (this.items[i] == null)
                 continue;
-            lines.add("Slot " + i + ": " + ItemUtils.getPrettyStackName(this.items[i].getStack()));
+            list.addText("Slot " + i + ": " + ItemUtils.getPrettyStackName(this.items[i].getStack()));
         }
     }
 

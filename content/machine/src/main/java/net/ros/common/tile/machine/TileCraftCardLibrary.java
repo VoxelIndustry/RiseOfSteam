@@ -25,8 +25,8 @@ import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.ClientActionBuilder;
 import net.ros.common.network.action.IActionReceiver;
+import net.ros.common.tile.ITileInfoList;
 
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -78,14 +78,14 @@ public class TileCraftCardLibrary extends TileModularMachine implements IContain
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Grid: " + this.getGrid());
+        list.addText("Grid: " + this.getGrid());
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
-            lines.add("Contains: " + this.getGridObject().getCables().size());
+            list.addText("Contains: " + this.getGridObject().getCables().size());
         else
-            lines.add("Errored grid!");
+            list.addText("Errored grid!");
     }
 
     @Override

@@ -8,7 +8,6 @@ import net.ros.common.block.BlockOrientableMachine;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 
-import java.util.List;
 import java.util.Map;
 
 public class TileFluidPump extends TileFluidPipe
@@ -43,11 +42,11 @@ public class TileFluidPump extends TileFluidPipe
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        super.addInfo(lines);
-        lines.add("Transfer Rate: " + this.getTransferRate() + " mB / tick");
-        lines.add("Orientation: " + this.getFacing());
+        super.addInfo(list);
+        list.addText("Transfer Rate: " + this.getTransferRate() + " mB / tick");
+        list.addText("Orientation: " + this.getFacing());
     }
 
     @Override

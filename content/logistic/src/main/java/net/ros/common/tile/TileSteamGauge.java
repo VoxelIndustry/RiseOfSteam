@@ -11,7 +11,6 @@ import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.SteamCapabilities;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class TileSteamGauge extends TileSteamPipe implements ITickable
 {
@@ -63,11 +62,11 @@ public class TileSteamGauge extends TileSteamPipe implements ITickable
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        super.addInfo(lines);
+        super.addInfo(list);
 
-        lines.add("Facing: " + this.getFacing());
+        list.addText("Facing: " + this.getFacing());
     }
 
     @Override

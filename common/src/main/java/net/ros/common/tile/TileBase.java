@@ -11,8 +11,6 @@ import net.ros.common.network.TileSyncRequestPacket;
 import org.yggard.hermod.EventDispatcher;
 import org.yggard.hermod.IEventEmitter;
 
-import java.util.List;
-
 public class TileBase extends TileEntity implements ITileInfoProvider, IEventEmitter
 {
     private EventDispatcher eventDispatcher;
@@ -91,7 +89,7 @@ public class TileBase extends TileEntity implements ITileInfoProvider, IEventEmi
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
 
     }

@@ -13,7 +13,6 @@ import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.PipeType;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class TileFluidValve extends TileFluidPipe implements IPipeValve
 {
@@ -76,12 +75,12 @@ public class TileFluidValve extends TileFluidPipe implements IPipeValve
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        super.addInfo(lines);
+        super.addInfo(list);
 
-        lines.add("Facing: " + this.getFacing());
-        lines.add("Open: " + this.isOpen());
+        list.addText("Facing: " + this.getFacing());
+        list.addText("Open: " + this.isOpen());
     }
 
     @Override

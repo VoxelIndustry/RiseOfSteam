@@ -12,10 +12,10 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.fluid.CreativeFluidTank;
+import net.ros.common.tile.ITileInfoList;
 import net.ros.common.tile.TileBase;
 
 import java.util.EnumMap;
-import java.util.List;
 
 public class TileCreativeWaterGenerator extends TileBase implements ITickable
 {
@@ -69,9 +69,9 @@ public class TileCreativeWaterGenerator extends TileBase implements ITickable
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Water " + Double.POSITIVE_INFINITY);
+        list.addText("Water " + Double.POSITIVE_INFINITY);
     }
 
     public FluidTank getWaterTank()

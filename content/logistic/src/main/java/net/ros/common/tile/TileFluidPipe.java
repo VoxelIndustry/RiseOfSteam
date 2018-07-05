@@ -15,8 +15,6 @@ import net.ros.common.grid.node.IFluidPipe;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 
-import java.util.List;
-
 public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> implements IFluidPipe
 {
     @Getter
@@ -49,11 +47,11 @@ public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> impleme
     }
 
     @Override
-    public void addSpecificInfo(final List<String> lines)
+    public void addSpecificInfo(ITileInfoList list)
     {
-        lines.add("Contains: " + (this.getBufferTank().getFluid() == null ? "none"
+        list.addText("Contains: " + (this.getBufferTank().getFluid() == null ? "none"
                 : this.getBufferTank().getFluid().getFluid().getName()));
-        lines.add("Buffer: " + this.getBufferTank().getFluidAmount() + " / "
+        list.addText("Buffer: " + this.getBufferTank().getFluidAmount() + " / "
                 + this.getBufferTank().getCapacity() + " mb");
     }
 

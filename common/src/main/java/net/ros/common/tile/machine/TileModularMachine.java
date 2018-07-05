@@ -10,12 +10,14 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.machine.MachineDescriptor;
 import net.ros.common.machine.Machines;
+import net.ros.common.machine.module.IInfoModule;
 import net.ros.common.machine.module.IModularMachine;
 import net.ros.common.machine.module.ISerializableModule;
 import net.ros.common.machine.module.MachineModule;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ITileMultiblockCore;
+import net.ros.common.tile.ITileInfoList;
 import net.ros.common.tile.TileBase;
 import org.yggard.hermod.EventDispatcher;
 
@@ -44,6 +46,21 @@ public class TileModularMachine extends TileBase implements IModularMachine, ITi
     public TileModularMachine()
     {
         this(null);
+    }
+
+    @Override
+    public void addInfo(ITileInfoList list)
+    {
+        super.addInfo(list);
+
+        if (this.getDescriptor() != null)
+        {
+            this.getModules().forEach(module ->
+            {
+                if (module instanceof IInfoModule)
+                    ((IInfoModule) module).addInfo(list);
+            });
+        }
     }
 
     @Override

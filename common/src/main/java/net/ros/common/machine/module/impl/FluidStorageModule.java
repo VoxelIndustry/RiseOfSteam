@@ -4,20 +4,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.fluid.FilteredFluidTank;
 import net.ros.common.fluid.LimitedTank;
+import net.ros.common.machine.component.FluidComponent;
+import net.ros.common.machine.module.IInfoModule;
 import net.ros.common.machine.module.IModularMachine;
 import net.ros.common.machine.module.ISerializableModule;
 import net.ros.common.machine.module.MachineModule;
-import net.ros.common.machine.component.FluidComponent;
+import net.ros.common.tile.ITileInfoList;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class FluidStorageModule extends MachineModule implements ISerializableModule
+public class FluidStorageModule extends MachineModule implements ISerializableModule, IInfoModule
 {
     private HashMap<String, IFluidHandler> fluidHandlers;
 
@@ -46,6 +49,20 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
     }
 
     @Override
+    public void addInfo(ITileInfoList list)
+    {
+        this.fluidHandlers.forEach((name, handler) ->
+        {
+            IFluidTank tank = (IFluidTank) handler;
+
+            if (tank.getFluid() == null)
+                return;
+            list.addText("{*" + tank.getFluid().getUnlocalizedName() + "*}:");
+            list.addFluid(tank.getFluid(), tank.getCapacity());
+        });
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void fromNBT(NBTTagCompound tag)
     {
@@ -64,7 +81,7 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
     public NBTTagCompound toNBT(NBTTagCompound tag)
     {
         int i = 0;
-        for (Map.Entry<String, IFluidHandler> entry : fluidHandlers.entrySet())
+        for (Map.Entry<String, IFluidHandler> entry: fluidHandlers.entrySet())
         {
             if (!(entry.getValue() instanceof FluidTank) && !(entry.getValue() instanceof INBTSerializable))
                 continue;

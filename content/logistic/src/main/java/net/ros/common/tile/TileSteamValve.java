@@ -12,7 +12,6 @@ import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class TileSteamValve extends TileSteamPipe implements IPipeValve
 {
@@ -75,12 +74,12 @@ public class TileSteamValve extends TileSteamPipe implements IPipeValve
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        super.addInfo(lines);
+        super.addInfo(list);
 
-        lines.add("Facing: " + this.getFacing());
-        lines.add("Open: " + this.isOpen());
+        list.addText("Facing: " + this.getFacing());
+        list.addText("Open: " + this.isOpen());
     }
 
     @Override

@@ -15,8 +15,6 @@ import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
 import net.ros.common.steam.SteamUtil;
 
-import java.util.List;
-
 public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implements ISteamPipe
 {
     @Getter
@@ -73,10 +71,10 @@ public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implem
     }
 
     @Override
-    public void addSpecificInfo(final List<String> lines)
+    public void addSpecificInfo(ITileInfoList list)
     {
-        lines.add("Steam: " + bufferTank.getSteam());
-        lines.add("Pressure: " + SteamUtil.pressureFormat.format(bufferTank.getPressure()) + " / "
+        list.addText("Steam: " + bufferTank.getSteam());
+        list.addText("Pressure: " + SteamUtil.pressureFormat.format(bufferTank.getPressure()) + " / "
                 + SteamUtil.pressureFormat.format(bufferTank.getMaxPressure()));
     }
 

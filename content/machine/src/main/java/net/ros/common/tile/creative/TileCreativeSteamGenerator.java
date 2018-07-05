@@ -6,9 +6,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.steam.CreativeSteamTank;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
+import net.ros.common.tile.ITileInfoList;
 import net.ros.common.tile.TileBase;
-
-import java.util.List;
 
 public class TileCreativeSteamGenerator extends TileBase
 {
@@ -58,9 +57,9 @@ public class TileCreativeSteamGenerator extends TileBase
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Steam " + Double.POSITIVE_INFINITY);
+        list.addText("Steam " + Double.POSITIVE_INFINITY);
     }
 
     public SteamTank getSteamTank()

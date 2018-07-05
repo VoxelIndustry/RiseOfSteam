@@ -36,8 +36,7 @@ import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.ClientActionBuilder;
 import net.ros.common.network.action.IActionReceiver;
-
-import java.util.List;
+import net.ros.common.tile.ITileInfoList;
 
 public class TileKeypunch extends TileModularMachine implements IContainerProvider, IActionReceiver, ITileWorkshop
 {
@@ -95,16 +94,16 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Grid: " + this.getGrid());
+        list.addText("Grid: " + this.getGrid());
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
         {
-            lines.add("Contains: " + this.getGridObject().getCables().size());
+            list.addText("Contains: " + this.getGridObject().getCables().size());
         }
         else
-            lines.add("Errored grid!");
+            list.addText("Errored grid!");
     }
 
     @Override

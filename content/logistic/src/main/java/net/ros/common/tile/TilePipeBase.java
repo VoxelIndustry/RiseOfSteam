@@ -65,19 +65,19 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Grid: " + this.grid);
+        list.addText("Grid: " + this.grid);
 
         if (this.getGrid() != -1 && this.getGridObject() != null)
-            this.addSpecificInfo(lines);
+            this.addSpecificInfo(list);
         else
-            lines.add("Errored grid!");
-        this.connectionsMap.forEach((facing, cable) -> lines.add("Pipe " + facing + ": " + (cable != null)));
-        this.adjacentHandler.forEach((facing, handler) -> lines.add("Handler " + facing + ": " + (handler != null)));
+            list.addText("Errored grid!");
+        this.connectionsMap.forEach((facing, cable) -> list.addText("Pipe " + facing + ": " + (cable != null)));
+        this.adjacentHandler.forEach((facing, handler) -> list.addText("Handler " + facing + ": " + (handler != null)));
     }
 
-    public void addSpecificInfo(final List<String> lines)
+    public void addSpecificInfo(final ITileInfoList list)
     {
     }
 

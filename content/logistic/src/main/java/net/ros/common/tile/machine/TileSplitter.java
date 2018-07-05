@@ -14,18 +14,19 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CardDataStorage.ECardType;
 import net.ros.common.card.FilterCard;
 import net.ros.common.card.IPunchedCard;
+import net.ros.common.container.BuiltContainer;
+import net.ros.common.container.ContainerBuilder;
+import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.IBelt;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.IOModule;
-import net.ros.common.util.ItemUtils;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.IActionReceiver;
+import net.ros.common.tile.ITileInfoList;
+import net.ros.common.util.ItemUtils;
 
 import java.util.List;
 
@@ -215,14 +216,14 @@ public class TileSplitter extends TileModularMachine implements IContainerProvid
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Orientation: " + this.getFacing());
-        lines.add("Input: " + this.hasBelt(this.getFacing()));
-        lines.add("Output: " + (this.hasBelt(this.getFacing().getOpposite()) ? "FRONT " : "")
+        list.addText("Orientation: " + this.getFacing());
+        list.addText("Input: " + this.hasBelt(this.getFacing()));
+        list.addText("Output: " + (this.hasBelt(this.getFacing().getOpposite()) ? "FRONT " : "")
                 + (this.hasBelt(this.getFacing().rotateY()) ? "LEFT " : "")
                 + (this.hasBelt(this.getFacing().rotateYCCW()) ? "RIGHT " : ""));
-        lines.add("Buffer: " + this.getModule(InventoryModule.class).getInventory("basic").getStackInSlot(3));
+        list.addText("Buffer: " + this.getModule(InventoryModule.class).getInventory("basic").getStackInSlot(3));
     }
 
     @Override

@@ -6,11 +6,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
+import net.ros.common.tile.ITileInfoList;
 import net.ros.common.tile.ITileInfoProvider;
 import net.ros.common.tile.TileBase;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class TileMultiblockGag extends TileBase implements ITileMultiblock, ITileInfoProvider, IConnectionAware
 {
@@ -24,10 +24,10 @@ public class TileMultiblockGag extends TileBase implements ITileMultiblock, ITil
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
         if (this.isCorePresent() && this.getCore() instanceof ITileInfoProvider)
-            ((ITileInfoProvider) this.getCore()).addInfo(lines);
+            ((ITileInfoProvider) this.getCore()).addInfo(list);
     }
 
     @Override

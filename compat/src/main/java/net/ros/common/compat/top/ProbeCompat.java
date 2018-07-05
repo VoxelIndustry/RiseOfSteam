@@ -5,9 +5,14 @@ import net.ros.common.ROSConstants;
 
 public class ProbeCompat
 {
-    public static final void load()
+    static int ELEMENT_FLUID;
+
+    public static void load()
     {
         ROSConstants.LOGGER.info("Compat module for The One Probe is loaded.");
+
+        ELEMENT_FLUID = TheOneProbe.theOneProbeImp.registerElementFactory(FluidElement::new);
+
         TheOneProbe.theOneProbeImp.registerProvider(new ProbeProvider());
     }
 }

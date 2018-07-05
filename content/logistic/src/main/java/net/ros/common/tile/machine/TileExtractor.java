@@ -11,24 +11,23 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CardDataStorage.ECardType;
 import net.ros.common.card.FilterCard;
 import net.ros.common.card.IPunchedCard;
+import net.ros.common.container.BuiltContainer;
+import net.ros.common.container.ContainerBuilder;
+import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.IBelt;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.util.ItemUtils;
-import net.ros.client.render.tile.VisibilityModelState;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.IActionReceiver;
-
-import java.util.List;
+import net.ros.common.tile.ITileInfoList;
+import net.ros.common.util.ItemUtils;
 
 public class TileExtractor extends TileModularMachine implements IContainerProvider, ITickable, IActionReceiver
 {
@@ -166,11 +165,11 @@ public class TileExtractor extends TileModularMachine implements IContainerProvi
     }
 
     @Override
-    public void addInfo(final List<String> lines)
+    public void addInfo(ITileInfoList list)
     {
-        lines.add("Orientation: " + this.getFacing());
-        lines.add("Inventory: " + this.hasItemHandler());
-        lines.add("Belt: " + this.hasBelt());
+        list.addText("Orientation: " + this.getFacing());
+        list.addText("Inventory: " + this.hasItemHandler());
+        list.addText("Belt: " + this.hasBelt());
     }
 
     @Override
