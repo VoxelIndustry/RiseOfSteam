@@ -6,10 +6,10 @@ import net.ros.common.util.ItemUtils;
 
 public class ItemStackRecipeIngredient extends RecipeIngredient<ItemStack>
 {
-    private final String    oreDict;
-    private final int       quantity;
-    private final ItemStack cachedStack;
-    private final ItemStack ingredient;
+    private final   String    oreDict;
+    protected final int       quantity;
+    protected final ItemStack cachedStack;
+    protected final ItemStack ingredient;
 
     public ItemStackRecipeIngredient(final ItemStack ingredient)
     {

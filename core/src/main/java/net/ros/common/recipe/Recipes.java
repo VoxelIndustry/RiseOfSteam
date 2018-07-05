@@ -17,7 +17,6 @@ import net.ros.common.init.ROSItems;
 import net.ros.common.ore.MineralDensity;
 import net.ros.common.ore.Ores;
 import net.ros.common.recipe.category.FurnaceRecipeCategory;
-import net.ros.common.recipe.category.OreWasherRecipeCategory;
 import net.ros.common.recipe.category.RecipeCategory;
 import net.ros.common.recipe.category.SortingMachineRecipeCategory;
 import net.ros.common.recipe.type.CapsuleRecipe;
@@ -33,7 +32,7 @@ public class Recipes
         RecipeHandler.RECIPES.put(RecipeHandler.LIQUIDBOILER_UID,
                 new RecipeCategory(RecipeHandler.LIQUIDBOILER_UID));
         RecipeHandler.RECIPES.put(RecipeHandler.ORE_WASHER_UID,
-                new OreWasherRecipeCategory(RecipeHandler.ORE_WASHER_UID));
+                new RecipeCategory(RecipeHandler.ORE_WASHER_UID));
         RecipeHandler.RECIPES.put(RecipeHandler.FURNACE_UID,
                 new FurnaceRecipeCategory(RecipeHandler.FURNACE_UID));
         RecipeHandler.RECIPES.put(RecipeHandler.SORTING_MACHINE_UID,
@@ -110,6 +109,8 @@ public class Recipes
 
         RecipeHelper.addAlloyRecipe(Materials.TIN, Materials.COPPER, 3, Materials.BRONZE);
         RecipeHelper.addAlloyRecipe(Materials.ZINC, Materials.COPPER, 3, Materials.BRASS);
+
+        Ores.ORES.forEach(ore -> RecipeHelper.addOreWashingRecipe(ore, FluidRegistry.WATER, 0));
     }
 
     public void registerOreDict()

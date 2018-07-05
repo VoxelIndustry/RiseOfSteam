@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.recipe.RecipeBase;
 import net.ros.common.recipe.ingredient.RecipeIngredient;
 
@@ -45,7 +46,12 @@ public class JEIRecipeWrapper implements IRecipeWrapper
     {
         ingredients.setInputs(ItemStack.class, this.recipe.getRecipeInputs(ItemStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
+        ingredients.setInputs(FluidStack.class, this.recipe.getRecipeInputs(FluidStack.class).stream()
+                .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
+
         ingredients.setOutputs(ItemStack.class, this.recipe.getRecipeOutputs(ItemStack.class).stream()
+                .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
+        ingredients.setOutputs(FluidStack.class, this.recipe.getRecipeOutputs(FluidStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
     }
 

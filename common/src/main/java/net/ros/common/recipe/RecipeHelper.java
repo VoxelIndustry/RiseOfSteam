@@ -1,10 +1,13 @@
 package net.ros.common.recipe;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -14,11 +17,14 @@ import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
 import net.ros.common.ore.Mineral;
 import net.ros.common.ore.MineralDensity;
+import net.ros.common.ore.Ore;
 import net.ros.common.ore.Ores;
 import net.ros.common.recipe.ingredient.FluidStackRecipeIngredient;
 import net.ros.common.recipe.ingredient.ItemStackRecipeIngredient;
 import net.ros.common.recipe.type.*;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 public class RecipeHelper
 {
@@ -167,5 +173,47 @@ public class RecipeHelper
                         new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(second, secondCount)),
                         new FluidStackRecipeIngredient(Materials.getFluidStackFromMetal(resultMetal, 1 + secondCount)))
         );
+    }
+
+    public static void addOreWashingRecipe(Ore ore, Fluid catalyst, float yield)
+    {
+        ItemStack rawOre = ItemStack.EMPTY;
+
+        if (ore.getMinerals().size() == 1)
+        {
+            for (Map.Entry<Mineral, Float> mineral: ore.getMinerals().entrySet())
+            {
+                if (mineral.getValue() + yield >= 0.25f)
+                {
+                    rawOre = Ores.getRawMineral(mineral.getKey(),
+                            MineralDensity.fromValue(mineral.getValue() + yield));
+                }
+            }
+        }
+        else
+        {
+            rawOre = new ItemStack(ROSItems.MIXED_RAW_ORE);
+            rawOre.setTagCompound(new NBTTagCompound());
+
+            int i = 0;
+            for (Map.Entry<Mineral, Float> mineral: ore.getMinerals().entrySet())
+            {
+                if (mineral.getValue() + yield >= 0.25f)
+                {
+                    rawOre.getTagCompound().setString("ore" + i, mineral.getKey().getName());
+                    rawOre.getTagCompound().setString("density" + i, mineral.getValue() + yield >= 0.75f ?
+                            "rich" : (mineral.getValue() + yield >= 0.50f ? "normal" : "poor"));
+                    i++;
+                }
+            }
+            if (i != 0)
+                rawOre.getTagCompound().setInteger("oreCount", i);
+            else
+                rawOre = ItemStack.EMPTY;
+        }
+
+        RecipeHandler.RECIPES.get(RecipeHandler.ORE_WASHER_UID).add(
+                new OreWasherRecipe(new FluidStack(ore.toSludge(), Fluid.BUCKET_VOLUME),
+                        new FluidStack(catalyst, Fluid.BUCKET_VOLUME), rawOre, new ItemStack(Blocks.GRAVEL)));
     }
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -12,6 +13,7 @@ import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.ROSConstants;
 
 import java.util.ArrayList;
@@ -26,15 +28,17 @@ public class JEIRecipeCategory implements IRecipeCategory<JEIRecipeWrapper>
     @Getter
     private final String    uid;
 
-    private final List<JEISlot> slots;
+    private final List<JEISlot> itemSlots;
+    private final List<JEISlot> tankSlots;
 
     public JEIRecipeCategory(final IGuiHelper guiHelper, ResourceLocation background, int u, int v, int width,
-                             int height, String title, String uid, List<JEISlot> slots)
+                             int height, String title, String uid, List<JEISlot> itemSlots, List<JEISlot> tankSlots)
     {
         this.background = guiHelper.createDrawable(background, u, v, width, height);
         this.title = I18n.translateToLocal(title);
         this.uid = uid;
-        this.slots = slots;
+        this.itemSlots = itemSlots;
+        this.tankSlots = tankSlots;
     }
 
     public static Builder builder(IGuiHelper guiHelper)
@@ -49,35 +53,68 @@ public class JEIRecipeCategory implements IRecipeCategory<JEIRecipeWrapper>
     }
 
     @Override
-    public void setRecipe(final IRecipeLayout recipeLayout, final JEIRecipeWrapper recipeWrapper,
-                          final IIngredients ingredients)
+    public void setRecipe(IRecipeLayout recipeLayout, JEIRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
-        final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+        IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
-        slots.forEach(slot -> {
-            guiItemStacks.init(this.slots.indexOf(slot), slot.isInput(), slot.getX(), slot.getY());
+        itemSlots.forEach(slot ->
+        {
+            guiItemStacks.init(this.itemSlots.indexOf(slot), slot.isInput(), slot.getX(), slot.getY());
 
-            int count = this.getSlotCount(slot);
+            int count = this.getItemSlotCount(slot);
             if (slot.isInput())
             {
                 if (ingredients.getInputs(ItemStack.class).size() > count)
-                    guiItemStacks.set(this.slots.indexOf(slot), ingredients.getInputs(ItemStack.class).get(count));
+                    guiItemStacks.set(this.itemSlots.indexOf(slot), ingredients.getInputs(ItemStack.class).get(count));
             }
             else
             {
                 if (ingredients.getOutputs(ItemStack.class).size() > count)
-                    guiItemStacks.set(this.slots.indexOf(slot), ingredients.getOutputs(ItemStack.class).get(count));
+                    guiItemStacks.set(this.itemSlots.indexOf(slot), ingredients.getOutputs(ItemStack.class).get(count));
+            }
+        });
+
+        IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+
+        tankSlots.forEach(slot ->
+        {
+            guiFluidStacks.init(this.tankSlots.indexOf(slot), slot.isInput(), slot.getX(), slot.getY());
+
+            int count = this.getTankSlotCount(slot);
+            if (slot.isInput())
+            {
+                if (ingredients.getInputs(FluidStack.class).size() > count)
+                    guiFluidStacks.set(this.tankSlots.indexOf(slot),
+                            ingredients.getInputs(FluidStack.class).get(count));
+            }
+            else
+            {
+                if (ingredients.getOutputs(FluidStack.class).size() > count)
+                    guiFluidStacks.set(this.tankSlots.indexOf(slot),
+                            ingredients.getOutputs(FluidStack.class).get(count));
             }
         });
     }
 
-    private int getSlotCount(JEISlot from)
+    private int getItemSlotCount(JEISlot from)
     {
         int i;
         int count = 0;
-        for (i = 0; i < this.slots.indexOf(from); i++)
+        for (i = 0; i < this.itemSlots.indexOf(from); i++)
         {
-            if (from.isInput() && this.slots.get(i).isInput() || !from.isInput() && !this.slots.get(i).isInput())
+            if (from.isInput() && this.itemSlots.get(i).isInput() || !from.isInput() && !this.itemSlots.get(i).isInput())
+                count++;
+        }
+        return count;
+    }
+
+    private int getTankSlotCount(JEISlot from)
+    {
+        int i;
+        int count = 0;
+        for (i = 0; i < this.tankSlots.indexOf(from); i++)
+        {
+            if (from.isInput() && this.tankSlots.get(i).isInput() || !from.isInput() && !this.tankSlots.get(i).isInput())
                 count++;
         }
         return count;
@@ -91,23 +128,37 @@ public class JEIRecipeCategory implements IRecipeCategory<JEIRecipeWrapper>
         private int              u, v, width, height;
         private       String        title;
         private       String        uid;
-        private final List<JEISlot> slots;
+        private final List<JEISlot> itemSlots;
+        private final List<JEISlot> tankSlots;
 
         public Builder(IGuiHelper guiHelper)
         {
             this.guiHelper = guiHelper;
-            this.slots = new ArrayList<>();
+            this.itemSlots = new ArrayList<>();
+            this.tankSlots = new ArrayList<>();
         }
 
-        public Builder input(int x, int y)
+        public Builder inputItem(int x, int y)
         {
-            this.slots.add(new JEISlot(x, y, true));
+            this.itemSlots.add(new JEISlot(x, y, true));
             return this;
         }
 
-        public Builder output(int x, int y)
+        public Builder outputItem(int x, int y)
         {
-            this.slots.add(new JEISlot(x, y, false));
+            this.itemSlots.add(new JEISlot(x, y, false));
+            return this;
+        }
+
+        public Builder inputTank(int x, int y)
+        {
+            this.tankSlots.add(new JEISlot(x, y, true));
+            return this;
+        }
+
+        public Builder outputTank(int x, int y)
+        {
+            this.tankSlots.add(new JEISlot(x, y, false));
             return this;
         }
 
@@ -155,7 +206,7 @@ public class JEIRecipeCategory implements IRecipeCategory<JEIRecipeWrapper>
 
         public JEIRecipeCategory create()
         {
-            return new JEIRecipeCategory(guiHelper, background, u, v, width, height, title, uid, slots);
+            return new JEIRecipeCategory(guiHelper, background, u, v, width, height, title, uid, itemSlots, tankSlots);
         }
     }
 

@@ -7,6 +7,7 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.ItemStack;
+import net.ros.client.gui.GuiOreWasher;
 import net.ros.client.gui.GuiRollingMill;
 import net.ros.client.gui.GuiSawMill;
 import net.ros.client.gui.GuiSteamFurnace;
@@ -15,6 +16,7 @@ import net.ros.common.init.ROSItems;
 import net.ros.common.machine.Machines;
 import net.ros.common.multiblock.blueprint.Blueprint;
 import net.ros.common.recipe.RecipeHandler;
+import net.ros.common.recipe.type.OreWasherRecipe;
 import net.ros.common.recipe.type.RollingMillRecipe;
 import net.ros.common.recipe.type.SawMillRecipe;
 
@@ -30,12 +32,18 @@ public class ROSJEIPlugin implements IModPlugin
         registry.addRecipeCategories(JEIRecipeCategory.builder(registry.getJeiHelpers().getGuiHelper())
                 .background(GuiRollingMill.BACKGROUND).uid(RecipeHandler.ROLLINGMILL_UID)
                 .title("gui.rollingmill.name").u(46).v(16).width(91).height(54)
-                .input(0, 19).output(69, 18).create());
+                .inputItem(0, 19).outputItem(69, 18).create());
 
         registry.addRecipeCategories(JEIRecipeCategory.builder(registry.getJeiHelpers().getGuiHelper())
                 .background(GuiSawMill.BACKGROUND).uid(RecipeHandler.SAW_MILL_UID)
                 .title("gui.sawmill.name").u(46).v(16).width(91).height(54)
-                .input(0, 19).output(69, 18).create());
+                .inputItem(0, 19).outputItem(69, 18).create());
+
+        registry.addRecipeCategories(JEIRecipeCategory.builder(registry.getJeiHelpers().getGuiHelper())
+                .background(GuiOreWasher.BACKGROUND).uid(RecipeHandler.ORE_WASHER_UID)
+                .title("gui.orewasher.name").u(46).v(16).width(91).height(54)
+                .inputTank(-2, 18).inputTank(16, 18)
+                .outputItem(69, 18).outputItem(87, 18).create());
 
         registry.addRecipeCategories(new JEIBlueprintRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
     }
@@ -48,6 +56,7 @@ public class ROSJEIPlugin implements IModPlugin
         registry.addRecipeCatalyst(new ItemStack(ROSBlocks.ROLLING_MILL), RecipeHandler.ROLLINGMILL_UID);
         registry.addRecipeCatalyst(new ItemStack(ROSBlocks.SAWMILL), RecipeHandler.SAW_MILL_UID);
         registry.addRecipeCatalyst(new ItemStack(ROSItems.WRENCH), RecipeHandler.BLUEPRINT_UID);
+        registry.addRecipeCatalyst(new ItemStack(ROSBlocks.ORE_WASHER), RecipeHandler.ORE_WASHER_UID);
 
         JEIRecipeWrapper.Builder rollingMillWrapper = JEIRecipeWrapper.builder(registry.getJeiHelpers().getGuiHelper())
                 .arrow(GuiRollingMill.BACKGROUND).u(176).v(14).width(24).height(17);
@@ -56,6 +65,10 @@ public class ROSJEIPlugin implements IModPlugin
         JEIRecipeWrapper.Builder sawMillWrapper = JEIRecipeWrapper.builder(registry.getJeiHelpers().getGuiHelper())
                 .arrow(GuiSawMill.BACKGROUND).u(176).v(14).width(24).height(17);
         registry.handleRecipes(SawMillRecipe.class, sawMillWrapper::create, RecipeHandler.SAW_MILL_UID);
+
+        JEIRecipeWrapper.Builder oreWasherWrapper = JEIRecipeWrapper.builder(registry.getJeiHelpers().getGuiHelper())
+                .arrow(GuiOreWasher.BACKGROUND).u(176).v(14).width(24).height(17);
+        registry.handleRecipes(OreWasherRecipe.class, oreWasherWrapper::create, RecipeHandler.ORE_WASHER_UID);
 
         registry.handleRecipes(Blueprint.class, blueprint -> new BlueprintRecipeWrapper(
                 blueprint, registry.getJeiHelpers().getGuiHelper()), RecipeHandler.BLUEPRINT_UID);
@@ -67,5 +80,6 @@ public class ROSJEIPlugin implements IModPlugin
         registry.addRecipeClickArea(GuiRollingMill.class, 80, 35, 26, 20, RecipeHandler.ROLLINGMILL_UID);
         registry.addRecipeClickArea(GuiSteamFurnace.class, 80, 35, 26, 20, VanillaRecipeCategoryUid.SMELTING);
         registry.addRecipeClickArea(GuiSawMill.class, 80, 35, 26, 20, RecipeHandler.SAW_MILL_UID);
+        registry.addRecipeClickArea(GuiOreWasher.class, 80, 35, 26, 20, RecipeHandler.ORE_WASHER_UID);
     }
 }
