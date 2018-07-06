@@ -21,13 +21,18 @@ public class JEIRecipeWrapper implements IRecipeWrapper
 
     private final RecipeBase recipe;
 
+    private int x, y;
+
     JEIRecipeWrapper(RecipeBase recipe, IGuiHelper guiHelper, ResourceLocation arrow, int u, int v,
-                     int width, int height)
+                     int width, int height, int x, int y)
     {
         this.recipe = recipe;
 
         final IDrawableStatic arrowStatic = guiHelper.createDrawable(arrow, u, v, width, height);
         this.arrow = guiHelper.createAnimatedDrawable(arrowStatic, 20, IDrawableAnimated.StartDirection.LEFT, false);
+
+        this.x = x;
+        this.y = y;
     }
 
     static Builder builder(IGuiHelper guiHelper)
@@ -38,7 +43,7 @@ public class JEIRecipeWrapper implements IRecipeWrapper
     @Override
     public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
     {
-        this.arrow.draw(minecraft, 33, 19);
+        this.arrow.draw(minecraft, x, y);
     }
 
     @Override
@@ -58,12 +63,15 @@ public class JEIRecipeWrapper implements IRecipeWrapper
     public static class Builder
     {
         private ResourceLocation arrow;
-        private int              u, v, width, height;
+        private int              u, v, width, height, x, y;
         private final IGuiHelper guiHelper;
 
         public Builder(IGuiHelper guiHelper)
         {
             this.guiHelper = guiHelper;
+
+            this.x = 33;
+            this.y = 19;
         }
 
         public Builder arrow(ResourceLocation arrow)
@@ -96,10 +104,22 @@ public class JEIRecipeWrapper implements IRecipeWrapper
             return this;
         }
 
+        public Builder x(int x)
+        {
+            this.x = x;
+            return this;
+        }
+
+        public Builder y(int y)
+        {
+            this.y = y;
+            return this;
+        }
+
         @Nonnull
         public JEIRecipeWrapper create(RecipeBase recipe)
         {
-            return new JEIRecipeWrapper(recipe, guiHelper, arrow, u, v, width, height);
+            return new JEIRecipeWrapper(recipe, guiHelper, arrow, u, v, width, height, x, y);
         }
     }
 }

@@ -95,7 +95,7 @@ public class Ores
                 .toolLevel(2).hardness(2.0F).resistance(5.0F)
                 .mineral(REDSTONE, 1f).build();
 
-        ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TETRAHEDRITE, TEALLITE, CASSITERITE, TEALLITE,
+        ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TETRAHEDRITE, TEALLITE, CASSITERITE,
                 PENTLANDITE, GARNIERITE, LATERITE, GOLD_ORE, REDSTONE_ORE));
     }
 
