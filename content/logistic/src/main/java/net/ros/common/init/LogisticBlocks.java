@@ -25,8 +25,10 @@ public class LogisticBlocks
             PipeNature nature, Metal material, float radiusOffset, Function<PipeType, T> tileSupplier, Class<T>
                     tileClass)
     {
-        for (PipeSize size : PipeSize.values())
+        for (PipeSize size: PipeSize.values())
         {
+            if(size.ordinal() > PipeSize.LARGE.ordinal())
+                continue;
             registerBlock(blockSupplier.apply(nature.toString() + "pipe_" + material.getName() + "_" + size.toString(),
                     (double) (size.getRadius() + radiusOffset), new PipeType(nature, size, material),
                     tileSupplier, tileClass));
@@ -65,14 +67,17 @@ public class LogisticBlocks
         addPipe(BlockPressureValve::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
                 TilePressureValve::new, TilePressureValve.class);
 
+        addPipe(BlockSteamVent::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
+                TileSteamVent::new, TileSteamVent.class);
+        addPipe(BlockSteamVent::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
+                TileSteamVent::new, TileSteamVent.class);
+
         registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
 
         registerBlock(new BlockBelt());
         registerBlock(new BlockExtractor(), block -> new ItemBlockMetadata(block, "filter"));
         registerBlock(new BlockSplitter(), block -> new ItemBlockMetadata(block, "filter"));
-
-        registerBlock(new BlockSteamVent());
 
         registerTile(TileFluidPipe.class, "fluidpipe");
         registerTile(TileSteamPipe.class, "steampipe");

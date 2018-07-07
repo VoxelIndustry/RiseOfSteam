@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -26,22 +25,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.RiseOfSteam;
 import net.ros.client.render.BlueprintRender;
-import net.ros.client.render.ModelPipeCover;
-import net.ros.client.render.ModelPipeInventory;
 import net.ros.client.render.model.obj.ROSOBJLoader;
 import net.ros.client.render.tile.*;
 import net.ros.common.CommonProxy;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.IModelProvider;
-import net.ros.common.grid.node.PipeNature;
-import net.ros.common.grid.node.PipeSize;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSFluids;
 import net.ros.common.init.ROSItems;
 import net.ros.common.item.IItemModelProvider;
 import net.ros.common.network.MultiblockBoxPacket;
 import net.ros.common.recipe.Materials;
-import net.ros.common.recipe.Metal;
 import net.ros.common.tile.TileStructure;
 import net.ros.common.tile.machine.TileBelt;
 import net.ros.common.tile.machine.TileRollingMill;
@@ -55,6 +49,8 @@ import java.util.function.BiConsumer;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+    private PipeModelRegistry pipeModelRegistry;
+
     @Override
     public void preInit(final FMLPreInitializationEvent e)
     {
@@ -163,13 +159,16 @@ public class ClientProxy extends CommonProxy
     {
         ClientProxy.registerFluidsClient();
 
-        for (Item item : ROSItems.ITEMS)
+        for (Item item: ROSItems.ITEMS)
         {
             if (item instanceof IItemModelProvider && ((IItemModelProvider) item).hasSpecialModel())
                 ((IItemModelProvider) item).registerModels();
             else
                 RiseOfSteam.proxy.registerItemRenderer(item, 0);
         }
+
+        pipeModelRegistry = new PipeModelRegistry();
+        pipeModelRegistry.onModelRegistry();
     }
 
     @SubscribeEvent
@@ -180,25 +179,10 @@ public class ClientProxy extends CommonProxy
         IBakedModel originalModel = e.getModelRegistry().getObject(key);
         e.getModelRegistry().putObject(key, new BlueprintRender(originalModel));
 
-        replacePipeInventoryModel(e.getModelRegistry(), Materials.IRON, Materials.CAST_IRON, Materials.BRASS,
-                Materials.STEEL);
+        pipeModelRegistry.onModelBake(e.getModelRegistry());
 
-        // Valves
-        replacePipesModel(PipeNature.FLUID, "valve", new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM},
-                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/_fluidvalve_small.mwm", e.getModelRegistry());
-        replacePipesModel(PipeNature.STEAM, "valve", new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM},
-                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamvalve_small.mwm", e.getModelRegistry());
-
-        replacePipesModel(PipeNature.FLUID, "valve", new PipeSize[]{PipeSize.LARGE},
-                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/_fluidvalve_medium.mwm", e.getModelRegistry());
-        replacePipesModel(PipeNature.STEAM, "valve", new PipeSize[]{PipeSize.LARGE},
-                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamvalve_medium.mwm", e.getModelRegistry());
-
-        // Gauges
-        replacePipesModel(PipeNature.STEAM, "gauge", new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM},
-                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamgauge_small.mwm", e.getModelRegistry());
-        replacePipesModel(PipeNature.STEAM, "gauge", new PipeSize[]{PipeSize.LARGE},
-                new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamgauge_medium.mwm", e.getModelRegistry());
+        pipeModelRegistry.replacePipeInventoryModel(e.getModelRegistry(),
+                Materials.IRON, Materials.CAST_IRON, Materials.BRASS, Materials.STEEL);
 
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemextractor"), 1,
                 new ModelResourceLocation(ROSConstants.MODID + ":itemextractor", "facing=down,filter=true"));
@@ -232,60 +216,6 @@ public class ClientProxy extends CommonProxy
             {
                 new MultiblockBoxPacket(container.getSlotUnderMouse().slotNumber).sendToServer();
                 event.setCanceled(true);
-            }
-        }
-    }
-
-    private void replacePipesModel(PipeNature nature, String pipeName, PipeSize[] sizes, Metal[] metals,
-                                   String modelPath, IRegistry<ModelResourceLocation, IBakedModel> registry)
-    {
-        for (Metal metal : metals)
-        {
-            for (PipeSize size : sizes)
-            {
-                replacePipeModel(Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + pipeName + "_"
-                                + metal.getName() + "_" + size.toString()),
-                        Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + "pipe_" +
-                                metal.getName() + "_" + size.toString()),
-                        new ResourceLocation(ROSConstants.MODID, modelPath), registry);
-            }
-        }
-    }
-
-    private void replacePipeModel(Block block, Block pipeBlock, ResourceLocation modelLocation,
-                                  IRegistry<ModelResourceLocation, IBakedModel> registry)
-    {
-        ModelPipeCover model = new ModelPipeCover(modelLocation, block, pipeBlock);
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "facing=up"), model);
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "facing=down"), model);
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "facing=east"), model);
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "facing=west"), model);
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "facing=south"), model);
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "facing=north"), model);
-
-        registry.putObject(new ModelResourceLocation(
-                Item.getItemFromBlock(block).getRegistryName(), "inventory"), model);
-    }
-
-    private void replacePipeInventoryModel(IRegistry<ModelResourceLocation, IBakedModel> registry, Metal... metals)
-    {
-        for (PipeNature nature : PipeNature.values())
-        {
-            for (PipeSize size : PipeSize.values())
-            {
-                for (Metal metal : metals)
-                {
-                    Block block = Block.getBlockFromName(ROSConstants.MODID + ":" +
-                            nature.toString() + "pipe_" + metal.getName() + "_" + size.toString());
-                    registry.putObject(new ModelResourceLocation(Item.getItemFromBlock(block).getRegistryName(),
-                            "inventory"), new ModelPipeInventory(block));
-                }
             }
         }
     }
