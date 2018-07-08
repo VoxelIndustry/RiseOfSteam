@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.RiseOfSteam;
 import net.ros.client.render.BlueprintRender;
 import net.ros.client.render.model.obj.ROSOBJLoader;
+import net.ros.client.render.model.obj.RetextureData;
 import net.ros.client.render.tile.*;
 import net.ros.common.CommonProxy;
 import net.ros.common.ROSConstants;
@@ -35,7 +37,6 @@ import net.ros.common.init.ROSFluids;
 import net.ros.common.init.ROSItems;
 import net.ros.common.item.IItemModelProvider;
 import net.ros.common.network.MultiblockBoxPacket;
-import net.ros.common.recipe.Materials;
 import net.ros.common.tile.TileStructure;
 import net.ros.common.tile.machine.TileBelt;
 import net.ros.common.tile.machine.TileRollingMill;
@@ -61,45 +62,57 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(this);
         super.preInit(e);
 
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/belt.mwm"), new String[]{"Top"},
-                new String[]{"ros:blocks/belt_top_anim"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/belt_slope_down"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_up_animated.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/belt_slope_up_anim"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down_animated.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/belt_slope_down_anim"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_animated.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt.mwm"))
+                .texture("Top", "ros:blocks/belt_top_anim")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"))
+                .texture("Top", "ros:blocks/belt_slope_down")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_up_animated.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"))
+                .texture("Top", "ros:blocks/belt_slope_up_anim")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down_animated.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"))
+                .texture("Top", "ros:blocks/belt_slope_down_anim")
+                .build());
 
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_small.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/steamvalve_small.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/fluidvalve_small"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_medium.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/steamvalve_medium.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/fluidvalve_medium"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_small.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/steamvalve_small.mwm"))
+                .texture("None", "ros:blocks/fluidvalve_small")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_medium.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/steamvalve_medium.mwm"))
+                .texture("None", "ros:blocks/fluidvalve_medium")
+                .build());
 
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_small.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_small.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/fluidpipe_cast_iron_small"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_medium.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_medium.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/fluidpipe_cast_iron_medium"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_large.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_large.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/fluidpipe_cast_iron_large"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_small.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_small.mwm"))
+                .texture("None", "ros:blocks/fluidpipe_cast_iron_small")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_medium.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_medium.mwm"))
+                .texture("None", "ros:blocks/fluidpipe_cast_iron_medium")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidpipe_cast_iron_large.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/fluidpipe_iron_large.mwm"))
+                .texture("None", "ros:blocks/fluidpipe_cast_iron_large")
+                .build());
 
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_small.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_small.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/steampipe_steel_small"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_medium.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_medium.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/steampipe_steel_medium"});
-        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_large.mwm",
-                new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_large.mwm"), new String[]{"None"},
-                new String[]{"ros:blocks/steampipe_steel_large"});
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_small.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_small.mwm"))
+                .texture("None", "ros:blocks/steampipe_steel_small")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_medium.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_medium.mwm"))
+                .texture("None", "ros:blocks/steampipe_steel_medium")
+                .build());
+        ROSOBJLoader.INSTANCE.addRetexturedModel("_steampipe_steel_large.mwm", RetextureData.builder()
+                .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/steampipe_brass_large.mwm"))
+                .texture("None", "ros:blocks/steampipe_steel_large")
+                .build());
 
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
@@ -181,9 +194,6 @@ public class ClientProxy extends CommonProxy
 
         pipeModelRegistry.onModelBake(e.getModelRegistry());
 
-        pipeModelRegistry.replacePipeInventoryModel(e.getModelRegistry(),
-                Materials.IRON, Materials.CAST_IRON, Materials.BRASS, Materials.STEEL);
-
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemextractor"), 1,
                 new ModelResourceLocation(ROSConstants.MODID + ":itemextractor", "facing=down,filter=true"));
         ModelLoader.setCustomModelResourceLocation(Item.getByNameOrId("ros:itemsplitter"), 1,
@@ -202,6 +212,15 @@ public class ClientProxy extends CommonProxy
             for (int i = 0; i < modelProvider.getItemModelCount(); i++)
                 modelRegister.accept(i, block);
         });
+    }
+
+    @SubscribeEvent
+    public void onTextureLoad(TextureStitchEvent.Pre event)
+    {
+        // Needed for models that are lazily accessed at runtime (ex: pipes covers)
+        ROSOBJLoader.INSTANCE.getReTexturedMap().forEach((model, data) ->
+                data.getReplacedTextures().forEach((matKey, texture) ->
+                        event.getMap().registerSprite(new ResourceLocation(texture))));
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 #Misc
 itemGroup.ros=Rise Of Steam
+itemGroup.ros.pipes=Rise Of Steam | Pipes
 
 #Creative
 tile.creative_steam_generator.name=Creative Steam Generator

@@ -11,6 +11,7 @@ public class ROSConstants
     public static final String VERSION = "0.1.0";
 
     public static CreativeTabs TAB_ALL;
+    public static CreativeTabs TAB_PIPES;
     public static Logger       LOGGER;
 
     public static Object MODINSTANCE;

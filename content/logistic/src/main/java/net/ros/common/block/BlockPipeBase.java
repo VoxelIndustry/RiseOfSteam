@@ -24,6 +24,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.AABBRaytracer;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.ROSConstants;
 import net.ros.common.grid.node.IBlockPipe;
 import net.ros.common.grid.node.PipeNature;
 import net.ros.common.grid.node.PipeType;
@@ -49,6 +50,8 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
                          Class<T> tileClass)
     {
         super(name, Material.IRON, tileClass);
+
+        this.setCreativeTab(ROSConstants.TAB_PIPES);
 
         this.tileSupplier = tileSupplier;
         this.boxes = EnumHashBiMap.create(EnumFacing.class);

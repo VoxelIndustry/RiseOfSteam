@@ -59,10 +59,21 @@ public class PipeModelRegistry
         this.replacePipesModel(PipeNature.STEAM, "vent",
                 new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM}, new Metal[]{Materials.BRASS, Materials.STEEL},
                 "block/steamvent_small.mwm");
+        this.replacePipesModel(PipeNature.STEAM, "vent",
+                new PipeSize[]{PipeSize.LARGE}, new Metal[]{Materials.BRASS, Materials.STEEL},
+                "block/steamvent_large.mwm");
+
+        // Pressure valve
+        this.replacePipesModel(PipeNature.STEAM, "pressurevalve",
+                new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM, PipeSize.LARGE}, new Metal[]{Materials.BRASS,
+                        Materials.STEEL},
+                "block/steampressurevalve_small.mwm");
     }
 
     public void onModelBake(IRegistry<ModelResourceLocation, IBakedModel> registry)
     {
+        this.replacePipeInventoryModel(registry, Materials.IRON, Materials.CAST_IRON, Materials.BRASS, Materials.STEEL);
+
         this.models.forEach(pair -> registry.putObject(pair.getKey(), pair.getValue()));
     }
 

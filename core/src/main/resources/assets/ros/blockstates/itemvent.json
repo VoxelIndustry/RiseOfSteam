@@ -6,7 +6,7 @@
     "custom": {
       "flip-v": true
     },
-    "model": "ros:obj/steamvalve_small.mwm"
+    "model": "ros:obj/steamvent_small.mwm"
   },
   "variants": {
     "normal": [{}],

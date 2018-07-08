@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
 import java.util.ArrayList;
@@ -37,8 +38,14 @@ public class RetexturedOBJModel implements IModel
     {
         try
         {
+            OBJModel.MaterialLibrary matLib = ((OBJModel) ModelLoaderRegistry.getModel(sourceModel)).getMatLib();
+
             List<ResourceLocation> ret = new ArrayList<>(ModelLoaderRegistry.getModel(sourceModel).getTextures());
-            for (String tex : replacedTextures.values())
+
+            ret.removeIf(res -> replacedTextures.keySet().stream().anyMatch(matName ->
+                    matLib.getMaterial(matName.replace("#", "")).getTexture().getTextureLocation().equals(res)));
+
+            for (String tex: replacedTextures.values())
                 ret.add(new ResourceLocation(tex));
             return ret;
         } catch (Exception e)

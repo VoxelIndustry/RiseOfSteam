@@ -1,6 +1,6 @@
 package net.ros.client.render.model.obj;
 
-import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -23,6 +23,7 @@ public enum ROSOBJLoader implements ICustomModelLoader
     private final Map<ResourceLocation, IModel>    cache          = new HashMap<>();
     private final Map<ResourceLocation, Exception> errors         = new HashMap<>();
 
+    @Getter
     private final Map<String, RetextureData> reTexturedMap = new HashMap<>();
 
     public void addDomain(String domain)
@@ -31,13 +32,9 @@ public enum ROSOBJLoader implements ICustomModelLoader
         ROSConstants.LOGGER.info("Domain registered for ROSOBJLoader: " + domain.toLowerCase());
     }
 
-    public void addRetexturedModel(String modelName, ResourceLocation sourceModel, String[] matKeys, String[] textures)
+    public void addRetexturedModel(String modelName, RetextureData data)
     {
-        HashMap<String, String> map = new HashMap<>();
-        for (int i = 0; i < matKeys.length; i++)
-            map.put(matKeys[i].startsWith("#") ? matKeys[i] : "#" + matKeys[i], textures[i]);
-
-        this.reTexturedMap.put(modelName, new RetextureData(sourceModel, ImmutableMap.copyOf(map)));
+        this.reTexturedMap.put(modelName, data);
     }
 
     @Override
@@ -54,8 +51,7 @@ public enum ROSOBJLoader implements ICustomModelLoader
                 modelLocation.getResourcePath());
         if (!cache.containsKey(file))
         {
-            String fileName = file.getResourcePath().substring(file.getResourcePath().lastIndexOf("/") + 1,
-                    file.getResourcePath().length());
+            String fileName = file.getResourcePath().substring(file.getResourcePath().lastIndexOf("/") + 1);
             if (fileName.startsWith("_") && this.reTexturedMap.containsKey(fileName))
             {
                 cache.put(modelLocation, new RetexturedOBJModel(this.reTexturedMap.get(fileName).getOriginalModel(),
