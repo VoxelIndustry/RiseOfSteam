@@ -1,6 +1,7 @@
 #Misc
 itemGroup.ros=Rise Of Steam
 itemGroup.ros.pipes=Rise Of Steam | Pipes
+death.attack.razorwire=%1$s was cut in pieces
 
 #Creative
 tile.creative_steam_generator.name=Creative Steam Generator
@@ -124,6 +125,8 @@ tile.blockscaffold.iron.name=Iron Scaffold
 tile.blockscaffold.bronze.name=Bronze Scaffold
 tile.blockscaffold.brass.name=Brass Scaffold
 tile.blockscaffold.steel.name=Steel Scaffold
+
+tile.razorwire.name=Razorwire
 
 #Items
 item.punched_card.name=Punched Card

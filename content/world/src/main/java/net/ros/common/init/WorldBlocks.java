@@ -47,5 +47,7 @@ public class WorldBlocks
         registerBlock(BlockScaffold.build("blockscaffold").type(MaterialShape.SCAFFOLD).create(),
                 block -> new ItemBlockMetadata(block, block.variants.getAllowedValues().toArray(new String[0]))
                         .setFirstVariation(true));
+
+        registerBlock(new BlockRazorWire());
     }
 }
