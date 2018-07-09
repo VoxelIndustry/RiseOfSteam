@@ -12,12 +12,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.ros.client.render.model.obj.ROSOBJState;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.ROSConstants;
 import net.ros.common.block.property.BeltDirection;
 import net.ros.common.block.property.BeltProperties;
+import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSBlocks;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +71,7 @@ public class ModelCacheManager
         {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public static List<BakedQuad> getPipeQuads(Block pipeBlock, ROSOBJState pipeState)
@@ -80,6 +83,12 @@ public class ModelCacheManager
         {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyList();
+    }
+
+    public static List<BakedQuad> getPipeQuads(PipeType type, ROSOBJState pipeState)
+    {
+        return getPipeQuads(Block.getBlockFromName(ROSConstants.MODID + ":" + type.getNature().toString() + "pipe_" +
+                type.getMetal().getName() + "_" + type.getSize().toString()), pipeState);
     }
 }
