@@ -49,8 +49,6 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
     protected static final AxisAlignedBB AABB_SLAB_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D,
             1.0D);
 
-
-
     public BlockBelt()
     {
         super("belt", Material.IRON, TileBelt.class);
@@ -359,7 +357,7 @@ public class BlockBelt extends BlockMachineBase<TileBelt> implements IWrenchable
     @Override
     public TileEntity createNewTileEntity(final World worldIn, final int meta)
     {
-        return new TileBelt(.1f);
+        return new TileBelt(0.1875f);
     }
 
     @Override

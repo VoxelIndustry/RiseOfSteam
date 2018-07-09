@@ -7,14 +7,16 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.animation.FastTESR;
+import net.ros.client.render.RenderUtil;
 import net.ros.common.block.property.BeltSlope;
 import net.ros.common.grid.ItemBelt;
 import net.ros.common.tile.machine.TileBelt;
-import net.ros.client.render.RenderUtil;
 import org.lwjgl.opengl.GL11;
 
 public class RenderBelt extends FastTESR<TileBelt>
 {
+    private double lastX, lastY;
+
     @Override
     public void renderTileEntityFast(final TileBelt belt, final double x, final double y, final double z,
                                      final float partialTicks, final int destroyStage, final float partial, final
@@ -70,13 +72,15 @@ public class RenderBelt extends FastTESR<TileBelt>
         }
 
         ItemBelt previous = null;
-        for (final ItemBelt item : belt.getItems())
+        for (final ItemBelt item: belt.getItems())
         {
             if (item == null)
                 continue;
             if (previous == null)
+            {
                 GlStateManager.translate(1 + interp(item.getPrevPosY(), item.getPosY(), partialTicks) - 9 / 16.0,
                         0, interp(item.getPrevPosX(), item.getPosX(), partialTicks) + 7 / 64.0);
+            }
             else
                 GlStateManager.translate(-(1 + interp(previous.getPrevPosY(), previous.getPosY(), partialTicks) - 9 /
                                 16.0) + (1 + interp(item.getPrevPosY(), item.getPosY(), partialTicks) - 9 / 16.0), 0,
@@ -95,8 +99,11 @@ public class RenderBelt extends FastTESR<TileBelt>
         RenderHelper.enableStandardItemLighting();
     }
 
-    private float interp(float previous, float next, float partialTicks)
+    private double interp(double previous, double next, float partialTicks)
     {
-        return previous + (next - previous) * partialTicks;
+        return next;
+        // Interpolation never worked
+        // TODO : One day finally fix the stutters and check how the coordinates can move backward
+        //return previous + (next - previous) * partialTicks;
     }
 }

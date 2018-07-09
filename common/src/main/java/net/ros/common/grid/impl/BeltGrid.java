@@ -23,14 +23,14 @@ public class BeltGrid extends CableGrid
     private final SteamTank tank;
 
     @Getter
-    private final float   beltSpeed;
+    private final double   beltSpeed;
     private final float   BELT_MIDDLE      = 10 / 32F;
     private       int     movedCount       = 0;
     private       boolean lastWorkingState = false;
 
     private final Capability<IItemHandler> capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-    public BeltGrid(final int identifier, final float beltSpeed)
+    public BeltGrid(final int identifier, final double beltSpeed)
     {
         super(identifier);
 
@@ -303,7 +303,7 @@ public class BeltGrid extends CableGrid
         return true;
     }
 
-    private boolean doCollide(final IBelt belt, final ItemBelt item, final float add)
+    private boolean doCollide(final IBelt belt, final ItemBelt item, final double add)
     {
         if (!belt.isEmpty())
         {

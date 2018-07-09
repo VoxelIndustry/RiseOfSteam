@@ -111,8 +111,10 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
                 continue;
             final NBTTagCompound subTag = new NBTTagCompound();
 
-            subTag.setFloat("posX", this.items[i].getPosX());
-            subTag.setFloat("posY", this.items[i].getPosY());
+            subTag.setDouble("posX", this.items[i].getPosX());
+            subTag.setDouble("posY", this.items[i].getPosY());
+
+            //System.out.println("Sent: " + this.items[i].getPosX() + " | " + this.items[i].getPosY());
 
             this.items[i].getStack().writeToNBT(subTag);
 
@@ -121,9 +123,9 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
         tag.setInteger("itemCount", this.items.length);
         tag.setBoolean("isWorking", this.isWorking);
 
-        for (final Entry<EnumFacing, ISteamHandler> entry : this.steamConnections.entrySet())
+        for (final Entry<EnumFacing, ISteamHandler> entry: this.steamConnections.entrySet())
             tag.setBoolean("connectedSteam" + entry.getKey().ordinal(), true);
-        for (final Entry<EnumFacing, ITileCable<BeltGrid>> entry : this.connectionsMap.entrySet())
+        for (final Entry<EnumFacing, ITileCable<BeltGrid>> entry: this.connectionsMap.entrySet())
             tag.setBoolean("connected" + entry.getKey().ordinal(), true);
         return tag;
     }
@@ -154,12 +156,14 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             if (this.items[i] == null || !ItemUtils.deepEquals(this.items[i].getStack(), newItem))
             {
                 this.items[i] = new ItemBelt(new ItemStack(subTag),
-                        subTag.getFloat("posX"), subTag.getFloat("posY"));
+                        subTag.getDouble("posX"), subTag.getDouble("posY"));
+                //System.out.println("Receiv: " + this.items[i].getPosX() + " | " + this.items[i].getPosY());
             }
             else
             {
-                this.items[i].setPosX(subTag.getFloat("posX"));
-                this.items[i].setPosY(subTag.getFloat("posY"));
+                this.items[i].setPosX(subTag.getDouble("posX"));
+                this.items[i].setPosY(subTag.getDouble("posY"));
+               // System.out.println("Receiv: " + this.items[i].getPosX() + " | " + this.items[i].getPosY());
             }
         }
 
@@ -180,7 +184,7 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             this.tmpSteamConnections.putAll(this.steamConnections);
             this.steamConnections.clear();
 
-            for (final EnumFacing facing : EnumFacing.VALUES)
+            for (final EnumFacing facing: EnumFacing.VALUES)
             {
                 if (tag.hasKey("connectedSteam" + facing.ordinal()))
                     this.steamConnections.put(facing, null);
@@ -299,7 +303,7 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
     @Override
     public void adjacentConnect()
     {
-        for (final EnumFacing facing : EnumFacing.HORIZONTALS)
+        for (final EnumFacing facing: EnumFacing.HORIZONTALS)
         {
             final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing).up());
             if (adjacent instanceof IBelt && ((IBelt) adjacent).isSlope() && this.canConnect(facing, (IBelt) adjacent)
@@ -310,7 +314,7 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             }
         }
 
-        for (final EnumFacing facing : EnumFacing.HORIZONTALS)
+        for (final EnumFacing facing: EnumFacing.HORIZONTALS)
         {
             if (this.isConnected(facing))
                 continue;

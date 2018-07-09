@@ -11,13 +11,13 @@ import javax.annotation.Nonnull;
 public class ItemBelt
 {
     private final ItemStack stack;
-    private       float     posX;
-    private       float     posY;
-    private       float     prevPosX;
-    private       float     prevPosY;
+    private       double    posX;
+    private       double    posY;
+    private       double    prevPosX;
+    private       double    prevPosY;
 
 
-    public ItemBelt(final @Nonnull ItemStack stack, float posX, float posY)
+    public ItemBelt(final @Nonnull ItemStack stack, double posX, double posY)
     {
         this.stack = stack;
         this.posX = posX;
@@ -27,13 +27,13 @@ public class ItemBelt
         this.prevPosY = posY;
     }
 
-    public void setPosX(float posX)
+    public void setPosX(double posX)
     {
         this.prevPosX = this.posX;
         this.posX = posX;
     }
 
-    public void setPosY(float posY)
+    public void setPosY(double posY)
     {
         this.prevPosY = this.posY;
         this.posY = posY;
