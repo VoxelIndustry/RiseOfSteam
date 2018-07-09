@@ -24,6 +24,7 @@ import net.ros.client.render.model.ModelCacheManager;
 import net.ros.client.render.model.obj.PipeOBJStates;
 import net.ros.client.render.model.obj.ROSOBJState;
 import net.ros.client.render.model.obj.StateProperties;
+import net.ros.common.block.BlockPipeBase;
 import net.ros.common.grid.node.IBlockPipe;
 import net.ros.common.grid.node.PipeSize;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,10 +41,10 @@ public class ModelPipeCover implements IBakedModel
     private final Table<ROSOBJState, EnumFacing, CompositeBakedModel> CACHE = HashBasedTable.create();
 
     private final ResourceLocation modelLocation;
-    private final Block            pipeBlock;
+    private final BlockPipeBase    pipeBlock;
     private final Block            coverBlock;
 
-    public ModelPipeCover(ResourceLocation modelLocation, Block coverBlock, Block pipeBlock)
+    public ModelPipeCover(ResourceLocation modelLocation, Block coverBlock, BlockPipeBase pipeBlock)
     {
         this.modelLocation = modelLocation;
         this.pipeBlock = pipeBlock;
@@ -54,7 +55,8 @@ public class ModelPipeCover implements IBakedModel
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing face, long rand)
     {
-        return getModel(state, (ROSOBJState) ((IExtendedBlockState) state).getUnlistedProperties()
+        return getModel(((IExtendedBlockState) state).getClean(),
+                (ROSOBJState) ((IExtendedBlockState) state).getUnlistedProperties()
                         .get(StateProperties.VISIBILITY_PROPERTY).get(),
                 state.getValue(BlockDirectional.FACING)).getQuads(state, face, rand);
     }
@@ -82,11 +84,11 @@ public class ModelPipeCover implements IBakedModel
                 coverModel = modelManager.getMissingModel();
             }
 
-            String pipeVariantKey = PipeOBJStates.getVariantKey(pipeState);
+            Pair<PipeSize, String> pipeVariantKey = PipeOBJStates.getVariantKey(pipeState);
 
-            if (pipeBlock instanceof IBlockPipe && ((IBlockPipe) pipeBlock).getPipeType().getSize() == PipeSize.SMALL &&
-                    !pipeVariantKey.startsWith("c"))
-                pipeState = PipeOBJStates.getVisibilityState("c" + pipeVariantKey);
+            if (pipeBlock != null && pipeBlock.getPipeType().getSize() == PipeSize.SMALL &&
+                    !pipeVariantKey.getValue().startsWith("c"))
+                pipeState = PipeOBJStates.getVisibilityState(pipeVariantKey.getKey(), "c" + pipeVariantKey.getValue());
 
             CompositeBakedModel model = new CompositeBakedModel(coverState,
                     ModelCacheManager.getPipeQuads(pipeBlock, pipeState), coverModel,
@@ -149,11 +151,11 @@ public class ModelPipeCover implements IBakedModel
 
             ImmutableList.Builder<BakedQuad> genBuilder = ImmutableList.builder();
 
-            for (EnumFacing e : EnumFacing.VALUES)
+            for (EnumFacing e: EnumFacing.VALUES)
                 faceQuads.put(e, new ArrayList<>());
 
             coverModel.getQuads(coverState, null, 0).forEach(genBuilder::add);
-            for (EnumFacing e : EnumFacing.VALUES)
+            for (EnumFacing e: EnumFacing.VALUES)
                 coverModel.getQuads(coverState, e, 0).forEach(faceQuads.get(e)::add);
 
             genBuilder.addAll(pipeQuads);
@@ -216,8 +218,8 @@ public class ModelPipeCover implements IBakedModel
                 entity)
         {
             return ModelPipeCover.this.getModel(coverBlock.getDefaultState(),
-                    PipeOBJStates.getVisibilityState(pipeBlock instanceof IBlockPipe &&
-                                    ((IBlockPipe) pipeBlock).getPipeType().getSize() == PipeSize.SMALL,
+                    PipeOBJStates.getVisibilityState(pipeBlock.getPipeType().getSize(),
+                            ((IBlockPipe) pipeBlock).getPipeType().getSize() == PipeSize.SMALL,
                             EnumFacing.WEST, EnumFacing.EAST), EnumFacing.NORTH);
         }
     };

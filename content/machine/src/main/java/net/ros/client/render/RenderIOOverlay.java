@@ -21,6 +21,7 @@ import net.ros.client.render.model.obj.PipeOBJStates;
 import net.ros.common.ROSConstants;
 import net.ros.common.grid.node.IBlockPipe;
 import net.ros.common.grid.node.PipeNature;
+import net.ros.common.grid.node.PipeSize;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.machine.FluidIOPoint;
 import net.ros.common.machine.InputPoint;
@@ -112,9 +113,9 @@ public class RenderIOOverlay
         GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.colorMask(true, true, true, true);
 
-        for (TileModularMachine tile : tiles)
+        for (TileModularMachine tile: tiles)
             renderTile(tile.getDescriptor(), tile.getFacing(), tile.getPos(), player);
-        for (TileStructure structure : structureTiles)
+        for (TileStructure structure: structureTiles)
             renderTile(structure.getBlueprint().getDescriptor(), EnumFacing.VALUES[structure.getMeta()],
                     structure.getPos(), player);
 
@@ -131,7 +132,7 @@ public class RenderIOOverlay
 
             if (isSteamPipe(player.getHeldItemMainhand()))
             {
-                for (MultiblockSide point : io.getSteamIO())
+                for (MultiblockSide point: io.getSteamIO())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point, tileFacing);
@@ -149,7 +150,7 @@ public class RenderIOOverlay
             }
             else if (isFluidPipe(player.getHeldItemMainhand()))
             {
-                for (FluidIOPoint point : io.getFluidIO())
+                for (FluidIOPoint point: io.getFluidIO())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point.getSide(), tileFacing);
@@ -170,7 +171,7 @@ public class RenderIOOverlay
             {
                 AutomationComponent automation = descriptor.get(AutomationComponent.class);
 
-                for (InputPoint point : automation.getInputs())
+                for (InputPoint point: automation.getInputs())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point.getSide(), tileFacing);
@@ -186,7 +187,7 @@ public class RenderIOOverlay
                             side.getFacing().getOpposite());
                     GlStateManager.popMatrix();
                 }
-                for (OutputPoint point : automation.getOutputs())
+                for (OutputPoint point: automation.getOutputs())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point.getSide(), tileFacing);
@@ -209,7 +210,7 @@ public class RenderIOOverlay
     private static void renderSteam(World w, BlockPos pos, MultiblockSide side)
     {
         List<EnumFacing> facings = new ArrayList<>(6);
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
         {
             if (facing == side.getFacing().getOpposite())
                 facings.add(facing);
@@ -218,7 +219,7 @@ public class RenderIOOverlay
         }
 
         RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.STEAM_PIPE_SMALL,
-                PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
+                PipeOBJStates.getVisibilityState(PipeSize.SMALL, facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
 
@@ -233,7 +234,7 @@ public class RenderIOOverlay
     private static void renderFluid(World w, BlockPos pos, MultiblockSide side, FluidIOPoint point)
     {
         List<EnumFacing> facings = new ArrayList<>(6);
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
         {
             if (facing == side.getFacing().getOpposite())
                 facings.add(facing);
@@ -253,7 +254,7 @@ public class RenderIOOverlay
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         RenderUtil.renderQuads(ModelCacheManager.getPipeQuads(ROSBlocks.FLUID_PIPE_SMALL,
-                PipeOBJStates.getVisibilityState(facings.toArray(new EnumFacing[0]))),
+                PipeOBJStates.getVisibilityState(PipeSize.SMALL, facings.toArray(new EnumFacing[0]))),
                 (int) (0.6 * 0xFF) << 24);
     }
 

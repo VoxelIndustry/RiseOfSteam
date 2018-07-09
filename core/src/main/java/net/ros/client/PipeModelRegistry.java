@@ -15,6 +15,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.ros.client.render.ModelPipeCover;
 import net.ros.client.render.ModelPipeInventory;
 import net.ros.common.ROSConstants;
+import net.ros.common.block.BlockPipeBase;
 import net.ros.common.grid.node.PipeNature;
 import net.ros.common.grid.node.PipeSize;
 import net.ros.common.recipe.Materials;
@@ -61,7 +62,7 @@ public class PipeModelRegistry
                 "block/steamvent_small.mwm");
         this.replacePipesModel(PipeNature.STEAM, "vent",
                 new PipeSize[]{PipeSize.LARGE}, new Metal[]{Materials.BRASS, Materials.STEEL},
-                "block/steamvent_large.mwm");
+                "block/steamvent_medium.mwm");
 
         // Pressure valve
         this.replacePipesModel(PipeNature.STEAM, "pressurevalve",
@@ -105,14 +106,14 @@ public class PipeModelRegistry
             {
                 replacePipeModel(Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + pipeName + "_"
                                 + metal.getName() + "_" + size.toString()),
-                        Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + "pipe_" +
+                        (BlockPipeBase) Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + "pipe_" +
                                 metal.getName() + "_" + size.toString()),
                         new ResourceLocation(ROSConstants.MODID, modelPath));
             }
         }
     }
 
-    private void replacePipeModel(Block block, Block pipeBlock, ResourceLocation modelLocation)
+    private void replacePipeModel(Block block, BlockPipeBase pipeBlock, ResourceLocation modelLocation)
     {
         ModelPipeCover model = new ModelPipeCover(modelLocation, block, pipeBlock);
 
@@ -144,7 +145,7 @@ public class PipeModelRegistry
             {
                 for (Metal metal: metals)
                 {
-                    Block block = Block.getBlockFromName(ROSConstants.MODID + ":" +
+                    BlockPipeBase block = (BlockPipeBase) Block.getBlockFromName(ROSConstants.MODID + ":" +
                             nature.toString() + "pipe_" + metal.getName() + "_" + size.toString());
                     registry.putObject(new ModelResourceLocation(Item.getItemFromBlock(block).getRegistryName(),
                             "inventory"), new ModelPipeInventory(block));

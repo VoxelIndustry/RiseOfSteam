@@ -15,7 +15,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.Models;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -93,14 +92,11 @@ public class ROSBakedOBJModel extends OBJModel.OBJBakedModel
 
         for (OBJModel.Group g : this.model.getMatLib().getGroups().values())
         {
-            if (modelState.apply(Optional.of(Models.getHiddenModelPart(ImmutableList.of(g.getName())))).isPresent())
-                continue;
-
             if (modelState instanceof ROSOBJState)
             {
                 ROSOBJState state = (ROSOBJState) modelState;
                 if (state.parent != null)
-                    transform = state.parent.apply(Optional.empty());
+                    transform = state.apply(Optional.empty());
 
                 if (state.isWhitelist() && state.getVisibilityList().contains(g.getName()))
                     faces.addAll(g.applyTransform(transform));

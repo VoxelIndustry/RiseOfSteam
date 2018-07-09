@@ -16,17 +16,17 @@ public class ROSOBJState implements IModelState
     protected boolean      whitelist;
     public    IModelState  parent;
 
-    public ROSOBJState(List<String> visibleGroups, boolean visibility)
+    public ROSOBJState(List<String> visibleGroups, boolean whitelist)
     {
-        this(visibleGroups, visibility, TRSRTransformation.identity());
+        this(visibleGroups, whitelist, TRSRTransformation.identity());
     }
 
-    public ROSOBJState(List<String> visibleGroups, boolean visibility, IModelState parent)
+    public ROSOBJState(List<String> visibleGroups, boolean whitelist, IModelState parent)
     {
         this.parent = parent;
 
         this.visibilityList = Lists.newArrayList(visibleGroups);
-        this.whitelist = visibility;
+        this.whitelist = whitelist;
     }
 
     @Override

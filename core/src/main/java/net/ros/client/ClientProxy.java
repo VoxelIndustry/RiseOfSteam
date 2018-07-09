@@ -68,15 +68,15 @@ public class ClientProxy extends CommonProxy
                 .build());
         ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down.mwm", RetextureData.builder()
                 .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"))
-                .texture("Top", "ros:blocks/belt_slope_down")
+                .texture("None", "ros:blocks/belt_slope_down")
                 .build());
         ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_up_animated.mwm", RetextureData.builder()
                 .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"))
-                .texture("Top", "ros:blocks/belt_slope_up_anim")
+                .texture("None", "ros:blocks/belt_slope_up_anim")
                 .build());
         ROSOBJLoader.INSTANCE.addRetexturedModel("_belt_slope_down_animated.mwm", RetextureData.builder()
                 .originalModel(new ResourceLocation(ROSConstants.MODID + ":block/belt_slope_up.mwm"))
-                .texture("Top", "ros:blocks/belt_slope_down_anim")
+                .texture("None", "ros:blocks/belt_slope_down_anim")
                 .build());
 
         ROSOBJLoader.INSTANCE.addRetexturedModel("_fluidvalve_small.mwm", RetextureData.builder()
@@ -221,6 +221,9 @@ public class ClientProxy extends CommonProxy
         ROSOBJLoader.INSTANCE.getReTexturedMap().forEach((model, data) ->
                 data.getReplacedTextures().forEach((matKey, texture) ->
                         event.getMap().registerSprite(new ResourceLocation(texture))));
+
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvent_medium"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvalve_medium"));
     }
 
     @SubscribeEvent

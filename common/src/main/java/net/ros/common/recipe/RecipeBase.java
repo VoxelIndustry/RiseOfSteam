@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public abstract class RecipeBase
 {
-    protected final Map<Class<?>, NonNullList<RecipeIngredient<?>>> inputs  = new IdentityHashMap<Class<?>, NonNullList<RecipeIngredient<?>>>();
-    protected final Map<Class<?>, NonNullList<RecipeIngredient<?>>> outputs = new IdentityHashMap<Class<?>, NonNullList<RecipeIngredient<?>>>();
+    protected final Map<Class<?>, NonNullList<RecipeIngredient<?>>> inputs  = new IdentityHashMap<>();
+    protected final Map<Class<?>, NonNullList<RecipeIngredient<?>>> outputs = new IdentityHashMap<>();
 
     public boolean hasInputType(final Class<?> input)
     {

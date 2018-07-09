@@ -151,7 +151,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     public void load()
     {
         GridManager.getInstance().connectCable(this);
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
             this.scanHandler(facing);
     }
 
@@ -169,7 +169,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
                 this.updateState();
         }
 
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
         {
             if (tag.getBoolean("forbid" + facing.ordinal()))
                 this.forbiddenConnections.add(facing);
@@ -188,7 +188,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         if (this.isServer())
             this.writeRenderConnections(tag);
 
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
             tag.setBoolean("forbid" + facing.ordinal(), this.forbiddenConnections.contains(facing));
         tag.setBoolean("forbiddenSwitch", this.forbiddenSwitch);
 
@@ -207,7 +207,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     public void adjacentConnect()
     {
         List<TilePipeBase> adjacents = new ArrayList<>(6);
-        for (final EnumFacing facing : EnumFacing.VALUES)
+        for (final EnumFacing facing: EnumFacing.VALUES)
         {
             final TileEntity adjacent = this.getBlockWorld().getTileEntity(this.getAdjacentPos(facing));
             if (adjacent instanceof TilePipeBase && this.canConnect(facing, (ITileCable<?>) adjacent)
@@ -253,7 +253,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         {
             this.syncLock();
 
-            for (EnumFacing side : EnumFacing.VALUES)
+            for (EnumFacing side: EnumFacing.VALUES)
             {
                 if (this.forbiddenSwitch && this.isConnectionForbidden(side))
                     this.forbidConnection(side, false);
@@ -339,7 +339,8 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
 
     public ROSOBJState getVisibilityState()
     {
-        return PipeOBJStates.getVisibilityState(this.renderConnections.toArray(new EnumFacing[0]));
+        return PipeOBJStates.getVisibilityState(this.getType().getSize(),
+                this.renderConnections.toArray(new EnumFacing[0]));
     }
 
     public void updateState()
@@ -362,9 +363,9 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
 
     public NBTTagCompound writeRenderConnections(NBTTagCompound tag)
     {
-        for (Entry<EnumFacing, ITileCable<G>> entry : this.connectionsMap.entrySet())
+        for (Entry<EnumFacing, ITileCable<G>> entry: this.connectionsMap.entrySet())
             tag.setBoolean("connected" + entry.getKey().ordinal(), true);
-        for (Entry<EnumFacing, H> entry : this.adjacentHandler.entrySet())
+        for (Entry<EnumFacing, H> entry: this.adjacentHandler.entrySet())
             tag.setBoolean("connected" + entry.getKey().ordinal(), true);
         return tag;
     }
@@ -374,7 +375,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
         int previousConnections = this.renderConnections.size();
 
         this.renderConnections.clear();
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
         {
             if (tag.hasKey("connected" + facing.ordinal()))
                 this.renderConnections.add(facing);

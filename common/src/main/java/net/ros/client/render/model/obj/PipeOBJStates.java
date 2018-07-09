@@ -3,55 +3,63 @@ package net.ros.client.render.model.obj;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.ros.common.grid.node.PipeSize;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PipeOBJStates
 {
-    private static final BiMap<String, ROSOBJState> variants = HashBiMap.create();
+    private static final BiMap<Pair<PipeSize, String>, ROSOBJState> variants = HashBiMap.create();
 
-    public static ROSOBJState getVisibilityState(EnumFacing... facings)
+    public static ROSOBJState getVisibilityState(PipeSize size, EnumFacing... facings)
     {
-        return getVisibilityState(false, facings);
+        return getVisibilityState(size, false, facings);
     }
 
-    public static ROSOBJState getVisibilityState(boolean forceCenter, EnumFacing... facings)
+    public static ROSOBJState getVisibilityState(PipeSize size, boolean forceCenter, EnumFacing... facings)
     {
         String key = getVariantKey(forceCenter, facings);
 
-        if (!variants.containsKey(key))
-            variants.put(key, buildVisibilityState(forceCenter, facings));
-        return variants.get(key);
+        Pair<PipeSize, String> variantKey = Pair.of(size, key);
+
+        if (!variants.containsKey(variantKey))
+            variants.put(variantKey, buildVisibilityState(size, forceCenter, facings));
+        return variants.get(variantKey);
     }
 
-    public static ROSOBJState getVisibilityState(String variantKey)
+    public static ROSOBJState getVisibilityState(PipeSize size, String key)
     {
+        Pair<PipeSize, String> variantKey = Pair.of(size, key);
+
         if (!variants.containsKey(variantKey))
         {
             List<EnumFacing> facings = new ArrayList<>();
 
-            if (variantKey.contains("x+"))
+            if (key.contains("x+"))
                 facings.add(EnumFacing.EAST);
-            if (variantKey.contains("x-"))
+            if (key.contains("x-"))
                 facings.add(EnumFacing.WEST);
-            if (variantKey.contains("y+"))
+            if (key.contains("y+"))
                 facings.add(EnumFacing.UP);
-            if (variantKey.contains("y-"))
+            if (key.contains("y-"))
                 facings.add(EnumFacing.DOWN);
-            if (variantKey.contains("z+"))
+            if (key.contains("z+"))
                 facings.add(EnumFacing.SOUTH);
-            if (variantKey.contains("z-"))
+            if (key.contains("z-"))
                 facings.add(EnumFacing.NORTH);
 
-            variants.put(variantKey, buildVisibilityState(variantKey.startsWith("c"),
+            variants.put(variantKey, buildVisibilityState(size, key.startsWith("c"),
                     facings.toArray(new EnumFacing[0])));
         }
         return variants.get(variantKey);
     }
 
-    public static String getVariantKey(ROSOBJState state)
+    public static Pair<PipeSize, String> getVariantKey(ROSOBJState state)
     {
         return variants.inverse().get(state);
     }
@@ -77,8 +85,32 @@ public class PipeOBJStates
         return rtn.toString();
     }
 
-    private static ROSOBJState buildVisibilityState(boolean forceCenter, EnumFacing... facings)
+    private static ROSOBJState buildVisibilityState(PipeSize size, boolean forceCenter, EnumFacing... facings)
     {
+        if (size == PipeSize.LARGE)
+        {
+            if (facings.length == 1 || isStraight(facings))
+            {
+                TRSRTransformation transform;
+
+                if (isConnected(EnumFacing.NORTH, facings))
+                    transform = TRSRTransformation.from(EnumFacing.NORTH);
+                else if (isConnected(EnumFacing.SOUTH, facings))
+                    transform = TRSRTransformation.from(EnumFacing.NORTH);
+                else if (isConnected(EnumFacing.WEST, facings))
+                    transform = TRSRTransformation.from(EnumFacing.EAST);
+                else if (isConnected(EnumFacing.EAST, facings))
+                    transform = TRSRTransformation.from(EnumFacing.EAST);
+                else if (isConnected(EnumFacing.DOWN, facings))
+                    transform = TRSRTransformation.from(EnumFacing.UP);
+                else
+                    transform = TRSRTransformation.from(EnumFacing.UP);
+
+                return new ROSOBJState(Collections.singletonList("center"), false, transform);
+            }
+            return new ROSOBJState(Collections.singletonList("center"), true);
+        }
+
         List<String> parts = new ArrayList<>();
 
         if (facings.length == 0)

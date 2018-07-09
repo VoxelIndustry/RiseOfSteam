@@ -1,7 +1,6 @@
 package net.ros.client.render;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -16,6 +15,7 @@ import net.minecraft.world.World;
 import net.ros.client.render.model.ModelCacheManager;
 import net.ros.client.render.model.obj.PipeOBJStates;
 import net.ros.client.render.model.obj.ROSOBJState;
+import net.ros.common.block.BlockPipeBase;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -29,9 +29,9 @@ public class ModelPipeInventory implements IBakedModel
 {
     private final Map<ROSOBJState, CompositeBakedModel> CACHE = new HashMap<>();
 
-    private final Block pipeBlock;
+    private final BlockPipeBase pipeBlock;
 
-    public ModelPipeInventory(Block pipeBlock)
+    public ModelPipeInventory(BlockPipeBase pipeBlock)
     {
         this.pipeBlock = pipeBlock;
     }
@@ -165,7 +165,8 @@ public class ModelPipeInventory implements IBakedModel
         public IBakedModel handleItemState(@Nonnull IBakedModel model, ItemStack stack, World world,
                                            EntityLivingBase entity)
         {
-            return ModelPipeInventory.this.getModel(PipeOBJStates.getVisibilityState(EnumFacing.WEST, EnumFacing.EAST));
+            return ModelPipeInventory.this.getModel(PipeOBJStates.getVisibilityState(
+                    pipeBlock.getPipeType().getSize(), EnumFacing.WEST, EnumFacing.EAST));
         }
     };
 }

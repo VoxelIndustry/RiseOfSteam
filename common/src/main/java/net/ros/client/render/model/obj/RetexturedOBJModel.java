@@ -42,8 +42,13 @@ public class RetexturedOBJModel implements IModel
 
             List<ResourceLocation> ret = new ArrayList<>(ModelLoaderRegistry.getModel(sourceModel).getTextures());
 
-            ret.removeIf(res -> replacedTextures.keySet().stream().anyMatch(matName ->
-                    matLib.getMaterial(matName.replace("#", "")).getTexture().getTextureLocation().equals(res)));
+            ret.removeIf(res ->
+            {
+                return replacedTextures.keySet().stream().anyMatch(matName ->
+                {
+                    return matLib.getMaterial(matName.replace("#", "")).getTexture().getTextureLocation().equals(res);
+                });
+            });
 
             for (String tex: replacedTextures.values())
                 ret.add(new ResourceLocation(tex));
