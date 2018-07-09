@@ -114,8 +114,6 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             subTag.setDouble("posX", this.items[i].getPosX());
             subTag.setDouble("posY", this.items[i].getPosY());
 
-            //System.out.println("Sent: " + this.items[i].getPosX() + " | " + this.items[i].getPosY());
-
             this.items[i].getStack().writeToNBT(subTag);
 
             tag.setTag("item" + i, subTag);
@@ -157,13 +155,11 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             {
                 this.items[i] = new ItemBelt(new ItemStack(subTag),
                         subTag.getDouble("posX"), subTag.getDouble("posY"));
-                //System.out.println("Receiv: " + this.items[i].getPosX() + " | " + this.items[i].getPosY());
             }
             else
             {
                 this.items[i].setPosX(subTag.getDouble("posX"));
                 this.items[i].setPosY(subTag.getDouble("posY"));
-               // System.out.println("Receiv: " + this.items[i].getPosX() + " | " + this.items[i].getPosY());
             }
         }
 
