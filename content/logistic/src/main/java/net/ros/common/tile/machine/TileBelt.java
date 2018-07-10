@@ -54,6 +54,8 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
 
     private long lastWorkStateChange;
 
+    private int storedSteam;
+
     public TileBelt(final float beltSpeed)
     {
         this.beltSpeed = beltSpeed;
@@ -121,6 +123,10 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
         tag.setInteger("itemCount", this.items.length);
         tag.setBoolean("isWorking", this.isWorking);
 
+        if (this.grid != -1)
+            tag.setInteger("storedSteam", this.getGridObject().getTank().drainSteam(
+                    this.getGridObject().getTank().getSteam() / this.getGridObject().getCables().size(), false));
+
         for (final Entry<EnumFacing, ISteamHandler> entry: this.steamConnections.entrySet())
             tag.setBoolean("connectedSteam" + entry.getKey().ordinal(), true);
         for (final Entry<EnumFacing, ITileCable<BeltGrid>> entry: this.connectionsMap.entrySet())
@@ -169,6 +175,7 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
             needStateUpdate = true;
 
         this.isWorking = tag.getBoolean("isWorking");
+        this.storedSteam = tag.getInteger("storedSteam");
 
         if (this.isClient())
         {
@@ -227,7 +234,11 @@ public class TileBelt extends TileBase implements IBelt, ILoadable, IConnectionA
         this.grid = gridIdentifier;
 
         if (this.getGridObject() != null)
+        {
+            this.getGridObject().getTank().fillSteam(this.storedSteam, true);
+            this.storedSteam = 0;
             this.world.notifyNeighborsOfStateChange(this.getBlockPos(), this.getBlockType(), true);
+        }
     }
 
     @Override

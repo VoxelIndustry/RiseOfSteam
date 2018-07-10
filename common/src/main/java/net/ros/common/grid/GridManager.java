@@ -78,7 +78,7 @@ public class GridManager
     {
         added.adjacentConnect();
 
-        for (int edge : added.getConnections())
+        for (int edge: added.getConnections())
         {
             final ITileNode<T> adjacent = added.getConnected(edge);
 
@@ -108,20 +108,23 @@ public class GridManager
         {
             if (removed.getConnections().length != 0)
             {
-                for (int edge : removed.getConnections())
+                for (int edge: removed.getConnections())
                     removed.getConnected(edge).disconnect(removed.invertEdge(edge));
 
                 if (removed.getConnections().length == 1)
+                {
                     this.getGrid(removed.getGrid()).removeCable(removed);
+                    removed.setGrid(-1);
+                }
                 else
                 {
                     this.getGrid(removed.getGrid()).removeCable(removed);
                     if (!this.getOrphans(this.getGrid(removed.getGrid()), removed).isEmpty())
                     {
-                        for (int edge : removed.getConnections())
+                        for (int edge: removed.getConnections())
                             removed.getConnected(edge).setGrid(-1);
                         final CableGrid old = this.removeGrid(removed.getGrid());
-                        for (int edge : removed.getConnections())
+                        for (int edge: removed.getConnections())
                         {
                             if (removed.getConnected(edge).getGrid() == -1)
                             {
@@ -132,6 +135,7 @@ public class GridManager
                             }
                         }
                     }
+                    removed.setGrid(-1);
                 }
             }
             else
@@ -161,11 +165,11 @@ public class GridManager
         while (!frontier.isEmpty())
         {
             final List<ITileNode<T>> frontierCpy = new ArrayList<>(frontier);
-            for (final ITileNode<T> current : frontierCpy)
+            for (final ITileNode<T> current: frontierCpy)
             {
                 openset.add(current);
                 toScan.remove(current);
-                for (int edge : current.getConnections())
+                for (int edge: current.getConnections())
                 {
                     final ITileNode<T> facingCable = current.getConnected(edge);
                     if (!openset.contains(facingCable) && !frontier.contains(facingCable))
@@ -186,12 +190,12 @@ public class GridManager
         while (!frontier.isEmpty())
         {
             Set<ITileNode<T>> frontierCpy = new HashSet<>(frontier);
-            for (final ITileNode<T> current : frontierCpy)
+            for (final ITileNode<T> current: frontierCpy)
             {
                 openset.add(current);
                 current.setGrid(grid.getIdentifier());
                 grid.addCable(current);
-                for (int edge : current.getConnections())
+                for (int edge: current.getConnections())
                 {
                     ITileNode<T> facingCable = current.getConnected(edge);
 
