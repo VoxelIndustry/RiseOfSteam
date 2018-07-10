@@ -6,8 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.common.ROSConstants;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class BlockFluidBase extends BlockFluidClassic
 {
-    private List<Pair<ITooltipFlag, String>> informations;
+    private List<String> informations = new ArrayList<>();
 
     public BlockFluidBase(final Fluid fluid, final Material material, final String name)
     {
@@ -23,29 +24,18 @@ public class BlockFluidBase extends BlockFluidClassic
         this.setRegistryName(ROSConstants.MODID, name);
         this.setDensity(fluid.getDensity());
         this.setUnlocalizedName(name);
-
-        this.informations = new ArrayList<>();
     }
 
     public void addInformation(String information)
     {
-        this.addInformation(information, ITooltipFlag.TooltipFlags.NORMAL);
-    }
-
-    public void addInformation(String information, ITooltipFlag advanced)
-    {
-        this.informations.add(Pair.of(advanced, information));
+        this.informations.add(information);
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
     {
-        this.informations.forEach(pair ->
-        {
-            if (pair.getKey() == ITooltipFlag.TooltipFlags.ADVANCED && advanced != ITooltipFlag.TooltipFlags.ADVANCED)
-                return;
-            tooltip.add(pair.getValue());
-        });
+        tooltip.addAll(this.informations);
 
         super.addInformation(stack, player, tooltip, advanced);
     }
