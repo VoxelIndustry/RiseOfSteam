@@ -1,4 +1,4 @@
-package net.ros.common.multiblock;
+package net.ros.common.block.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -13,9 +13,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemBlockMultiblockBase extends ItemBlock
+public class ItemBlockCoverExtension extends ItemBlock
 {
-    public ItemBlockMultiblockBase(Block block)
+    public ItemBlockCoverExtension(Block block)
     {
         super(block);
     }
@@ -31,11 +31,11 @@ public class ItemBlockMultiblockBase extends ItemBlock
             pos = pos.offset(facing);
 
         ItemStack itemstack = player.getHeldItem(hand);
-        final BlockMultiblockBase base = (BlockMultiblockBase) this.block;
 
         if (!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack)
                 && world.mayPlace(this.block, pos, false, facing, null)
-                && base.canPlaceBlockAt(world, pos, player.getHorizontalFacing().getOpposite()))
+                && world.getBlockState(pos.offset(player.getHorizontalFacing().getOpposite()))
+                .getBlock().isReplaceable(world, pos.offset(player.getHorizontalFacing().getOpposite())))
         {
             int i = this.getMetadata(itemstack.getMetadata());
             IBlockState state = this.block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player, hand);

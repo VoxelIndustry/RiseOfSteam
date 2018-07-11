@@ -3,6 +3,7 @@ package net.ros.common.init;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockMachineBase;
 import net.ros.common.block.BlockMetal;
+import net.ros.common.block.item.IItemBlockProvider;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ItemBlockMultiblockBase;
 
@@ -96,11 +98,11 @@ public class ROSBlocks
     public static final Block ENERGIZED_TALL_GRASS = null;
 
     @ObjectHolder("blockmetal")
-    public static final BlockMetal       METALBLOCK         = null;
+    public static final BlockMetal       METALBLOCK              = null;
     @ObjectHolder("blockmetalplate")
-    public static final BlockMetal       METALPLATEBLOCK    = null;
+    public static final BlockMetal       METALPLATEBLOCK         = null;
     @ObjectHolder("sawmill")
-    public static final BlockMachineBase SAWMILL            = null;
+    public static final BlockMachineBase SAWMILL                 = null;
     @ObjectHolder("alloycauldron")
     public static final BlockMachineBase ALLOYCAULDRON           = null;
     @ObjectHolder("engineer_workbench")
@@ -128,28 +130,29 @@ public class ROSBlocks
     @SubscribeEvent
     public void onBlockRegister(RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().registerAll(BLOCKS.keySet().toArray(new Block[BLOCKS.size()]));
+        event.getRegistry().registerAll(BLOCKS.keySet().toArray(new Block[0]));
     }
 
-    static <T extends Block> void registerBlock(final T block)
+    static <T extends Block> void registerBlock(T block)
     {
         if (block instanceof BlockMultiblockBase)
             ROSBlocks.registerBlock(block, ItemBlockMultiblockBase::new);
+        else if (block instanceof IItemBlockProvider)
+            ROSBlocks.registerBlock(block, unused -> ((IItemBlockProvider) block).getItemBlock());
         else
             ROSBlocks.registerBlock(block, ItemBlock::new);
     }
 
-    static <T extends Block> void registerBlock(final T block,
-                                                final Function<T, ItemBlock> supplier)
+    static <T extends Block> void registerBlock(T block, Function<T, ItemBlock> supplier)
     {
-        final ItemBlock supplied = supplier.apply(block);
+        ItemBlock supplied = supplier.apply(block);
         supplied.setRegistryName(block.getRegistryName());
 
         BLOCKS.put(block, supplied);
     }
 
-    static void registerTile(final Class<? extends TileEntity> c, final String name)
+    static void registerTile(Class<? extends TileEntity> c, String name)
     {
-        GameRegistry.registerTileEntity(c, ROSConstants.MODID + ":" + name);
+        GameRegistry.registerTileEntity(c, new ResourceLocation(ROSConstants.MODID, name));
     }
 }

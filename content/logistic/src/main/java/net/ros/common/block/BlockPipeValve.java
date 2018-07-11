@@ -5,6 +5,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.ros.client.render.model.obj.StateProperties;
 import net.ros.common.grid.node.IPipeValve;
+import net.ros.common.grid.node.PipeSize;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSItems;
 import net.ros.common.tile.TilePipeBase;
@@ -80,5 +82,15 @@ public class BlockPipeValve<T extends TilePipeBase & IPipeValve> extends BlockPi
     {
         return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer)
                 .withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer));
+    }
+
+    @Override
+    public void onBlockPlacedBy(World w, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+        super.onBlockPlacedBy(w, pos, state, placer, stack);
+
+        if(this.getPipeType().getSize() != PipeSize.LARGE)
+            return;
+
     }
 }

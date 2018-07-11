@@ -25,11 +25,11 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
+import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.IWrenchable;
+import net.ros.common.block.BlockMachineBase;
 import net.ros.common.init.ROSItems;
 import net.ros.common.item.ItemMultiblockBox;
-import net.ros.client.render.tile.VisibilityModelState;
-import net.ros.common.block.BlockMachineBase;
 import net.ros.common.machine.Machines;
 import net.ros.common.multiblock.blueprint.Blueprint;
 import net.ros.common.tile.TileBase;
@@ -99,7 +99,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
     public IBlockState getStateFromMeta(final int meta)
     {
         return this.getDefaultState().withProperty(BlockMultiblockBase.FACING, BlockMultiblockBase.getFacing(meta))
-                .withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, Boolean.valueOf((meta & 8) > 0));
+                .withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, (meta & 8) > 0);
     }
 
     @Override
@@ -108,7 +108,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
         int i = 0;
         i = i | state.getValue(BlockMultiblockBase.FACING).getIndex();
 
-        if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG).booleanValue())
+        if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))
             i |= 8;
         return i;
     }
@@ -139,7 +139,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
     {
         final Iterable<BlockPos> searchables = this.getMultiblock().getAllInBox(pos, facing);
 
-        for (final BlockPos current : searchables)
+        for (final BlockPos current: searchables)
         {
             if (!w.getBlockState(current).getBlock().isReplaceable(w, current))
                 return false;
@@ -154,7 +154,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
         final Iterable<BlockPos> searchables = this.getMultiblock().getAllInBox(pos, BlockMultiblockBase.getFacing
                 (state));
 
-        for (final BlockPos current : searchables)
+        for (final BlockPos current: searchables)
         {
             if (!current.equals(pos))
             {

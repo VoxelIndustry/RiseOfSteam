@@ -41,7 +41,7 @@ import java.util.function.Function;
 public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> implements IComplexSelectBox, IBlockPipe
 {
     private final EnumHashBiMap<EnumFacing, AxisAlignedBB> boxes;
-    private final AxisAlignedBB                            BOX_NONE;
+    protected final AxisAlignedBB                            BOX_NONE;
     private final Function<PipeType, T>                    tileSupplier;
     @Getter
     private final PipeType                                 pipeType;
@@ -95,7 +95,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
         AxisAlignedBB res = BOX_NONE;
         if (tile != null)
         {
-            for (EnumFacing facing : EnumFacing.VALUES)
+            for (EnumFacing facing: EnumFacing.VALUES)
             {
                 if (tile.isConnected(facing) || tile.isConnectionForbidden(facing))
                     res = res.union(this.boxes.get(facing));
@@ -234,7 +234,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public TileEntity createNewTileEntity(World world, int meta)
     {
         return tileSupplier.apply(this.getPipeType());
     }
@@ -250,15 +250,22 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
 
         candidates.add(BOX_NONE.offset(pos));
 
-        for (EnumFacing facing : EnumFacing.VALUES)
+        for (EnumFacing facing: EnumFacing.VALUES)
         {
             if (pipe.isConnected(facing) || pipe.isConnectionForbidden(facing))
                 candidates.add(this.boxes.get(facing).offset(pos));
         }
 
+        getAdditionalBox(player, pos, player.world.getBlockState(pos)).ifPresent(candidates::add);
+
         Optional<AxisAlignedBB> box = AABBRaytracer.raytraceClosest(player, partialTicks,
                 candidates.toArray(new AxisAlignedBB[0]));
 
         return box.orElse(null);
+    }
+
+    protected Optional<AxisAlignedBB> getAdditionalBox(EntityPlayer player, BlockPos pos, IBlockState state)
+    {
+        return Optional.empty();
     }
 }
