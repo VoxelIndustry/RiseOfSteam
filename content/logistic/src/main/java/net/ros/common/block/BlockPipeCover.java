@@ -1,6 +1,7 @@
 package net.ros.common.block;
 
 import fr.ourten.teabeans.function.PetaFunction;
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.client.render.model.obj.StateProperties;
 import net.ros.common.block.item.IItemBlockProvider;
-import net.ros.common.block.item.ItemBlockCoverExtension;
+import net.ros.common.block.item.ItemBlockPipeCover;
 import net.ros.common.grid.node.PipeSize;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSItems;
@@ -43,20 +44,22 @@ public class BlockPipeCover<T extends TilePipeBase> extends BlockPipeBase<T> imp
 {
     private RightClickAction                   onRightClick;
     private EnumMap<EnumFacing, AxisAlignedBB> boxes;
-    private AxisAlignedBB                      coverBox;
+
+    @Getter
+    private PipeCoverType coverType;
 
     public BlockPipeCover(String name, double width, PipeType type, Function<PipeType, T> tileSupplier,
-                          Class<T> tileClass, String namePrefix, RightClickAction onRightClick, AxisAlignedBB box)
+                          Class<T> tileClass, PipeCoverType coverType, RightClickAction onRightClick, AxisAlignedBB box)
     {
-        super(name.replace("pipe", namePrefix), width, type, tileSupplier, tileClass);
+        super(name.replace("pipe", coverType.getPrefix()), width, type, tileSupplier, tileClass);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH)
                 .withProperty(BlockMultiblockBase.MULTIBLOCK_GAG, false));
 
+        this.coverType = coverType;
         this.onRightClick = onRightClick;
 
         this.boxes = new EnumMap<>(EnumFacing.class);
-        this.coverBox = box;
 
         if (type.getSize().ordinal() >= PipeSize.LARGE.ordinal())
         {
@@ -94,10 +97,10 @@ public class BlockPipeCover<T extends TilePipeBase> extends BlockPipeBase<T> imp
     }
 
     public static <T extends TilePipeBase> PetaFunction<String, Double, PipeType, Function<PipeType, T>, Class<T>,
-            BlockPipeCover<T>> getSupplier(String prefix, RightClickAction onRightClick, AxisAlignedBB box)
+            BlockPipeCover<T>> getSupplier(PipeCoverType coverType, RightClickAction onRightClick, AxisAlignedBB box)
     {
         return (name, width, type, tileSupplier, tileClass) ->
-                new BlockPipeCover<>(name, width, type, tileSupplier, tileClass, prefix, onRightClick, box);
+                new BlockPipeCover<>(name, width, type, tileSupplier, tileClass, coverType, onRightClick, box);
     }
 
     @Override
@@ -252,8 +255,8 @@ public class BlockPipeCover<T extends TilePipeBase> extends BlockPipeBase<T> imp
     @Override
     public ItemBlock getItemBlock()
     {
-        if(this.getPipeType().getSize().ordinal() < PipeSize.LARGE.ordinal())
+        if (this.getPipeType().getSize().ordinal() < PipeSize.LARGE.ordinal())
             return new ItemBlock(this);
-        return new ItemBlockCoverExtension(this);
+        return new ItemBlockPipeCover(this);
     }
 }

@@ -13,9 +13,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemBlockCoverExtension extends ItemBlock
+public class ItemBlockPipeCover extends ItemBlock
 {
-    public ItemBlockCoverExtension(Block block)
+    public ItemBlockPipeCover(Block block)
     {
         super(block);
     }
