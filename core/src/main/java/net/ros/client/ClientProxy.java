@@ -38,10 +38,7 @@ import net.ros.common.init.ROSItems;
 import net.ros.common.item.IItemModelProvider;
 import net.ros.common.network.MultiblockBoxPacket;
 import net.ros.common.tile.TileStructure;
-import net.ros.common.tile.machine.TileBelt;
-import net.ros.common.tile.machine.TileRollingMill;
-import net.ros.common.tile.machine.TileSawMill;
-import net.ros.common.tile.machine.TileSteamFurnaceMK2;
+import net.ros.common.tile.machine.*;
 import org.lwjgl.input.Mouse;
 import org.yggard.brokkgui.style.StylesheetManager;
 
@@ -130,6 +127,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileRollingMill.class, new RenderRollingMill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSteamFurnaceMK2.class, new RenderSteamFurnaceMK2());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSawMill.class, new RenderSawMill());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new RenderFluidTank());
         MinecraftForge.EVENT_BUS.register(new MachineClientEventHandler());
         MinecraftForge.EVENT_BUS.register(new LogisticClientEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
