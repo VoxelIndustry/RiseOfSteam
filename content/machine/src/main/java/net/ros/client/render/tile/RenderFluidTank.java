@@ -8,18 +8,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
-import net.ros.client.render.RenderUtil;
 import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.tile.machine.TileTank;
-import net.ros.common.util.MathUtils;
 import org.lwjgl.opengl.GL11;
 import org.yggard.brokkgui.paint.Color;
 
@@ -57,13 +50,18 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
             TextureAtlasSprite still =
                     Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getFluid().getStill().toString());
 
-            double posY = 18 / 16D + (15 / 16D * ((float) fluid.amount / (float) capacity));
-
             Color color = Color.fromRGBAInt(fluid.getFluid().getColor(fluid));
 
-            double startX = -2 / 16D;
-            double endX = 2 / 16D;
-            double endZ = 7 / 16D + 0.001;
+            double tankXOffset = tank.getTier() == 1 ? 6 / 16D : 0;
+            double tankYOffset = tank.getTier() == 0 ? 0 : (tank.getTier() == 1 ? -6 / 16D : 3.5 / 16D);
+            double tankZOffset = tank.getTier() == 0 ? 0 : (tank.getTier() == 1 ? 15.5 / 16D : 13.5 / 16D);
+
+            double startX = tankXOffset - 2 / 16D;
+            double endX = startX + 4 / 16D;
+
+            double startY = tankYOffset + 19 / 16D;
+            double endY = startY + (14 / 16D * ((float) fluid.amount / (float) capacity));
+            double endZ = tankZOffset + 7 / 16D + 0.001;
 
             GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
@@ -73,13 +71,17 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
             GlStateManager.depthFunc(GL11.GL_LEQUAL);
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(endX, 19 / 16D, endZ).tex(still.getInterpolatedU(12), still.getInterpolatedV(15))
+            buffer.pos(endX, startY, endZ)
+                    .tex(still.getInterpolatedU(12), still.getInterpolatedV(15))
                     .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
-            buffer.pos(endX, posY, endZ).tex(still.getInterpolatedU(12), still.getInterpolatedV(1))
+            buffer.pos(endX, endY, endZ)
+                    .tex(still.getInterpolatedU(12), still.getInterpolatedV(1))
                     .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
-            buffer.pos(startX, posY, endZ).tex(still.getInterpolatedU(4), still.getInterpolatedV(1))
+            buffer.pos(startX, endY, endZ)
+                    .tex(still.getInterpolatedU(4), still.getInterpolatedV(1))
                     .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
-            buffer.pos(startX, 19 / 16D, endZ).tex(still.getInterpolatedU(4), still.getInterpolatedV(15))
+            buffer.pos(startX, startY, endZ)
+                    .tex(still.getInterpolatedU(4), still.getInterpolatedV(15))
                     .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
             tess.draw();
             GlStateManager.disableAlpha();

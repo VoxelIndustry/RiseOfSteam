@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.client.render.model.obj.ConnState;
@@ -14,12 +15,15 @@ import net.ros.common.ROSConstants;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.ContainerBuilder;
 import net.ros.common.container.IContainerProvider;
+import net.ros.common.fluid.FilteredFluidTank;
+import net.ros.common.fluid.LimitedTank;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
 import net.ros.common.grid.node.ITileCable;
 import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.machine.Machines;
+import net.ros.common.machine.component.FluidComponent;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.machine.module.impl.IOModule;
@@ -27,6 +31,7 @@ import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.MultiblockSide;
 import net.ros.common.util.FluidUtils;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class TileTank extends TileModularMachine implements IContainerProvider, IConnectionAware
@@ -54,7 +59,8 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
         super.reloadModules();
 
         this.addModule(new InventoryModule(this, 0));
-        this.addModule(new FluidStorageModule(this));
+        this.addModule(new FluidStorageModule(this)
+                .setFluidHandler("fluid", new SyncedFluidTank(this, "fluid")));
         this.addModule(new IOModule(this));
     }
 
@@ -126,7 +132,7 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
         }
         player.openGui(ROSConstants.MODINSTANCE, MachineGui.FLUIDTANK.getUniqueID(), this.world, this.pos.getX(),
                 this.pos.getY(), this.pos.getZ());
-        return false;
+        return true;
     }
 
     @Override
@@ -194,7 +200,7 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
 
             TileEntity tile = this.world.getTileEntity(this.getPos().add(side.getPos()).offset(side.getFacing()));
 
-            if(!(tile instanceof ITileCable))
+            if (!(tile instanceof ITileCable))
                 return;
 
 
@@ -508,5 +514,37 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
         }
 
         this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+
+    ///////////////
+    //    TANK   //
+    ///////////////
+
+    private static final class SyncedFluidTank extends FilteredFluidTank
+    {
+        private TileTank tile;
+        private int      previousValue;
+
+        public SyncedFluidTank(TileTank tile, String tankName)
+        {
+            super(tile.getDescriptor().get(FluidComponent.class).getTankCapacity(tankName));
+
+            this.tile = tile;
+        }
+
+        @Override
+        protected void onContentsChanged()
+        {
+            super.onContentsChanged();
+
+            if (tile.isClient())
+                return;
+
+            if (this.getFluidAmount() != previousValue)
+            {
+                tile.sync();
+                previousValue = this.getFluidAmount();
+            }
+        }
     }
 }

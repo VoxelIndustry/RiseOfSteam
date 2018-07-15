@@ -81,7 +81,7 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
     public NBTTagCompound toNBT(NBTTagCompound tag)
     {
         int i = 0;
-        for (Map.Entry<String, IFluidHandler> entry: fluidHandlers.entrySet())
+        for (Map.Entry<String, IFluidHandler> entry : fluidHandlers.entrySet())
         {
             if (!(entry.getValue() instanceof FluidTank) && !(entry.getValue() instanceof INBTSerializable))
                 continue;
@@ -102,9 +102,10 @@ public class FluidStorageModule extends MachineModule implements ISerializableMo
         return this.fluidHandlers.get(name);
     }
 
-    public void setFluidHandler(String name, IFluidHandler handler)
+    public FluidStorageModule setFluidHandler(String name, IFluidHandler handler)
     {
         this.fluidHandlers.put(name, handler);
+        return this;
     }
 
     public FluidStorageModule addFilter(String name, Predicate<FluidStack> filter)

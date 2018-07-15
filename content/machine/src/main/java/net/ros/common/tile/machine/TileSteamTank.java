@@ -111,7 +111,7 @@ public class TileSteamTank extends TileModularMachine implements IContainerProvi
         }
         player.openGui(ROSConstants.MODINSTANCE, MachineGui.STEAMTANK.getUniqueID(), this.world, this.pos.getX(),
                 this.pos.getY(), this.pos.getZ());
-        return false;
+        return true;
     }
 
     @Override
