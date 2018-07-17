@@ -1,0 +1,7 @@
+.pressure-panel {
+    -background-texture: url("ros:textures/gui/pressurevalve.png");
+}
+
+.pressure-needle {
+    -color: gray;
+}

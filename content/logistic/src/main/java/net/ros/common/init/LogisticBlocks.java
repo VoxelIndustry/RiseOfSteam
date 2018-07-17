@@ -8,12 +8,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.ros.common.ROSConstants;
 import net.ros.common.block.*;
 import net.ros.common.block.item.ItemBlockMetadata;
 import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.grid.node.PipeNature;
 import net.ros.common.grid.node.PipeSize;
 import net.ros.common.grid.node.PipeType;
+import net.ros.common.gui.LogisticGui;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.RightClickAction;
 import net.ros.common.recipe.Materials;
@@ -83,10 +85,10 @@ public class LogisticBlocks
         addPipe(BlockPressureValve::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
                 TilePressureValve::new, TilePressureValve.class);
 
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, RightClickAction.EMPTY,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentRightClick,
                 new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
                 PipeNature.STEAM, Materials.BRASS, -1 / 16F, TileSteamVent::new, TileSteamVent.class);
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, RightClickAction.EMPTY,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentRightClick,
                 new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamVent::new, TileSteamVent.class);
 
@@ -111,9 +113,8 @@ public class LogisticBlocks
         registerTile(TilePressureValve.class, "pressurevalve");
     }
 
-    public static boolean onValveRightClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
-                                            EnumHand hand,
-                                            EnumFacing facing, float hitX, float hitY, float hitZ)
+    private static boolean onValveRightClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
+                                             EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (!w.isRemote)
         {
@@ -126,6 +127,19 @@ public class LogisticBlocks
                 return false;
             valve.setOpen(!valve.isOpen());
         }
+        return true;
+    }
+
+    private static boolean onVentRightClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
+                                            EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        BlockPos offset = pos;
+
+        if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))
+            offset = pos.offset(state.getValue(BlockOrientableMachine.FACING).getOpposite());
+
+        player.openGui(ROSConstants.MODINSTANCE, LogisticGui.STEAM_VENT.getUniqueID(), w, offset.getX(),
+                offset.getY(), offset.getZ());
         return true;
     }
 }

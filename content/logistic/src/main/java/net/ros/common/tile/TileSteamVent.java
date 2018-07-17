@@ -3,9 +3,15 @@ package net.ros.common.tile;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.BlockDirectional;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.ros.common.container.BuiltContainer;
+import net.ros.common.container.ContainerBuilder;
+import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.SteamCapabilities;
@@ -13,7 +19,7 @@ import net.ros.common.steam.SteamTank;
 
 import javax.annotation.Nullable;
 
-public class TileSteamVent extends TileSteamPipe
+public class TileSteamVent extends TileSteamPipe implements IContainerProvider
 {
     @Getter
     @Setter
@@ -89,6 +95,24 @@ public class TileSteamVent extends TileSteamPipe
             return false;
 
         return super.canConnect(facing, to);
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TextComponentTranslation("gui.steamvent.name");
+    }
+
+    @Override
+    public BuiltContainer createContainer(final EntityPlayer player)
+    {
+        return new ContainerBuilder("steamvent", player)
+                .player(player).inventory(8, 107).hotbar(8, 165)
+                .addInventory()
+                .syncFloatValue(this::getVentPressure, this::setVentPressure)
+                .syncIntegerValue(this.getBufferTank()::getSteam, this.getBufferTank()::setSteam)
+                .create();
     }
 
     private class SteamVentTank extends SteamTank

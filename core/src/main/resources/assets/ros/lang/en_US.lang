@@ -257,6 +257,7 @@ gui.blueprintprinter.name=Blueprint Printer
 gui.steamtank.name=Steam Tank
 gui.blueprint.name=Blueprint Building
 gui.orewasher.name=Ore Washer
+gui.steamvent.name=Steam Vent
 
 #Ores
 ore.iron=Iron
