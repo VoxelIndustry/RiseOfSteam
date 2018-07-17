@@ -198,7 +198,7 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
                 return true;
             }
         }
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.LIQUIDBOILER.getUniqueID(), this.getWorld(),
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.LIQUID_BOILER.getUniqueID(), this.getWorld(),
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

@@ -77,7 +77,7 @@ public class TileOreWasher extends TileTickingModularMachine implements IContain
             this.markDirty();
             return true;
         }
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.OREWASHER.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ORE_WASHER.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

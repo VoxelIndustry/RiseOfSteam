@@ -452,7 +452,7 @@ public class TileAlloyCauldron extends TileTickingModularMachine implements ICon
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ALLOYCAULDRON.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ALLOY_CAULDRON.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

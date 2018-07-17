@@ -64,13 +64,13 @@ class EngineerTabPane extends GuiAbsolutePane
             case KEYPUNCH:
                 return MachineGui.KEYPUNCH.getUniqueID();
             case WORKBENCH:
-                return MachineGui.ENGINEERWORKBENCH.getUniqueID();
+                return MachineGui.ENGINEER_WORKBENCH.getUniqueID();
             case CARDLIBRARY:
-                return MachineGui.CRAFTCARDLIBRARY.getUniqueID();
+                return MachineGui.CRAFT_CARD_LIBRARY.getUniqueID();
             case PRINTER:
-                return MachineGui.BLUEPRINTPRINTER.getUniqueID();
+                return MachineGui.BLUEPRINT_PRINTER.getUniqueID();
             case STORAGE:
-                return MachineGui.ENGINEERSTORAGE.getUniqueID();
+                return MachineGui.ENGINEER_STORAGE.getUniqueID();
         }
         return 0;
     }

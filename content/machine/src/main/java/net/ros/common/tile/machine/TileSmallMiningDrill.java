@@ -302,7 +302,7 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
             return true;
         }
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.SMALLMININGDRILL.getUniqueID(), this.world, this.pos
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.SMALL_MINING_DRILL.getUniqueID(), this.world, this.pos
                         .getX(), this.pos.getY(),
                 this.pos.getZ());
         return true;

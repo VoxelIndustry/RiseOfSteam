@@ -85,7 +85,7 @@ public class TileBlueprintPrinter extends TileTickingModularMachine
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.BLUEPRINTPRINTER.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.BLUEPRINT_PRINTER.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

@@ -121,7 +121,7 @@ public class TileSolarBoiler extends TileTickingModularMachine implements ILoada
             this.markDirty();
             return true;
         }
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.SOLARBOILER.getUniqueID(), this.getWorld(),
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.SOLAR_BOILER.getUniqueID(), this.getWorld(),
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

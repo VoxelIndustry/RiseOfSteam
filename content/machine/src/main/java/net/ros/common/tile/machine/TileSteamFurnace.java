@@ -51,7 +51,7 @@ public class TileSteamFurnace extends TileTickingModularMachine implements ICont
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.STEAMFURNACE.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.STEAM_FURNACE.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

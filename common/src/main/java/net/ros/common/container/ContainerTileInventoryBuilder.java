@@ -243,12 +243,9 @@ public class ContainerTileInventoryBuilder
     }
 
     /**
-     * Sync a Boolean value between the server and the client
-     *
-     * @param supplier a supplier giving the value from the server
-     * @param setter   a consumer used to set the value of the client
-     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     * @deprecated use directly the ContainerBuilder
      */
+    @Deprecated
     public ContainerTileInventoryBuilder syncBooleanValue(final Supplier<Boolean> supplier,
                                                           final Consumer<Boolean> setter)
     {
@@ -257,12 +254,9 @@ public class ContainerTileInventoryBuilder
     }
 
     /**
-     * Sync an Integer value between the server and the client
-     *
-     * @param supplier a supplier giving the value from the server
-     * @param setter   a consumer used to set the value of the client
-     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     * @deprecated use directly the ContainerBuilder
      */
+    @Deprecated
     public ContainerTileInventoryBuilder syncIntegerValue(final Supplier<Integer> supplier,
                                                           final Consumer<Integer> setter)
     {
@@ -271,12 +265,9 @@ public class ContainerTileInventoryBuilder
     }
 
     /**
-     * Sync a Float value between the server and the client
-     *
-     * @param supplier a supplier giving the value from the server
-     * @param setter   a consumer used to set the value of the client
-     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     * @deprecated use directly the ContainerBuilder
      */
+    @Deprecated
     public ContainerTileInventoryBuilder syncFloatValue(final Supplier<Float> supplier, final Consumer<Float> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableFloat(supplier, setter));
@@ -284,12 +275,9 @@ public class ContainerTileInventoryBuilder
     }
 
     /**
-     * Sync a String value between the server and the client
-     *
-     * @param supplier a supplier giving the value from the server
-     * @param setter   a consumer used to set the value of the client
-     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     * @deprecated use directly the ContainerBuilder
      */
+    @Deprecated
     public ContainerTileInventoryBuilder syncStringValue(final Supplier<String> supplier, final Consumer<String> setter)
     {
         this.parent.syncables.add(new DefaultSyncables.SyncableString(supplier, setter));
@@ -297,12 +285,9 @@ public class ContainerTileInventoryBuilder
     }
 
     /**
-     * Sync a {@link FluidStack} value between the server and the client
-     *
-     * @param supplier a supplier giving the value from the server
-     * @param setter   a consumer used to set the value of the client
-     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     * @deprecated use directly the ContainerBuilder
      */
+    @Deprecated
     public ContainerTileInventoryBuilder syncFluidValue(final Supplier<FluidStack> supplier,
                                                         final Consumer<FluidStack> setter)
     {
@@ -311,12 +296,9 @@ public class ContainerTileInventoryBuilder
     }
 
     /**
-     * Sync an {@link ItemStack} value between the server and the client
-     *
-     * @param supplier a supplier giving the value from the server
-     * @param setter   a consumer used to set the value of the client
-     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     * @deprecated use directly the ContainerBuilder
      */
+    @Deprecated
     public ContainerTileInventoryBuilder syncItemValue(final Supplier<ItemStack> supplier,
                                                        final Consumer<ItemStack> setter)
     {
@@ -331,7 +313,6 @@ public class ContainerTileInventoryBuilder
      * @param onCraft a consumer using an {@link InventoryCrafting} to show the result of the craft matrix evaluation
      * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
      */
-    @Deprecated
     public ContainerTileInventoryBuilder onCraft(final Consumer<InventoryCrafting> onCraft)
     {
         this.parent.craftEvents.add(onCraft);

@@ -219,7 +219,7 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.TINYMININGDRILL.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.TINY_MINING_DRILL.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

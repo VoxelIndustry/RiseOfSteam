@@ -112,7 +112,7 @@ public class TileSteamFurnaceMK2 extends TileTickingModularMachine implements IC
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.STEAMFURNACEMK2.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.STEAM_FURNACE_MK2.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

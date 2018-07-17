@@ -77,7 +77,7 @@ public class TileSortingMachine extends TileTickingModularMachine implements ICo
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.SORTINGMACHINE.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.SORTING_MACHINE.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

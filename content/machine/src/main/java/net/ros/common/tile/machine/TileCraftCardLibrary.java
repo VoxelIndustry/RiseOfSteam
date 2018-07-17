@@ -111,7 +111,7 @@ public class TileCraftCardLibrary extends TileModularMachine implements IContain
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.CRAFTCARDLIBRARY.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.CRAFT_CARD_LIBRARY.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }

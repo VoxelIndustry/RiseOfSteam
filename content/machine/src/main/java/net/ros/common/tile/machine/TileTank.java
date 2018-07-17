@@ -130,7 +130,7 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
             this.markDirty();
             return true;
         }
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.FLUIDTANK.getUniqueID(), this.world, this.pos.getX(),
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.FLUID_TANK.getUniqueID(), this.world, this.pos.getX(),
                 this.pos.getY(), this.pos.getZ());
         return true;
     }

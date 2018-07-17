@@ -27,7 +27,7 @@ public class BlockEngineerStorage extends BlockOrientableMachine<TileEngineerSto
     {
         if (player.isSneaking())
             return false;
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ENGINEERSTORAGE.getUniqueID(), w, pos.getX(), pos.getY(),
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ENGINEER_STORAGE.getUniqueID(), w, pos.getX(), pos.getY(),
                 pos.getZ());
         return true;
     }

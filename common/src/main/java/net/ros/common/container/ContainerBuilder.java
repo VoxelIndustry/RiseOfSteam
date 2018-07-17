@@ -2,9 +2,12 @@ package net.ros.common.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.ros.common.container.slot.ListenerSlot;
+import net.ros.common.container.sync.DefaultSyncables;
 import net.ros.common.container.sync.SyncableProperty;
 import org.apache.commons.lang3.Range;
 
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Use this builder to construct a {@link BuiltContainer} instance.
@@ -107,6 +111,85 @@ public class ContainerBuilder
     public ContainerTileInventoryBuilder tile(final ItemStackHandler tile)
     {
         return new ContainerTileInventoryBuilder(this, tile);
+    }
+
+    /**
+     * Sync a Boolean value between the server and the client
+     *
+     * @param supplier a supplier giving the value from the server
+     * @param setter   a consumer used to set the value of the client
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    public ContainerBuilder syncBooleanValue(Supplier<Boolean> supplier, Consumer<Boolean> setter)
+    {
+        this.syncables.add(new DefaultSyncables.SyncableBoolean(supplier, setter));
+        return this;
+    }
+
+    /**
+     * Sync an Integer value between the server and the client
+     *
+     * @param supplier a supplier giving the value from the server
+     * @param setter   a consumer used to set the value of the client
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    public ContainerBuilder syncIntegerValue(Supplier<Integer> supplier, Consumer<Integer> setter)
+    {
+        this.syncables.add(new DefaultSyncables.SyncableInteger(supplier, setter));
+        return this;
+    }
+
+    /**
+     * Sync a Float value between the server and the client
+     *
+     * @param supplier a supplier giving the value from the server
+     * @param setter   a consumer used to set the value of the client
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    public ContainerBuilder syncFloatValue(Supplier<Float> supplier, Consumer<Float> setter)
+    {
+        this.syncables.add(new DefaultSyncables.SyncableFloat(supplier, setter));
+        return this;
+    }
+
+    /**
+     * Sync a String value between the server and the client
+     *
+     * @param supplier a supplier giving the value from the server
+     * @param setter   a consumer used to set the value of the client
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    public ContainerBuilder syncStringValue(Supplier<String> supplier, Consumer<String> setter)
+    {
+        this.syncables.add(new DefaultSyncables.SyncableString(supplier, setter));
+        return this;
+    }
+
+    /**
+     * Sync a {@link FluidStack} value between the server and the client
+     *
+     * @param supplier a supplier giving the value from the server
+     * @param setter   a consumer used to set the value of the client
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    public ContainerBuilder syncFluidValue(Supplier<FluidStack> supplier,
+                                           Consumer<FluidStack> setter)
+    {
+        this.syncables.add(new DefaultSyncables.SyncableFluid(supplier, setter));
+        return this;
+    }
+
+    /**
+     * Sync an {@link ItemStack} value between the server and the client
+     *
+     * @param supplier a supplier giving the value from the server
+     * @param setter   a consumer used to set the value of the client
+     * @return a reference to this {@code ContainerTileInventoryBuilder} to resume the "Builder" pattern
+     */
+    public ContainerBuilder syncItemValue(Supplier<ItemStack> supplier, Consumer<ItemStack> setter)
+    {
+        this.syncables.add(new DefaultSyncables.SyncableItem(supplier, setter));
+        return this;
     }
 
     void addPlayerInventoryRange(final Range<Integer> range)

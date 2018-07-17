@@ -223,9 +223,8 @@ public class TileEngineerWorkbench extends TileBase implements IContainerProvide
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ENGINEERWORKBENCH.getUniqueID(), this.world, this.pos
-                        .getX(), this.pos.getY(),
-                this.pos.getZ());
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ENGINEER_WORKBENCH.getUniqueID(), this.world,
+                this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
 

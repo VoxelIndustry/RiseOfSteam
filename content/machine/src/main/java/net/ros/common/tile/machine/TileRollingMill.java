@@ -108,7 +108,7 @@ public class TileRollingMill extends TileTickingModularMachine implements IConta
         if (player.getHeldItemMainhand().getItem() == ROSItems.WRENCH)
             return false;
 
-        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ROLLINGMILL.getUniqueID(), this.world,
+        player.openGui(ROSConstants.MODINSTANCE, MachineGui.ROLLING_MILL.getUniqueID(), this.world,
                 this.pos.getX(), this.pos.getY(), this.pos.getZ());
         return true;
     }
