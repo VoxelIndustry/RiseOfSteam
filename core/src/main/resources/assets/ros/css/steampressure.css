@@ -5,3 +5,7 @@
 .pressure-needle {
     -color: gray;
 }
+
+.pressure-square:hover {
+    -background-color: pink;
+}
