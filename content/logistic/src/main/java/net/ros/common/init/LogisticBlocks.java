@@ -133,6 +133,8 @@ public class LogisticBlocks
     private static boolean onVentRightClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
                                             EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
+        if (w.isRemote)
+            return true;
         BlockPos offset = pos;
 
         if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))

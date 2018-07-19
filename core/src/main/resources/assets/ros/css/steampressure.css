@@ -1,11 +1,35 @@
 .pressure-panel {
-    -background-texture: url("ros:textures/gui/pressurevalve.png");
+    -background-texture: url("ros:textures/gui/pressure-pane/pressurevalve.png");
 }
 
 .pressure-needle {
-    -color: gray;
+    -texture: url("ros:textures/gui/pressure-pane/pressurevalve_needle.png");
 }
 
 .pressure-square:hover {
     -background-color: pink;
+}
+
+.pressure-field {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_field.png");
+}
+
+.pressure-field text {
+    -color: white;
+}
+
+.pressure-more {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_more.png");
+}
+
+.pressure-less {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_less.png");
+}
+
+.pressure-more:hover {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_more_hover.png");
+}
+
+.pressure-less:hover {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_less_hover.png");
 }

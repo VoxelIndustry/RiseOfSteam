@@ -6,6 +6,8 @@ import net.minecraft.block.BlockDirectional;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,17 +15,21 @@ import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.ContainerBuilder;
 import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.ITileNode;
+import net.ros.common.grid.node.PipeSize;
 import net.ros.common.grid.node.PipeType;
+import net.ros.common.network.action.ActionSender;
+import net.ros.common.network.action.IActionReceiver;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
 
 import javax.annotation.Nullable;
 
-public class TileSteamVent extends TileSteamPipe implements IContainerProvider
+public class TileSteamVent extends TileSteamPipe implements IContainerProvider, IActionReceiver, ITickable
 {
     @Getter
     @Setter
-    private float ventPressure;
+    private float   ventPressure;
+    private boolean isVenting;
 
     public TileSteamVent(PipeType type)
     {
@@ -38,6 +44,40 @@ public class TileSteamVent extends TileSteamPipe implements IContainerProvider
     }
 
     @Override
+    public void update()
+    {
+        if (this.isClient() && this.isVenting && this.world.getWorldTime() % 2 == 0)
+        {
+            EnumFacing facing = this.getFacing();
+
+            double offset = this.getType().getSize() == PipeSize.LARGE ? 0.85 : 0.5;
+
+            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL,
+                    this.getPos().getX() + 0.5 + facing.getFrontOffsetX() * offset, this.getPos().getY() + 0.85,
+                    this.getPos().getZ() + 0.5 + facing.getFrontOffsetZ() * offset,
+                    facing.getFrontOffsetX() * 0.03, 0.1, facing.getFrontOffsetZ() * 0.03);
+            return;
+        }
+
+        if (this.getBufferTank().getPressure() > this.getVentPressure())
+        {
+            this.getBufferTank().drainSteam(Math.min(this.getTransferRate() / 8,
+                    this.getBufferTank().getSteamDifference(this.getVentPressure())), true);
+
+            if (!this.isVenting)
+            {
+                this.isVenting = true;
+                this.sync();
+            }
+        }
+        else if (this.isVenting)
+        {
+            this.isVenting = false;
+            this.sync();
+        }
+    }
+
+    @Override
     protected SteamTank createSteamTank(int capacity, float maxPressure)
     {
         return new SteamVentTank(this, capacity, maxPressure);
@@ -49,12 +89,14 @@ public class TileSteamVent extends TileSteamPipe implements IContainerProvider
         super.readFromNBT(tag);
 
         this.setVentPressure(tag.getFloat("ventPressure"));
+        this.isVenting = tag.getBoolean("isVenting");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
         tag.setFloat("ventPressure", this.getVentPressure());
+        tag.setBoolean("isVenting", this.isVenting);
 
         return super.writeToNBT(tag);
     }
@@ -108,11 +150,18 @@ public class TileSteamVent extends TileSteamPipe implements IContainerProvider
     public BuiltContainer createContainer(final EntityPlayer player)
     {
         return new ContainerBuilder("steamvent", player)
-                .player(player).inventory(8, 107).hotbar(8, 165)
+                .player(player).inventory(8, 84).hotbar(8, 142)
                 .addInventory()
                 .syncFloatValue(this::getVentPressure, this::setVentPressure)
                 .syncIntegerValue(this.getBufferTank()::getSteam, this.getBufferTank()::setSteam)
                 .create();
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("ventpressure".equals(actionID))
+            this.setVentPressure(payload.getFloat("ventpressure"));
     }
 
     private class SteamVentTank extends SteamTank
@@ -146,6 +195,17 @@ public class TileSteamVent extends TileSteamPipe implements IContainerProvider
                 }
 
                 this.setSteam(this.getSteam() + allowed);
+
+                if (allowed != amount && !vent.isVenting)
+                {
+                    vent.isVenting = true;
+                    vent.sync();
+                }
+                else if (allowed == amount && vent.isVenting)
+                {
+                    vent.isVenting = false;
+                    vent.sync();
+                }
             }
             return filled;
         }
