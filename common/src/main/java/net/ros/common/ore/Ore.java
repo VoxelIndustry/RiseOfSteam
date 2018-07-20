@@ -18,6 +18,7 @@ public class Ore
     private int toolLevel;
     private float hardness;
     private float resistance;
+    private Slag slag;
 
     public Fluid toSludge()
     {

@@ -5,14 +5,12 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.recipe.RecipeBase;
 import net.ros.common.recipe.ingredient.FluidStackRecipeIngredient;
-import net.ros.common.recipe.ingredient.ItemStackRandRecipeIngredient;
 import net.ros.common.recipe.ingredient.ItemStackRecipeIngredient;
 import net.ros.common.recipe.ingredient.RecipeIngredient;
-import org.apache.commons.lang3.Range;
 
 public class OreWasherRecipe extends RecipeBase
 {
-    public OreWasherRecipe(FluidStack inputSludge, FluidStack washer, ItemStack rawOre, ItemStack leftOver)
+    public OreWasherRecipe(FluidStack inputSludge, FluidStack washer, ItemStack rawOre, ItemStack slag)
     {
         NonNullList<RecipeIngredient<?>> ingredients = NonNullList.create();
         ingredients.add(new FluidStackRecipeIngredient(inputSludge));
@@ -23,9 +21,8 @@ public class OreWasherRecipe extends RecipeBase
         this.outputs.put(ItemStack.class, NonNullList.create());
         if (!rawOre.isEmpty())
             this.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(rawOre));
-        if (!leftOver.isEmpty())
-            this.getRecipeOutputs(ItemStack.class).add(new ItemStackRandRecipeIngredient(leftOver,
-                    Range.between(0, 1)));
+        if (!slag.isEmpty())
+            this.getRecipeOutputs(ItemStack.class).add(new ItemStackRecipeIngredient(slag));
     }
 
     @Override

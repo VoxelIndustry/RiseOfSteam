@@ -64,6 +64,9 @@ public class ROSItems
     @ObjectHolder("itemgauge")
     public static final ItemBase GAUGE = null;
 
+    @ObjectHolder("slag")
+    public static final ItemBase SLAG = null;
+
     public static List<Item> ITEMS;
 
     public static void init()

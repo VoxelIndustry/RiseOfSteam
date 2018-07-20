@@ -3,6 +3,7 @@ package net.ros.common.init;
 import net.ros.common.item.ItemMetal;
 import net.ros.common.item.ItemMixedRawOre;
 import net.ros.common.item.ItemRawOre;
+import net.ros.common.item.ItemSlag;
 import net.ros.common.recipe.MaterialShape;
 
 public class WorldItems
@@ -16,5 +17,6 @@ public class WorldItems
 
         ROSItems.registerItem(new ItemRawOre());
         ROSItems.registerItem(new ItemMixedRawOre());
+        ROSItems.registerItem(new ItemSlag());
     }
 }

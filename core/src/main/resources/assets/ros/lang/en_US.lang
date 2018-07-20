@@ -192,6 +192,12 @@ item.steamcapsulex12.name=12x Steam Capsule
 item.itemvalve.name=Valve
 item.itemgauge.name=Gauge
 
+item.slag.ferrous.name=Ferrous Slag
+item.slag.copper.name=Gray Copper Slag
+item.slag.shiny.name=Shiny Slag
+item.slag.sparkling.name=Sparkling Slag
+item.slag.tin.name=Tin Slag
+
 #Fluids
 fluid.steam=Steam
 fluid.molteniron=Molten Iron

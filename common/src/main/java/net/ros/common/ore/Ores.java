@@ -63,36 +63,47 @@ public class Ores
 
         SPHALERITE = Ore.builder().name("sphalerite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.FERROUS)
                 .mineral(ZINC, 0.6f).mineral(IRON, 0.3f).build();
         CHALCOPYRITE = Ore.builder().name("chalcopyrite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.COPPER)
                 .mineral(COPPER, 0.45f).mineral(IRON, 0.3f).build();
         MALACHITE = Ore.builder().name("malachite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.COPPER)
                 .mineral(COPPER, 0.3f).build();
         TETRAHEDRITE = Ore.builder().name("tetrahedrite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.COPPER)
                 .mineral(COPPER, 0.7f).mineral(IRON, 0.1f).build();
         CASSITERITE = Ore.builder().name("cassiterite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.TIN)
                 .mineral(TIN, 0.8f).build();
         TEALLITE = Ore.builder().name("teallite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.TIN)
                 .mineral(TIN, 0.4f).mineral(LEAD, 0.3f).build();
         PENTLANDITE = Ore.builder().name("pentlandite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.FERROUS)
                 .mineral(IRON, 0.4f).mineral(NICKEL, 0.4f).build();
         GARNIERITE = Ore.builder().name("garnierite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.FERROUS)
                 .mineral(IRON, 0.07f).mineral(NICKEL, 0.75f).build();
         LATERITE = Ore.builder().name("laterite")
                 .toolLevel(1).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.FERROUS)
                 .mineral(IRON, 0.2f).mineral(NICKEL, 0.7f).build();
         GOLD_ORE = Ore.builder().name("gold")
                 .toolLevel(2).hardness(3.0F).resistance(5.0F)
+                .slag(Slag.SHINY)
                 .mineral(GOLD, 1f).build();
         REDSTONE_ORE = Ore.builder().name("redstone")
                 .toolLevel(2).hardness(2.0F).resistance(5.0F)
+                .slag(Slag.SPARKLING)
                 .mineral(REDSTONE, 1f).build();
 
         ORES.addAll(Arrays.asList(SPHALERITE, CHALCOPYRITE, MALACHITE, TETRAHEDRITE, TEALLITE, CASSITERITE,

@@ -1,6 +1,5 @@
 package net.ros.common.recipe;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -179,8 +178,8 @@ public class RecipeHelper
     public static void addOreWashingRecipe(Ore ore, Fluid catalyst, float yield)
     {
         ItemStack rawOre;
-
         Map<Mineral, Float> minerals = new LinkedHashMap<>();
+        int leftOver = 10 - Math.round(ore.getMinerals().values().stream().reduce(Float::sum).get() * 10);
 
         ore.getMinerals().forEach((mineral, density) ->
         {
@@ -200,7 +199,7 @@ public class RecipeHelper
             rawOre.setTagCompound(new NBTTagCompound());
 
             int i = 0;
-            for (Map.Entry<Mineral, Float> mineral: minerals.entrySet())
+            for (Map.Entry<Mineral, Float> mineral : minerals.entrySet())
             {
                 rawOre.getTagCompound().setString("ore" + i, mineral.getKey().getName());
                 rawOre.getTagCompound().setString("density" + i, mineral.getValue() + yield >= 0.75f ?
@@ -214,6 +213,7 @@ public class RecipeHelper
 
         RecipeHandler.RECIPES.get(RecipeHandler.ORE_WASHER_UID).add(
                 new OreWasherRecipe(new FluidStack(ore.toSludge(), Fluid.BUCKET_VOLUME),
-                        new FluidStack(catalyst, Fluid.BUCKET_VOLUME), rawOre, new ItemStack(Blocks.GRAVEL)));
+                        new FluidStack(catalyst, Fluid.BUCKET_VOLUME), rawOre,
+                        new ItemStack(ROSItems.SLAG, leftOver, ore.getSlag().ordinal())));
     }
 }
