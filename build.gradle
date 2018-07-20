@@ -112,7 +112,7 @@ project('common') {
         deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16'
         deobfCompile 'mezz.jei:jei_1.12.2:4.9.2.196'
 
-        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-21-SNAPSHOT'
+        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-23-SNAPSHOT'
         compile 'fr.ourten:teabeans:0.7.0'
         compile 'org.hjson:hjson:3.0.0'
 
@@ -173,7 +173,7 @@ project('debug') {
 }
 
 dependencies {
-    shadow('org.yggard:brokkgui-binding-mc1.12:1.0.0-21-SNAPSHOT') { changing = true }
+    shadow('org.yggard:brokkgui-binding-mc1.12:1.0.0-23-SNAPSHOT') { changing = true }
     shadow 'fr.ourten:teabeans:0.7.0'
     shadow 'org.hjson:hjson:3.0.0'
     shadow 'com.elytradev.concrete:concrete-common:0.4.34'

@@ -35,9 +35,8 @@ public class GuiSteamVent extends BrokkGuiContainer<BuiltContainer>
         GuiLabel title = new GuiLabel(vent.getDisplayName().getFormattedText());
         mainPanel.addChild(title, 5, 4);
 
-        PressureControlPane pane = new PressureControlPane(vent.getMaxPressure(), 0.25f, vent::getVentPressure,
-                this::syncVentPressure,
-                vent.getBufferTank());
+        PressureControlPane pane = new PressureControlPane(vent.getMaxPressure(), 0.25f,
+                vent::getVentPressure, this::syncVentPressure, vent.getBufferTank());
 
         mainPanel.addChild(pane, this.getWidth() / 2 - pane.getWidth() / 2, 81 - pane.getHeight());
 

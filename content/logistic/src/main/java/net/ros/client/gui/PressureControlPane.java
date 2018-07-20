@@ -1,5 +1,6 @@
 package net.ros.client.gui;
 
+import fr.ourten.teabeans.binding.BaseBinding;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,19 +26,30 @@ public class PressureControlPane extends GuiAbsolutePane
     private static final Texture TEX_BARRIER = new Texture("textures/items/barrier.png");
 
     private float           maxPressure;
-    private float           cachedPressureLimit;
-    private Supplier<Float> pressureLimitGetter;
+    private float           cachedMinPressure;
+    private float           cachedMaxPressure;
+    private Supplier<Float> maxPressureGetter;
+    private Supplier<Float> minPressureGetter;
 
     private Needle   needle;
-    private GuiLabel pressureLimitLabel;
+    private GuiLabel maxPressureLabel;
+    private GuiLabel minPressureLabel;
 
-    public PressureControlPane(float maxPressure, float pressureStep, Supplier<Float> pressureLimitGetter,
-                               Consumer<Float> pressureLimitSetter, ISteamTank steamTank)
+    public PressureControlPane(float maxPressure, float pressureStep, Supplier<Float> maxPressureGetter,
+                               Consumer<Float> maxPressureSetter, ISteamTank steamTank)
+    {
+        this(maxPressure, pressureStep, maxPressureGetter, maxPressureSetter, null, null, steamTank);
+    }
+
+    public PressureControlPane(float maxPressure, float pressureStep, Supplier<Float> maxPressureGetter,
+                               Consumer<Float> maxPressureSetter, Supplier<Float> minPressureGetter,
+                               Consumer<Float> minPressureSetter, ISteamTank steamTank)
     {
         this.addStyleClass("pressure-panel");
         this.maxPressure = maxPressure;
 
-        this.pressureLimitGetter = pressureLimitGetter;
+        this.maxPressureGetter = maxPressureGetter;
+        this.minPressureGetter = minPressureGetter;
 
         this.setWidth(96);
         this.setHeight(66);
@@ -58,31 +70,172 @@ public class PressureControlPane extends GuiAbsolutePane
         TextFormatting[] textColors = new TextFormatting[]{TextFormatting.GREEN, TextFormatting.YELLOW,
                 TextFormatting.GOLD, TextFormatting.RED, TextFormatting.DARK_PURPLE};
 
-        pressureLimitLabel = new GuiLabel(SteamUtil.pressureFormat.format(pressureLimitGetter.get()));
-        pressureLimitLabel.addStyleClass("pressure-field");
-        pressureLimitLabel.setWidth(30);
-        pressureLimitLabel.setHeight(14);
-        pressureLimitLabel.setTextAlignment(EAlignment.MIDDLE_UP);
-        pressureLimitLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
+        if (this.minPressureGetter != null)
+            setupMinMaxPressureFields(pressureStep, maxPressureGetter, maxPressureSetter, minPressureGetter,
+                    minPressureSetter);
+        else
+            setupMaxPressureField(pressureStep, maxPressureGetter, maxPressureSetter);
+    }
 
-        this.addChild(pressureLimitLabel, this.getWidth() / 2 - pressureLimitLabel.getWidth() / 2,
-                this.getHeight() - pressureLimitLabel.getHeight());
+    private void setupMaxPressureField(float pressureStep, Supplier<Float> maxPressureGetter,
+                                       Consumer<Float> maxPressureSetter)
+    {
+        maxPressureLabel = new GuiLabel(SteamUtil.pressureFormat.format(maxPressureGetter.get()));
+        maxPressureLabel.addStyleClass("pressure-field");
+        maxPressureLabel.setWidth(30);
+        maxPressureLabel.setHeight(14);
+        maxPressureLabel.setTextAlignment(EAlignment.MIDDLE_UP);
+        maxPressureLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
+
+        this.addChild(maxPressureLabel, this.getWidth() / 2 - maxPressureLabel.getWidth() / 2,
+                this.getHeight() - maxPressureLabel.getHeight());
 
         GuiButton lessButton = new GuiButton();
         lessButton.setWidth(9);
         lessButton.setHeight(14);
         lessButton.addStyleClass("pressure-less");
-        this.addChild(lessButton, this.getWidth() / 2 - pressureLimitLabel.getWidth() / 2 - lessButton.getWidth(),
-                this.getHeight() - pressureLimitLabel.getHeight());
-        lessButton.setOnActionEvent(e -> pressureLimitSetter.accept(pressureLimitGetter.get() - pressureStep));
+        this.addChild(lessButton, this.getWidth() / 2 - maxPressureLabel.getWidth() / 2 - lessButton.getWidth(),
+                this.getHeight() - maxPressureLabel.getHeight());
+        lessButton.setOnActionEvent(e -> maxPressureSetter.accept(maxPressureGetter.get() - pressureStep));
 
         GuiButton moreButton = new GuiButton();
         moreButton.setWidth(9);
         moreButton.setHeight(14);
         moreButton.addStyleClass("pressure-more");
-        this.addChild(moreButton, this.getWidth() / 2 + pressureLimitLabel.getWidth() / 2,
-                this.getHeight() - pressureLimitLabel.getHeight());
-        moreButton.setOnActionEvent(e -> pressureLimitSetter.accept(pressureLimitGetter.get() + pressureStep));
+        this.addChild(moreButton, this.getWidth() / 2 + maxPressureLabel.getWidth() / 2,
+                this.getHeight() - maxPressureLabel.getHeight());
+        moreButton.setOnActionEvent(e -> maxPressureSetter.accept(maxPressureGetter.get() + pressureStep));
+
+        lessButton.getDisabledProperty().bind(new BaseBinding<Boolean>()
+        {
+            {
+                super.bind(maxPressureLabel.getTextProperty());
+            }
+
+            @Override
+            public Boolean computeValue()
+            {
+                return Float.parseFloat(maxPressureLabel.getText()) == 0;
+            }
+        });
+
+        moreButton.getDisabledProperty().bind(new BaseBinding<Boolean>()
+        {
+            {
+                super.bind(maxPressureLabel.getTextProperty());
+            }
+
+            @Override
+            public Boolean computeValue()
+            {
+                return Float.parseFloat(maxPressureLabel.getText()) == maxPressure;
+            }
+        });
+    }
+
+    private void setupMinMaxPressureFields(float pressureStep, Supplier<Float> maxPressureGetter,
+                                           Consumer<Float> maxPressureSetter, Supplier<Float> minPressureGetter,
+                                           Consumer<Float> minPressureSetter)
+    {
+        // Min pressure field
+
+        minPressureLabel = new GuiLabel(SteamUtil.pressureFormat.format(minPressureGetter.get()));
+        minPressureLabel.addStyleClass("pressure-field");
+        minPressureLabel.setWidth(30);
+        minPressureLabel.setHeight(14);
+        minPressureLabel.setTextAlignment(EAlignment.MIDDLE_UP);
+        minPressureLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
+
+        this.addChild(minPressureLabel, 9, this.getHeight() - minPressureLabel.getHeight());
+
+        GuiButton lessMinButton = new GuiButton();
+        lessMinButton.setWidth(9);
+        lessMinButton.setHeight(14);
+        lessMinButton.addStyleClass("pressure-less");
+        this.addChild(lessMinButton, 0, this.getHeight() - minPressureLabel.getHeight());
+        lessMinButton.setOnActionEvent(e -> minPressureSetter.accept(minPressureGetter.get() - pressureStep));
+
+        GuiButton moreMinButton = new GuiButton();
+        moreMinButton.setWidth(9);
+        moreMinButton.setHeight(14);
+        moreMinButton.addStyleClass("pressure-more");
+        this.addChild(moreMinButton, lessMinButton.getWidth() + minPressureLabel.getWidth(),
+                this.getHeight() - minPressureLabel.getHeight());
+        moreMinButton.setOnActionEvent(e -> minPressureSetter.accept(minPressureGetter.get() + pressureStep));
+
+        // Max Pressure field
+
+        maxPressureLabel = new GuiLabel(SteamUtil.pressureFormat.format(maxPressureGetter.get()));
+        maxPressureLabel.addStyleClass("pressure-field");
+        maxPressureLabel.setWidth(30);
+        maxPressureLabel.setHeight(14);
+        maxPressureLabel.setTextAlignment(EAlignment.MIDDLE_UP);
+        maxPressureLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
+
+        this.addChild(maxPressureLabel, this.getWidth() - lessMinButton.getWidth() - maxPressureLabel.getWidth(),
+                this.getHeight() - maxPressureLabel.getHeight());
+
+        GuiButton lessMaxButton = new GuiButton();
+        lessMaxButton.setWidth(9);
+        lessMaxButton.setHeight(14);
+        lessMaxButton.addStyleClass("pressure-less");
+        this.addChild(lessMaxButton, this.getWidth() - maxPressureLabel.getWidth() - lessMaxButton.getWidth() * 2,
+                this.getHeight() - maxPressureLabel.getHeight());
+        lessMaxButton.setOnActionEvent(e -> maxPressureSetter.accept(maxPressureGetter.get() - pressureStep));
+
+        GuiButton moreMaxButton = new GuiButton();
+        moreMaxButton.setWidth(9);
+        moreMaxButton.setHeight(14);
+        moreMaxButton.addStyleClass("pressure-more");
+        this.addChild(moreMaxButton, this.getWidth() - moreMaxButton.getWidth(),
+                this.getHeight() - maxPressureLabel.getHeight());
+        moreMaxButton.setOnActionEvent(e -> maxPressureSetter.accept(maxPressureGetter.get() + pressureStep));
+
+        lessMinButton.getDisabledProperty().bind(new BaseBinding<Boolean>()
+        {
+            {
+                super.bind(minPressureLabel.getTextProperty());
+            }
+
+            @Override
+            public Boolean computeValue()
+            {
+                return Float.parseFloat(minPressureLabel.getText()) == 0;
+            }
+        });
+
+        BaseBinding<Boolean> minUnderMaxBinding = new BaseBinding<Boolean>()
+        {
+            {
+                super.bind(minPressureLabel.getTextProperty());
+                super.bind(maxPressureLabel.getTextProperty());
+            }
+
+            @Override
+            public Boolean computeValue()
+            {
+                float minPressureValue = Float.parseFloat(minPressureLabel.getText());
+                float maxPressureValue = Float.parseFloat(maxPressureLabel.getText());
+
+                return minPressureValue >= maxPressureValue;
+            }
+        };
+
+        moreMinButton.getDisabledProperty().bind(minUnderMaxBinding);
+        lessMaxButton.getDisabledProperty().bind(minUnderMaxBinding);
+
+        moreMaxButton.getDisabledProperty().bind(new BaseBinding<Boolean>()
+        {
+            {
+                super.bind(maxPressureLabel.getTextProperty());
+            }
+
+            @Override
+            public Boolean computeValue()
+            {
+                return Float.parseFloat(maxPressureLabel.getText()) == maxPressure;
+            }
+        });
     }
 
     @Override
@@ -92,20 +245,48 @@ public class PressureControlPane extends GuiAbsolutePane
 
         if (pass == RenderPass.BACKGROUND)
         {
-            float angle = (float) Math.toRadians(180 * (1 - (cachedPressureLimit / maxPressure)));
-            this.drawSector(this.getxPos() + this.getWidth() / 2, this.getyPos() + 48, 44,
-                    angle, 15);
+            float angle = (float) Math.toRadians(180 * (1 - (cachedMaxPressure / maxPressure)));
+            this.drawSector(this.getxPos() + this.getWidth() / 2, this.getyPos() + 48, 44, angle, 15);
 
-            float endX = (float) (35 * Math.cos(Math.PI - angle/2));
-            float endY = (float) (35 * Math.sin(Math.PI - angle/2));
-            this.drawBarrier(renderer, this.getxPos() + this.getWidth() / 2 - 8 - endX,
-                    this.getyPos() + this.getHeight() / 2 + 8 - endY);
-
-            float suppliedPressureLimit = pressureLimitGetter.get();
-            if (this.cachedPressureLimit != suppliedPressureLimit)
+            float barrierX;
+            float barrierY;
+            // Do not draw barrier with a sector of 25 degrees or less
+            if (angle > Math.PI / 7)
             {
-                this.cachedPressureLimit = suppliedPressureLimit;
-                pressureLimitLabel.setText(SteamUtil.pressureFormat.format(suppliedPressureLimit));
+                barrierX = (float) (35 * Math.cos(Math.PI - angle / 2));
+                barrierY = (float) (35 * Math.sin(Math.PI - angle / 2));
+                this.drawBarrier(renderer, this.getxPos() + this.getWidth() / 2 - 8 - barrierX,
+                        this.getyPos() + this.getHeight() / 2 + 8 - barrierY);
+            }
+
+            float suppliedPressureLimit = maxPressureGetter.get();
+            if (this.cachedMaxPressure != suppliedPressureLimit)
+            {
+                this.cachedMaxPressure = suppliedPressureLimit;
+                maxPressureLabel.setText(SteamUtil.pressureFormat.format(suppliedPressureLimit));
+            }
+
+            if (this.minPressureGetter != null)
+            {
+                angle = (float) Math.toRadians(-180 * (cachedMinPressure / maxPressure));
+
+                this.drawSector(this.getxPos() + this.getWidth() / 2, this.getyPos() + 48, -44, angle, 15);
+
+                // Do not draw barrier with a sector of 25 degrees or less
+                if (-angle > Math.PI / 7)
+                {
+                    barrierX = (float) (35 * Math.cos(angle / 2));
+                    barrierY = (float) (35 * Math.sin(angle / 2));
+                    this.drawBarrier(renderer, this.getxPos() + this.getWidth() / 2 - 8 - barrierX,
+                            this.getyPos() + this.getHeight() / 2 + 8 + barrierY);
+                }
+
+                suppliedPressureLimit = minPressureGetter.get();
+                if (this.cachedMinPressure != suppliedPressureLimit)
+                {
+                    this.cachedMinPressure = suppliedPressureLimit;
+                    minPressureLabel.setText(SteamUtil.pressureFormat.format(suppliedPressureLimit));
+                }
             }
         }
     }
@@ -128,13 +309,20 @@ public class PressureControlPane extends GuiAbsolutePane
 
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
         GlStateManager.color(0.7f, 0, 0.6f, 0.2f);
         GlStateManager.glBegin(GL11.GL_TRIANGLE_STRIP);
 
         for (int i = 0; i < num_segments; i++)
         {
+            // Invert triangle draw order for reversed sectors
+            if (r < 0)
+                GL11.glVertex2f(x + cx, y + cy);
+
             GL11.glVertex2f(cx, cy);
-            GL11.glVertex2f(x + cx, y + cy);
+
+            if (r > 0)
+                GL11.glVertex2f(x + cx, y + cy);
 
             t = x;
             x = c * x - s * y;
@@ -163,6 +351,7 @@ public class PressureControlPane extends GuiAbsolutePane
 
         GL11.glVertex2f(cx + endX, cy - endY);
         GlStateManager.glEnd();
+        GlStateManager.enableTexture2D();
     }
 
     private static final class Needle extends Rectangle

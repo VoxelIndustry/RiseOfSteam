@@ -2,11 +2,21 @@ package net.ros.common.tile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.ros.common.container.BuiltContainer;
+import net.ros.common.container.ContainerBuilder;
+import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.PipeType;
+import net.ros.common.network.action.ActionSender;
+import net.ros.common.network.action.IActionReceiver;
 import net.ros.common.steam.SteamTank;
 
-public class TilePressureValve extends TileSteamPipe
+import javax.annotation.Nullable;
+
+public class TilePressureValve extends TileSteamPipe implements IContainerProvider, IActionReceiver
 {
     @Getter
     @Setter
@@ -19,8 +29,8 @@ public class TilePressureValve extends TileSteamPipe
     {
         super(type);
 
-        this.fillPressureLimit = -1;
-        this.drainPressureLimit = -1;
+        this.fillPressureLimit = this.getMaxPressure();
+        this.drainPressureLimit = 0;
     }
 
     public TilePressureValve()
@@ -83,5 +93,33 @@ public class TilePressureValve extends TileSteamPipe
         tag.setFloat("drainPressureLimit", this.drainPressureLimit);
 
         return super.writeToNBT(tag);
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TextComponentTranslation("gui.steampressurevalve.name");
+    }
+
+    @Override
+    public BuiltContainer createContainer(final EntityPlayer player)
+    {
+        return new ContainerBuilder("steampressurevalve", player)
+                .player(player).inventory(8, 84).hotbar(8, 142)
+                .addInventory()
+                .syncFloatValue(this::getDrainPressureLimit, this::setDrainPressureLimit)
+                .syncFloatValue(this::getFillPressureLimit, this::setFillPressureLimit)
+                .syncIntegerValue(this.getBufferTank()::getSteam, this.getBufferTank()::setSteam)
+                .create();
+    }
+
+    @Override
+    public void handle(ActionSender sender, String actionID, NBTTagCompound payload)
+    {
+        if ("minpressure".equals(actionID))
+            this.setDrainPressureLimit(payload.getFloat("pressure"));
+        else if ("maxpressure".equals(actionID))
+            this.setFillPressureLimit(payload.getFloat("pressure"));
     }
 }

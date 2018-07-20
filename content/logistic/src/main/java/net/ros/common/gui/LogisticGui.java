@@ -1,6 +1,7 @@
 package net.ros.common.gui;
 
 import net.ros.client.gui.GuiExtractor;
+import net.ros.client.gui.GuiPressureValve;
 import net.ros.client.gui.GuiSplitter;
 import net.ros.client.gui.GuiSteamVent;
 
@@ -14,4 +15,7 @@ public class LogisticGui
 
     public static final GuiReference STEAM_VENT = new GuiReference(GuiManager::getContainer,
             GuiManager.getBrokkGuiContainer(GuiSteamVent::new));
+
+    public static final GuiReference STEAM_PRESSURE_VALVE = new GuiReference(GuiManager::getContainer,
+            GuiManager.getBrokkGuiContainer(GuiPressureValve::new));
 }

@@ -33,3 +33,11 @@
 .pressure-less:hover {
     -background-texture: url("ros:textures/gui/pressure-pane/pressure_less_hover.png");
 }
+
+.pressure-more:disabled {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_more_disable.png");
+}
+
+.pressure-less:disabled {
+    -background-texture: url("ros:textures/gui/pressure-pane/pressure_less_disable.png");
+}

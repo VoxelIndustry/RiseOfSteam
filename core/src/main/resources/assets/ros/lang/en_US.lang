@@ -258,6 +258,7 @@ gui.steamtank.name=Steam Tank
 gui.blueprint.name=Blueprint Building
 gui.orewasher.name=Ore Washer
 gui.steamvent.name=Steam Vent
+gui.steampressurevalve.name=Steam Pressure Valve
 
 #Ores
 ore.iron=Iron

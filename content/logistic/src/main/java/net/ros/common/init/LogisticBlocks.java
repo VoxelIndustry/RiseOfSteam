@@ -54,10 +54,10 @@ public class LogisticBlocks
         addPipe(BlockPipeBase::new, PipeNature.FLUID, Materials.CAST_IRON, 0,
                 TileFluidPipe::new, TileFluidPipe.class);
 
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveRightClick,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveClick,
                 new AxisAlignedBB(3 / 16D, 3 / 16D, 0, 13 / 16D, 13 / 16D, 7 / 16D)),
                 PipeNature.FLUID, Materials.IRON, 0, TileFluidValve::new, TileFluidValve.class);
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveRightClick,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveClick,
                 new AxisAlignedBB(3 / 16D, 3 / 16D, 0, 13 / 16D, 13 / 16D, 7 / 16D)),
                 PipeNature.FLUID, Materials.CAST_IRON, 0, TileFluidValve::new, TileFluidValve.class);
 
@@ -66,10 +66,10 @@ public class LogisticBlocks
         addPipe(BlockPipeBase::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
                 TileSteamPipe::new, TileSteamPipe.class);
 
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveRightClick,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveClick,
                 new AxisAlignedBB(3 / 16D, 3 / 16D, 0, 13 / 16D, 13 / 16D, 7 / 16D)),
                 PipeNature.STEAM, Materials.BRASS, -1 / 16F, TileSteamValve::new, TileSteamValve.class);
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveRightClick,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.VALVE, LogisticBlocks::onValveClick,
                 new AxisAlignedBB(3 / 16D, 3 / 16D, 0, 13 / 16D, 13 / 16D, 7 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamValve::new, TileSteamValve.class);
 
@@ -80,15 +80,17 @@ public class LogisticBlocks
                 new AxisAlignedBB(6 / 16D, 6 / 16D, 4 / 16D, 10 / 16D, 10 / 16D, 7 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamGauge::new, TileSteamGauge.class);
 
-        addPipe(BlockPressureValve::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
-                TilePressureValve::new, TilePressureValve.class);
-        addPipe(BlockPressureValve::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
-                TilePressureValve::new, TilePressureValve.class);
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.PRESSURE_VALVE, LogisticBlocks::onPressureValveClick,
+                new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
+                PipeNature.STEAM, Materials.BRASS, -1 / 16F, TilePressureValve::new, TilePressureValve.class);
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.PRESSURE_VALVE, LogisticBlocks::onPressureValveClick,
+                new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
+                PipeNature.STEAM, Materials.STEEL, -1 / 16F, TilePressureValve::new, TilePressureValve.class);
 
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentRightClick,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentClick,
                 new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
                 PipeNature.STEAM, Materials.BRASS, -1 / 16F, TileSteamVent::new, TileSteamVent.class);
-        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentRightClick,
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentClick,
                 new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamVent::new, TileSteamVent.class);
 
@@ -113,8 +115,8 @@ public class LogisticBlocks
         registerTile(TilePressureValve.class, "pressurevalve");
     }
 
-    private static boolean onValveRightClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
-                                             EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    private static boolean onValveClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
+                                        EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (!w.isRemote)
         {
@@ -130,8 +132,8 @@ public class LogisticBlocks
         return true;
     }
 
-    private static boolean onVentRightClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
-                                            EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    private static boolean onVentClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
+                                       EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (w.isRemote)
             return true;
@@ -141,6 +143,21 @@ public class LogisticBlocks
             offset = pos.offset(state.getValue(BlockOrientableMachine.FACING).getOpposite());
 
         player.openGui(ROSConstants.MODINSTANCE, LogisticGui.STEAM_VENT.getUniqueID(), w, offset.getX(),
+                offset.getY(), offset.getZ());
+        return true;
+    }
+
+    private static boolean onPressureValveClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,
+                                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (w.isRemote)
+            return true;
+        BlockPos offset = pos;
+
+        if (state.getValue(BlockMultiblockBase.MULTIBLOCK_GAG))
+            offset = pos.offset(state.getValue(BlockOrientableMachine.FACING).getOpposite());
+
+        player.openGui(ROSConstants.MODINSTANCE, LogisticGui.STEAM_PRESSURE_VALVE.getUniqueID(), w, offset.getX(),
                 offset.getY(), offset.getZ());
         return true;
     }
