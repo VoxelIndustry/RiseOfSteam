@@ -95,7 +95,7 @@ public class RenderIOOverlay
                 });
 
         GlStateManager.pushAttrib();
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableLighting();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
 
@@ -113,12 +113,13 @@ public class RenderIOOverlay
         GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.colorMask(true, true, true, true);
 
-        for (TileModularMachine tile: tiles)
+        for (TileModularMachine tile : tiles)
             renderTile(tile.getDescriptor(), tile.getFacing(), tile.getPos(), player);
-        for (TileStructure structure: structureTiles)
+        for (TileStructure structure : structureTiles)
             renderTile(structure.getBlueprint().getDescriptor(), EnumFacing.VALUES[structure.getMeta()],
                     structure.getPos(), player);
 
+        GlStateManager.disableBlend();
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
     }
@@ -134,7 +135,7 @@ public class RenderIOOverlay
             {
                 PipeType pipeType = getPipeType(player.getHeldItemMainhand());
 
-                for (MultiblockSide point: io.getSteamIO())
+                for (MultiblockSide point : io.getSteamIO())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point, tileFacing);
@@ -154,7 +155,7 @@ public class RenderIOOverlay
             {
                 PipeType pipeType = getPipeType(player.getHeldItemMainhand());
 
-                for (FluidIOPoint point: io.getFluidIO())
+                for (FluidIOPoint point : io.getFluidIO())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point.getSide(), tileFacing);
@@ -175,7 +176,7 @@ public class RenderIOOverlay
             {
                 AutomationComponent automation = descriptor.get(AutomationComponent.class);
 
-                for (InputPoint point: automation.getInputs())
+                for (InputPoint point : automation.getInputs())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point.getSide(), tileFacing);
@@ -191,7 +192,7 @@ public class RenderIOOverlay
                             side.getFacing().getOpposite());
                     GlStateManager.popMatrix();
                 }
-                for (OutputPoint point: automation.getOutputs())
+                for (OutputPoint point : automation.getOutputs())
                 {
                     MultiblockSide side = descriptor.get(MultiblockComponent.class)
                             .multiblockSideToWorldSide(point.getSide(), tileFacing);
@@ -214,7 +215,7 @@ public class RenderIOOverlay
     private static void renderSteam(World w, BlockPos pos, MultiblockSide side, PipeType pipeType)
     {
         List<EnumFacing> facings = new ArrayList<>(6);
-        for (EnumFacing facing: EnumFacing.VALUES)
+        for (EnumFacing facing : EnumFacing.VALUES)
         {
             if (facing == side.getFacing().getOpposite())
                 facings.add(facing);
@@ -241,7 +242,7 @@ public class RenderIOOverlay
     private static void renderFluid(World w, BlockPos pos, MultiblockSide side, FluidIOPoint point, PipeType pipeType)
     {
         List<EnumFacing> facings = new ArrayList<>(6);
-        for (EnumFacing facing: EnumFacing.VALUES)
+        for (EnumFacing facing : EnumFacing.VALUES)
         {
             if (facing == side.getFacing().getOpposite())
                 facings.add(facing);
