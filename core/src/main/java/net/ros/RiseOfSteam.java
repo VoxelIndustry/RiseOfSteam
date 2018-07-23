@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.ros.common.CommonProxy;
 import net.ros.common.CustomCreativeTab;
+import net.ros.common.PipesCreativeTab;
 import net.ros.common.ROSConstants;
 import net.ros.common.init.ROSBlocks;
 
@@ -18,7 +19,7 @@ public class RiseOfSteam
     {
         FluidRegistry.enableUniversalBucket();
         ROSConstants.TAB_ALL = new CustomCreativeTab("ros", () -> ROSBlocks.BELT);
-        ROSConstants.TAB_PIPES = new CustomCreativeTab("ros.pipes", () -> ROSBlocks.STEAM_PIPE_SMALL);
+        ROSConstants.TAB_PIPES = new PipesCreativeTab("ros.pipes", () -> ROSBlocks.STEAM_PIPE_SMALL);
     }
 
     @SidedProxy(clientSide = "net.ros.client.ClientProxy", serverSide = "net.ros.server.ServerProxy")

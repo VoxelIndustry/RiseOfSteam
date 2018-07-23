@@ -50,6 +50,12 @@ public class PipeModelRegistry
                 new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamvalve_medium.mwm");
 
         // Gauges
+        this.replacePipesModel(PipeNature.FLUID, "gauge",
+                new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM}, new Metal[]{Materials.IRON, Materials.CAST_IRON},
+                "block/fluidgauge_small.mwm");
+        this.replacePipesModel(PipeNature.FLUID, "gauge", new PipeSize[]{PipeSize.LARGE},
+                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/fluidgauge_medium.mwm");
+
         this.replacePipesModel(PipeNature.STEAM, "gauge",
                 new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM}, new Metal[]{Materials.BRASS, Materials.STEEL},
                 "block/steamgauge_small.mwm");
@@ -100,9 +106,9 @@ public class PipeModelRegistry
     public void replacePipesModel(PipeNature nature, String pipeName, PipeSize[] sizes, Metal[] metals,
                                   String modelPath)
     {
-        for (Metal metal: metals)
+        for (Metal metal : metals)
         {
-            for (PipeSize size: sizes)
+            for (PipeSize size : sizes)
             {
                 replacePipeModel(Block.getBlockFromName(ROSConstants.MODID + ":" + nature.toString() + pipeName + "_"
                                 + metal.getName() + "_" + size.toString()),
@@ -139,11 +145,11 @@ public class PipeModelRegistry
 
     public void replacePipeInventoryModel(IRegistry<ModelResourceLocation, IBakedModel> registry, Metal... metals)
     {
-        for (PipeNature nature: PipeNature.values())
+        for (PipeNature nature : PipeNature.values())
         {
-            for (PipeSize size: PipeSize.values())
+            for (PipeSize size : PipeSize.values())
             {
-                for (Metal metal: metals)
+                for (Metal metal : metals)
                 {
                     BlockPipeBase block = (BlockPipeBase) Block.getBlockFromName(ROSConstants.MODID + ":" +
                             nature.toString() + "pipe_" + metal.getName() + "_" + size.toString());

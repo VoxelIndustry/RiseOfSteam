@@ -10,24 +10,21 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.ros.common.machine.module.impl.FluidStorageModule;
-import net.ros.common.tile.machine.TileTank;
+import net.ros.common.tile.TileFluidGauge;
 import org.lwjgl.opengl.GL11;
 import org.yggard.brokkgui.paint.Color;
 
-public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
+public class RenderFluidGauge extends TileEntitySpecialRenderer<TileFluidGauge>
 {
     @Override
-    public final void render(TileTank tank, double x, double y, double z, float partialTicks, int destroyStage,
+    public final void render(TileFluidGauge gauge, double x, double y, double z, float partialTicks, int destroyStage,
                              float partial)
     {
         GlStateManager.pushMatrix();
 
-        IFluidTank fluidTank = (IFluidTank) tank.getModule(FluidStorageModule.class).getFluidHandler("fluid");
 
-        int capacity = fluidTank.getCapacity();
-        FluidStack fluid = fluidTank.getFluid();
+        int capacity = gauge.getBufferTank().getCapacity();
+        FluidStack fluid = gauge.getBufferTank().getFluid();
         if (fluid != null)
         {
             Tessellator tess = Tessellator.getInstance();
@@ -35,7 +32,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
 
             GlStateManager.translate(x + .5, y, z + .5);
 
-            EnumFacing facing = tank.getFacing();
+            EnumFacing facing = gauge.getFacing();
 
             if (facing == EnumFacing.NORTH)
                 GlStateManager.rotate(180, 0, 1, 0);
@@ -52,16 +49,12 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
 
             Color color = Color.fromRGBAInt(fluid.getFluid().getColor(fluid));
 
-            double tankXOffset = tank.getTier() == 1 ? 6 / 16D : 0;
-            double tankYOffset = tank.getTier() == 0 ? 0 : (tank.getTier() == 1 ? -6 / 16D : 3.5 / 16D);
-            double tankZOffset = tank.getTier() == 0 ? 0 : (tank.getTier() == 1 ? 15.5 / 16D : 13.5 / 16D);
+            double startX = -1.25 / 16D;
+            double endX = startX + 2.5 / 16D;
 
-            double startX = tankXOffset - 2 / 16D;
-            double endX = startX + 4 / 16D;
-
-            double startY = tankYOffset + 19 / 16D;
-            double endY = startY + (14 / 16D * ((float) fluid.amount / (float) capacity));
-            double endZ = tankZOffset + 7 / 16D + 0.001;
+            double startY = 3.75 / 16D;
+            double endY = startY + (8.5 / 16D * ((float) fluid.amount / (float) capacity));
+            double endZ = 8.25 / 16D + 0.001;
 
             GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
@@ -91,4 +84,5 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
         }
         GlStateManager.popMatrix();
     }
+
 }

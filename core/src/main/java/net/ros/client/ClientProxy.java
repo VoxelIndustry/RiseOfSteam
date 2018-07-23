@@ -37,6 +37,7 @@ import net.ros.common.init.ROSFluids;
 import net.ros.common.init.ROSItems;
 import net.ros.common.item.IItemModelProvider;
 import net.ros.common.network.MultiblockBoxPacket;
+import net.ros.common.tile.TileFluidGauge;
 import net.ros.common.tile.TileStructure;
 import net.ros.common.tile.machine.*;
 import org.lwjgl.input.Mouse;
@@ -128,6 +129,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileSteamFurnaceMK2.class, new RenderSteamFurnaceMK2());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSawMill.class, new RenderSawMill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new RenderFluidTank());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileFluidGauge.class, new RenderFluidGauge());
         MinecraftForge.EVENT_BUS.register(new MachineClientEventHandler());
         MinecraftForge.EVENT_BUS.register(new LogisticClientEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
@@ -222,6 +224,7 @@ public class ClientProxy extends CommonProxy
 
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvent_medium"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvalve_medium"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/fluidgauge_medium"));
     }
 
     @SubscribeEvent

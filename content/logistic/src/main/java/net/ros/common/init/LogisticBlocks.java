@@ -61,6 +61,20 @@ public class LogisticBlocks
                 new AxisAlignedBB(3 / 16D, 3 / 16D, 0, 13 / 16D, 13 / 16D, 7 / 16D)),
                 PipeNature.FLUID, Materials.CAST_IRON, 0, TileFluidValve::new, TileFluidValve.class);
 
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.FLUID_PUMP, RightClickAction.EMPTY,
+                new AxisAlignedBB(6 / 16D, 6 / 16D, 4 / 16D, 10 / 16D, 10 / 16D, 7 / 16D)),
+                PipeNature.FLUID, Materials.IRON, 0, TileFluidPump::new, TileFluidPump.class);
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.FLUID_PUMP, RightClickAction.EMPTY,
+                new AxisAlignedBB(6 / 16D, 6 / 16D, 4 / 16D, 10 / 16D, 10 / 16D, 7 / 16D)),
+                PipeNature.FLUID, Materials.CAST_IRON, 0, TileFluidPump::new, TileFluidPump.class);
+
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.FLUID_GAUGE, RightClickAction.EMPTY,
+                new AxisAlignedBB(6 / 16D, 3 / 16D, -2 / 16D, 10 / 16D, 13 / 16D, 1/ 16D)),
+                PipeNature.FLUID, Materials.IRON, 0, TileFluidGauge::new, TileFluidGauge.class);
+        addPipe(BlockPipeCover.getSupplier(PipeCoverType.FLUID_GAUGE, RightClickAction.EMPTY,
+                new AxisAlignedBB(6 / 16D, 4 / 16D, -2 / 16D, 10 / 16D, 14 / 16D, 0 / 16D)),
+                PipeNature.FLUID, Materials.CAST_IRON, 0, TileFluidGauge::new, TileFluidGauge.class);
+
         addPipe(BlockPipeBase::new, PipeNature.STEAM, Materials.BRASS, -1 / 16F,
                 TileSteamPipe::new, TileSteamPipe.class);
         addPipe(BlockPipeBase::new, PipeNature.STEAM, Materials.STEEL, -1 / 16F,
@@ -94,7 +108,6 @@ public class LogisticBlocks
                 new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamVent::new, TileSteamVent.class);
 
-        registerBlock(new BlockFluidPump());
         registerBlock(new BlockOffshorePump());
 
         registerBlock(new BlockBelt());
@@ -112,6 +125,7 @@ public class LogisticBlocks
         registerTile(TileFluidValve.class, "fluidvalve");
         registerTile(TileSteamVent.class, "steamvent");
         registerTile(TileSteamGauge.class, "steamgauge");
+        registerTile(TileFluidGauge.class, "fluidgauge");
         registerTile(TilePressureValve.class, "pressurevalve");
     }
 
