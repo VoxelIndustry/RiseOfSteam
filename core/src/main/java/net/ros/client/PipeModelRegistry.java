@@ -72,9 +72,25 @@ public class PipeModelRegistry
 
         // Pressure valve
         this.replacePipesModel(PipeNature.STEAM, "pressurevalve",
-                new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM, PipeSize.LARGE}, new Metal[]{Materials.BRASS,
-                        Materials.STEEL},
+                new PipeSize[]{PipeSize.SMALL}, new Metal[]{Materials.BRASS, Materials.STEEL},
                 "block/steampressurevalve_small.mwm");
+        this.replacePipesModel(PipeNature.STEAM, "pressurevalve",
+                new PipeSize[]{PipeSize.MEDIUM}, new Metal[]{Materials.BRASS, Materials.STEEL},
+                "block/steampressurevalve_medium.mwm");
+        this.replacePipesModel(PipeNature.STEAM, "pressurevalve",
+                new PipeSize[]{PipeSize.LARGE}, new Metal[]{Materials.BRASS, Materials.STEEL},
+                "block/steampressurevalve_large.mwm");
+
+        // Fluid pump
+        this.replacePipesModel(PipeNature.FLUID, "pump",
+                new PipeSize[]{PipeSize.SMALL}, new Metal[]{Materials.IRON, Materials.CAST_IRON},
+                "block/fluidpump_small.mwm");
+        this.replacePipesModel(PipeNature.FLUID, "pump",
+                new PipeSize[]{PipeSize.MEDIUM}, new Metal[]{Materials.IRON, Materials.CAST_IRON},
+                "block/fluidpump_medium.mwm");
+        this.replacePipesModel(PipeNature.FLUID, "pump",
+                new PipeSize[]{PipeSize.LARGE}, new Metal[]{Materials.IRON, Materials.CAST_IRON},
+                "block/fluidpump_large.mwm");
     }
 
     public void onModelBake(IRegistry<ModelResourceLocation, IBakedModel> registry)

@@ -85,13 +85,13 @@ tile.steamgauge_steel_small.name=Small Steel Steam Pipe Gauge
 tile.steamgauge_steel_medium.name=Medium Steel Steam Pipe Gauge
 tile.steamgauge_steel_large.name=Large Steel Steam Pipe Gauge
 
-tile.pressurevalve_brass_small.name=Small Brass Pressure Valve
-tile.pressurevalve_brass_medium.name=Medium Brass Pressure Valve
-tile.pressurevalve_brass_large.name=Large Brass Pressure Valve
+tile.steampressurevalve_brass_small.name=Small Brass Pressure Valve
+tile.steampressurevalve_brass_medium.name=Medium Brass Pressure Valve
+tile.steampressurevalve_brass_large.name=Large Brass Pressure Valve
 
-tile.pressurevalve_steel_small.name=Small Steel Pressure Valve
-tile.pressurevalve_steel_medium.name=Medium Steel Pressure Valve
-tile.pressurevalve_steel_large.name=Large Steel Pressure Valve
+tile.steampressurevalve_steel_small.name=Small Steel Pressure Valve
+tile.steampressurevalve_steel_medium.name=Medium Steel Pressure Valve
+tile.steampressurevalve_steel_large.name=Large Steel Pressure Valve
 
 tile.steamvent.name=Steam Vent
 

@@ -81,6 +81,7 @@ public class ModelPipeCover implements IBakedModel
 
             } catch (Exception e)
             {
+                e.printStackTrace();
                 coverModel = modelManager.getMissingModel();
             }
 

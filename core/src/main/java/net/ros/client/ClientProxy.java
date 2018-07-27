@@ -225,6 +225,9 @@ public class ClientProxy extends CommonProxy
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvent_medium"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvalve_medium"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/fluidgauge_medium"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/steampressurevalve_small"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/steampressurevalve_medium"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/steampressurevalve_large"));
     }
 
     @SubscribeEvent

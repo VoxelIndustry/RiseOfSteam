@@ -69,7 +69,7 @@ public class LogisticBlocks
                 PipeNature.FLUID, Materials.CAST_IRON, 0, TileFluidPump::new, TileFluidPump.class);
 
         addPipe(BlockPipeCover.getSupplier(PipeCoverType.FLUID_GAUGE, RightClickAction.EMPTY,
-                new AxisAlignedBB(6 / 16D, 3 / 16D, -2 / 16D, 10 / 16D, 13 / 16D, 1/ 16D)),
+                new AxisAlignedBB(6 / 16D, 3 / 16D, -2 / 16D, 10 / 16D, 13 / 16D, 1 / 16D)),
                 PipeNature.FLUID, Materials.IRON, 0, TileFluidGauge::new, TileFluidGauge.class);
         addPipe(BlockPipeCover.getSupplier(PipeCoverType.FLUID_GAUGE, RightClickAction.EMPTY,
                 new AxisAlignedBB(6 / 16D, 4 / 16D, -2 / 16D, 10 / 16D, 14 / 16D, 0 / 16D)),
@@ -95,10 +95,10 @@ public class LogisticBlocks
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamGauge::new, TileSteamGauge.class);
 
         addPipe(BlockPipeCover.getSupplier(PipeCoverType.PRESSURE_VALVE, LogisticBlocks::onPressureValveClick,
-                new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
+                new AxisAlignedBB(3 / 16D, 5/ 16D, 0 / 16D, 13 / 16D, 11 / 16D, 4 / 16D)),
                 PipeNature.STEAM, Materials.BRASS, -1 / 16F, TilePressureValve::new, TilePressureValve.class);
         addPipe(BlockPipeCover.getSupplier(PipeCoverType.PRESSURE_VALVE, LogisticBlocks::onPressureValveClick,
-                new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
+                new AxisAlignedBB(3 / 16D, 5/ 16D, 0 / 16D, 13 / 16D, 11 / 16D, 4 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TilePressureValve::new, TilePressureValve.class);
 
         addPipe(BlockPipeCover.getSupplier(PipeCoverType.STEAM_VENT, LogisticBlocks::onVentClick,
