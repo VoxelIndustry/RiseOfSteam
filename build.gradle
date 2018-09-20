@@ -120,6 +120,8 @@ project('common') {
         compile 'com.elytradev.concrete:concrete-reflect:0.5.40'
         compile 'com.elytradev.concrete:concrete-network:0.5.40'
 
+        compile "info.journeymap:journeymap-api:1.9-1.2"
+
         compile project(':debug')
     }
 }
