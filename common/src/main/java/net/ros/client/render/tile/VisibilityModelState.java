@@ -12,9 +12,9 @@ import java.util.Optional;
 
 public class VisibilityModelState implements IModelState
 {
-    public final  List<String>                 parts     = new ArrayList<>();
-    public        boolean                      blacklist = true;
-    private final Optional<TRSRTransformation> value     = Optional.of(TRSRTransformation.identity());
+    public final  List<String>       parts     = new ArrayList<>();
+    public        boolean            blacklist = true;
+    private final TRSRTransformation value     = TRSRTransformation.identity();
 
     @Override
     public Optional<TRSRTransformation> apply(final Optional<? extends IModelPart> part)
@@ -27,7 +27,7 @@ public class VisibilityModelState implements IModelState
                 final String name = parts.next();
                 if (!parts.hasNext() && this.blacklist && this.parts.contains(name)
                         || !this.blacklist && !this.parts.contains(name))
-                    return this.value;
+                    return Optional.ofNullable(this.value);
             }
         }
         return Optional.empty();

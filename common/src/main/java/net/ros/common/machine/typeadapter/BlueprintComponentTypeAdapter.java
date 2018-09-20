@@ -71,7 +71,7 @@ public class BlueprintComponentTypeAdapter extends TypeAdapter<Blueprint>
                     break;
             }
         }
-        blueprint.addStep(time, stacks.toArray(new ItemStack[stacks.size()]));
+        blueprint.addStep(time, stacks.toArray(new ItemStack[0]));
     }
 
     private ItemStack parseItem(String stack)

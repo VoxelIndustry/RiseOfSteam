@@ -21,6 +21,6 @@ public class ItemBlockVeinOre extends ItemBlockMetadata
         veinOre.getVARIANTS().getAllowedValues().forEach(variant -> variants.add(variant + ".poor"));
         veinOre.getVARIANTS().getAllowedValues().forEach(variant -> variants.add(variant + ".normal"));
         veinOre.getVARIANTS().getAllowedValues().forEach(variant -> variants.add(variant + ".rich"));
-        return variants.toArray(new String[variants.size()]);
+        return variants.toArray(new String[0]);
     }
 }

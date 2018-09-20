@@ -12,10 +12,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockVeinOre;
+import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
+import net.ros.common.ore.CoreSample;
 import net.ros.common.ore.Mineral;
 import net.ros.common.ore.Ores;
 import net.ros.common.steam.SteamCapabilities;
@@ -27,19 +29,20 @@ import net.ros.common.item.ItemDrillCoreSample;
 import net.ros.common.network.action.ActionSender;
 import net.ros.common.network.action.IActionReceiver;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class TileTinyMiningDrill extends TileTickingModularMachine implements IContainerProvider, IActionReceiver
 {
     private final int consumption = 20;
+    private final int radius      = 7;
+    private final int diameter    = radius * 2 + 1;
 
     @Getter
     @Setter
     private float progress;
 
-    private BlockPos            lastPos;
-    private Map<Mineral, Float> results;
+    private BlockPos   lastPos;
+    private CoreSample result = new CoreSample();
 
     @Getter
     @Setter
@@ -49,7 +52,6 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
     {
         super(Machines.TINY_MINING_DRILL);
 
-        this.results = new HashMap<>();
         this.lastPos = this.getPos();
     }
 
@@ -85,19 +87,19 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
             for (int i = 0; i < 25; i++)
             {
                 if (lastPos.equals(BlockPos.ORIGIN))
-                    toCheck = new BlockPos(this.getPos().getX() - 7, 0, this.getPos().getZ() - 7);
+                    toCheck = new BlockPos(this.getPos().getX() - radius, 0, this.getPos().getZ() - radius);
                 else
                 {
                     if (toCheck.getY() == this.getPos().getY() - 1)
                     {
-                        if (toCheck.getX() == this.getPos().getX() + 7)
+                        if (toCheck.getX() == this.getPos().getX() + radius)
                         {
-                            if (toCheck.getZ() == this.getPos().getZ() + 7)
+                            if (toCheck.getZ() == this.getPos().getZ() + radius)
                             {
                                 this.progress = 1;
-                                inventory.setStackInSlot(0, ItemDrillCoreSample.getSample(this.getPos(), results));
+                                inventory.setStackInSlot(0, ItemDrillCoreSample.getSample(this.getPos(), result));
                             }
-                            toCheck = new BlockPos(this.getPos().getX() - 7, 0, toCheck.getZ() + 1);
+                            toCheck = new BlockPos(this.getPos().getX() - radius, 0, toCheck.getZ() + 1);
                         }
                         else
                             toCheck = new BlockPos(toCheck.getX() + 1, 0, toCheck.getZ());
@@ -105,31 +107,37 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
                     else
                         toCheck = toCheck.up();
                 }
-                this.progress = (((toCheck.getZ() - this.getPos().getZ() + 7) * 15 * (this.getPos().getY() - 1))
-                        + ((toCheck.getX() - this.getPos().getX() + 7) * (this.getPos().getY() - 1)) + toCheck.getY())
-                        / (float) (15 * 15 * (this.getPos().getY() - 1));
+                this.progress =
+                        (((toCheck.getZ() - this.getPos().getZ() + radius) * diameter * (this.getPos().getY() - 1))
+                                + ((toCheck.getX() - this.getPos().getX() + radius) * (this.getPos().getY() - 1)) + toCheck.getY())
+                                / (float) (diameter * diameter * (this.getPos().getY() - 1));
 
                 IBlockState state = this.world.getBlockState(toCheck);
 
                 if (state.getBlock() instanceof BlockVeinOre)
                 {
-                    for (Map.Entry<Mineral, Float> mineral : Ores.getOreFromState(state)
-                            .orElse(Ores.CASSITERITE).getMinerals().entrySet())
+                    BlockPos finalToCheck = toCheck;
+                    Ores.getOreFromState(state).ifPresent(ore ->
                     {
-                        this.results.putIfAbsent(mineral.getKey(), 0F);
-                        this.results.put(mineral.getKey(),
-                                mineral.getValue() * (state.getValue(BlockVeinOre.RICHNESS).ordinal() + 1)
-                                        + this.results.get(mineral.getKey()));
-                    }
+                        this.result.getOreCount().compute(ore, (currentOre, currentCount) ->
+                        {
+                            int count = ((BlockVeinOre) state.getBlock()).getRichnessFromState(state).ordinal() + 1;
+                            if (currentCount == null)
+                                return count;
+                            else
+                                return Integer.sum(count, currentCount);
+                        });
+                        this.result.getOreHeightMap().put(finalToCheck, ore);
+                    });
                 }
                 lastPos = toCheck;
 
                 if (this.progress == 1)
                 {
-                    inventory.setStackInSlot(0, ItemDrillCoreSample.getSample(this.getPos(), results));
+                    inventory.setStackInSlot(0, ItemDrillCoreSample.getSample(this.getPos(), result));
                     this.progress = 0;
                     this.lastPos = BlockPos.ORIGIN;
-                    this.results.clear();
+                    this.result = new CoreSample();
                     this.doStart = false;
                 }
             }
@@ -144,16 +152,7 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
     {
         tag.setFloat("progress", this.progress);
         tag.setLong("lastPos", this.lastPos.toLong());
-
-        int i = 0;
-        for (Map.Entry<Mineral, Float> ore : this.results.entrySet())
-        {
-            tag.setString("oreType" + i, ore.getKey().getName());
-            tag.setFloat("oreCount" + i, ore.getValue());
-            i++;
-        }
-        tag.setInteger("ores", i);
-
+        tag.setTag("coreSample", this.result.toNBT(tag));
         tag.setBoolean("doStart", this.doStart);
 
         return super.writeToNBT(tag);
@@ -164,11 +163,7 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
     {
         this.progress = tag.getFloat("progress");
         this.lastPos = BlockPos.fromLong(tag.getLong("lastPos"));
-
-        for (int i = 0; i < tag.getInteger("ores"); i++)
-            this.results.put(Ores.getMineralFromName(tag.getString("oreType" + i)).orElse(null),
-                    tag.getFloat("oreCount" + i));
-
+        this.result = CoreSample.fromNBT(tag.getCompoundTag("coreSample"));
         this.doStart = tag.getBoolean("doStart");
 
         super.readFromNBT(tag);

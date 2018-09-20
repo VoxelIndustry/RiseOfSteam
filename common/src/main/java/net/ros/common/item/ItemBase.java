@@ -38,6 +38,6 @@ public class ItemBase extends Item implements IItemModelProvider
     public void registerVariants()
     {
         ModelBakery.registerItemVariants(this,
-                variants.values().toArray(new ModelResourceLocation[variants.size()]));
+                variants.values().toArray(new ModelResourceLocation[0]));
     }
 }

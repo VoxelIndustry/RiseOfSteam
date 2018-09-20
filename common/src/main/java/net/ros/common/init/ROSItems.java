@@ -35,10 +35,6 @@ public class ROSItems
     @ObjectHolder("solarreflector")
     public static final ItemBase  SOLAR_REFLECTOR = null;
 
-    @ObjectHolder("mineralsludge")
-    public static final ItemBase MINERAL_SLUDGE            = null;
-    @ObjectHolder("compressedmineralsludge")
-    public static final ItemBase COMPRESSED_MINERAL_SLUDGE = null;
     @ObjectHolder("mixedrawore")
     public static final ItemBase MIXED_RAW_ORE             = null;
     @ObjectHolder("rawore")
@@ -78,7 +74,7 @@ public class ROSItems
     @SubscribeEvent
     public void onItemRegister(RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().registerAll(ITEMS.toArray(new Item[ITEMS.size()]));
+        event.getRegistry().registerAll(ITEMS.toArray(new Item[0]));
     }
 
     static void registerItem(final ItemBase item)

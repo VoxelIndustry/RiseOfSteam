@@ -10,17 +10,17 @@ public class BiomeMatcher
 {
     public static final BiomePredicate WILDCARD = biome -> true;
 
-    public static final BiomePredicate fromNames(String... biomeNames)
+    public static BiomePredicate fromNames(String... biomeNames)
     {
         return biome -> biome != null && ArrayUtils.contains(biomeNames, biome.getRegistryName().getResourcePath());
     }
 
-    public static final BiomePredicate fromBiomes(Biome... biomes)
+    public static BiomePredicate fromBiomes(Biome... biomes)
     {
         return biome -> Stream.of(biomes).anyMatch(check -> check.getRegistryName().getResourcePath().equals(biome.getRegistryName().getResourcePath()));
     }
 
-    public static final BiomePredicate reverse(BiomePredicate predicate)
+    public static BiomePredicate reverse(BiomePredicate predicate)
     {
         return (BiomePredicate) predicate.negate();
     }

@@ -20,7 +20,6 @@ import net.ros.common.recipe.category.FurnaceRecipeCategory;
 import net.ros.common.recipe.category.RecipeCategory;
 import net.ros.common.recipe.category.SortingMachineRecipeCategory;
 import net.ros.common.recipe.type.CapsuleRecipe;
-import net.ros.common.recipe.type.SludgeRecipe;
 import org.apache.commons.lang3.StringUtils;
 
 public class Recipes
@@ -91,8 +90,6 @@ public class Recipes
                         4),
                 new ItemStack(Blocks.PLANKS, 5, BlockPlanks.EnumType.DARK_OAK.getMetadata()));
 
-        RecipeHandler.CRAFTING_RECIPES.add(new SludgeRecipe().setRegistryName(
-                new ResourceLocation(ROSConstants.MODID, "compressedsludge")));
         RecipeHandler.CRAFTING_RECIPES.add(new CapsuleRecipe().setRegistryName(
                 new ResourceLocation(ROSConstants.MODID, "steamcapsule")));
 

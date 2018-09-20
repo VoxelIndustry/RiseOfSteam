@@ -1,6 +1,5 @@
 package net.ros.common;
 
-import com.google.common.collect.Comparators;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -11,7 +10,6 @@ import net.ros.common.grid.node.PipeType;
 import net.ros.common.recipe.Materials;
 
 import javax.annotation.Nonnull;
-import java.util.Comparator;
 import java.util.function.Supplier;
 
 public class PipesCreativeTab extends CustomCreativeTab

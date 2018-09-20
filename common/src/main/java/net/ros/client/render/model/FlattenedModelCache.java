@@ -15,7 +15,7 @@ public class FlattenedModelCache
 {
     private static volatile FlattenedModelCache instance = null;
 
-    public static final FlattenedModelCache getInstance()
+    public static FlattenedModelCache getInstance()
     {
         if (FlattenedModelCache.instance == null)
             synchronized (FlattenedModelCache.class)

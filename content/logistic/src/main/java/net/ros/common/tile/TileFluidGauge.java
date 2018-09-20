@@ -10,9 +10,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
-import net.ros.common.machine.module.impl.FluidStorageModule;
-import net.ros.common.steam.SteamCapabilities;
-import net.ros.common.util.FluidUtils;
 
 import javax.annotation.Nullable;
 

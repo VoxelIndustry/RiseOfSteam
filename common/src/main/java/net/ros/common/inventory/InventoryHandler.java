@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -31,6 +32,11 @@ public class InventoryHandler extends ItemStackHandler
     private Consumer<EntityPlayer> onOpen;
     @Setter
     private Consumer<EntityPlayer> onClose;
+
+    @Getter
+    @Setter
+    @Accessors(fluent = true)
+    private boolean canDropContents = true;
 
     public InventoryHandler()
     {

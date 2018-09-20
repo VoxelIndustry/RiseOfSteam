@@ -43,11 +43,6 @@ public class MetalList
         return this.metalNames.contains(metal);
     }
 
-    public <T> T[] toArray(T[] a)
-    {
-        return metalNames.toArray(a);
-    }
-
     public int size()
     {
         return metalNames.size();

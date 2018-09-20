@@ -1,7 +1,10 @@
 package net.ros.common.machine.module;
 
 import lombok.Getter;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.ros.common.inventory.InventoryHandler;
 
@@ -80,5 +83,16 @@ public class InventoryModule extends MachineModule implements ISerializableModul
     public boolean hasInventory(String name)
     {
         return this.inventories.containsKey(name);
+    }
+
+    public void dropAll(World world, BlockPos pos)
+    {
+        for (InventoryHandler inventory : this.inventories.values())
+        {
+            if (inventory.canDropContents())
+                for (int slot = 0; slot < inventory.getSlots(); slot++)
+                    InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(),
+                            inventory.getStackInSlot(slot));
+        }
     }
 }

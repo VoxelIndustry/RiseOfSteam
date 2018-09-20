@@ -20,7 +20,7 @@ public class FluidUtils
     public static final Predicate<FluidStack> SLUDGE_FILTER = stack ->
             stack != null && stack.getFluid() != null && Ores.isSludge(stack.getFluid());
 
-    public static final boolean drainPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
+    public static boolean drainPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
     {
         final ItemStack input = player.getHeldItemMainhand();
         ItemStack output;
@@ -54,7 +54,7 @@ public class FluidUtils
         return false;
     }
 
-    public static final boolean fillPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
+    public static boolean fillPlayerHand(final IFluidHandler fluidHandler, final EntityPlayer player)
     {
         final ItemStack input = player.getHeldItemMainhand();
         ItemStack output;
@@ -92,8 +92,8 @@ public class FluidUtils
 
     }
 
-    public static final boolean drainContainers(final IFluidHandler fluidHandler, final IInventory inv,
-                                                final int inputSlot, final int outputSlot)
+    public static boolean drainContainers(final IFluidHandler fluidHandler, final IInventory inv,
+                                          final int inputSlot, final int outputSlot)
     {
         final ItemStack input = inv.getStackInSlot(inputSlot);
         final ItemStack output = inv.getStackInSlot(outputSlot);

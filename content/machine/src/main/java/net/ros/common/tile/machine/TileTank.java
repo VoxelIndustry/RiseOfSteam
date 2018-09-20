@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.client.render.model.obj.ConnState;
@@ -16,7 +15,6 @@ import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.ContainerBuilder;
 import net.ros.common.container.IContainerProvider;
 import net.ros.common.fluid.FilteredFluidTank;
-import net.ros.common.fluid.LimitedTank;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
 import net.ros.common.grid.node.ITileCable;
@@ -31,7 +29,6 @@ import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.MultiblockSide;
 import net.ros.common.util.FluidUtils;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class TileTank extends TileModularMachine implements IContainerProvider, IConnectionAware

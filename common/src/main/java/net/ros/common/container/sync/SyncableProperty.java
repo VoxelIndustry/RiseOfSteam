@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class SyncableProperty<T extends Object>
+public abstract class SyncableProperty<T>
 {
     @Getter
     private final Supplier<T> supplier;

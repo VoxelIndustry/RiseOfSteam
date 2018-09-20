@@ -1,9 +1,6 @@
 package net.ros.common.init;
 
 import net.ros.common.item.*;
-import net.ros.common.item.ItemBlueprint;
-import net.ros.common.item.ItemDrillCoreSample;
-import net.ros.common.item.ItemWrench;
 
 public class MachineItems
 {

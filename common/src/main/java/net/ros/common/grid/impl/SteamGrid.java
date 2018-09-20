@@ -205,9 +205,8 @@ public class SteamGrid extends CableGrid
     private Collection<ITileCable> getCablesConnected(ISteamHandler handler, int maxDepth)
     {
         final Set<ITileCable> openset = new HashSet<>();
-        final Set<ITileCable> frontier = new HashSet<>();
 
-        frontier.addAll(this.handlersConnections.get(handler));
+        final Set<ITileCable> frontier = new HashSet<>(this.handlersConnections.get(handler));
 
         int currentDepth = 0;
         while (currentDepth < maxDepth && !frontier.isEmpty())

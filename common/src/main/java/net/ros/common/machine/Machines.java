@@ -135,9 +135,7 @@ public class Machines
         Optional<MachineDescriptor> desc = getAllByComponent(componentType).stream()
                 .filter(descriptor -> descriptor.getName().equals(name)).findAny();
 
-        if (desc.isPresent())
-            return desc.get().get(componentType);
-        return null;
+        return desc.map(machineDescriptor -> machineDescriptor.get(componentType)).orElse(null);
     }
 
     public static MachineDescriptor get(String name)

@@ -10,7 +10,7 @@ public class GridManager
 {
     private static volatile GridManager instance;
 
-    public static final GridManager getInstance()
+    public static GridManager getInstance()
     {
         if (GridManager.instance == null)
             synchronized (GridManager.class)

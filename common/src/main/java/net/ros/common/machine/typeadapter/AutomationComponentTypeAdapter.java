@@ -18,7 +18,7 @@ public class AutomationComponentTypeAdapter extends TypeAdapter<AutomationCompon
         implements IMachineComponentTypeAdapter<AutomationComponent>
 {
     @Override
-    public void write(JsonWriter out, AutomationComponent value) throws IOException
+    public void write(JsonWriter out, AutomationComponent value)
     {
 
     }

@@ -1,7 +1,6 @@
 package net.ros.common.grid.impl;
 
 import net.ros.common.steam.ISteamTank;
-import net.ros.common.steam.SteamTank;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;

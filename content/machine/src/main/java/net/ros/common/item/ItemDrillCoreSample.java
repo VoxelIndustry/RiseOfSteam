@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.common.init.ROSItems;
+import net.ros.common.ore.CoreSample;
 import net.ros.common.ore.Mineral;
 import net.ros.common.ore.Ores;
 
@@ -44,7 +45,7 @@ public class ItemDrillCoreSample extends ItemBase
         }
     }
 
-    public static ItemStack getSample(BlockPos pos, Map<Mineral, Float> results)
+    public static ItemStack getSample(BlockPos pos, CoreSample result)
     {
         ItemStack stack = new ItemStack(ROSItems.DRILL_CORE_SAMPLE);
         NBTTagCompound tag = new NBTTagCompound();
@@ -54,15 +55,7 @@ public class ItemDrillCoreSample extends ItemBase
         tag.setInteger("ypos", pos.getY());
         tag.setInteger("zpos", pos.getZ());
 
-        int i = 0;
-        for (Mineral mineral : Sets.newTreeSet(results.keySet()))
-        {
-            tag.setString("mineral" + i, mineral.getName());
-            tag.setFloat("quantity" + i, results.get(mineral));
-            i++;
-        }
-        tag.setInteger("minerals", i);
-
+        result.toNBT(tag);
         return stack;
     }
 }
