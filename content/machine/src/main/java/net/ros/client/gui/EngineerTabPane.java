@@ -8,9 +8,9 @@ import net.ros.common.gui.MachineGui;
 import net.ros.common.network.OpenGuiPacket;
 import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.TileBase;
-import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.brokkgui.element.GuiButton;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
 
 class EngineerTabPane extends GuiAbsolutePane
 {

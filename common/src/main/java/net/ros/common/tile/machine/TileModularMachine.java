@@ -16,7 +16,7 @@ import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ITileMultiblockCore;
 import net.ros.common.tile.ITileInfoList;
 import net.ros.common.tile.TileBase;
-import org.yggard.hermod.EventDispatcher;
+import net.voxelindustry.hermod.EventDispatcher;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

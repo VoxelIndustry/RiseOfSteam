@@ -50,11 +50,12 @@ public class PipeModelRegistry
                 new Metal[]{Materials.BRASS, Materials.STEEL}, "block/steamvalve_medium.mwm");
 
         // Gauges
-        this.replacePipesModel(PipeNature.FLUID, "gauge",
-                new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM}, new Metal[]{Materials.IRON, Materials.CAST_IRON},
-                "block/fluidgauge_small.mwm");
+        this.replacePipesModel(PipeNature.FLUID, "gauge", new PipeSize[]{PipeSize.SMALL},
+                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/fluidgauge_small.mwm");
+        this.replacePipesModel(PipeNature.FLUID, "gauge", new PipeSize[]{PipeSize.MEDIUM},
+                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/fluidgauge_large.mwm");
         this.replacePipesModel(PipeNature.FLUID, "gauge", new PipeSize[]{PipeSize.LARGE},
-                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/fluidgauge_medium.mwm");
+                new Metal[]{Materials.IRON, Materials.CAST_IRON}, "block/fluidgauge_large.mwm");
 
         this.replacePipesModel(PipeNature.STEAM, "gauge",
                 new PipeSize[]{PipeSize.SMALL, PipeSize.MEDIUM}, new Metal[]{Materials.BRASS, Materials.STEEL},

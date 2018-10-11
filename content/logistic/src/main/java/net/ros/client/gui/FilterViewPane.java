@@ -1,11 +1,11 @@
 package net.ros.client.gui;
 
 import net.ros.common.card.FilterCard;
-import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.event.ActionEvent;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
-import org.yggard.hermod.EventHandler;
+import net.voxelindustry.brokkgui.element.GuiButton;
+import net.voxelindustry.brokkgui.event.ActionEvent;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.hermod.EventHandler;
 
 public class FilterViewPane extends GuiAbsolutePane
 {

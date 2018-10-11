@@ -1,23 +1,23 @@
 .tab-button {
-    -background-color: #9E9E9E 12%;
+    background-color: #9E9E9E 12%;
 }
 
 .tab-button:hover {
-    -background-color: #BDBDBD 50%;
+    background-color: #BDBDBD 50%;
 }
 
 .tab-button:disabled {
-    -background-color: #9E9E9E;
+    background-color: #9E9E9E;
 }
 
 #assemble {
-    -background-color: #03A9F4;
+    background-color: #03A9F4;
 }
 
 #assemble:hover {
-    -background-color: #4FC3F7;
+    background-color: #4FC3F7;
 }
 
 #assemble:disabled {
-    -background-color: #9E9E9E 50%;
+    background-color: #9E9E9E 50%;
 }

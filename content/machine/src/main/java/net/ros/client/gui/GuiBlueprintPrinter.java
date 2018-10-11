@@ -15,16 +15,16 @@ import net.ros.common.machine.Machines;
 import net.ros.common.multiblock.blueprint.Blueprint;
 import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.machine.TileBlueprintPrinter;
-import org.yggard.brokkgui.control.GuiToggleButton;
-import org.yggard.brokkgui.control.GuiToggleGroup;
-import org.yggard.brokkgui.element.GuiLabel;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.panel.ScrollPane;
-import org.yggard.brokkgui.policy.EScrollbarPolicy;
-import org.yggard.brokkgui.shape.Rectangle;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.brokkgui.control.GuiToggleButton;
+import net.voxelindustry.brokkgui.control.GuiToggleGroup;
+import net.voxelindustry.brokkgui.element.GuiLabel;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.panel.ScrollPane;
+import net.voxelindustry.brokkgui.policy.GuiScrollbarPolicy;
+import net.voxelindustry.brokkgui.shape.Rectangle;
+import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
 
 import java.util.Comparator;
 import java.util.List;
@@ -78,8 +78,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
         ScrollPane scrollPane = new ScrollPane(blueprintPane);
         scrollPane.setWidth(120);
         scrollPane.setHeight(120);
-        scrollPane.setFocused();
-        scrollPane.setScrollYPolicy(EScrollbarPolicy.NEVER);
+        scrollPane.setScrollYPolicy(GuiScrollbarPolicy.NEVER);
 
         body.addChild(scrollPane, 48, 14);
 
@@ -139,7 +138,7 @@ public class GuiBlueprintPrinter extends BrokkGuiContainer<BuiltContainer>
             if (currentTier != maxTier)
             {
                 Rectangle divider = new Rectangle();
-                divider.setStyle("-color: #FFFFFF 48%;");
+                divider.setStyle("color: #FFFFFF 48%;");
                 divider.setWidth(116);
                 divider.setHeight(2);
                 tierPane.addChild(divider, 2, tierPane.getHeight() - 5);

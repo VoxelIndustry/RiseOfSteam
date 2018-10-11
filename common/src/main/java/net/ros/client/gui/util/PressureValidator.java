@@ -1,6 +1,6 @@
 package net.ros.client.gui.util;
 
-import org.yggard.brokkgui.validation.BaseTextValidator;
+import net.voxelindustry.brokkgui.validation.BaseTextValidator;
 
 public class PressureValidator extends BaseTextValidator
 {

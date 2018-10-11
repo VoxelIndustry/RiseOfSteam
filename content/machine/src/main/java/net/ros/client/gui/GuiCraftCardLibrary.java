@@ -8,10 +8,10 @@ import net.ros.common.card.CraftCard;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.tile.machine.TileCraftCardLibrary;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
 {

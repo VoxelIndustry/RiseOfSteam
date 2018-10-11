@@ -36,9 +36,9 @@ import net.ros.common.multiblock.TileMultiblockGag;
 import net.ros.common.multiblock.blueprint.Blueprint;
 import net.ros.common.tile.TileStructure;
 import net.ros.common.tile.machine.TileModularMachine;
+import net.voxelindustry.brokkgui.paint.Color;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
-import org.yggard.brokkgui.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package net.ros.common.machine;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.yggard.brokkgui.paint.Color;
+import net.voxelindustry.brokkgui.paint.Color;
 
 @Getter
 @AllArgsConstructor

@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url = "http://maven.ferenyr.info/artifactory/opmcorp" }
+        maven { url 'http://maven.ferenyr.info/artifactory/libs-release'}
     }
     dependencies {
         classpath('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT')
@@ -50,13 +50,10 @@ allprojects {
             name = 'elytradev'
             url = "http://repo.elytradev.com"
         }
-        maven { // TeaBeans
-            name = 'ourten'
-            url = 'http://maven.ferenyr.info/artifactory/ourten'
-        }
-        maven { // BrokkGUI
-            name = 'yggard'
-            url = 'http://maven.ferenyr.info/artifactory/yggard'
+
+        maven { // TeaBeans, BrokkGUI, Hermod, SteamLayer
+            name = 'voxelindustry'
+            url = 'http://maven.ferenyr.info/artifactory/libs-release'
         }
     }
 
@@ -112,7 +109,8 @@ project('common') {
         deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16'
         deobfCompile 'mezz.jei:jei_1.12.2:4.9.2.196'
 
-        compile 'org.yggard:brokkgui-binding-mc1.12:1.0.0-23-SNAPSHOT'
+        compile 'net.voxelindustry:steamlayer-core:0.1.0'
+        compile 'net.voxelindustry:brokkgui-binding-mc1.12:1.0.0-32-SNAPSHOT'
         compile 'fr.ourten:teabeans:0.7.0'
         compile 'org.hjson:hjson:3.0.0'
 

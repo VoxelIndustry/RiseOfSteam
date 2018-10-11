@@ -1,15 +1,15 @@
 pane#blueprint itemstack:hover {
-    -foreground-texture: url("ros:textures/gui/printer_hover.png");
+    foreground-texture: url("ros:textures/gui/printer_hover.png");
 }
 
 .category {
-    -background-texture: url("ros:textures/gui/printer_button.png");
+    background-texture: url("ros:textures/gui/printer_button.png");
 }
 
 .category:hover {
-    -background-texture: url("ros:textures/gui/printer_button_hover.png");
+    background-texture: url("ros:textures/gui/printer_button_hover.png");
 }
 
 .category:active {
-    -background-texture: url("ros:textures/gui/printer_button_selected.png");
+    background-texture: url("ros:textures/gui/printer_button_selected.png");
 }

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.ros.common.machine.module.IModularMachine;
 import net.ros.common.recipe.RecipeBase;
-import org.yggard.hermod.HermodEvent;
+import net.voxelindustry.hermod.HermodEvent;
 
 import javax.annotation.Nullable;
 

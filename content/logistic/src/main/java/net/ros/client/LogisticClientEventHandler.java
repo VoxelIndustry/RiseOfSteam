@@ -15,7 +15,7 @@ import net.ros.common.block.PipeCoverType;
 import net.ros.common.grid.node.IPipeValve;
 import net.ros.common.steam.SteamUtil;
 import net.ros.common.tile.TileSteamGauge;
-import org.yggard.brokkgui.paint.Color;
+import net.voxelindustry.brokkgui.paint.Color;
 
 public class LogisticClientEventHandler
 {

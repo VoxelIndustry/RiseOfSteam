@@ -8,11 +8,11 @@ import net.ros.common.ROSConstants;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.machine.TileEngineerWorkbench;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
 import org.lwjgl.input.Keyboard;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiEngineerWorkbench extends BrokkGuiContainer<BuiltContainer>
 {

@@ -13,8 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.tile.machine.TileTank;
+import net.voxelindustry.brokkgui.paint.Color;
 import org.lwjgl.opengl.GL11;
-import org.yggard.brokkgui.paint.Color;
 
 public class RenderFluidTank extends TileEntitySpecialRenderer<TileTank>
 {

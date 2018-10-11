@@ -40,8 +40,8 @@ import net.ros.common.network.MultiblockBoxPacket;
 import net.ros.common.tile.TileFluidGauge;
 import net.ros.common.tile.TileStructure;
 import net.ros.common.tile.machine.*;
+import net.voxelindustry.brokkgui.style.StylesheetManager;
 import org.lwjgl.input.Mouse;
-import org.yggard.brokkgui.style.StylesheetManager;
 
 import java.util.function.BiConsumer;
 
@@ -224,10 +224,11 @@ public class ClientProxy extends CommonProxy
 
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvent_medium"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steamvalve_medium"));
-        event.getMap().registerSprite(new ResourceLocation("ros:blocks/fluidgauge_medium"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/fluidgauge"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steampressurevalve_small"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steampressurevalve_medium"));
         event.getMap().registerSprite(new ResourceLocation("ros:blocks/steampressurevalve_large"));
+        event.getMap().registerSprite(new ResourceLocation("ros:blocks/fluidpump_small"));
     }
 
     @SubscribeEvent

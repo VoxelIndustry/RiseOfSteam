@@ -19,7 +19,7 @@ import net.ros.common.recipe.RecipeHandler;
 import net.ros.common.recipe.ingredient.RecipeIngredient;
 import net.ros.common.steam.ISteamHandler;
 import net.ros.common.util.ItemUtils;
-import org.yggard.hermod.EventHandler;
+import net.voxelindustry.hermod.EventHandler;
 
 import java.util.ArrayList;
 import java.util.List;

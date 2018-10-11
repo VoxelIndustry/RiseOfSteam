@@ -2,7 +2,7 @@ package net.ros.common.machine.module;
 
 import net.minecraft.util.EnumFacing;
 import net.ros.common.machine.MachineDescriptor;
-import org.yggard.hermod.IEventEmitter;
+import net.voxelindustry.hermod.IEventEmitter;
 
 import java.util.Collection;
 

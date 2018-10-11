@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.tile.TileFluidGauge;
+import net.voxelindustry.brokkgui.paint.Color;
 import org.lwjgl.opengl.GL11;
-import org.yggard.brokkgui.paint.Color;
 
 public class RenderFluidGauge extends TileEntitySpecialRenderer<TileFluidGauge>
 {

@@ -19,8 +19,8 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.ros.client.render.model.FlattenedModelCache;
 import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.multiblock.BlockMultiblockBase;
+import net.voxelindustry.brokkgui.paint.Color;
 import org.lwjgl.opengl.GL11;
-import org.yggard.brokkgui.paint.Color;
 
 import java.util.List;
 

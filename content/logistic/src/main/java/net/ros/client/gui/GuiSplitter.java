@@ -12,11 +12,11 @@ import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.machine.TileSplitter;
-import org.yggard.brokkgui.element.GuiLabel;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.panel.GuiPane;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.brokkgui.element.GuiLabel;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.panel.GuiPane;
+import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
 
 public class GuiSplitter extends BrokkGuiContainer<BuiltContainer>
 {

@@ -18,12 +18,12 @@ import net.ros.common.init.ROSItems;
 import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.machine.TileKeypunch;
 import net.ros.common.util.ItemUtils;
-import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.panel.GuiRelativePane;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.brokkgui.element.GuiButton;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.panel.GuiRelativePane;
+import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
 {

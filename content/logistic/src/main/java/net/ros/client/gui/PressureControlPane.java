@@ -1,22 +1,21 @@
 package net.ros.client.gui;
 
 import fr.ourten.teabeans.binding.BaseBinding;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 import net.ros.common.steam.ISteamTank;
 import net.ros.common.steam.SteamUtil;
+import net.voxelindustry.brokkgui.data.RectAlignment;
+import net.voxelindustry.brokkgui.data.RectOffset;
+import net.voxelindustry.brokkgui.data.Rotation;
+import net.voxelindustry.brokkgui.element.GuiButton;
+import net.voxelindustry.brokkgui.element.GuiLabel;
+import net.voxelindustry.brokkgui.internal.IGuiRenderer;
+import net.voxelindustry.brokkgui.paint.RenderPass;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.shape.Rectangle;
 import org.lwjgl.opengl.GL11;
-import org.yggard.brokkgui.data.EAlignment;
-import org.yggard.brokkgui.data.RectOffset;
-import org.yggard.brokkgui.element.GuiButton;
-import org.yggard.brokkgui.element.GuiLabel;
-import org.yggard.brokkgui.internal.IGuiRenderer;
-import org.yggard.brokkgui.paint.RenderPass;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.shape.Rectangle;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -55,7 +54,7 @@ public class PressureControlPane extends GuiAbsolutePane
         this.setHeight(66);
 
         GuiLabel pressureLabel = new GuiLabel("");
-        pressureLabel.setTextAlignment(EAlignment.MIDDLE_CENTER);
+        pressureLabel.setTextAlignment(RectAlignment.MIDDLE_CENTER);
         pressureLabel.setWidth(this.getWidth());
 
         this.addChild(pressureLabel, 0, this.getHeight() / 2 - 2);
@@ -84,7 +83,7 @@ public class PressureControlPane extends GuiAbsolutePane
         maxPressureLabel.addStyleClass("pressure-field");
         maxPressureLabel.setWidth(30);
         maxPressureLabel.setHeight(14);
-        maxPressureLabel.setTextAlignment(EAlignment.MIDDLE_UP);
+        maxPressureLabel.setTextAlignment(RectAlignment.MIDDLE_UP);
         maxPressureLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
 
         this.addChild(maxPressureLabel, this.getWidth() / 2 - maxPressureLabel.getWidth() / 2,
@@ -143,7 +142,7 @@ public class PressureControlPane extends GuiAbsolutePane
         minPressureLabel.addStyleClass("pressure-field");
         minPressureLabel.setWidth(30);
         minPressureLabel.setHeight(14);
-        minPressureLabel.setTextAlignment(EAlignment.MIDDLE_UP);
+        minPressureLabel.setTextAlignment(RectAlignment.MIDDLE_UP);
         minPressureLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
 
         this.addChild(minPressureLabel, 9, this.getHeight() - minPressureLabel.getHeight());
@@ -169,7 +168,7 @@ public class PressureControlPane extends GuiAbsolutePane
         maxPressureLabel.addStyleClass("pressure-field");
         maxPressureLabel.setWidth(30);
         maxPressureLabel.setHeight(14);
-        maxPressureLabel.setTextAlignment(EAlignment.MIDDLE_UP);
+        maxPressureLabel.setTextAlignment(RectAlignment.MIDDLE_UP);
         maxPressureLabel.setTextPadding(new RectOffset(2, 0, 0, 0));
 
         this.addChild(maxPressureLabel, this.getWidth() - lessMinButton.getWidth() - maxPressureLabel.getWidth(),
@@ -356,41 +355,32 @@ public class PressureControlPane extends GuiAbsolutePane
 
     private static final class Needle extends Rectangle
     {
-        @Getter
-        @Setter
-        private float    rotation;
         private GuiLabel pressureLabel;
 
         private ISteamTank steamTank;
 
         public Needle(ISteamTank steamTank, GuiLabel pressureLabel)
         {
-            this.rotation = 45;
             this.pressureLabel = pressureLabel;
 
             this.steamTank = steamTank;
+
+            // x-offset = width - height / 2
+            // y-offset = height / 2
+            this.setRotation(Rotation.build().angle(45).from(46 - 2, 2).create());
         }
 
         @Override
         public void renderContent(IGuiRenderer renderer, RenderPass pass, int mouseX, int mouseY)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(this.getxPos() + this.getWidth() - this.getHeight() / 2,
-                    this.getyPos() + this.getHeight() / 2, 0);
-            GlStateManager.rotate(rotation, 0, 0, 1);
-            GlStateManager.translate(-this.getxPos() - this.getWidth() + this.getHeight() / 2,
-                    -this.getyPos() - this.getHeight() / 2, 0);
-
             super.renderContent(renderer, pass, mouseX, mouseY);
-
-            GlStateManager.popMatrix();
 
             if (pass != RenderPass.MAIN)
                 return;
             if (steamTank.getPressure() > steamTank.getMaxPressure())
-                rotation = 180;
+                this.getRotation().setAngle(180);
             else
-                rotation = 180 * (steamTank.getPressure() / steamTank.getMaxPressure());
+                this.getRotation().setAngle(180 * (steamTank.getPressure() / steamTank.getMaxPressure()));
 
             pressureLabel.setText(SteamUtil.pressureFormat.format(steamTank.getPressure()) + " / " +
                     SteamUtil.pressureFormat.format(steamTank.getMaxPressure()));

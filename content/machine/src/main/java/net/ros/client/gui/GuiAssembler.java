@@ -9,12 +9,12 @@ import net.ros.common.card.IPunchedCard;
 import net.ros.common.container.BuiltContainer;
 import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.tile.machine.TileAssembler;
-import org.yggard.brokkgui.paint.Color;
-import org.yggard.brokkgui.paint.Texture;
-import org.yggard.brokkgui.panel.GuiAbsolutePane;
-import org.yggard.brokkgui.shape.Rectangle;
-import org.yggard.brokkgui.wrapper.container.BrokkGuiContainer;
-import org.yggard.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.brokkgui.paint.Color;
+import net.voxelindustry.brokkgui.paint.Texture;
+import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
+import net.voxelindustry.brokkgui.shape.Rectangle;
+import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
 
 public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
 {
@@ -52,13 +52,13 @@ public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
         mainPanel.addChild(craftPane, 61, 9);
 
         Rectangle rectangle = new Rectangle(0, 0, assembler.getProgressScaled(18), 17);
-        rectangle.setStyle("-texture: url(" + ROSConstants.MODID + ":textures/gui/assembler.png," + (176 / 256f) +
+        rectangle.setStyle("texture: url(" + ROSConstants.MODID + ":textures/gui/assembler.png," + (176 / 256f) +
                 "," + (18 / 256f) + "," + ((176 + assembler.getProgressScaled(18)) / 256f) + "," + (35 / 256f));
 
         this.getListeners().attach(assembler.getCurrentProgressProperty(), obs ->
         {
             rectangle.setWidth(assembler.getProgressScaled(18));
-            rectangle.setStyle("-texture: url(" + ROSConstants.MODID + ":textures/gui/assembler.png," + (176 / 256f)
+            rectangle.setStyle("texture: url(" + ROSConstants.MODID + ":textures/gui/assembler.png," + (176 / 256f)
                     + "," + (18 / 256f) + "," + ((176 + assembler.getProgressScaled(18)) / 256f) + "," + (35 / 256f));
         });
         mainPanel.addChild(rectangle, 115, 10);

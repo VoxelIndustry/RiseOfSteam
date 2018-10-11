@@ -8,8 +8,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.ros.common.network.NetworkHandler;
 import net.ros.common.network.TileSyncRequestPacket;
-import org.yggard.hermod.EventDispatcher;
-import org.yggard.hermod.IEventEmitter;
+import net.voxelindustry.hermod.EventDispatcher;
+import net.voxelindustry.hermod.IEventEmitter;
 
 public class TileBase extends TileEntity implements ITileInfoProvider, IEventEmitter
 {

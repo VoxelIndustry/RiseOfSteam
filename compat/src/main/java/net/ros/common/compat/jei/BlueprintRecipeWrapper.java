@@ -18,10 +18,10 @@ import net.ros.client.render.RenderUtil;
 import net.ros.common.ROSConstants;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.blueprint.Blueprint;
+import net.voxelindustry.brokkgui.BrokkGuiPlatform;
+import net.voxelindustry.brokkgui.paint.Color;
+import net.voxelindustry.brokkgui.wrapper.GuiRenderer;
 import org.lwjgl.opengl.GL11;
-import org.yggard.brokkgui.BrokkGuiPlatform;
-import org.yggard.brokkgui.paint.Color;
-import org.yggard.brokkgui.wrapper.GuiRenderer;
 
 import java.util.ArrayList;
 import java.util.Collection;
