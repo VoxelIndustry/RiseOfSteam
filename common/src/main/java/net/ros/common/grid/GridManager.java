@@ -155,7 +155,7 @@ public class GridManager
     public <T extends CableGrid> List<ITileNode<T>> getOrphans(final CableGrid grid, final ITileNode<T> cable)
     {
         final List<ITileNode<T>> toScan = new ArrayList<>();
-        // Only here to calm down javac
+        // Shut the fuck up gradle
         grid.getCables().forEach(cable2 -> toScan.add((ITileNode<T>) cable2));
 
         final List<ITileNode<T>> openset = new ArrayList<>();

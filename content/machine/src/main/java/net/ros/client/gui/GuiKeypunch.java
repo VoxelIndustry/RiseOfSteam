@@ -287,7 +287,7 @@ public class GuiKeypunch extends BrokkGuiContainer<BuiltContainer>
                         {
                             final FilterCard card = new FilterCard(CardDataStorage.ECardType.FILTER.getID());
                             for (int i = 0; i < this.keypunch.getFilterStacks().size(); i++)
-                                card.stacks[i] = this.keypunch.getFilterStacks().get(i);
+                                card.getFilters()[i] = this.keypunch.getFilterStacks().get(i);
                             CardDataStorage.instance().write(temp.getTagCompound(), card);
                         }
                         this.assemble.setDisabled(

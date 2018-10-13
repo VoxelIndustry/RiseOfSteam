@@ -9,17 +9,16 @@ import net.ros.common.util.ItemUtils;
 
 import java.util.*;
 
+@Getter
 public class CraftCard implements IPunchedCard
 {
     private final int ID;
 
-    @Getter
     private ItemStack[]     recipe           = new ItemStack[9];
-    @Getter
     private List<ItemStack> compressedRecipe = new ArrayList<>();
-    @Getter
+
     @Setter
-    private ItemStack       result           = ItemStack.EMPTY;
+    private ItemStack result = ItemStack.EMPTY;
 
     public CraftCard(final int ID)
     {
@@ -75,6 +74,9 @@ public class CraftCard implements IPunchedCard
     public void addInformation(final ItemStack stack, final List<String> tooltip, final ITooltipFlag flag)
     {
         tooltip.add("Recipe: ");
+        if (!flag.isAdvanced())
+            return;
+
         for (final ItemStack element : this.compressedRecipe)
         {
             if (!element.isEmpty())

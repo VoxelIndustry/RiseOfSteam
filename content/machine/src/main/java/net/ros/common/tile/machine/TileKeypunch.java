@@ -245,8 +245,8 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
                     {
                         final FilterCard card = (FilterCard) CardDataStorage.instance()
                                 .read(inventory.getStackInSlot(0).getTagCompound());
-                        for (int i = 0; i < card.stacks.length; i++)
-                            this.getFilterStacks().set(i, card.stacks[i]);
+                        for (int i = 0; i < card.getFilters().length; i++)
+                            this.getFilterStacks().set(i, card.getFilters()[i]);
                         this.markDirty();
                     }
                 }
@@ -278,7 +278,7 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
                     punched.setTagCompound(new NBTTagCompound());
                     final FilterCard card = new FilterCard(CardDataStorage.ECardType.FILTER.getID());
                     for (int i = 0; i < this.getFilterStacks().size(); i++)
-                        card.stacks[i] = this.getFilterStacks().get(i).copy();
+                        card.getFilters()[i] = this.getFilterStacks().get(i).copy();
                     CardDataStorage.instance().write(punched.getTagCompound(), card);
                     inventory.extractItem(0, 1, false);
 

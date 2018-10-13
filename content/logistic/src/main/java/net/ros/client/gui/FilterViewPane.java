@@ -46,14 +46,14 @@ public class FilterViewPane extends GuiAbsolutePane
         {
             if (this.views[i] == null)
             {
-                ItemStackView view = new ItemStackView(card.stacks[i]);
+                ItemStackView view = new ItemStackView(card.getFilters()[i]);
                 view.setWidth(18);
                 view.setHeight(18);
                 view.setItemTooltip(true);
                 this.views[i] = view;
                 this.addChild(view, 1 + 18 * (i % 3), 1 + 18 * (i / 3));
             }
-            this.views[i].setItemStack(card.stacks[i]);
+            this.views[i].setItemStack(card.getFilters()[i]);
         }
     }
 }
