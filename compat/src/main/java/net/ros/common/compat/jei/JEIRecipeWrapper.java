@@ -4,6 +4,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -49,14 +50,14 @@ public class JEIRecipeWrapper implements IRecipeWrapper
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        ingredients.setInputs(ItemStack.class, this.recipe.getRecipeInputs(ItemStack.class).stream()
+        ingredients.setInputs(VanillaTypes.ITEM, this.recipe.getRecipeInputs(ItemStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
-        ingredients.setInputs(FluidStack.class, this.recipe.getRecipeInputs(FluidStack.class).stream()
+        ingredients.setInputs(VanillaTypes.FLUID, this.recipe.getRecipeInputs(FluidStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
 
-        ingredients.setOutputs(ItemStack.class, this.recipe.getRecipeOutputs(ItemStack.class).stream()
+        ingredients.setOutputs(VanillaTypes.ITEM, this.recipe.getRecipeOutputs(ItemStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
-        ingredients.setOutputs(FluidStack.class, this.recipe.getRecipeOutputs(FluidStack.class).stream()
+        ingredients.setOutputs(VanillaTypes.FLUID, this.recipe.getRecipeOutputs(FluidStack.class).stream()
                 .map(RecipeIngredient::getRaw).collect(Collectors.toList()));
     }
 

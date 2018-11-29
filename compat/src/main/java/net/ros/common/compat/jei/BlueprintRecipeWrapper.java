@@ -4,6 +4,7 @@ import lombok.Getter;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -126,8 +127,8 @@ public class BlueprintRecipeWrapper implements IRecipeWrapper
 
         this.blueprint.getSteps().stream().flatMap(Collection::stream).forEach(ingredientStacks::add);
 
-        ingredients.setInputs(ItemStack.class, ingredientStacks);
-        ingredients.setOutputs(ItemStack.class, Collections.singletonList(this.machine));
+        ingredients.setInputs(VanillaTypes.ITEM, ingredientStacks);
+        ingredients.setOutputs(VanillaTypes.ITEM, Collections.singletonList(this.machine));
     }
 
     private void drawTexturedRect(double x, double y, double u, double v, double s, double t, double width,

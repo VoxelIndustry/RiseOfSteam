@@ -9,11 +9,11 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.ROSConstants;
 
 import java.util.ArrayList;
@@ -64,12 +64,12 @@ public class JEIRecipeCategory implements IRecipeCategory<JEIRecipeWrapper>
             int count = this.getItemSlotCount(slot);
             if (slot.isInput())
             {
-                if (ingredients.getInputs(ItemStack.class).size() > count)
+                if (ingredients.getInputs(VanillaTypes.ITEM).size() > count)
                     guiItemStacks.set(this.itemSlots.indexOf(slot), ingredients.getInputs(ItemStack.class).get(count));
             }
             else
             {
-                if (ingredients.getOutputs(ItemStack.class).size() > count)
+                if (ingredients.getOutputs(VanillaTypes.ITEM).size() > count)
                     guiItemStacks.set(this.itemSlots.indexOf(slot), ingredients.getOutputs(ItemStack.class).get(count));
             }
         });
@@ -84,15 +84,15 @@ public class JEIRecipeCategory implements IRecipeCategory<JEIRecipeWrapper>
             int count = this.getTankSlotCount(slot);
             if (slot.isInput())
             {
-                if (ingredients.getInputs(FluidStack.class).size() > count)
+                if (ingredients.getInputs(VanillaTypes.FLUID).size() > count)
                     guiFluidStacks.set(this.tankSlots.indexOf(slot),
-                            ingredients.getInputs(FluidStack.class).get(count));
+                            ingredients.getInputs(VanillaTypes.FLUID).get(count));
             }
             else
             {
-                if (ingredients.getOutputs(FluidStack.class).size() > count)
+                if (ingredients.getOutputs(VanillaTypes.FLUID).size() > count)
                     guiFluidStacks.set(this.tankSlots.indexOf(slot),
-                            ingredients.getOutputs(FluidStack.class).get(count));
+                            ingredients.getOutputs(VanillaTypes.FLUID).get(count));
             }
         });
     }
