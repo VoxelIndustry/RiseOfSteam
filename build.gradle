@@ -1,8 +1,14 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url 'http://maven.ferenyr.info/artifactory/libs-release'}
+        maven {
+            name = "forge maven"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "voxelindustry maven"
+            url 'http://maven.ferenyr.info/artifactory/libs-release'
+        }
     }
     dependencies {
         classpath('net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT')
@@ -107,7 +113,7 @@ allprojects {
 project('common') {
     dependencies {
         deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16'
-        deobfCompile 'mezz.jei:jei_1.12.2:4.9.2.196'
+        deobfCompile 'mezz.jei:jei_1.12.2:4.13.1.220'
 
         compile 'net.voxelindustry:steamlayer-core:0.1.0'
         compile 'net.voxelindustry:brokkgui-binding-mc1.12:1.0.0-32-SNAPSHOT'
