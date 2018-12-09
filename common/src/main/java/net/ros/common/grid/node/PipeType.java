@@ -53,13 +53,18 @@ public class PipeType
 
     private static Table<PipeSize, Metal, Integer> pipeTransferRates;
     private static Table<PipeSize, Metal, Float>   pipePressures;
-    private static Map<Metal, Integer>             pipeTemperature;
+    private static Map<Metal, Integer>             pipeTemperatures;
+    private static Table<PipeSize, Metal, Float>   pipeHeatConductivities;
+    private static Table<PipeSize, Metal, Float>   pipeHeatLosses;
 
     static
     {
         pipeTransferRates = HashBasedTable.create();
         pipePressures = HashBasedTable.create();
-        pipeTemperature = new HashMap<>();
+        pipeTemperatures = new HashMap<>();
+
+        pipeHeatConductivities = HashBasedTable.create();
+        pipeHeatLosses = HashBasedTable.create();
 
         // Fluid pipes
         pipeTransferRates.put(PipeSize.SMALL, Materials.IRON, 64);
@@ -74,8 +79,8 @@ public class PipeType
         pipeTransferRates.put(PipeSize.HUGE, Materials.CAST_IRON, 8192);
         pipeTransferRates.put(PipeSize.EXTRA_HUGE, Materials.CAST_IRON, 32768);
 
-        pipeTemperature.put(Materials.IRON, 700);
-        pipeTemperature.put(Materials.CAST_IRON, 1300);
+        pipeTemperatures.put(Materials.IRON, 700);
+        pipeTemperatures.put(Materials.CAST_IRON, 1300);
 
         // Steam pipes
         pipeTransferRates.put(PipeSize.SMALL, Materials.BRASS, 64);
@@ -101,6 +106,34 @@ public class PipeType
         pipePressures.put(PipeSize.LARGE, Materials.STEEL, 5f);
         pipePressures.put(PipeSize.HUGE, Materials.STEEL, 6f);
         pipePressures.put(PipeSize.EXTRA_HUGE, Materials.STEEL, 7f);
+
+        // Heat pipes
+        pipeHeatConductivities.put(PipeSize.SMALL, Materials.COPPER, 4f);
+        pipeHeatConductivities.put(PipeSize.MEDIUM, Materials.COPPER, 16f);
+        pipeHeatConductivities.put(PipeSize.LARGE, Materials.COPPER, 64f);
+        pipeHeatConductivities.put(PipeSize.HUGE, Materials.COPPER, 256f);
+        pipeHeatConductivities.put(PipeSize.EXTRA_HUGE, Materials.COPPER, 1024f);
+
+        pipeHeatConductivities.put(PipeSize.SMALL, Materials.STEEL, 8f);
+        pipeHeatConductivities.put(PipeSize.MEDIUM, Materials.STEEL, 32f);
+        pipeHeatConductivities.put(PipeSize.LARGE, Materials.STEEL, 128f);
+        pipeHeatConductivities.put(PipeSize.HUGE, Materials.STEEL, 512f);
+        pipeHeatConductivities.put(PipeSize.EXTRA_HUGE, Materials.STEEL, 2048f);
+
+        pipeHeatLosses.put(PipeSize.SMALL, Materials.COPPER, 0.01f);
+        pipeHeatLosses.put(PipeSize.MEDIUM, Materials.COPPER, 0.04f);
+        pipeHeatLosses.put(PipeSize.LARGE, Materials.COPPER, 0.16f);
+        pipeHeatLosses.put(PipeSize.HUGE, Materials.COPPER, 0.64f);
+        pipeHeatLosses.put(PipeSize.EXTRA_HUGE, Materials.COPPER, 2.56f);
+
+        pipeHeatLosses.put(PipeSize.SMALL, Materials.STEEL, 0.015f);
+        pipeHeatLosses.put(PipeSize.MEDIUM, Materials.STEEL, 0.06f);
+        pipeHeatLosses.put(PipeSize.LARGE, Materials.STEEL, 0.24f);
+        pipeHeatLosses.put(PipeSize.HUGE, Materials.STEEL, 0.96f);
+        pipeHeatLosses.put(PipeSize.EXTRA_HUGE, Materials.STEEL, 3.84f);
+
+        pipeTemperatures.put(Materials.COPPER, 900);
+        pipeTemperatures.put(Materials.STEEL, 1300);
     }
 
     public static int getTransferRate(PipeType type)
@@ -117,10 +150,24 @@ public class PipeType
         return pipePressures.get(type.getSize(), type.getMetal());
     }
 
-    public static int getHeat(PipeType type)
+    public static int getHeatLimit(PipeType type)
     {
         if (type == null)
             return 0;
-        return pipeTemperature.get(type.getMetal());
+        return pipeTemperatures.get(type.getMetal());
+    }
+
+    public static float getHeatConductivity(PipeType type)
+    {
+        if (type == null)
+            return 0;
+        return pipeHeatConductivities.get(type.getSize(), type.getMetal());
+    }
+
+    public static float getHeatLoss(PipeType type)
+    {
+        if (type == null)
+            return 0;
+        return pipeHeatLosses.get(type.getSize(), type.getMetal());
     }
 }

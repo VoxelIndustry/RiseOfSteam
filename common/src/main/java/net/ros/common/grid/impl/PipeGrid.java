@@ -64,7 +64,7 @@ public class PipeGrid extends CableGrid
             IFluidTank tank = pipe.getBufferTank();
             int transferred = 0;
 
-            if (tank.getFluid().getFluid().getTemperature() > PipeType.getHeat(pipe.getType()))
+            if (tank.getFluid().getFluid().getTemperature() > PipeType.getHeatLimit(pipe.getType()))
                 toDestroy.add(node);
 
             List<EnumFacing> randConnections = new ArrayList<>(pipe.getConnectionsMap().keySet());

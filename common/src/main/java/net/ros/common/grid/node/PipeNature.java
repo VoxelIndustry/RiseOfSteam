@@ -3,7 +3,8 @@ package net.ros.common.grid.node;
 public enum PipeNature
 {
     FLUID,
-    STEAM;
+    STEAM,
+    HEAT;
 
     @Override
     public String toString()

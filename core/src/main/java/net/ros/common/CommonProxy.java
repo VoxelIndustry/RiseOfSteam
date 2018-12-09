@@ -11,6 +11,7 @@ import net.ros.common.compat.CompatManager;
 import net.ros.common.event.TickHandler;
 import net.ros.common.grid.GridManager;
 import net.ros.common.gui.GuiHandler;
+import net.ros.common.heat.HeatCapabilities;
 import net.ros.common.init.*;
 import net.ros.common.machine.Machines;
 import net.ros.common.network.*;
@@ -35,6 +36,7 @@ public class CommonProxy
         ROSConstants.network.register(SteamEffectPacket.class);
 
         SteamCapabilities.register();
+        HeatCapabilities.register();
 
         Materials.initMaterials();
 

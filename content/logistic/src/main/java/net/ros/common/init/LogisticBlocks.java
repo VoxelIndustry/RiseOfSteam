@@ -108,6 +108,11 @@ public class LogisticBlocks
                 new AxisAlignedBB(1 / 16D, 2 / 16D, 0, 11 / 16D, 1, 7 / 16D)),
                 PipeNature.STEAM, Materials.STEEL, -1 / 16F, TileSteamVent::new, TileSteamVent.class);
 
+        addPipe(BlockPipeBase::new, PipeNature.HEAT, Materials.COPPER, 0,
+                TileHeatPipe::new, TileHeatPipe.class);
+        addPipe(BlockPipeBase::new, PipeNature.HEAT, Materials.STEEL, 0,
+                TileHeatPipe::new, TileHeatPipe.class);
+
         registerBlock(new BlockOffshorePump());
 
         registerBlock(new BlockBelt());
@@ -127,6 +132,7 @@ public class LogisticBlocks
         registerTile(TileSteamGauge.class, "steamgauge");
         registerTile(TileFluidGauge.class, "fluidgauge");
         registerTile(TilePressureValve.class, "pressurevalve");
+        registerTile(TileHeatPipe.class, "heatpipe");
     }
 
     private static boolean onValveClick(World w, BlockPos pos, IBlockState state, EntityPlayer player,

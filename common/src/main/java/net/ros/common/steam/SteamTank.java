@@ -6,20 +6,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.ros.common.init.ROSFluids;
 
+@Getter
 public class SteamTank implements ISteamTank
 {
-    @Getter
     private FluidStack fluidStack;
-    @Getter
     @Setter
     private int        steam;
 
-    @Getter
     @Setter
     private int   capacity;
-    @Getter
     private float maxPressure;
-    @Getter
     private float safePressure;
 
 
@@ -72,6 +68,7 @@ public class SteamTank implements ISteamTank
         return filled;
     }
 
+    @Override
     public void readFromNBT(final NBTTagCompound nbt)
     {
         this.setSteam(nbt.getInteger("steam"));
@@ -79,6 +76,7 @@ public class SteamTank implements ISteamTank
         this.maxPressure = nbt.getFloat("maxPressure");
     }
 
+    @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound nbt)
     {
         nbt.setInteger("steam", this.getSteam());

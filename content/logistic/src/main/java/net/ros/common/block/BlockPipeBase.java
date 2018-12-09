@@ -26,7 +26,6 @@ import net.ros.client.AABBRaytracer;
 import net.ros.client.render.model.obj.StateProperties;
 import net.ros.common.ROSConstants;
 import net.ros.common.grid.node.IBlockPipe;
-import net.ros.common.grid.node.PipeNature;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.init.ROSBlocks;
 import net.ros.common.init.ROSItems;
@@ -40,11 +39,11 @@ import java.util.function.Function;
 
 public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> implements IComplexSelectBox, IBlockPipe
 {
-    private final EnumHashBiMap<EnumFacing, AxisAlignedBB> boxes;
+    private final   EnumHashBiMap<EnumFacing, AxisAlignedBB> boxes;
     protected final AxisAlignedBB                            BOX_NONE;
-    private final Function<PipeType, T>                    tileSupplier;
+    private final   Function<PipeType, T>                    tileSupplier;
     @Getter
-    private final PipeType                                 pipeType;
+    private final   PipeType                                 pipeType;
 
     public BlockPipeBase(String name, double width, PipeType type, Function<PipeType, T> tileSupplier,
                          Class<T> tileClass)
@@ -80,12 +79,22 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
     {
         super.addInformation(stack, player, tooltip, advanced);
 
-        tooltip.add("Rate: " + TextFormatting.AQUA + PipeType.getTransferRate(pipeType) + " mB/T");
-
-        if (pipeType.getNature() == PipeNature.STEAM)
-            tooltip.add("Max Pressure: " + TextFormatting.GOLD + PipeType.getPressure(pipeType));
-        else if (pipeType.getNature() == PipeNature.FLUID)
-            tooltip.add("Max Heat: " + TextFormatting.RED + PipeType.getHeat(pipeType) + " K");
+        switch (pipeType.getNature())
+        {
+            case FLUID:
+                tooltip.add("Rate: " + TextFormatting.AQUA + PipeType.getTransferRate(pipeType) + " mB/Tick");
+                tooltip.add("Max Heat: " + TextFormatting.RED + PipeType.getHeatLimit(pipeType) + " °C");
+                break;
+            case STEAM:
+                tooltip.add("Rate: " + TextFormatting.AQUA + PipeType.getTransferRate(pipeType) + " mB/Tick");
+                tooltip.add("Max Pressure: " + TextFormatting.GOLD + PipeType.getPressure(pipeType));
+                break;
+            case HEAT:
+                tooltip.add("Rate: " + TextFormatting.AQUA + PipeType.getHeatConductivity(pipeType) + " °C/Tick");
+                tooltip.add("Loss: " + TextFormatting.RED + PipeType.getHeatLoss(pipeType) + " °C/" +
+                        TextFormatting.GOLD + "Block" + TextFormatting.RED + "/Tick");
+                break;
+        }
     }
 
     @Override
@@ -95,7 +104,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
         AxisAlignedBB res = BOX_NONE;
         if (tile != null)
         {
-            for (EnumFacing facing: EnumFacing.VALUES)
+            for (EnumFacing facing : EnumFacing.VALUES)
             {
                 if (tile.isConnected(facing) || tile.isConnectionForbidden(facing))
                     res = res.union(this.boxes.get(facing));
@@ -250,7 +259,7 @@ public class BlockPipeBase<T extends TilePipeBase> extends BlockMachineBase<T> i
 
         candidates.add(BOX_NONE.offset(pos));
 
-        for (EnumFacing facing: EnumFacing.VALUES)
+        for (EnumFacing facing : EnumFacing.VALUES)
         {
             if (pipe.isConnected(facing) || pipe.isConnectionForbidden(facing))
                 candidates.add(this.boxes.get(facing).offset(pos));
