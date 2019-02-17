@@ -22,7 +22,7 @@ public class BlockTank extends BlockMultiModularMachine<TileTank>
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

@@ -40,18 +40,18 @@ public enum ROSOBJLoader implements ICustomModelLoader
     @Override
     public boolean accepts(ResourceLocation modelLocation)
     {
-        return enabledDomains.contains(modelLocation.getResourceDomain())
-                && modelLocation.getResourcePath().endsWith(".mwm");
+        return enabledDomains.contains(modelLocation.getNamespace())
+                && modelLocation.getPath().endsWith(".mwm");
     }
 
     @Override
     public IModel loadModel(ResourceLocation modelLocation) throws Exception
     {
-        ResourceLocation file = new ResourceLocation(modelLocation.getResourceDomain(),
-                modelLocation.getResourcePath());
+        ResourceLocation file = new ResourceLocation(modelLocation.getNamespace(),
+                modelLocation.getPath());
         if (!cache.containsKey(file))
         {
-            String fileName = file.getResourcePath().substring(file.getResourcePath().lastIndexOf("/") + 1);
+            String fileName = file.getPath().substring(file.getPath().lastIndexOf("/") + 1);
             if (fileName.startsWith("_") && this.reTexturedMap.containsKey(fileName))
             {
                 cache.put(modelLocation, new RetexturedOBJModel(this.reTexturedMap.get(fileName).getOriginalModel(),

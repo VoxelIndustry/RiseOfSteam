@@ -23,9 +23,9 @@ import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamUtil;
 import net.ros.common.tile.ILoadable;
-import net.ros.common.tile.ITileInfoList;
-import net.ros.common.tile.TileBase;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

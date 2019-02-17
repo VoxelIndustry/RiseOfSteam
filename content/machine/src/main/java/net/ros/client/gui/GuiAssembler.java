@@ -6,8 +6,6 @@ import net.ros.common.ROSConstants;
 import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CraftCard;
 import net.ros.common.card.IPunchedCard;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.tile.machine.TileAssembler;
 import net.voxelindustry.brokkgui.paint.Color;
 import net.voxelindustry.brokkgui.paint.Texture;
@@ -15,6 +13,8 @@ import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
 import net.voxelindustry.brokkgui.shape.Rectangle;
 import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
 import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.slot.ListenerSlot;
 
 public class GuiAssembler extends BrokkGuiContainer<BuiltContainer>
 {

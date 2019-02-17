@@ -4,8 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.ros.common.ROSConstants;
+import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
+import net.ros.common.machine.Machines;
+import net.ros.common.machine.component.SteamComponent;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.machine.module.impl.SteamModule;
@@ -13,12 +16,9 @@ import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.ISteamHandlerItem;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamUtil;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
-import net.ros.common.gui.MachineGui;
-import net.ros.common.machine.Machines;
-import net.ros.common.machine.component.SteamComponent;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 public class TileCapsuleFiller extends TileTickingModularMachine implements IContainerProvider
 {
@@ -75,10 +75,11 @@ public class TileCapsuleFiller extends TileTickingModularMachine implements ICon
         return new ContainerBuilder("capsule_filler", player)
                 .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
                 .tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .steamSlot(0, 80, 36)
+                .filterSlot(0, 80, 36, stack -> stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.UP))
+                .addInventory()
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)
-                .addInventory().create();
+                .create();
     }
 
     @Override

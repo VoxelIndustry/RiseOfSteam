@@ -112,7 +112,7 @@ public class BlockPipeCover<T extends TilePipeBase> extends BlockPipeBase<T> imp
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
@@ -146,7 +146,7 @@ public class BlockPipeCover<T extends TilePipeBase> extends BlockPipeBase<T> imp
     public static EnumFacing getFacing(final int meta)
     {
         final int i = meta & 7;
-        return i > 5 ? null : EnumFacing.getFront(i);
+        return i > 5 ? null : EnumFacing.byIndex(i);
     }
 
     @Override

@@ -8,8 +8,8 @@ import net.ros.client.gui.util.GuiSpace;
 import net.ros.client.gui.util.GuiTexturedSpace;
 import net.ros.common.ROSConstants;
 import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.machine.TileTinyMiningDrill;
+import net.voxelindustry.steamlayer.network.action.ServerActionBuilder;
 
 import java.text.NumberFormat;
 import java.util.Collections;

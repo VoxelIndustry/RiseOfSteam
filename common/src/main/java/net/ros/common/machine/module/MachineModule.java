@@ -2,7 +2,7 @@ package net.ros.common.machine.module;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.ros.common.tile.TileBase;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 @Getter
 @AllArgsConstructor

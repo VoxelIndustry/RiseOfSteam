@@ -14,9 +14,9 @@ import net.ros.common.machine.module.*;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.multiblock.BlockMultiblockBase;
 import net.ros.common.multiblock.ITileMultiblockCore;
-import net.ros.common.tile.ITileInfoList;
-import net.ros.common.tile.TileBase;
 import net.voxelindustry.hermod.EventDispatcher;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

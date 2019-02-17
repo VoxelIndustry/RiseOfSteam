@@ -1,49 +1,59 @@
 package net.ros.common.network;
 
-import com.elytradev.concrete.network.Message;
-import com.elytradev.concrete.network.NetworkContext;
-import com.elytradev.concrete.network.annotation.field.MarshalledAs;
-import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
 import net.ros.client.fx.SteamParticleHelper;
-import net.ros.common.ROSConstants;
+import net.voxelindustry.steamlayer.network.packet.Message;
 
-@ReceivedOn(Side.CLIENT)
 public class SteamEffectPacket extends Message
 {
-    @MarshalledAs("i32")
     private int      dimension;
     private BlockPos pos;
     private BlockPos target;
     private boolean  small;
 
-    public SteamEffectPacket(NetworkContext ctx)
-    {
-        super(ctx);
-    }
-
     public SteamEffectPacket(World w, BlockPos pos, BlockPos target, boolean small)
     {
-        this(ROSConstants.network);
-
         this.dimension = w.provider.getDimension();
         this.pos = pos;
         this.target = target;
         this.small = small;
     }
 
-    @Override
-    protected void handle(EntityPlayer player)
+    public SteamEffectPacket()
     {
-        if (player.getEntityWorld().provider.getDimension() != dimension)
+    }
+
+    @Override
+    public void read(ByteBuf buf)
+    {
+        dimension = buf.readInt();
+        pos = BlockPos.fromLong(buf.readLong());
+        target = BlockPos.fromLong(buf.readLong());
+        small = buf.readBoolean();
+    }
+
+    @Override
+    public void write(ByteBuf buf)
+    {
+        buf.writeInt(dimension);
+        buf.writeLong(pos.toLong());
+        buf.writeLong(target.toLong());
+        buf.writeBoolean(small);
+    }
+
+    @Override
+    public void handle(EntityPlayer player)
+    {
+        if (Minecraft.getMinecraft().player.getEntityWorld().provider.getDimension() != dimension)
             return;
 
-        World world = player.getEntityWorld();
+        World world = Minecraft.getMinecraft().player.getEntityWorld();
 
-        if (world.isBlockLoaded(this.pos))
+        if (world.isBlockLoaded(pos))
             SteamParticleHelper.createSmallSteamJet(world, pos, target, small);
     }
 }

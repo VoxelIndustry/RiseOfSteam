@@ -2,11 +2,11 @@ package net.ros.client.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.BuiltContainer;
 import net.ros.common.tile.machine.TileEngineerStorage;
 import net.voxelindustry.brokkgui.paint.Texture;
 import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
 import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
 
 public class GuiEngineerStorage  extends BrokkGuiContainer<BuiltContainer>
 {

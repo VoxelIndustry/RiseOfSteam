@@ -12,12 +12,12 @@ public class BiomeMatcher
 
     public static BiomePredicate fromNames(String... biomeNames)
     {
-        return biome -> biome != null && ArrayUtils.contains(biomeNames, biome.getRegistryName().getResourcePath());
+        return biome -> biome != null && ArrayUtils.contains(biomeNames, biome.getRegistryName().getPath());
     }
 
     public static BiomePredicate fromBiomes(Biome... biomes)
     {
-        return biome -> Stream.of(biomes).anyMatch(check -> check.getRegistryName().getResourcePath().equals(biome.getRegistryName().getResourcePath()));
+        return biome -> Stream.of(biomes).anyMatch(check -> check.getRegistryName().getPath().equals(biome.getRegistryName().getPath()));
     }
 
     public static BiomePredicate reverse(BiomePredicate predicate)

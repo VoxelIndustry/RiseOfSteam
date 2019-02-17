@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.ros.common.ROSConstants;
-import net.ros.common.tile.ITileInfoProvider;
+import net.voxelindustry.steamlayer.tile.ITileInfoProvider;
 
 public class ProbeProvider implements IProbeInfoProvider
 {

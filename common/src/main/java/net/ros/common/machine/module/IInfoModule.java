@@ -1,6 +1,6 @@
 package net.ros.common.machine.module;
 
-import net.ros.common.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 public interface IInfoModule
 {

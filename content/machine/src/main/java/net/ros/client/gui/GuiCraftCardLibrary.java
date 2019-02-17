@@ -5,13 +5,13 @@ import net.minecraft.item.ItemStack;
 import net.ros.common.ROSConstants;
 import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CraftCard;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.slot.ListenerSlot;
 import net.ros.common.tile.machine.TileCraftCardLibrary;
 import net.voxelindustry.brokkgui.paint.Texture;
 import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
 import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
 import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.slot.ListenerSlot;
 
 public class GuiCraftCardLibrary extends BrokkGuiContainer<BuiltContainer>
 {

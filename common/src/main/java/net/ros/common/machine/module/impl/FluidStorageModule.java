@@ -13,7 +13,7 @@ import net.ros.common.machine.module.IInfoModule;
 import net.ros.common.machine.module.IModularMachine;
 import net.ros.common.machine.module.ISerializableModule;
 import net.ros.common.machine.module.MachineModule;
-import net.ros.common.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 import java.util.HashMap;
 import java.util.Map;

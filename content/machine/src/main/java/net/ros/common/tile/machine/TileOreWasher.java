@@ -6,9 +6,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
@@ -17,6 +14,9 @@ import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.*;
 import net.ros.common.steam.SteamUtil;
 import net.ros.common.util.FluidUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 public class TileOreWasher extends TileTickingModularMachine implements IContainerProvider
 {
@@ -51,6 +51,7 @@ public class TileOreWasher extends TileTickingModularMachine implements IContain
         return new ContainerBuilder("orewasher", player).player(player).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(inventory)
                 .outputSlot(0, 107, 35).outputSlot(1, 125, 35)
+                .addInventory()
                 .syncFloatValue(crafter::getCurrentProgress, crafter::setCurrentProgress)
                 .syncFloatValue(crafter::getMaxProgress, crafter::setMaxProgress)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("washer"))::getFluid,
@@ -58,7 +59,7 @@ public class TileOreWasher extends TileTickingModularMachine implements IContain
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("sludge"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("sludge"))::setFluid)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
-                        steamEngine.getInternalSteamHandler()::setSteam).addInventory().create();
+                        steamEngine.getInternalSteamHandler()::setSteam).create();
     }
 
     @Override

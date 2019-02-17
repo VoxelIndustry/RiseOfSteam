@@ -11,9 +11,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.event.TickHandler;
 import net.ros.common.grid.WorkshopMachine;
 import net.ros.common.grid.node.ITileWorkshop;
@@ -24,10 +21,13 @@ import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.multiblock.blueprint.Blueprint;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.ClientActionBuilder;
-import net.ros.common.network.action.IActionReceiver;
-import net.ros.common.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.ClientActionBuilder;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 @Getter
 public class TileBlueprintPrinter extends TileTickingModularMachine

@@ -36,10 +36,10 @@ allprojects {
     }
 
     minecraft {
-        version = "1.12.2-14.23.4.2725"
+        version = "1.12.2-14.23.5.2814"
         runDir = "run"
 
-        mappings = "snapshot_20171010"
+        mappings = "stable_39"
     }
 
     repositories {
@@ -51,10 +51,6 @@ allprojects {
         maven { // JEI
             name = 'progwml6 maven'
             url = "http://dvs1.progwml6.com/files/maven"
-        }
-        maven { // Concrete
-            name = 'elytradev'
-            url = "http://repo.elytradev.com"
         }
 
         maven { // TeaBeans, BrokkGUI, Hermod, SteamLayer
@@ -69,7 +65,6 @@ allprojects {
 
     shadowJar {
         classifier = 'fat'
-        relocate 'com.elytradev.concrete', 'net.ros.com.elytradev.concrete'
         configurations = [project.configurations.shadow]
         dependencies {
             exclude(dependency {
@@ -102,7 +97,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.0'
+        compileOnly 'org.projectlombok:lombok:1.18.4'
 
         testCompile 'org.assertj:assertj-core-java8:1.0.0m1'
         testCompile 'junit:junit:4.12'
@@ -113,16 +108,12 @@ allprojects {
 project('common') {
     dependencies {
         deobfCompile 'mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16'
-        deobfCompile 'mezz.jei:jei_1.12.2:4.13.1.220'
+        deobfCompile 'mezz.jei:jei_1.12.2:4.14.4.264'
 
-        compile 'net.voxelindustry:steamlayer-core:0.1.0'
+        deobfCompile 'net.voxelindustry:steamlayer-core:0.3.0'
         compile 'net.voxelindustry:brokkgui-binding-mc1.12:1.0.0-32-SNAPSHOT'
         compile 'fr.ourten:teabeans:0.7.0'
         compile 'org.hjson:hjson:3.0.0'
-
-        compile 'com.elytradev.concrete:concrete-common:0.5.40'
-        compile 'com.elytradev.concrete:concrete-reflect:0.5.40'
-        compile 'com.elytradev.concrete:concrete-network:0.5.40'
 
         compile "info.journeymap:journeymap-api:1.9-1.2"
 
@@ -182,9 +173,6 @@ dependencies {
     shadow('org.yggard:brokkgui-binding-mc1.12:1.0.0-23-SNAPSHOT') { changing = true }
     shadow 'fr.ourten:teabeans:0.7.0'
     shadow 'org.hjson:hjson:3.0.0'
-    shadow 'com.elytradev.concrete:concrete-common:0.4.34'
-    shadow 'com.elytradev.concrete:concrete-reflect:0.4.34'
-    shadow 'com.elytradev.concrete:concrete-network:0.4.34'
 }
 
 subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
@@ -192,7 +180,6 @@ shadowJar.dependsOn subprojects.tasks['classes']
 
 shadowJar {
     classifier = 'fat'
-    relocate 'com.elytradev.concrete', 'net.ros.com.elytradev.concrete'
     configurations = [project.configurations.shadow]
     dependencies {
         exclude(dependency {

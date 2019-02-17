@@ -8,9 +8,9 @@ import net.ros.client.gui.util.GuiProgress;
 import net.ros.client.gui.util.GuiSpace;
 import net.ros.client.gui.util.GuiTexturedSpace;
 import net.ros.common.ROSConstants;
-import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.recipe.Materials;
 import net.ros.common.tile.machine.TileAlloyCauldron;
+import net.voxelindustry.steamlayer.network.action.ServerActionBuilder;
 
 import java.util.Collections;
 

@@ -9,29 +9,29 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.ROSConstants;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
+import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
+import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.machine.module.impl.SteamModule;
-import net.ros.common.recipe.RecipeBase;
-import net.ros.common.steam.SteamStack;
-import net.ros.common.steam.SteamUtil;
-import net.ros.common.util.FluidUtils;
-import net.ros.client.render.tile.VisibilityModelState;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
-import net.ros.common.gui.MachineGui;
-import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.MultiblockSide;
+import net.ros.common.recipe.RecipeBase;
 import net.ros.common.recipe.RecipeHandler;
 import net.ros.common.recipe.type.LiquidBoilerRecipe;
+import net.ros.common.steam.SteamStack;
+import net.ros.common.steam.SteamUtil;
 import net.ros.common.tile.module.SteamBoilerModule;
+import net.ros.common.util.FluidUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -159,6 +159,7 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
 
         return new ContainerBuilder("liquidboiler", player).player(player).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .addInventory()
                 .syncFloatValue(boiler::getCurrentHeat, boiler::setCurrentHeat)
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)
@@ -166,7 +167,7 @@ public class TileLiquidBoiler extends TileTickingModularMachine implements IConn
                         ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("fuel"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("fuel"))::setFluid)
-                .addInventory().create();
+                .create();
     }
 
     @Override

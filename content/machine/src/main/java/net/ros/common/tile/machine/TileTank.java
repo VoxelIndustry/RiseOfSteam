@@ -11,9 +11,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.client.render.model.obj.ConnState;
 import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.fluid.FilteredFluidTank;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
@@ -28,6 +25,9 @@ import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.MultiblockSide;
 import net.ros.common.util.FluidUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 import java.util.ArrayList;
 
@@ -140,9 +140,10 @@ public class TileTank extends TileModularMachine implements IContainerProvider, 
         return new ContainerBuilder("fluidtank", player)
                 .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
                 .tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .addInventory()
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("fluid"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("fluid"))::setFluid)
-                .addInventory().create();
+                .create();
     }
 
     public void connectTrigger(BlockPos from, EnumFacing facing, CableGrid grid)

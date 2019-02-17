@@ -31,9 +31,9 @@ public class ItemSlag extends ItemBase
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return this.getUnlocalizedName() + "." + this.getVariant(stack.getMetadata()).toString();
+        return this.getTranslationKey() + "." + this.getVariant(stack.getMetadata()).toString();
     }
 
     @Override

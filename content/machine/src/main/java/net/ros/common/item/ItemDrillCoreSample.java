@@ -1,6 +1,5 @@
 package net.ros.common.item;
 
-import com.google.common.collect.Sets;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -11,12 +10,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ros.common.init.ROSItems;
 import net.ros.common.ore.CoreSample;
-import net.ros.common.ore.Mineral;
 import net.ros.common.ore.Ores;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 
 public class ItemDrillCoreSample extends ItemBase
 {
@@ -40,7 +37,7 @@ public class ItemDrillCoreSample extends ItemBase
                 float quantity = stack.getTagCompound().getFloat("quantity" + i);
                 Ores.getMineralFromName(stack.getTagCompound().getString("mineral" + i))
                         .ifPresent(mineral -> tooltip.add(
-                                mineral.getRarity().rarityColor + I18n.format(mineral.getName()) + " " + quantity));
+                                mineral.getRarity().color + I18n.format(mineral.getName()) + " " + quantity));
             }
         }
     }

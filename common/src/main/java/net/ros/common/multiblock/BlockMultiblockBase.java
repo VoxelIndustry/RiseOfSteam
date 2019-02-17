@@ -32,7 +32,7 @@ import net.ros.common.init.ROSItems;
 import net.ros.common.item.ItemMultiblockBox;
 import net.ros.common.machine.Machines;
 import net.ros.common.multiblock.blueprint.Blueprint;
-import net.ros.common.tile.TileBase;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import javax.annotation.Nullable;
 
@@ -53,7 +53,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
@@ -87,7 +87,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
     public static EnumFacing getFacing(final int meta)
     {
         final int i = meta & 7;
-        return i > 5 ? null : EnumFacing.getFront(i);
+        return i > 5 ? null : EnumFacing.byIndex(i);
     }
 
     public static EnumFacing getFacing(final IBlockState state)
@@ -139,7 +139,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
     {
         final Iterable<BlockPos> searchables = this.getMultiblock().getAllInBox(pos, facing);
 
-        for (final BlockPos current: searchables)
+        for (final BlockPos current : searchables)
         {
             if (!w.getBlockState(current).getBlock().isReplaceable(w, current))
                 return false;
@@ -154,7 +154,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
         final Iterable<BlockPos> searchables = this.getMultiblock().getAllInBox(pos, BlockMultiblockBase.getFacing
                 (state));
 
-        for (final BlockPos current: searchables)
+        for (final BlockPos current : searchables)
         {
             if (!current.equals(pos))
             {
@@ -268,7 +268,7 @@ public abstract class BlockMultiblockBase<T extends TileBase & ITileMultiblockCo
     {
         if (this.multiblock == null)
             this.multiblock = Machines.getComponent(MultiblockComponent.class,
-                    this.getRegistryName().getResourcePath());
+                    this.getRegistryName().getPath());
         return this.multiblock;
     }
 

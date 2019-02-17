@@ -14,19 +14,19 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CardDataStorage.ECardType;
 import net.ros.common.card.FilterCard;
 import net.ros.common.card.IPunchedCard;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.IBelt;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.IOModule;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.IActionReceiver;
-import net.ros.common.tile.ITileInfoList;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 import java.util.List;
 
@@ -257,13 +257,14 @@ public class TileSplitter extends TileModularMachine implements IContainerProvid
                 .filterSlot(0, 25, 92, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
                 .filterSlot(1, 82, 92, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
                 .filterSlot(2, 139, 92, stack -> stack.getItem() == ROSItems.PUNCHED_CARD)
+                .addInventory()
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(0),
                         bool -> this.getWhitelistProperty().set(0, bool))
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(1),
                         bool -> this.getWhitelistProperty().set(1, bool))
                 .syncBooleanValue(() -> this.getWhitelistProperty().get(2),
                         bool -> this.getWhitelistProperty().set(2, bool))
-                .addInventory().create();
+                .create();
     }
 
     @Override

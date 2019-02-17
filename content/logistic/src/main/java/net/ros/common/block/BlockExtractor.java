@@ -52,7 +52,7 @@ public class BlockExtractor extends BlockMachineBase<TileExtractor>
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
@@ -157,7 +157,7 @@ public class BlockExtractor extends BlockMachineBase<TileExtractor>
     public static EnumFacing getFacing(final int meta)
     {
         final int i = meta & 7;
-        return i > 5 ? null : EnumFacing.getFront(i);
+        return i > 5 ? null : EnumFacing.byIndex(i);
     }
 
     public EnumFacing getFacing(final IBlockState state)

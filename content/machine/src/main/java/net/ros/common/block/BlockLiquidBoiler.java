@@ -17,7 +17,7 @@ public class BlockLiquidBoiler extends BlockMultiModularMachine<TileLiquidBoiler
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

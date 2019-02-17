@@ -6,8 +6,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.steam.CreativeSteamTank;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
-import net.ros.common.tile.ITileInfoList;
-import net.ros.common.tile.TileBase;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 public class TileCreativeSteamGenerator extends TileBase
 {

@@ -37,7 +37,7 @@ public class BlockSplitter extends BlockOrientableMachine<TileSplitter>
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

@@ -5,10 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.ros.client.render.tile.VisibilityModelState;
 import net.ros.common.init.ROSItems;
 import net.ros.common.multiblock.ITileMultiblockCore;
-import net.ros.common.tile.TileBase;
-import net.ros.client.render.tile.VisibilityModelState;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import javax.annotation.Nullable;
 

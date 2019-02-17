@@ -28,7 +28,7 @@ public class BlockRazorWire extends BlockRotatedPillar
     {
         super(Material.WEB);
         this.setRegistryName(ROSConstants.MODID, "razorwire");
-        this.setUnlocalizedName("razorwire");
+        this.setTranslationKey("razorwire");
         this.setCreativeTab(ROSConstants.TAB_ALL);
     }
 
@@ -41,7 +41,7 @@ public class BlockRazorWire extends BlockRotatedPillar
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World w, BlockPos pos, IBlockState state, Entity e)
+    public void onEntityCollision(World w, BlockPos pos, IBlockState state, Entity e)
     {
         e.setInWeb();
 

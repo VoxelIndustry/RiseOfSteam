@@ -19,6 +19,8 @@ import net.ros.common.grid.node.ITileCable;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.network.PipeUpdatePacket;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -84,12 +86,6 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
     public Collection<H> getConnectedHandlers()
     {
         return this.adjacentHandler.values();
-    }
-
-    @Override
-    public void connect(EnumFacing facing, ITileCable<G> to)
-    {
-        this.getConnectionsMap().put(facing, to);
     }
 
     @Override
@@ -218,7 +214,7 @@ public abstract class TilePipeBase<G extends CableGrid, H> extends TileBase
                 adjacents.add((TilePipeBase) adjacent);
             }
         }
-        new PipeUpdatePacket(this, adjacents).sendToAllIn(this.getWorld());
+        new PipeUpdatePacket(this, adjacents).sendToDimension(this.getWorld().provider.getDimension());
     }
 
     @Override

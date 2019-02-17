@@ -18,7 +18,7 @@ public class BlockSolarBoiler extends BlockMultiModularMachine<TileSolarBoiler>
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

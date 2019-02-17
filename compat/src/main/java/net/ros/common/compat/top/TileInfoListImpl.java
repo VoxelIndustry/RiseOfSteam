@@ -5,7 +5,7 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.ros.common.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 @AllArgsConstructor
 public class TileInfoListImpl implements ITileInfoList

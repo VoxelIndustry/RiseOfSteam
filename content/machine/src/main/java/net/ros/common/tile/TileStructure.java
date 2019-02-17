@@ -28,6 +28,7 @@ import net.ros.common.multiblock.MultiblockComponent;
 import net.ros.common.multiblock.blueprint.Blueprint;
 import net.ros.common.multiblock.blueprint.BlueprintState;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import java.util.ArrayList;
 import java.util.List;

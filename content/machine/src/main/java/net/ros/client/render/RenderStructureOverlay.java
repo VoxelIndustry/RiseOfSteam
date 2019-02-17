@@ -48,7 +48,7 @@ public class RenderStructureOverlay
 
                 final String name = I18n.translateToLocal(
                         Block.getBlockFromName(ROSConstants.MODID + ":" +
-                                structure.getBlueprint().getDescriptor().getName()).getUnlocalizedName() + ".name");
+                                structure.getBlueprint().getDescriptor().getName()).getTranslationKey() + ".name");
                 Minecraft.getMinecraft().fontRenderer.drawString(name,
                         -Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2, 0, 16777215);
 

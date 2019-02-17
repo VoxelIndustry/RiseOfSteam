@@ -6,9 +6,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.ros.common.grid.IConnectionAware;
 import net.ros.common.grid.impl.CableGrid;
-import net.ros.common.tile.ITileInfoList;
-import net.ros.common.tile.ITileInfoProvider;
-import net.ros.common.tile.TileBase;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.ITileInfoProvider;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import javax.annotation.Nullable;
 

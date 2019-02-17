@@ -38,7 +38,7 @@ public class ItemMixedRawOre extends ItemBase
         {
             for (int i = 0; i < stack.getTagCompound().getInteger("oreCount"); i++)
                 tooltip.add(Ores.getMineralFromName(stack.getTagCompound().getString("ore" + i)).get()
-                        .getRarity().rarityColor
+                        .getRarity().color
                         + StringUtils.capitalize(stack.getTagCompound().getString("density" + i)) + " "
                         + I18n.format(stack.getTagCompound().getString("ore" + i)));
         }

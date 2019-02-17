@@ -29,7 +29,7 @@ public class BlockOreSand extends BlockFalling implements IModelProvider
         this.setSoundType(SoundType.SAND);
 
         this.setRegistryName(ROSConstants.MODID, name);
-        this.setUnlocalizedName(name);
+        this.setTranslationKey(name);
         this.setCreativeTab(ROSConstants.TAB_ALL);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANTS, EnumType.COPPER_SAND));

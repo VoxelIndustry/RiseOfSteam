@@ -1,38 +1,41 @@
 package net.ros.common.network;
 
-import com.elytradev.concrete.network.Message;
-import com.elytradev.concrete.network.NetworkContext;
-import com.elytradev.concrete.network.annotation.field.MarshalledAs;
-import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.ros.common.ROSConstants;
 import net.ros.common.init.ROSItems;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.network.packet.Message;
 
-@ReceivedOn(Side.SERVER)
 public class MultiblockBoxPacket extends Message
 {
-    @MarshalledAs("i32")
     private int slotID;
 
-    public MultiblockBoxPacket(final NetworkContext ctx)
+    public MultiblockBoxPacket(int slotID)
     {
-        super(ctx);
-    }
-
-    public MultiblockBoxPacket(final int slotID)
-    {
-        this(ROSConstants.network);
-
         this.slotID = slotID;
     }
 
+    public MultiblockBoxPacket()
+    {
+    }
+
     @Override
-    protected void handle(final EntityPlayer sender)
+    public void read(ByteBuf buf)
+    {
+        this.slotID = buf.readInt();
+    }
+
+    @Override
+    public void write(ByteBuf buf)
+    {
+        buf.writeInt(this.slotID);
+    }
+
+    @Override
+    public void handle(EntityPlayer sender)
     {
         if (sender.inventoryContainer != null)
         {

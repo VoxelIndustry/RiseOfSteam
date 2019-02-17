@@ -14,6 +14,7 @@ import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
 import net.ros.common.steam.SteamUtil;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 public class TileSteamPipe extends TilePipeBase<SteamGrid, ISteamHandler> implements ISteamPipe
 {

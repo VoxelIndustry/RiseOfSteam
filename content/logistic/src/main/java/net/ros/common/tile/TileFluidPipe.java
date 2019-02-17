@@ -14,6 +14,7 @@ import net.ros.common.grid.impl.PipeGrid;
 import net.ros.common.grid.node.IFluidPipe;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 public class TileFluidPipe extends TilePipeBase<PipeGrid, IFluidHandler> implements IFluidPipe
 {

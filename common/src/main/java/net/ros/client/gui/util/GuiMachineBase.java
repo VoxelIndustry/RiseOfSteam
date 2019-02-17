@@ -14,15 +14,15 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.fluid.MultiFluidTank;
 import net.ros.common.steam.ISteamTank;
-import net.ros.common.tile.TileBase;
 import net.voxelindustry.brokkgui.BrokkGuiPlatform;
 import net.voxelindustry.brokkgui.data.Vector2i;
 import net.voxelindustry.brokkgui.paint.Color;
 import net.voxelindustry.brokkgui.wrapper.GuiHelper;
 import net.voxelindustry.brokkgui.wrapper.GuiRenderer;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.tile.TileBase;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 

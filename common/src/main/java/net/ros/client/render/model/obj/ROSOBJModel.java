@@ -41,11 +41,11 @@ public class ROSOBJModel extends OBJModel
         TextureAtlasSprite missing = bakedTextureGetter.apply(new ResourceLocation("missingno"));
         for (String materialKey : this.getMatLib().getMaterialNames())
         {
-            if (this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getResourcePath()
+            if (this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getPath()
                     .startsWith("#"))
             {
                 ROSConstants.LOGGER.error("ROSOBJLoader: Unresolved texture '%s' for obj model '%s' "
-                        + this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getResourcePath()
+                        + this.getMatLib().getMaterial(materialKey).getTexture().getTextureLocation().getPath()
                         + " " + this.modelLocation);
                 builder.put(materialKey, missing);
             }

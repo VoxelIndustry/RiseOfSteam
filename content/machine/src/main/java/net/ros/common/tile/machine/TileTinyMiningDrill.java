@@ -12,24 +12,20 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockVeinOre;
-import net.ros.common.init.ROSBlocks;
+import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
+import net.ros.common.item.ItemDrillCoreSample;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.ore.CoreSample;
-import net.ros.common.ore.Mineral;
 import net.ros.common.ore.Ores;
 import net.ros.common.steam.SteamCapabilities;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
-import net.ros.common.gui.MachineGui;
-import net.ros.common.item.ItemDrillCoreSample;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.IActionReceiver;
-
-import java.util.Map;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
 
 public class TileTinyMiningDrill extends TileTickingModularMachine implements IContainerProvider, IActionReceiver
 {
@@ -201,9 +197,11 @@ public class TileTinyMiningDrill extends TileTickingModularMachine implements IC
         return new ContainerBuilder("tinyminingdrill", player)
                 .player(player).inventory(8, 84).hotbar(8, 142).addInventory()
                 .tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .outputSlot(0, 134, 35).steamSlot(1, 80, 58)
+                .outputSlot(0, 134, 35)
+                .filterSlot(1, 80, 58, stack -> stack.hasCapability(SteamCapabilities.ITEM_STEAM_HANDLER, EnumFacing.UP))
+                .addInventory()
                 .syncFloatValue(this::getProgress, this::setProgress)
-                .addInventory().create();
+                .create();
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,

@@ -30,12 +30,12 @@ public class ItemBlockMetadata extends ItemBlock
     }
 
     @Override
-    public String getUnlocalizedName(final ItemStack stack)
+    public String getTranslationKey(final ItemStack stack)
     {
         int offset = firstVariation ? 0 : 1;
 
         if ((firstVariation || stack.getMetadata() != 0) && stack.getMetadata() - offset < this.variants.length)
-            return this.getUnlocalizedName() + "." + this.variants[stack.getMetadata() - offset];
-        return this.getUnlocalizedName();
+            return this.getTranslationKey() + "." + this.variants[stack.getMetadata() - offset];
+        return this.getTranslationKey();
     }
 }

@@ -13,16 +13,11 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.IActionReceiver;
 import net.ros.common.recipe.MaterialShape;
 import net.ros.common.recipe.Materials;
 import net.ros.common.recipe.RecipeBase;
@@ -30,6 +25,11 @@ import net.ros.common.recipe.RecipeHandler;
 import net.ros.common.recipe.type.AlloyRecipe;
 import net.ros.common.recipe.type.MeltRecipe;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.annotation.Nullable;
@@ -384,11 +384,13 @@ public class TileAlloyCauldron extends TileTickingModularMachine implements ICon
     {
         return new ContainerBuilder("alloycauldron", player).player(player).inventory(21, 113).hotbar(21, 171)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
-                .recipeSlot(0, RecipeHandler.MELTING_UID, 0, 18, 37)
+                .filterSlot(0, 18, 37, stack -> RecipeHandler.inputMatchWithoutCount(RecipeHandler.MELTING_UID, 0,
+                        stack))
                 .displaySlot(1, -1000, 0)
                 .displaySlot(2, -1000, 0)
                 .outputSlot(3, 175, 53)
                 .fuelSlot(4, 18, 76)
+                .addInventory()
                 .syncFloatValue(this::getHeat, this::setHeat)
                 .syncFloatValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncFloatValue(this::getMaxBurnTime, this::setMaxBurnTime)
@@ -397,7 +399,7 @@ public class TileAlloyCauldron extends TileTickingModularMachine implements ICon
                 .syncFluidValue(this::getInputFluidLeft, this::setInputFluidLeft)
                 .syncFluidValue(this::getInputFluidRight, this::setInputFluidRight)
                 .syncFluidValue(this::getOutputFluid, this::setOutputFluid)
-                .addInventory().create();
+                .create();
     }
 
     private FluidStack getInputFluidLeft()

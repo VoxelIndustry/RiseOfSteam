@@ -18,7 +18,7 @@ public class ItemBase extends Item implements IItemModelProvider
     {
         this.name = name;
         this.setRegistryName(ROSConstants.MODID, name);
-        this.setUnlocalizedName(name);
+        this.setTranslationKey(name);
         this.setCreativeTab(ROSConstants.TAB_ALL);
 
         this.variants = new HashMap<>();

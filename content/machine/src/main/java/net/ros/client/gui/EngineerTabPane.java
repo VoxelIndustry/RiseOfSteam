@@ -6,11 +6,11 @@ import net.minecraft.util.math.BlockPos;
 import net.ros.common.grid.WorkshopMachine;
 import net.ros.common.gui.MachineGui;
 import net.ros.common.network.OpenGuiPacket;
-import net.ros.common.network.action.ServerActionBuilder;
-import net.ros.common.tile.TileBase;
 import net.voxelindustry.brokkgui.element.GuiButton;
 import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
 import net.voxelindustry.brokkgui.wrapper.elements.ItemStackView;
+import net.voxelindustry.steamlayer.network.action.ServerActionBuilder;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 class EngineerTabPane extends GuiAbsolutePane
 {

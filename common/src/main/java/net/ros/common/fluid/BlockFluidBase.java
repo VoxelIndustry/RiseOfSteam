@@ -23,7 +23,7 @@ public class BlockFluidBase extends BlockFluidClassic
         super(fluid, material);
         this.setRegistryName(ROSConstants.MODID, name);
         this.setDensity(fluid.getDensity());
-        this.setUnlocalizedName(name);
+        this.setTranslationKey(name);
     }
 
     public void addInformation(String information)

@@ -10,7 +10,7 @@ public class BlockBase extends Block
     {
         super(material);
         this.setRegistryName(ROSConstants.MODID, name);
-        this.setUnlocalizedName(name);
+        this.setTranslationKey(name);
         this.setCreativeTab(ROSConstants.TAB_ALL);
     }
 }

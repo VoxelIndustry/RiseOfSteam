@@ -11,16 +11,17 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeSize;
 import net.ros.common.grid.node.PipeType;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.IActionReceiver;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 import javax.annotation.Nullable;
 
@@ -53,9 +54,9 @@ public class TileSteamVent extends TileSteamPipe implements IContainerProvider, 
             double offset = this.getType().getSize() == PipeSize.LARGE ? 0.85 : 0.5;
 
             this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL,
-                    this.getPos().getX() + 0.5 + facing.getFrontOffsetX() * offset, this.getPos().getY() + 0.85,
-                    this.getPos().getZ() + 0.5 + facing.getFrontOffsetZ() * offset,
-                    facing.getFrontOffsetX() * 0.03, 0.1, facing.getFrontOffsetZ() * 0.03);
+                    this.getPos().getX() + 0.5 + facing.getXOffset() * offset, this.getPos().getY() + 0.85,
+                    this.getPos().getZ() + 0.5 + facing.getZOffset() * offset,
+                    facing.getXOffset() * 0.03, 0.1, facing.getZOffset() * 0.03);
             return;
         }
 

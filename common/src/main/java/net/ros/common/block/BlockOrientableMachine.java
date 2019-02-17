@@ -17,7 +17,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.ros.common.IWrenchable;
-import net.ros.common.tile.TileBase;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import javax.annotation.Nullable;
 
@@ -62,14 +62,14 @@ public abstract class BlockOrientableMachine<T extends TileBase> extends BlockMa
             result = EnumFacing.VALUES[i];
         else if (this.horizontal)
         {
-            result = EnumFacing.getFront(i);
+            result = EnumFacing.byIndex(i);
 
             if (result.getAxis() == EnumFacing.Axis.Y)
                 result = EnumFacing.NORTH;
         }
         else if (this.vertical)
         {
-            result = EnumFacing.getFront(i);
+            result = EnumFacing.byIndex(i);
 
             if (result.getAxis() == EnumFacing.Axis.X)
                 result = EnumFacing.NORTH;

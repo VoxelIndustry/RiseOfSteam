@@ -1,44 +1,27 @@
 package net.ros.common.network;
 
-import com.elytradev.concrete.network.Message;
-import com.elytradev.concrete.network.NetworkContext;
-import com.elytradev.concrete.network.annotation.field.MarshalledAs;
-import com.elytradev.concrete.network.annotation.type.ReceivedOn;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.ros.common.ROSConstants;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.ros.common.tile.TilePipeBase;
+import net.voxelindustry.steamlayer.network.packet.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ReceivedOn(Side.CLIENT)
 public class PipeUpdatePacket extends Message
 {
-    @MarshalledAs("nbt")
-    NBTTagCompound sourceTag;
+    private NBTTagCompound sourceTag;
+    private List<NBTTagCompound> adjacentsTag;
 
-    @MarshalledAs("nbt-list")
-    List<NBTTagCompound> adjacentsTag;
-
-    @MarshalledAs("blockpos")
-    BlockPos sourcePos;
-
-    @MarshalledAs("blockpos-list")
-    List<BlockPos> adjacentsPos;
-
-    public PipeUpdatePacket(final NetworkContext ctx)
-    {
-        super(ctx);
-    }
+    private BlockPos sourcePos;
+    private List<BlockPos> adjacentsPos;
 
     public PipeUpdatePacket(TilePipeBase source, List<TilePipeBase> adjacents)
     {
-        super(ROSConstants.network);
-
         this.sourcePos = source.getPos();
         this.sourceTag = source.writeToNBT(new NBTTagCompound());
 
@@ -51,8 +34,44 @@ public class PipeUpdatePacket extends Message
         }
     }
 
+    public PipeUpdatePacket()
+    {
+    }
+
     @Override
-    protected void handle(EntityPlayer sender)
+    public void read(ByteBuf buf)
+    {
+        sourceTag = ByteBufUtils.readTag(buf);
+        sourcePos = BlockPos.fromLong(buf.readLong());
+
+        int tagCount = buf.readInt();
+
+        for (int i = 0; i < tagCount; i++)
+            adjacentsTag.add(ByteBufUtils.readTag(buf));
+
+        int posCount = buf.readInt();
+
+        for (int i = 0; i < posCount; i++)
+            adjacentsPos.add(BlockPos.fromLong(buf.readLong()));
+    }
+
+    @Override
+    public void write(ByteBuf buf)
+    {
+        ByteBufUtils.writeTag(buf, sourceTag);
+        buf.writeLong(sourcePos.toLong());
+
+        buf.writeInt(adjacentsTag.size());
+
+        adjacentsTag.forEach(tag -> ByteBufUtils.writeTag(buf, tag));
+
+        buf.writeInt(adjacentsPos.size());
+
+        adjacentsPos.forEach(pos -> buf.writeLong(pos.toLong()));
+    }
+
+    @Override
+    public void handle(EntityPlayer sender)
     {
         World w = sender.getEntityWorld();
 

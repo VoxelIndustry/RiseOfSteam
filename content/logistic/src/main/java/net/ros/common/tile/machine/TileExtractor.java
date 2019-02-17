@@ -16,18 +16,18 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CardDataStorage.ECardType;
 import net.ros.common.card.FilterCard;
 import net.ros.common.card.IPunchedCard;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.IBelt;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.IActionReceiver;
-import net.ros.common.tile.ITileInfoList;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 public class TileExtractor extends TileModularMachine implements IContainerProvider, ITickable, IActionReceiver
 {
@@ -202,8 +202,9 @@ public class TileExtractor extends TileModularMachine implements IContainerProvi
         return new ContainerBuilder("itemextractor", player).player(player).inventory(8, 107).hotbar(8, 165)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .filterSlot(0, 80, 85, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
+                .addInventory()
                 .syncBooleanValue(this.getWhitelistProperty()::getValue, this.getWhitelistProperty()::setValue)
-                .addInventory().create();
+                .create();
     }
 
     @Override

@@ -14,9 +14,9 @@ public class BlockSolidBoiler extends BlockMultiModularMachine<TileSolidBoiler>
     }
 
     @Override
-    public void onBlockDestroyedByExplosion(final World w, final BlockPos pos, final Explosion exp)
+    public void onExplosionDestroy(final World w, final BlockPos pos, final Explosion exp)
     {
-        super.onBlockDestroyedByExplosion(w, pos, exp);
+        super.onExplosionDestroy(w, pos, exp);
 
         w.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 2, true);
     }

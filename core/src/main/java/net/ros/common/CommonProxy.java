@@ -1,6 +1,5 @@
 package net.ros.common;
 
-import com.elytradev.concrete.network.NetworkContext;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;
@@ -19,21 +18,17 @@ import net.ros.common.recipe.Materials;
 import net.ros.common.recipe.Recipes;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.world.OreGenerator;
+import net.voxelindustry.steamlayer.network.packet.PacketHandler;
 
 public class CommonProxy
 {
     public void preInit(final FMLPreInitializationEvent e)
     {
-        ROSConstants.network = NetworkContext.forChannel(ROSConstants.MODID);
-        ROSConstants.network.register(ContainerUpdatePacket.class);
-        ROSConstants.network.register(TileSyncRequestPacket.class);
-        ROSConstants.network.register(PipeUpdatePacket.class);
-        ROSConstants.network.register(WrenchPacket.class);
-        ROSConstants.network.register(MultiblockBoxPacket.class);
-        ROSConstants.network.register(ServerActionHolderPacket.class);
-        ROSConstants.network.register(ClientActionHolderPacket.class);
-        ROSConstants.network.register(OpenGuiPacket.class);
-        ROSConstants.network.register(SteamEffectPacket.class);
+        PacketHandler.getInstance().register(PipeUpdatePacket.class);
+        PacketHandler.getInstance().register(WrenchPacket.class);
+        PacketHandler.getInstance().register(MultiblockBoxPacket.class);
+        PacketHandler.getInstance().register(OpenGuiPacket.class);
+        PacketHandler.getInstance().register(SteamEffectPacket.class);
 
         SteamCapabilities.register();
         HeatCapabilities.register();

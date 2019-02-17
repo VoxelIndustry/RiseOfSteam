@@ -7,6 +7,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.block.BlockOrientableMachine;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 import java.util.Map;
 

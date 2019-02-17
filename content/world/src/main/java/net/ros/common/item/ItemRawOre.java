@@ -32,13 +32,13 @@ public class ItemRawOre extends ItemBase
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
     {
-        tooltip.add(this.getMineral(stack).getRarity().rarityColor + I18n.format(this.getMineral(stack).getName()));
+        tooltip.add(this.getMineral(stack).getRarity().color + I18n.format(this.getMineral(stack).getName()));
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return this.getUnlocalizedName() + "." + this.getDensity(stack).toString();
+        return this.getTranslationKey() + "." + this.getDensity(stack).toString();
     }
 
     @Override

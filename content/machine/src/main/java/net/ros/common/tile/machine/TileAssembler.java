@@ -17,10 +17,6 @@ import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CardDataStorage.ECardType;
 import net.ros.common.card.CraftCard;
 import net.ros.common.card.IPunchedCard;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.EmptyContainer;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
@@ -34,6 +30,10 @@ import net.ros.common.machine.module.impl.SteamModule;
 import net.ros.common.steam.ISteamHandler;
 import net.ros.common.steam.SteamUtil;
 import net.ros.common.util.ItemUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.EmptyContainer;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 public class TileAssembler extends TileTickingModularMachine implements IContainerProvider
 {
@@ -233,9 +233,10 @@ public class TileAssembler extends TileTickingModularMachine implements IContain
                 .outputSlot(28, 80, 46).outputSlot(29, 98, 46).displaySlot(30, -1000, 0).displaySlot(31, -1000, 0)
                 .displaySlot(32, -1000, 0).displaySlot(33, -1000, 0).displaySlot(34, -1000, 0).displaySlot(35, -1000, 0)
                 .displaySlot(36, -1000, 0).displaySlot(37, -1000, 0).displaySlot(38, -1000, 0)
+                .addInventory()
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)
-                .addInventory().create();
+                .create();
     }
 
     @Override

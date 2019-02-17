@@ -20,10 +20,6 @@ import net.ros.common.ROSConstants;
 import net.ros.common.card.CardDataStorage;
 import net.ros.common.card.CraftCard;
 import net.ros.common.card.FilterCard;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.EmptyContainer;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.event.TickHandler;
 import net.ros.common.grid.WorkshopMachine;
 import net.ros.common.grid.node.ITileWorkshop;
@@ -33,10 +29,14 @@ import net.ros.common.inventory.InventoryHandler;
 import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
 import net.ros.common.machine.module.impl.IOModule;
-import net.ros.common.network.action.ActionSender;
-import net.ros.common.network.action.ClientActionBuilder;
-import net.ros.common.network.action.IActionReceiver;
-import net.ros.common.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.EmptyContainer;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.network.action.ActionSender;
+import net.voxelindustry.steamlayer.network.action.ClientActionBuilder;
+import net.voxelindustry.steamlayer.network.action.IActionReceiver;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 public class TileKeypunch extends TileModularMachine implements IContainerProvider, IActionReceiver, ITileWorkshop
 {
@@ -151,6 +151,7 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .filterSlot(0, 49, 79, stack -> stack.getItem().equals(ROSItems.PUNCHED_CARD))
                 .outputSlot(1, 157, 79)
+                .addInventory()
                 .syncBooleanValue(this.isCraftTabProperty::getValue, this.isCraftTabProperty::setValue)
                 .syncBooleanValue(this.getCanPrintProperty()::getValue, this.getCanPrintProperty()::setValue)
                 .syncItemValue(() -> this.getCraftStacks().get(0), stack -> this.getCraftStacks().set(0, stack))
@@ -171,7 +172,7 @@ public class TileKeypunch extends TileModularMachine implements IContainerProvid
                 .syncItemValue(() -> this.getFilterStacks().get(6), stack -> this.getFilterStacks().set(6, stack))
                 .syncItemValue(() -> this.getFilterStacks().get(7), stack -> this.getFilterStacks().set(7, stack))
                 .syncItemValue(() -> this.getFilterStacks().get(8), stack -> this.getFilterStacks().set(8, stack))
-                .addInventory().create();
+                .create();
     }
 
     public BaseProperty<Boolean> getCraftTabProperty()

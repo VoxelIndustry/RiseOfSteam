@@ -9,6 +9,7 @@ import net.ros.common.grid.node.PipeType;
 import net.ros.common.heat.HeatCapabilities;
 import net.ros.common.heat.HeatTank;
 import net.ros.common.heat.IHeatHandler;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 public class TileHeatPipe extends TilePipeBase<HeatPipeGrid, IHeatHandler> implements IHeatPipe
 {
@@ -24,6 +25,21 @@ public class TileHeatPipe extends TilePipeBase<HeatPipeGrid, IHeatHandler> imple
         this.heatConductivity = PipeType.getHeatConductivity(type);
 
         this.heatTank = new HeatTank(PipeType.getHeatLimit(type));
+    }
+
+    public TileHeatPipe()
+    {
+        this(null);
+    }
+
+    @Override
+    public void load()
+    {
+        super.load();
+
+        int minimumTemp = (int) (this.getWorld().getBiome(this.getPos()).getTemperature(this.getPos()) * 20);
+        if (this.heatTank.getHeat() < minimumTemp)
+            this.heatTank.setHeat(minimumTemp);
     }
 
     @Override

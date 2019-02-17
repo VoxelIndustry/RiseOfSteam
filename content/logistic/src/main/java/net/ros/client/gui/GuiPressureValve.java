@@ -2,13 +2,13 @@ package net.ros.client.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.network.action.ServerActionBuilder;
 import net.ros.common.tile.TilePressureValve;
 import net.voxelindustry.brokkgui.element.GuiLabel;
 import net.voxelindustry.brokkgui.paint.Texture;
 import net.voxelindustry.brokkgui.panel.GuiAbsolutePane;
 import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.network.action.ServerActionBuilder;
 
 public class GuiPressureValve extends BrokkGuiContainer<BuiltContainer>
 {

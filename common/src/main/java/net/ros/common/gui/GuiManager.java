@@ -9,10 +9,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.ros.client.gui.util.GuiMachineBase;
 import net.ros.common.ROSConstants;
-import net.ros.common.container.IContainerProvider;
-import net.ros.common.tile.TileBase;
 import net.voxelindustry.brokkgui.wrapper.container.BrokkGuiContainer;
 import net.voxelindustry.brokkgui.wrapper.impl.BrokkGuiManager;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 import java.util.ArrayList;
 import java.util.List;

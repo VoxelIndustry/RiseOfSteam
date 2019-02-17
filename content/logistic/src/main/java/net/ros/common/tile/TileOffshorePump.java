@@ -17,6 +17,8 @@ import net.ros.common.machine.Machines;
 import net.ros.common.machine.component.SteamComponent;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 public class TileOffshorePump extends TileBase implements ITickable
 {

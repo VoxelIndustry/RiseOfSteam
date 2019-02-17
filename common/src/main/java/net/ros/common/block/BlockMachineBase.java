@@ -13,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.ros.common.ROSConstants;
-import net.ros.common.tile.TileBase;
+import net.voxelindustry.steamlayer.tile.TileBase;
 
 public abstract class BlockMachineBase<T extends TileBase> extends BlockContainer
 {
@@ -24,7 +24,7 @@ public abstract class BlockMachineBase<T extends TileBase> extends BlockContaine
         super(material);
 
         this.setRegistryName(ROSConstants.MODID, name);
-        this.setUnlocalizedName(name);
+        this.setTranslationKey(name);
         this.setCreativeTab(ROSConstants.TAB_ALL);
         this.tileClass = tileClass;
     }

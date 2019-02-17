@@ -81,9 +81,9 @@ public class BlockScaffold extends BlockMetal
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World w, BlockPos pos, IBlockState state, Entity e)
+    public void onEntityCollision(World w, BlockPos pos, IBlockState state, Entity e)
     {
-        super.onEntityCollidedWithBlock(w, pos, state, e);
+        super.onEntityCollision(w, pos, state, e);
         if (e instanceof EntityLivingBase && !((EntityLivingBase) e).isOnLadder() && isLadder(state, w, pos,
                 (EntityLivingBase) e))
         {
@@ -122,7 +122,7 @@ public class BlockScaffold extends BlockMetal
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT_MIPPED;
     }

@@ -18,9 +18,6 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.ROSConstants;
 import net.ros.common.block.BlockVeinOre;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
 import net.ros.common.grid.node.IBelt;
 import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
@@ -33,6 +30,9 @@ import net.ros.common.machine.module.impl.SteamModule;
 import net.ros.common.steam.ISteamTank;
 import net.ros.common.steam.SteamUtil;
 import net.ros.common.util.FluidUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 import java.util.Iterator;
 
@@ -277,13 +277,14 @@ public class TileSmallMiningDrill extends TileTickingModularMachine implements I
 
         return new ContainerBuilder("smallminingdrill", player).player(player).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
+                .addInventory()
                 .syncIntegerValue(steamEngine.getInternalSteamHandler()::getSteam,
                         steamEngine.getInternalSteamHandler()::setSteam)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("sludge"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("sludge"))::setFluid)
-                .addInventory().create();
+                .create();
     }
 
     public boolean onRightClick(final EntityPlayer player, final EnumFacing side, final float hitX, final float hitY,

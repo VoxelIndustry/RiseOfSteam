@@ -10,6 +10,7 @@ import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
 import net.ros.common.steam.SteamCapabilities;
 import net.ros.common.steam.SteamTank;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 import javax.annotation.Nullable;
 

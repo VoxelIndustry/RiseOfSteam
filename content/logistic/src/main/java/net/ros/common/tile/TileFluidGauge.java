@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.ros.common.grid.node.ITileNode;
 import net.ros.common.grid.node.PipeType;
+import net.voxelindustry.steamlayer.tile.ITileInfoList;
 
 import javax.annotation.Nullable;
 

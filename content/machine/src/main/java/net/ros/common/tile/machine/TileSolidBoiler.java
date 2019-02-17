@@ -10,20 +10,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.ros.common.ROSConstants;
+import net.ros.common.gui.MachineGui;
 import net.ros.common.init.ROSItems;
 import net.ros.common.inventory.InventoryHandler;
+import net.ros.common.machine.Machines;
 import net.ros.common.machine.module.InventoryModule;
+import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.machine.module.impl.IOModule;
 import net.ros.common.machine.module.impl.SteamModule;
 import net.ros.common.steam.SteamUtil;
-import net.ros.common.util.FluidUtils;
-import net.ros.common.container.BuiltContainer;
-import net.ros.common.container.ContainerBuilder;
-import net.ros.common.container.IContainerProvider;
-import net.ros.common.gui.MachineGui;
-import net.ros.common.machine.Machines;
-import net.ros.common.machine.module.impl.FluidStorageModule;
 import net.ros.common.tile.module.SteamBoilerModule;
+import net.ros.common.util.FluidUtils;
+import net.voxelindustry.steamlayer.container.BuiltContainer;
+import net.voxelindustry.steamlayer.container.ContainerBuilder;
+import net.voxelindustry.steamlayer.container.IContainerProvider;
 
 @Getter
 @Setter
@@ -120,6 +120,7 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
         return new ContainerBuilder("solidboiler", player).player(player).inventory(8, 84).hotbar(8, 142)
                 .addInventory().tile(this.getModule(InventoryModule.class).getInventory("basic"))
                 .fuelSlot(0, 80, 43)
+                .addInventory()
                 .syncIntegerValue(this::getMaxBurnTime, this::setMaxBurnTime)
                 .syncIntegerValue(this::getCurrentBurnTime, this::setCurrentBurnTime)
                 .syncFloatValue(boiler::getCurrentHeat, boiler::setCurrentHeat)
@@ -127,7 +128,7 @@ public class TileSolidBoiler extends TileTickingModularMachine implements IConta
                         steamEngine.getInternalSteamHandler()::setSteam)
                 .syncFluidValue(((FluidTank) fluidStorage.getFluidHandler("water"))::getFluid,
                         ((FluidTank) fluidStorage.getFluidHandler("water"))::setFluid)
-                .addInventory().create();
+                .create();
     }
 
     @Override
